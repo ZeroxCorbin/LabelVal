@@ -9,7 +9,7 @@ using Lvs95xx.lib.Core.Controllers;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 
-namespace LabelVal.LVS_95xx.Sectors;
+namespace LabelVal.L95.Sectors;
 
 public partial class SectorParameters : ObservableObject, ISectorParameters
 {
@@ -33,7 +33,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
 
     public void ProcessNew(ISector sector)
     {
-        if (sector is not LVS_95xx.Sectors.Sector sec)
+        if (sector is not L95.Sectors.Sector sec)
             return;
 
         Sector = sector;

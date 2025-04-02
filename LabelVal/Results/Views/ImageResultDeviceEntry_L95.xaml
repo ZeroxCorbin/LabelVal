@@ -44,7 +44,7 @@
                     <Button
                         Width="28"
                         Command="{Binding SaveCommand}"
-                        CommandParameter="{x:Static vm:ImageResultEntryImageTypes.L95xxStored}"
+                        CommandParameter="{x:Static vm:ImageResultEntryImageTypes.L95Stored}"
                         Content="{iconPacks:Material Kind=ContentSave}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -142,7 +142,7 @@
                     <Button
                         Width="28"
                         Command="{Binding SaveCommand}"
-                        CommandParameter="{x:Static vm:ImageResultEntryImageTypes.L95xxCurrent}"
+                        CommandParameter="{x:Static vm:ImageResultEntryImageTypes.L95Current}"
                         Content="{iconPacks:Material Kind=ContentSave}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -323,9 +323,9 @@
             </Style>
         </DockPanel.Style>
 
-        <Border Background="{DynamicResource L95xx_Brush}" Style="{StaticResource groupLeft}" />
+        <Border Background="{DynamicResource L95_Brush}" Style="{StaticResource groupLeft}" />
 
-        <Border Background="{DynamicResource L95xx_Brush}" Style="{StaticResource groupBottom}" />
+        <Border Background="{DynamicResource L95_Brush}" Style="{StaticResource groupBottom}" />
 
         <!--  Stored  -->
         <DockPanel>
@@ -352,12 +352,18 @@
 
                     <DockPanel>
 
+                        <iconPacks:PackIconMaterial
+                            Width="12"
+                            Margin="3"
+                            VerticalAlignment="Top"
+                            Kind="StoreOutline" />
+
                         <!--  Title  -->
                         <md:Card
-                            Margin="3"
+                            Margin="0,3"
                             Padding="4,1"
                             HorizontalAlignment="Left"
-                            Background="{DynamicResource L95xx_Brush}">
+                            Background="{DynamicResource L95_Brush}">
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Image" />
                         </md:Card>
 
@@ -413,12 +419,18 @@
                     <StackPanel>
                         <DockPanel>
 
+                            <iconPacks:PackIconMaterial
+                            Width="12"
+                            Margin="3"
+                            VerticalAlignment="Top"
+                            Kind="StoreOutline" />
+                            
                             <!--  Title  -->
                             <md:Card
-                                Margin="3"
+                                Margin="0,3"
                                 Padding="4,1"
                                 HorizontalAlignment="Left"
-                                Background="{DynamicResource L95xx_Brush}">
+                                Background="{DynamicResource L95_Brush}">
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Sectors" />
                             </md:Card>
 
@@ -511,7 +523,7 @@
                             Padding="0,1,0,0"
                             DockPanel.Dock="Top"
                             ItemsSource="{Binding StoredSectors}"
-                            Tag="l95xxStored">
+                            Tag="l95Stored">
 
                             <ListBox.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.ListBox}" TargetType="ListBox">
@@ -550,7 +562,7 @@
                                                     <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="100">
                                                         <Setter Property="MaxWidth" Value="200" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.DualSectorColumns}" Value="True">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -660,7 +672,7 @@
                             Margin="3"
                             Padding="4,1"
                             HorizontalAlignment="Left"
-                            Background="{DynamicResource L95xx_Brush}">
+                            Background="{DynamicResource L95_Brush}">
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Image" />
                         </md:Card>
 
@@ -719,7 +731,7 @@
                                 Margin="3"
                                 Padding="4,1"
                                 HorizontalAlignment="Left"
-                                Background="{DynamicResource L95xx_Brush}">
+                                Background="{DynamicResource L95_Brush}">
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Sectors" />
                             </md:Card>
 
@@ -812,7 +824,7 @@
                             Padding="0,1,0,0"
                             ItemsSource="{Binding CurrentSectors}"
                             SelectedItem="{Binding CurrentSectorSelected}"
-                            Tag="l95xxCurrent">
+                            Tag="l95Current">
 
                             <ListBox.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.ListBox}" TargetType="ListBox">
@@ -851,7 +863,7 @@
                                                     <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="100">
                                                         <Setter Property="MaxWidth" Value="200" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.DualSectorColumns}" Value="True">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -940,7 +952,7 @@
                             Margin="3"
                             Padding="4,1"
                             HorizontalAlignment="Left"
-                            Background="{DynamicResource L95xx_Brush}">
+                            Background="{DynamicResource L95_Brush}">
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Dissimilar Results" />
                         </md:Card>
 

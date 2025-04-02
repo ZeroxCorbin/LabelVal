@@ -32,18 +32,18 @@ public partial class ImageRolls : ObservableRecipient
     /// A temporary image roll used for adding or editing.
     /// <see cref="NewImageRoll"/>"/>
     /// </summary>
-    [ObservableProperty] private ImageRollEntry newImageRoll = null;
+    [ObservableProperty] private ImageRoll newImageRoll = null;
 
     /// <summary>
     /// Fixed image rolls are loaded from the Assets folder.
     /// </summary>
-    public ObservableCollection<ImageRollEntry> FixedImageRolls { get; } = [];
+    public ObservableCollection<ImageRoll> FixedImageRolls { get; } = [];
     /// <summary>
     /// The currently selected fixed image roll.
     /// <see cref="SelectedFixedImageRoll"/>"/>
     /// </summary>
-    [ObservableProperty] private ImageRollEntry selectedFixedImageRoll;
-    partial void OnSelectedFixedImageRollChanged(ImageRollEntry value)
+    [ObservableProperty] private ImageRoll selectedFixedImageRoll;
+    partial void OnSelectedFixedImageRollChanged(ImageRoll value)
     {
         if (value != null)
         {
@@ -55,14 +55,14 @@ public partial class ImageRolls : ObservableRecipient
     /// <summary>
     /// User image rolls are loaded from the <see cref="SelectedUserDatabase"/>/>
     /// </summary>
-    public ObservableCollection<ImageRollEntry> UserImageRolls { get; } = [];
+    public ObservableCollection<ImageRoll> UserImageRolls { get; } = [];
     /// <summary>
     /// The currently selected user image roll.
     /// <see cref="SelectedUserImageRoll"/>/>
     /// </summary>
     [ObservableProperty]
-    private ImageRollEntry selectedUserImageRoll;
-    partial void OnSelectedUserImageRollChanged(ImageRollEntry value)
+    private ImageRoll selectedUserImageRoll;
+    partial void OnSelectedUserImageRollChanged(ImageRoll value)
     {
         if (value != null)
         {
@@ -71,10 +71,8 @@ public partial class ImageRolls : ObservableRecipient
         }
     }
 
-    [ObservableProperty]
-    [NotifyPropertyChangedRecipients]
-    private ImageRollEntry selectedImageRoll;
-    partial void OnSelectedImageRollChanged(ImageRollEntry value)
+    [ObservableProperty] [NotifyPropertyChangedRecipients]private ImageRoll selectedImageRoll;
+    partial void OnSelectedImageRollChanged(ImageRoll value)
     {
         App.Settings.SetValue(nameof(SelectedImageRoll), value);
     }
@@ -248,7 +246,7 @@ public partial class ImageRolls : ObservableRecipient
     private void LoadUserImageRollsList()
     {
         var currentRolls = new HashSet<string>(UserImageRolls.Select(roll => roll.UID));
-        var newRolls = new List<ImageRollEntry>();
+        var newRolls = new List<ImageRoll>();
 
         foreach (Databases.ImageRollsDatabase db in UserDatabases)
         {
@@ -259,7 +257,7 @@ public partial class ImageRolls : ObservableRecipient
 
             try
             {
-                foreach (ImageRollEntry roll in db.SelectAllImageRolls())
+                foreach (ImageRoll roll in db.SelectAllImageRolls())
                 {
                     Logger.LogDebug($"Found: {roll.Name}");
                     roll.ImageRollsDatabase = db;
@@ -303,7 +301,7 @@ public partial class ImageRolls : ObservableRecipient
 
                 try
                 {
-                    ImageRollEntry imgr = JsonConvert.DeserializeObject<ImageRollEntry>(File.ReadAllText(files.First()));
+                    ImageRoll imgr = JsonConvert.DeserializeObject<ImageRoll>(File.ReadAllText(files.First()));
                     imgr.Path = subdir;
                     FixedImageRolls.Add(imgr);
                 }
@@ -323,7 +321,7 @@ public partial class ImageRolls : ObservableRecipient
     {
         Logger.LogInfo("Adding image roll.");
 
-        NewImageRoll = new ImageRollEntry() { ImageRollsDatabase = SelectedUserDatabase };
+        NewImageRoll = new ImageRoll() { ImageRollsDatabase = SelectedUserDatabase };
     }
 
     [RelayCommand]
@@ -356,7 +354,7 @@ public partial class ImageRolls : ObservableRecipient
         {
             Logger.LogInfo($"Saved image roll: {NewImageRoll.Name}");
 
-            ImageRollEntry update = UserImageRolls.FirstOrDefault((e) => e.UID == NewImageRoll.UID);
+            ImageRoll update = UserImageRolls.FirstOrDefault((e) => e.UID == NewImageRoll.UID);
             if (update != null)
             {
                 SelectedImageRoll.SelectedGS1Table = NewImageRoll.SelectedGS1Table;

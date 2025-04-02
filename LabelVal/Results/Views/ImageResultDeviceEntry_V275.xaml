@@ -381,9 +381,15 @@
 
                         <DockPanel>
 
+                            <iconPacks:PackIconMaterial
+                            Width="12"
+                            Margin="3"
+                            VerticalAlignment="Top"
+                            Kind="StoreOutline" />
+
                             <!--  Title  -->
                             <md:Card
-                                Margin="3"
+                                Margin="0,3"
                                 Padding="4,1"
                                 HorizontalAlignment="Left"
                                 Background="{DynamicResource V275_Brush}">
@@ -446,9 +452,15 @@
                         <StackPanel>
                             <DockPanel>
 
+                                <iconPacks:PackIconMaterial
+                            Width="12"
+                            Margin="3"
+                            VerticalAlignment="Top"
+                            Kind="StoreOutline" />
+                                
                                 <!--  Title  -->
                                 <md:Card
-                                    Margin="3"
+                                    Margin="0,3"
                                     Padding="4,1"
                                     HorizontalAlignment="Left"
                                     Background="{DynamicResource V275_Brush}">
@@ -587,7 +599,7 @@
                                                         <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="100">
                                                             <Setter Property="MaxWidth" Value="200" />
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                                        <DataTrigger Binding="{Binding ImageResultEntry.DualSectorColumns}" Value="True">
                                                             <Setter Property="MaxWidth" Value="400" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -692,7 +704,7 @@
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                         <DockPanel>
-
+                            
                             <!--  Title  -->
                             <md:Card
                                 Margin="3"
@@ -898,7 +910,7 @@
                                                             <Setter Property="MaxWidth" Value="210" />
                                                         </DataTrigger>
 
-                                                        <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                                        <DataTrigger Binding="{Binding ImageResultEntry.DualSectorColumns}" Value="True">
                                                             <Setter Property="MaxWidth" Value="420" />
                                                         </DataTrigger>
                                                     </Style.Triggers>

@@ -22,7 +22,7 @@ using V5_REST_Lib.Models;
 namespace LabelVal.V5.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
-public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
+public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRoll>>
 {
     [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
     [JsonProperty] public V5_REST_Lib.Controllers.Controller Controller { get; } = new();
@@ -104,7 +104,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         }
     }
 
-    [ObservableProperty] private ImageRollEntry selectedImageRoll;
+    [ObservableProperty] private ImageRoll selectedImageRoll;
 
     [ObservableProperty] private bool repeatTrigger;
 
@@ -225,7 +225,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             ScannerController_JobSlotsUpdate();
 
     }
-    public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
+    public void Receive(PropertyChangedMessage<ImageRoll> message) => SelectedImageRoll = message.NewValue;
 
     private async void ScannerController_ConfigUpdate()
     {

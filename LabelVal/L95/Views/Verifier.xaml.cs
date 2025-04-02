@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace LabelVal.LVS_95xx.Views;
+namespace LabelVal.L95.Views;
 
 public partial class Verifier : UserControl
 {

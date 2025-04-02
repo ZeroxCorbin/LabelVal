@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Drawing;
 
-namespace LabelVal.LVS_95xx.Sectors;
+namespace LabelVal.L95.Sectors;
 
 public class SectorReport : ISectorReport
 {

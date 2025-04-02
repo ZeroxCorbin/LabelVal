@@ -55,9 +55,15 @@
 
                 <DockPanel>
 
+                    <iconPacks:PackIconMaterial
+                            Width="12"
+                            Margin="3"
+                            VerticalAlignment="Top"
+                            Kind="OpenSourceInitiative" />
+                    
                     <!--  Title  -->
                     <md:Card
-                        Margin="3"
+                        Margin="0,3"
                         Padding="4,1"
                         HorizontalAlignment="Left"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">

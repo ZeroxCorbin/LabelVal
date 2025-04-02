@@ -8,7 +8,7 @@ using LabelVal.Sectors.Interfaces;
 
 using Newtonsoft.Json.Linq;
 
-namespace LabelVal.LVS_95xx.Sectors;
+namespace LabelVal.L95.Sectors;
 
 public partial class Sector : ObservableObject, ISector
 {

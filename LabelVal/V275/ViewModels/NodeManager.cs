@@ -16,7 +16,7 @@ using V275_REST_Lib.Models;
 namespace LabelVal.V275.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
-public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
+public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRoll>>
 {
     [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
 
@@ -80,7 +80,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         }
     }
 
-    [ObservableProperty] private ImageRollEntry selectedImageRoll;
+    [ObservableProperty] private ImageRoll selectedImageRoll;
 
     public NodeManager()
     {
@@ -171,7 +171,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
     #region Recieve Messages
     //There is no point in reuesting the SeletedImageRoll at init, the user has not selected anything yet.
-    public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
+    public void Receive(PropertyChangedMessage<ImageRoll> message) => SelectedImageRoll = message.NewValue;
     #endregion
 
     #region Dialogs

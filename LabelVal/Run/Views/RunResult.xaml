@@ -59,7 +59,7 @@
 
                 <local:RunResult_V5 DataContext="{Binding}" />
 
-                <local:RunResult_L95xx DataContext="{Binding}" />
+                <local:RunResult_L95 DataContext="{Binding}" />
             </DockPanel>
         </ScrollViewer>
     </DockPanel>

@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.LVS_95xx.ViewModels;
+using LabelVal.L95.ViewModels;
 using LabelVal.Results.ViewModels;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
@@ -12,13 +12,13 @@ using System.Collections.ObjectModel;
 
 namespace LabelVal.Run.ViewModels;
 
-public partial class RunManager : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>, IRecipient<PropertyChangedMessage<Scanner>>, IRecipient<PropertyChangedMessage<Verifier>>, IRecipient<PropertyChangedMessage<ImageRollEntry>>
+public partial class RunManager : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>, IRecipient<PropertyChangedMessage<Scanner>>, IRecipient<PropertyChangedMessage<Verifier>>, IRecipient<PropertyChangedMessage<ImageRoll>>
 {
     private ImageResultsManager ImageResults { get; }
     [ObservableProperty] private Node selectedV275Node;
     [ObservableProperty] private Scanner selectedV5;
     [ObservableProperty] private Verifier selectedL95;
-    [ObservableProperty] private ImageRollEntry selectedImageRoll;
+    [ObservableProperty] private ImageRoll selectedImageRoll;
 
     public ObservableCollection<RunControl> RunControllers { get; } = [];
     public RunControl QuickRunController { get; } = new();
@@ -44,7 +44,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
         if (ret1.HasReceivedResponse)
             SelectedV275Node = ret1.Response;
 
-        var ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRollEntry>());
+        var ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRoll>());
         if (ret2.HasReceivedResponse)
             SelectedImageRoll = ret2.Response;
 
@@ -71,7 +71,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
         else
         {
             Logger.LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount}");
-            QuickRunController.Update(LoopCount, ImageResults.ImageResultsList, SelectedImageRoll, SelectedV275Node, SelectedV5, SelectedL95);
+            QuickRunController.Update(LoopCount, ImageResults.ImageResultsEntries, SelectedImageRoll, SelectedV275Node, SelectedV5, SelectedL95);
             QuickRunController.StartStopCommand.Execute(null);
         }
     }
@@ -87,7 +87,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
 
     #region Recieve Messages
     public void Receive(PropertyChangedMessage<Node> message) => SelectedV275Node = message.NewValue;
-    public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
+    public void Receive(PropertyChangedMessage<ImageRoll> message) => SelectedImageRoll = message.NewValue;
     public void Receive(PropertyChangedMessage<Scanner> message) => SelectedV5 = message.NewValue;
     public void Receive(PropertyChangedMessage<Verifier> message) => SelectedL95 = message.NewValue;
     #endregion

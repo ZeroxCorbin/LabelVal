@@ -253,7 +253,7 @@ public partial class App : Application
 
     public App()
     {
-       // SetupExceptionHandling();
+       //SetupExceptionHandling();
 
         Version version = Assembly.GetExecutingAssembly().GetName().Version;
         if (version != null)

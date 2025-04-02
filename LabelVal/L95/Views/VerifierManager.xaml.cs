@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace LabelVal.LVS_95xx.Views;
+namespace LabelVal.L95.Views;
 /// <summary>
 /// Interaction logic for VerifierManager.xaml
 /// </summary>

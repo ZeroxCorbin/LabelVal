@@ -35,8 +35,8 @@ public partial class RunResult_V275 : UserControl
             ((ViewModels.RunResult)DataContext).V275FocusedCurrentSector = null;
             ((ViewModels.RunResult)DataContext).V5FocusedStoredSector = null;
             ((ViewModels.RunResult)DataContext).V5FocusedCurrentSector = null;
-            //((ViewModels.RunResult)DataContext).L95xxFocusedStoredSector = null;
-            //((ViewModels.RunResult)DataContext).L95xxFocusedCurrentSector = null;
+            //((ViewModels.RunResult)DataContext).L95FocusedStoredSector = null;
+            //((ViewModels.RunResult)DataContext).L95FocusedCurrentSector = null;
         }
         else
         {

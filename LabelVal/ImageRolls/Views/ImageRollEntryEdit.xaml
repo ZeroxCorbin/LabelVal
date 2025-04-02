@@ -12,7 +12,7 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Classes"
     xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
-    d:DataContext="{d:DesignInstance Type=viewModels:ImageRollEntry}"
+    d:DataContext="{d:DesignInstance Type=viewModels:ImageRoll}"
     mc:Ignorable="d">
 
     <md:Card

@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.LVS_95xx.ViewModels;
+using LabelVal.L95.ViewModels;
 using LabelVal.Results.ViewModels;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
@@ -13,13 +13,13 @@ public partial class RunControl : ObservableObject
 {
     public Controller.Controller RunController { get; } = new();
 
-    public ObservableCollection<ImageResultEntry> ImageResultsList { get; private set; }
+    public ObservableCollection<ImageResultEntry> ImageResultsEntries { get; private set; }
 
     public Node V275 { get; private set; }
     public Scanner V5 { get; private set; }
 public Verifier L95 { get; private set; }
 
-    public ImageRollEntry SelectedImageRoll { get; private set; }
+    public ImageRoll SelectedImageRoll { get; private set; }
 
     private int LoopCount { get; set; }
 
@@ -28,17 +28,17 @@ public Verifier L95 { get; private set; }
     /// </summary>
     public RunControl() { }
 
-    public RunControl(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRollEntry imageRollEntry, Node v275, Scanner v5, Verifier l95)
+    public RunControl(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRoll imageRollEntry, Node v275, Scanner v5, Verifier l95)
     {
         LoopCount = loopCount;
-        ImageResultsList = imageResults;
+        ImageResultsEntries = imageResults;
         SelectedImageRoll = imageRollEntry;
         V275 = v275;
         V5 = v5;
         L95 = l95;
     }
 
-    public void Update(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRollEntry imageRollEntry, Node v275, Scanner v5, Verifier l95)
+    public void Update(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRoll imageRollEntry, Node v275, Scanner v5, Verifier l95)
     {
         if (RunController.State == RunStates.Running)
         {
@@ -47,7 +47,7 @@ public Verifier L95 { get; private set; }
         }
 
         LoopCount = loopCount;
-        ImageResultsList = imageResults;
+        ImageResultsEntries = imageResults;
         SelectedImageRoll = imageRollEntry;
         V275 = v275;
         V5 = v5;
@@ -68,7 +68,7 @@ public Verifier L95 { get; private set; }
         else
         {
             Logger.LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
-            RunController.StartAsync(ImageResultsList, SelectedImageRoll, V275, V5?.Controller, L95?.Controller, LoopCount);
+            RunController.StartAsync(ImageResultsEntries, SelectedImageRoll, V275, V5?.Controller, L95?.Controller, LoopCount);
         }
     }
 

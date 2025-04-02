@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Watchers.lib.Process;
 
-namespace LabelVal.LVS_95xx.ViewModels;
+namespace LabelVal.L95.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
 public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>, IRecipient<Win32_ProcessWatcherMessage>

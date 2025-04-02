@@ -28,8 +28,8 @@ public enum ImageResultEntryImageTypes
     V5Stored,
     V5Current,
     V5Sensor,
-    L95xxStored,
-    L95xxCurrent
+    L95Stored,
+    L95Current
 }
 
 public interface IImageResultDeviceEntry

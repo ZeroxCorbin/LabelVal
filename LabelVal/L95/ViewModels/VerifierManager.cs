@@ -5,26 +5,26 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace LabelVal.LVS_95xx.ViewModels;
+namespace LabelVal.L95.ViewModels;
 public partial class VerifierManager : ObservableRecipient
 {
     public ObservableCollection<Verifier> Devices { get; } = [];
 
     [ObservableProperty][NotifyPropertyChangedRecipients] public Verifier selectedDevice;
-    partial void OnSelectedDeviceChanged(Verifier value) => App.Settings.SetValue($"L95xx_IsSelected", value != null);
+    partial void OnSelectedDeviceChanged(Verifier value) => App.Settings.SetValue($"L95_IsSelected", value != null);
 
     public VerifierManager()
     {
-        Verifier sel = App.Settings.GetValue<Verifier>($"L95xx_Verifier");
+        Verifier sel = App.Settings.GetValue<Verifier>($"L95_Verifier");
         if (sel == null)
         {
             sel = new Verifier();
-            App.Settings.SetValue($"L95xx_Verifier", sel);
+            App.Settings.SetValue($"L95_Verifier", sel);
         }
         sel.Manager = this;
         Devices.Add(sel);
 
-        if(App.Settings.GetValue<bool>($"L95xx_IsSelected"))
+        if(App.Settings.GetValue<bool>($"L95_IsSelected"))
             SelectedDevice = sel;
 
         WeakReferenceMessenger.Default.Register<RequestMessage<Verifier>>(
@@ -42,6 +42,6 @@ public partial class VerifierManager : ObservableRecipient
     //    Devices.Remove(device);
     //    Save();
     //}
-    [RelayCommand] private void Save() => App.Settings.SetValue($"L95xx_Verifier", Devices.FirstOrDefault());
+    [RelayCommand] private void Save() => App.Settings.SetValue($"L95_Verifier", Devices.FirstOrDefault());
 
 }

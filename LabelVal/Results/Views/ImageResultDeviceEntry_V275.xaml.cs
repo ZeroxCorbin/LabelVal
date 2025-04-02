@@ -302,4 +302,9 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
         else
             Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img.ToByteArray(ImageMagick.MagickFormat.Png)));
     }
+
+    private void lstDissimilarSector_Click(object sender, MouseButtonEventArgs e)
+    {
+
+    }
 }

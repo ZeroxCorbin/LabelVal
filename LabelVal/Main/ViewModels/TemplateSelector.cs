@@ -35,7 +35,7 @@ namespace LabelVal.Main.ViewModels
                 {
                     return V5;
                 }
-                else if (hmi.Content is LVS_95xx.ViewModels.VerifierManager)
+                else if (hmi.Content is L95.ViewModels.VerifierManager)
                 {
                     return L96XX;
                 }

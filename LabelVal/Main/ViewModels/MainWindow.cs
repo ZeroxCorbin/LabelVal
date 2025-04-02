@@ -41,7 +41,7 @@ public partial class MainWindow : ObservableRecipient
 
     public Run.ViewModels.RunManager RunManager { get; }
 
-    public LVS_95xx.ViewModels.VerifierManager VerifierManager { get; }
+    public L95.ViewModels.VerifierManager VerifierManager { get; }
 
     public Results.ViewModels.ImageResultsDatabases ImageResultsDatabases { get; }
 
@@ -69,7 +69,7 @@ public partial class MainWindow : ObservableRecipient
         Printer = new Printer.ViewModels.Printer();
         V275Manager = new V275.ViewModels.V275Manager();
         ScannerManager = new V5.ViewModels.ScannerManager();
-        VerifierManager = new LVS_95xx.ViewModels.VerifierManager();
+        VerifierManager = new L95.ViewModels.VerifierManager();
 
         ImageRolls = new ImageRolls.ViewModels.ImageRolls();
         ImageResultsDatabases = new Results.ViewModels.ImageResultsDatabases();
@@ -86,7 +86,7 @@ public partial class MainWindow : ObservableRecipient
 
             new HamburgerMenuItem { Label = "V275", Content = V275Manager },
             new HamburgerMenuItem { Label = "V5", Content = ScannerManager },
-            new HamburgerMenuItem { Label = "L95xx", Content = VerifierManager },
+            new HamburgerMenuItem { Label = "L95", Content = VerifierManager },
         ];
 
         SelectedMenuItem = MenuItems[0];

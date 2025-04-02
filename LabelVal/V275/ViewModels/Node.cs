@@ -13,7 +13,7 @@ using V275_REST_Lib.Models;
 namespace LabelVal.V275.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
-public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
+public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRoll>>
 {
     public NodeManager Manager { get; set; }
     [JsonProperty] public V275_REST_Lib.Controllers.Controller Controller { get; set; }
@@ -33,12 +33,12 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         _ = App.Current.Dispatcher.BeginInvoke(() => Controller.ChangeJob(value.name));
     }
 
-    [ObservableProperty] private ImageRollEntry selectedImageRoll;
-    partial void OnSelectedImageRollChanged(ImageRollEntry value) => CheckTemplateName();
+    [ObservableProperty] private ImageRoll selectedImageRoll;
+    partial void OnSelectedImageRollChanged(ImageRoll value) => CheckTemplateName();
 
     [ObservableProperty] private bool isWrongTemplateName = false;
 
-    public Node(string host, uint systemPort, uint nodeNumber, string username, string password, string dir, ImageRollEntry imageRollEntry)
+    public Node(string host, uint systemPort, uint nodeNumber, string username, string password, string dir, ImageRoll imageRollEntry)
     {
         SelectedImageRoll = imageRollEntry;
 
@@ -69,7 +69,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.Instance.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
 
-    public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
+    public void Receive(PropertyChangedMessage<ImageRoll> message) => SelectedImageRoll = message.NewValue;
 
     public void CheckTemplateName()
     {

@@ -16,7 +16,7 @@ public partial class RunResults : ObservableRecipient, IRecipient<PropertyChange
     public RunResults() => IsActive = true;
 
     //if the selected run entry is changed. all CurrentImageResultGroup and StoredImageResultGroup entries should be loaded for the new SelectedDatabase.
-    //The loaded entries should be added to the ImageResultsList as new RunResult objects.
+    //The loaded entries should be added to the ImageResultsEntries as new RunResult objects.
     partial void OnSelectedRunEntryChanged(RunEntry value)
     {
         RunResultsList.Clear();

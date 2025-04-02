@@ -51,17 +51,17 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
     [ObservableProperty] private System.Windows.Media.DrawingImage v5CurrentImageOverlay;
     [ObservableProperty] private System.Windows.Media.DrawingImage v5StoredImageOverlay;
 
-    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> l95xxCurrentSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> l95xxStoredSectors = [];
-    [ObservableProperty] private ObservableCollection<SectorDifferences> l95xxDiffSectors = [];
-    [ObservableProperty] private Sectors.Interfaces.ISector l95xxFocusedStoredSector = null;
-    [ObservableProperty] private Sectors.Interfaces.ISector l95xxFocusedCurrentSector = null;
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> l95CurrentSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> l95StoredSectors = [];
+    [ObservableProperty] private ObservableCollection<SectorDifferences> l95DiffSectors = [];
+    [ObservableProperty] private Sectors.Interfaces.ISector l95FocusedStoredSector = null;
+    [ObservableProperty] private Sectors.Interfaces.ISector l95FocusedCurrentSector = null;
 
     public RunEntry RunEntry { get; }
 
     public int Order => CurrentImageResultGroup.Order;
     public int Loop => CurrentImageResultGroup.TotalLoops;
-    public bool HasDiff => V275DiffSectors.Count > 0 || V5DiffSectors.Count > 0 || L95xxDiffSectors.Count > 0;
+    public bool HasDiff => V275DiffSectors.Count > 0 || V5DiffSectors.Count > 0 || L95DiffSectors.Count > 0;
 
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
 
@@ -131,10 +131,10 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
                     ? V5StoredImage.ImageBytes
                     : type == "v5Current"
                     ? V5CurrentImage.ImageBytes
-                    //: type == "l95xxStored"
-                    //? L95xxStoredImage.OriginalImage
-                    //: type == "l95xxCurrent"
-                    //? L95xxCurrentImage.OriginalImage
+                    //: type == "l95Stored"
+                    //? L95StoredImage.OriginalImage
+                    //: type == "l95Current"
+                    //? L95CurrentImage.OriginalImage
                     : SourceImage.ImageBytes;
             if (bmp != null)
             {

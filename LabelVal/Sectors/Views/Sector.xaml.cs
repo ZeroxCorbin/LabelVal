@@ -39,8 +39,8 @@ public partial class Sector : UserControl
         "v275Current" => ImageResultEntry.FocusedCurrentSector != null,
         "v5Stored" => ImageResultEntry.FocusedStoredSector != null,
         "v5Current" => ImageResultEntry.FocusedCurrentSector != null,
-        "l95xxStored" => ImageResultEntry.FocusedStoredSector != null,
-        "l95xxCurrent" => ImageResultEntry.FocusedCurrentSector != null,
+        "l95Stored" => ImageResultEntry.FocusedStoredSector != null,
+        "l95Current" => ImageResultEntry.FocusedCurrentSector != null,
         _ => false,
     };
 
@@ -165,7 +165,7 @@ public partial class Sector : UserControl
                     App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshCurrentOverlay());
                 }
                 break;
-            case "l95xxStored":
+            case "l95Stored":
                 devices = ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.L95);
                 foreach (var device in devices)
                 {
@@ -176,7 +176,7 @@ public partial class Sector : UserControl
                     App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshStoredOverlay());
                 }
                 break;
-            case "l95xxCurrent":
+            case "l95Current":
                 devices = ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.L95);
                 foreach (var device in devices)
                 {

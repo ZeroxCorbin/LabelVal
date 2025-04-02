@@ -19,7 +19,7 @@ public class ImageRollsDatabase
         {
             Connection ??= new SQLiteConnection(File.Path);
 
-            Connection.CreateTable<ImageRollEntry>();
+            Connection.CreateTable<ImageRoll>();
             Connection.CreateTable<ImageEntry>();
         }
         catch (Exception e)
@@ -29,19 +29,19 @@ public class ImageRollsDatabase
     }
     public void Close() => Connection?.Close();
 
-    public int InsertOrReplaceImageRoll(ImageRollEntry rol) => Connection.InsertOrReplace(rol);
+    public int InsertOrReplaceImageRoll(ImageRoll rol) => Connection.InsertOrReplace(rol);
     public bool ExistsImageRoll(string uid)
     {
         try
         {
-            return Connection.Table<ImageRollEntry>().Where(v => v.UID == uid).Count() > 0;
+            return Connection.Table<ImageRoll>().Where(v => v.UID == uid).Count() > 0;
         }
         catch { return false; }
 
     }
-    public ImageRollEntry SelectImageRoll(string uid) => Connection.Table<ImageRollEntry>().Where(v => v.UID == uid).FirstOrDefault();
-    public List<ImageRollEntry> SelectAllImageRolls() => Connection.Query<ImageRollEntry>("select * from ImageRollEntry");
-    public bool DeleteImageRoll(string uid) => Connection.Delete<ImageRollEntry>(uid) > 0;
+    public ImageRoll SelectImageRoll(string uid) => Connection.Table<ImageRoll>().Where(v => v.UID == uid).FirstOrDefault();
+    public List<ImageRoll> SelectAllImageRolls() => Connection.Query<ImageRoll>("select * from ImageRollEntry");
+    public bool DeleteImageRoll(string uid) => Connection.Delete<ImageRoll>(uid) > 0;
 
     public int InsertOrReplaceImage(ImageEntry img) => Connection.InsertOrReplace(img);
     public bool ExistsImage(string rollUID, string imageUID) => Connection.Table<ImageEntry>().Where(v => v.UID == imageUID && v.RollUID == rollUID).Count() > 0;

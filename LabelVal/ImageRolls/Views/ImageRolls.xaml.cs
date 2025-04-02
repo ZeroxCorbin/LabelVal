@@ -1,14 +1,12 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.ImageRolls.ViewModels;
+﻿using LabelVal.ImageRolls.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace LabelVal.ImageRolls.Views;
 
 public partial class ImageRolls : UserControl
 {
-
     private ViewModels.ImageRolls _viewModel;
 
     public ImageRolls()
@@ -20,56 +18,46 @@ public partial class ImageRolls : UserControl
                 _viewModel = (ViewModels.ImageRolls)DataContext;
                 if (_viewModel == null)
                     return;
-                //App.Settings.SetValue(nameof(SelectedImageRoll), value);
-                var ir = App.Settings.GetValue< ViewModels.ImageRollEntry>("SelectedImageRoll");
 
-                    _viewModel.SelectedUserImageRoll = null;
-                    _viewModel.SelectedFixedImageRoll = null;
+                ImageRoll ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRolls.SelectedImageRoll));
 
-                    _viewModel.SelectedFixedImageRoll = ir != null ? _viewModel.FixedImageRolls.FirstOrDefault((e) => e.UID == ir.UID) : null;
-                    _viewModel.SelectedUserImageRoll = ir != null ? _viewModel.UserImageRolls.FirstOrDefault((e) => e.UID == ir.UID) : null;
+                _viewModel.SelectedUserImageRoll = null;
+                _viewModel.SelectedFixedImageRoll = null;
+
+                _viewModel.SelectedFixedImageRoll = ir != null ? _viewModel.FixedImageRolls.FirstOrDefault((e) => e.UID == ir.UID) : null;
+                _viewModel.SelectedUserImageRoll = ir != null ? _viewModel.UserImageRolls.FirstOrDefault((e) => e.UID == ir.UID) : null;
+
                 
             };
 
+        tabCtlUserIR.Loaded += (s, e) =>
+        {
+            if(_viewModel.SelectedUserImageRoll != null)
+            {
+                var item = tabCtlUserIR.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedUserImageRoll));
+                if(item != null)
+                {
+                    tabCtlUserIR.SelectedItem = item;
+                }
+            }
+        };
+
+        tabCtlFixedIR.Loaded += (s, e) =>
+        {
+            if (_viewModel.SelectedFixedImageRoll != null)
+            {
+                var item = tabCtlFixedIR.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedFixedImageRoll));
+                if (item != null)
+                {
+                    tabCtlFixedIR.SelectedItem = item;
+                }
+            }
+        };
     }
 
     private List<ListView> fixedLists = [];
     private List<ListView> userLists = [];
 
-    private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        TabControl par = Utilities.VisualTreeHelp.GetVisualParent<TabControl>(sender as ListView);
-        if (par == null)
-            return;
-
-        foreach (ListView l in fixedLists)
-        {
-            if (l == null)
-            {
-                _ = fixedLists.Remove(l);
-                continue;
-            }
-
-            if (l != sender)
-                l.SelectedItem = null;
-        }
-
-        if ((ViewModels.ImageRollEntry)((ListView)sender).SelectedItem != null)
-            foreach (ListView l in userLists)
-            {
-                if (l == null)
-                {
-                    _ = userLists.Remove(l);
-                    continue;
-                }
-
-                if (l != sender)
-                    l.SelectedItem = null;
-            }
-
-            //((ViewModels.ImageRolls)par.DataContext).SelectedFixedImageRoll = (ViewModels.ImageRollEntry)((ListView)sender).SelectedItem;
-
-    }
 
     private void ListView_Loaded(object sender, RoutedEventArgs e)
     {
@@ -85,40 +73,76 @@ public partial class ImageRolls : UserControl
         userLists.Add((ListView)sender);
     }
 
+    private bool userChanging = false;
     private void ListViewUser_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        TabControl par = Utilities.VisualTreeHelp.GetVisualParent<TabControl>(sender as ListView);
-        if (par == null)
+        if (userChanging)
             return;
 
-        foreach (ListView l in userLists)
+        if (sender is not ListView lst)
+            return;
+
+        if(lst.SelectedItem is not ViewModels.ImageRoll ir)
+            return;
+
+        if (Utilities.VisualTreeHelp.GetVisualParent<TabControl>(lst) is not TabControl tab)
+            return;
+
+        try
         {
-            if (l == null)
+            userChanging = true;
+            foreach (ListView l in userLists)
             {
-                _ = userLists.Remove(l);
-                continue;
-            }
-
-            if (l != sender)
-                l.SelectedItem = null;
-        }
-
-        if ((ViewModels.ImageRollEntry)((ListView)sender).SelectedItem != null)
-            foreach (ListView l in fixedLists)
-            {
-                if (l == null)
-                {
-                    _ = fixedLists.Remove(l);
-                    continue;
-                }
-
-                if (l != sender)
+                if (l != lst)
                     l.SelectedItem = null;
             }
+            foreach (ListView l in fixedLists)
+            {
+                if (l != lst)
+                    l.SelectedItem = null;
+            }
+            ((ViewModels.ImageRolls)tab.DataContext).SelectedUserImageRoll = ir;
+        }
+        finally
+        {
+            userChanging = false;
+        }
+    }
 
-        //if ((ViewModels.ImageRollEntry)((ListView)sender).SelectedItem != null)
-        //    ((ViewModels.ImageRolls)par.DataContext).SelectedUserImageRoll = (ViewModels.ImageRollEntry)((ListView)sender).SelectedItem;
+    private bool fixedChanging = false;
+    private void ListViewFixed_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (fixedChanging)
+            return;
 
+        if (sender is not ListView lst)
+            return;
+
+        if (lst.SelectedItem is not ViewModels.ImageRoll ir)
+            return;
+
+        if (Utilities.VisualTreeHelp.GetVisualParent<TabControl>(lst) is not TabControl tab)
+            return;
+
+        try
+        {
+            fixedChanging = true;
+            foreach (ListView l in userLists)
+            {
+                if (l != lst)
+                    l.SelectedItem = null;
+            }
+            foreach (ListView l in fixedLists)
+            {
+                if (l != lst)
+                    l.SelectedItem = null;
+            }
+            ((ViewModels.ImageRolls)tab.DataContext).SelectedFixedImageRoll = ir;
+        }
+        finally
+        {
+            fixedChanging = false;
+        }
     }
 
     private void btnOpenImageRollsLocation(object sender, RoutedEventArgs e) => System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()

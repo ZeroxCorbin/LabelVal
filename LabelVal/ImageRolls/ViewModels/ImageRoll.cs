@@ -47,7 +47,7 @@ public enum ImageRollSectorTypes
 }
 
 [JsonObject(MemberSerialization.OptIn)]
-public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
+public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
@@ -102,7 +102,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
     [ObservableProperty] private bool rightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
 
-    public ImageRollEntry()
+    public ImageRoll()
     {
         App.Settings.PropertyChanged += Settings_PropertyChanged;
         IsActive = true;
@@ -380,6 +380,6 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         _ = ImageRollsDatabase.InsertOrReplaceImage(image);
     }
 
-    public ImageRollEntry CopyLite() => JsonConvert.DeserializeObject<ImageRollEntry>(JsonConvert.SerializeObject(this));
+    public ImageRoll CopyLite() => JsonConvert.DeserializeObject<ImageRoll>(JsonConvert.SerializeObject(this));
 
 }

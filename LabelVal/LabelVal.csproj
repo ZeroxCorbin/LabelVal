@@ -32,8 +32,8 @@
 	<ItemGroup>
 		<Compile Remove="ImageRolls\Databases\StandardsDatabase.cs" />
 		<Compile Remove="ImageViewer3D\Processing\SobelEdgeDetection.cs" />
-		<Compile Remove="LVS-95xx\ViewModels\SerialPort.cs" />
-		<Compile Remove="LVS-95xx\Views\LVS95xx_SerialPortView.xaml.cs" />
+		<Compile Remove="L95\ViewModels\SerialPort.cs" />
+		<Compile Remove="L95\Views\LVS95xx_SerialPortView.xaml.cs" />
 		<Compile Remove="Main\Views\StatusMessageViewer.xaml.cs" />
 		<Compile Remove="Run\Controller.cs" />
 		<Compile Remove="Run\Databases\V2RunEntryDatabase.cs" />
@@ -208,8 +208,8 @@
 		<None Remove="Assets\Images\dpm.png" />
 		<None Remove="Assets\Images\iec.png" />
 		<None Remove="Assets\Images\iso.png" />
-		<None Remove="Assets\Images\l95xx-white-outline.ico" />
-		<None Remove="Assets\Images\l95xx-white-outline.xcf" />
+		<None Remove="Assets\Images\l95-white-outline.ico" />
+		<None Remove="Assets\Images\l95-white-outline.xcf" />
 		<None Remove="Assets\Images\v275-black-outline.ico" />
 		<None Remove="Assets\Images\v275-black-outline.xcf" />
 		<None Remove="Assets\Images\v275-white-outline.ico" />
@@ -223,7 +223,7 @@
 		<None Remove="parameters.csv" />
 	</ItemGroup>
 	<ItemGroup>
-		<Page Remove="LVS-95xx\Views\LVS95xx_SerialPortView.xaml" />
+		<Page Remove="L95\Views\LVS95xx_SerialPortView.xaml" />
 		<Page Remove="Main\Views\StatusMessageViewer.xaml" />
 		<Page Remove="Run\Views\RunControl.xaml" />
 	</ItemGroup>
@@ -700,8 +700,8 @@
 		<Content Include="Assets\Images\iso.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<Content Include="Assets\Images\l95xx-white-outline.ico">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<Content Include="Assets\Images\l95-white-outline.ico">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\v275-black-outline.ico">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>

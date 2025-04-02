@@ -259,8 +259,8 @@
             <Color x:Key="V5">#CC5500</Color>
             <SolidColorBrush x:Key="V5_Brush" Color="{StaticResource V5}" />
 
-            <Color x:Key="L95xx">#4F000B</Color>
-            <SolidColorBrush x:Key="L95xx_Brush" Color="{StaticResource L95xx}" />
+            <Color x:Key="L95">#4F000B</Color>
+            <SolidColorBrush x:Key="L95_Brush" Color="{StaticResource L95}" />
 
 
             <Color x:Key="Orange0">#4F000B</Color>

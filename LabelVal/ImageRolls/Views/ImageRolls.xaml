@@ -317,7 +317,7 @@
                 Loaded="ListView_Loaded"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 SelectedItem="{Binding DataContext.SelectedFixedImageRoll, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                SelectionChanged="ListView_SelectionChanged"
+                SelectionChanged="ListViewFixed_SelectionChanged"
                 Style="{StaticResource MahApps.Styles.ListView}">
 
                 <ListView.ItemContainerStyle>
@@ -338,7 +338,10 @@
                 Loaded="ListViewUser_Loaded"
                 SelectedItem="{Binding DataContext.SelectedUserImageRoll, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 SelectionChanged="ListViewUser_SelectionChanged"
-                Style="{StaticResource MahApps.Styles.ListView}">
+                Style="{StaticResource MahApps.Styles.ListView}"
+                VirtualizingPanel.IsVirtualizingWhenGrouping="False"
+                VirtualizingPanel.IsVirtualizing="False"
+                VirtualizingPanel.VirtualizationMode="Recycling">
 
                 <ListView.ItemContainerStyle>
                     <Style BasedOn="{StaticResource MahApps.Styles.ListViewItem}" TargetType="ListViewItem" />
@@ -789,6 +792,7 @@
                     </md:DrawerHost.TopDrawerContent>
 
                     <mah:MetroTabControl
+                        x:Name="tabCtlUserIR"
                         ItemContainerStyle="{StaticResource userImageRollICS}"
                         ItemTemplate="{StaticResource imageRollItemTemplate}"
                         ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=UserImageRolls}}"
@@ -885,6 +889,7 @@
                 <Border Style="{StaticResource groupBottom}" />
 
                 <mah:MetroTabControl
+                    x:Name="tabCtlFixedIR"
                     ItemContainerStyle="{StaticResource fixedImageRollICS}"
                     ItemTemplate="{StaticResource imageRollItemTemplate}"
                     ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=FixedImageRolls}}"

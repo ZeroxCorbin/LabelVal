@@ -3,7 +3,7 @@ using BarcodeVerification.lib.Extensions;
 using LabelVal.Sectors.Classes;
 using Newtonsoft.Json.Linq;
 
-namespace LabelVal.LVS_95xx.Sectors
+namespace LabelVal.L95.Sectors
 {
     public class SectorTemplate : ISectorTemplate
     {

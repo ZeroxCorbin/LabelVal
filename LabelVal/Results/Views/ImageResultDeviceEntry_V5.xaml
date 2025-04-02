@@ -363,12 +363,19 @@
 
                     <DockPanel>
 
+                        <iconPacks:PackIconMaterial
+                            Width="12"
+                            Margin="3"
+                            VerticalAlignment="Top"
+                            Kind="StoreOutline" />
+
                         <!--  Title  -->
                         <md:Card
-                            Margin="3"
+                            Margin="0,3"
                             Padding="4,1"
                             HorizontalAlignment="Left"
                             Background="{DynamicResource V5_Brush}">
+
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Image" />
                         </md:Card>
 
@@ -422,9 +429,14 @@
                     <StackPanel>
                         <DockPanel>
 
+                            <iconPacks:PackIconMaterial
+                            Width="12"
+                            Margin="3"
+                            VerticalAlignment="Top"
+                            Kind="StoreOutline" />
                             <!--  Title  -->
                             <md:Card
-                                Margin="3"
+                                Margin="0,3"
                                 Padding="4,1"
                                 HorizontalAlignment="Left"
                                 Background="{DynamicResource V5_Brush}">
@@ -856,7 +868,7 @@
                                                     <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="100">
                                                         <Setter Property="MaxWidth" Value="200" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.DualSectorColumns}" Value="True">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                     </DataTrigger>
                                                 </Style.Triggers>

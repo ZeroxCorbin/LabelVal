@@ -26,7 +26,7 @@ public partial class Controller : ObservableObject
     public RunEntry RunEntry { get; private set; }
     private string RunUID => RunEntry.UID;
 
-    public ImageRollEntry ImageRollEntry { get; private set; }
+    public ImageRoll ImageRollEntry { get; private set; }
 
     [ObservableProperty] private Node v275;
     partial void OnV275Changed(Node value)
@@ -59,7 +59,7 @@ public partial class Controller : ObservableObject
     public int CurrentLoopCount { get; private set; }
     public int CurrentLabelCount { get; private set; }
 
-    public bool StartAsync(ObservableCollection<Results.ViewModels.ImageResultEntry> imageResultEntries, ImageRollEntry imageRollEntry,
+    public bool StartAsync(ObservableCollection<Results.ViewModels.ImageResultEntry> imageResultEntries, ImageRoll imageRollEntry,
         Node v275,
         V5_REST_Lib.Controllers.Controller v5,
         Lvs95xx.lib.Core.Controllers.Controller l95,
@@ -198,8 +198,8 @@ public partial class Controller : ObservableObject
                     //if (HasV5 && ire.V5StoredSectors.Count == 0)
                     //    Logger.LogInfo("Run: V5, No sectors to process.");
 
-                    //UseL95 = HasL95 && ire.L95xxStoredSectors.Count > 0;
-                    //if (HasL95 && ire.L95xxStoredSectors.Count == 0)
+                    //UseL95 = HasL95 && ire.L95StoredSectors.Count > 0;
+                    //if (HasL95 && ire.L95StoredSectors.Count == 0)
                     //    Logger.LogInfo("Run: Lvs95xx, No sectors to process.");
 
                     if (!UseV275 && !UseV5 && !UseL95)

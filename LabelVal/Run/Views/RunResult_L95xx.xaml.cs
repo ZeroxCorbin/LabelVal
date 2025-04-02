@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 
 namespace LabelVal.Run.Views;
 /// <summary>
-/// Interaction logic for RunResult_L95xx.xaml
+/// Interaction logic for RunResult_L95.xaml
 /// </summary>
-public partial class RunResult_L95xx : UserControl
+public partial class RunResult_L95 : UserControl
 {
-    public RunResult_L95xx()
+    public RunResult_L95()
     {
         InitializeComponent();
     }

@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.LVS_95xx.Sectors;
+using LabelVal.L95.Sectors;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Extensions;
@@ -61,7 +61,7 @@ public partial class ImageResultDeviceEntry_L95
 
     ////95xx Only
     //[ObservableProperty] private Sectors.Interfaces.ISector currentSectorSelected;
-    public LabelHandlers Handler => ImageResultsManager?.SelectedL95?.Controller != null && ImageResultsManager.SelectedL95.Controller.IsConnected ? ImageResultsManager.SelectedL95.Controller.IsSimulator
+    public LabelHandlers Handler => ImageResultsManager?.SelectedL95?.Controller != null && ImageResultsManager.SelectedL95.Controller.IsConnected && ImageResultsManager.SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running ? ImageResultsManager.SelectedL95.Controller.IsSimulator
             ? ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
@@ -162,7 +162,7 @@ public partial class ImageResultDeviceEntry_L95
         //Save the list to the database.
         List<FullReport> temp = [];
         foreach (Sectors.Interfaces.ISector sector in CurrentSectors)
-            temp.Add(new FullReport(((LVS_95xx.Sectors.Sector)sector).Template.Original, ((LVS_95xx.Sectors.Sector)sector).Report.Original));
+            temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
 
         JObject report= new()
         {
@@ -187,10 +187,10 @@ public partial class ImageResultDeviceEntry_L95
         GetStored();
         ClearCurrent();
 
-        //        else if (device == ImageResultEntryDevices.L95xx)
+        //        else if (device == ImageResultEntryDevices.L95)
         //{
 
-        //    if (L95xxCurrentSectorSelected == null)
+        //    if (L95CurrentSectorSelected == null)
         //    {
         //        Logger.LogError("No sector selected to store.");
         //        return;
@@ -198,7 +198,7 @@ public partial class ImageResultDeviceEntry_L95
         //    //Does the selected sector exist in the Stored sectors list?
         //    //If so, prompt to overwrite or cancel.
 
-        //    Sectors.Interfaces.ISector old = L95xxStoredSectors.FirstOrDefault(x => x.Template.Name == L95xxCurrentSectorSelected.Template.Name);
+        //    Sectors.Interfaces.ISector old = L95StoredSectors.FirstOrDefault(x => x.Template.Name == L95CurrentSectorSelected.Template.Name);
         //    if (old != null)
         //    {
         //        if (await OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
@@ -207,29 +207,29 @@ public partial class ImageResultDeviceEntry_L95
 
         //    //Save the list to the database.
         //    List<FullReport> temp = [];
-        //    if (L95xxResultRow != null)
-        //        temp = L95xxResultRow._AllSectors;
+        //    if (L95ResultRow != null)
+        //        temp = L95ResultRow._AllSectors;
 
-        //    temp.Add(new FullReport(((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).Template.Original, ((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).Report.Original));
+        //    temp.Add(new FullReport(((L95.Sectors.Sector)L95CurrentSectorSelected).Template.Original, ((L95.Sectors.Sector)L95CurrentSectorSelected).Report.Original));
 
-        //    _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
+        //    _ = SelectedDatabase.InsertOrReplace_L95Result(new Databases.L95Result
         //    {
         //        ImageRollUID = ImageRollUID,
         //        RunUID = ImageRollUID,
         //        Source = SourceImage,
-        //        Stored = L95xxCurrentImage,
+        //        Stored = L95CurrentImage,
 
         //        _AllSectors = temp,
         //    });
 
         //    ClearRead(device);
 
-        //    L95xxGetStored();
+        //    L95GetStored();
         //}
-        //else if (device == ImageResultEntryDevices.L95xxAll)
+        //else if (device == ImageResultEntryDevices.L95All)
         //{
 
-        //    if (L95xxCurrentSectors.Count == 0)
+        //    if (L95CurrentSectors.Count == 0)
         //    {
         //        Logger.LogDebug($"There are no sectors to store for: {device}");
         //        return;
@@ -237,30 +237,30 @@ public partial class ImageResultDeviceEntry_L95
         //    //Does the selected sector exist in the Stored sectors list?
         //    //If so, prompt to overwrite or cancel.
 
-        //    if (L95xxStoredSectors.Count > 0)
+        //    if (L95StoredSectors.Count > 0)
         //        if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
         //            return;
 
         //    //Save the list to the database.
         //    List<FullReport> temp = [];
-        //    foreach (Sectors.Interfaces.ISector sector in L95xxCurrentSectors)
+        //    foreach (Sectors.Interfaces.ISector sector in L95CurrentSectors)
 
-        //        temp.Add(new FullReport(((LVS_95xx.Sectors.Sector)sector).Template.Original, ((LVS_95xx.Sectors.Sector)sector).Report.Original));
+        //        temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
 
 
-        //    _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
+        //    _ = SelectedDatabase.InsertOrReplace_L95Result(new Databases.L95Result
         //    {
         //        ImageRollUID = ImageRollUID,
         //        RunUID = ImageRollUID,
         //        Source = SourceImage,
-        //        Stored = L95xxCurrentImage,
+        //        Stored = L95CurrentImage,
 
         //        _AllSectors = temp,
         //    });
 
         //    ClearRead(device);
 
-        //    L95xxGetStored();
+        //    L95GetStored();
         //}
     }
 

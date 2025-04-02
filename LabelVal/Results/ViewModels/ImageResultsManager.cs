@@ -1,10 +1,11 @@
-﻿using BarcodeVerification.lib.Extensions;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.LVS_95xx.ViewModels;
+using LabelVal.L95.ViewModels;
 using LabelVal.Main.ViewModels;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Extensions;
@@ -26,7 +27,7 @@ namespace LabelVal.Results.ViewModels;
 /// This is the ViewModel for the Image Results Manager.
 /// </summary>
 public partial class ImageResultsManager : ObservableRecipient,
-    IRecipient<PropertyChangedMessage<ImageRollEntry>>,
+    IRecipient<PropertyChangedMessage<ImageRoll>>,
     IRecipient<PropertyChangedMessage<Node>>,
     IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>,
     IRecipient<PropertyChangedMessage<Scanner>>,
@@ -53,8 +54,8 @@ public partial class ImageResultsManager : ObservableRecipient,
     partial void OnHideErrorsWarningsChanged(bool value) => App.Settings.SetValue(nameof(HideErrorsWarnings), value);
 
     /// <see cref="SelectedImageRoll"/>
-    [ObservableProperty] private ImageRollEntry selectedImageRoll;
-    partial void OnSelectedImageRollChanged(ImageRollEntry oldValue, ImageRollEntry newValue)
+    [ObservableProperty] private ImageRoll selectedImageRoll;
+    partial void OnSelectedImageRollChanged(ImageRoll oldValue, ImageRoll newValue)
     {
         if (oldValue != null)
         {
@@ -64,16 +65,16 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         if (newValue != null)
         {
-            _ = LoadImageResultsList();
+            _ = LoadImageResultsEntries();
         }
         else
-            Application.Current.Dispatcher.Invoke(() => ImageResultsList.Clear());
+            Application.Current.Dispatcher.Invoke(() => ImageResultsEntries.Clear());
     }
 
     /// <see cref="SelectedDatabase"/>
     [ObservableProperty] private Databases.ImageResultsDatabase selectedDatabase;
 
-    public ObservableCollection<ImageResultEntry> ImageResultsList { get; } = [];
+    public ObservableCollection<ImageResultEntry> ImageResultsEntries { get; } = [];
 
     /// <see cref="FocusedTemplate"/>
     [ObservableProperty] private JObject focusedTemplate;
@@ -93,30 +94,69 @@ public partial class ImageResultsManager : ObservableRecipient,
     /// <see cref="IsV275Selected"/>
     [ObservableProperty] private bool isV275Selected;
     partial void OnIsV275SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.V275); }
-    
+    public LabelHandlers V275Handler => SelectedV275Node?.Controller != null && SelectedV275Node.Controller.IsLoggedIn_Control
+        ? SelectedV275Node.Controller.IsSimulator
+            ? LabelHandlers.SimulatorTrigger
+            : SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+                 ? LabelHandlers.CameraDetect
+                 : LabelHandlers.CameraTrigger
+        : LabelHandlers.Offline;
+
     /// <see cref="IsV5Selected"/>
     [ObservableProperty] private bool isV5Selected;
     partial void OnIsV5SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.V5); }
-    
-    /// <see cref="IsL95xxSelected"/>
-    [ObservableProperty] private bool isL95xxSelected;
-    partial void OnIsL95xxSelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.L95); }
+    public LabelHandlers V5Handler => SelectedV5?.Controller != null && SelectedV5.Controller.IsConnected
+        ? SelectedV5.Controller.IsSimulator
+            ? LabelHandlers.SimulatorTrigger
+            : SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+                 ? LabelHandlers.CameraDetect
+                 : LabelHandlers.CameraTrigger
+        : LabelHandlers.Offline;
 
+    /// <see cref="IsL95Selected"/>
+    [ObservableProperty] private bool isL95Selected;
+    partial void OnIsL95SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.L95); }
 
-    private bool reseting;
+    public LabelHandlers L95Handler => SelectedL95?.Controller != null && SelectedL95.Controller.IsConnected && SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running
+        ? SelectedL95.Controller.IsSimulator
+            ? LabelHandlers.SimulatorTrigger
+            : SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+                 ? LabelHandlers.CameraDetect
+                 : LabelHandlers.CameraTrigger
+        : LabelHandlers.Offline;
+
+    public void HandlerUpdate()
+    {
+        OnPropertyChanged(nameof(V275Handler));
+        OnPropertyChanged(nameof(V5Handler));
+        OnPropertyChanged(nameof(L95Handler));
+    }
+
     public void ResetSelected(ImageResultEntryDevices device)
     {
-        foreach (ImageResultEntry lab in ImageResultsList)
+        foreach (ImageResultEntry lab in ImageResultsEntries)
         {
             IImageResultDeviceEntry dev = lab.ImageResultDeviceEntries.FirstOrDefault(d => d.Device == device);
             if (dev != null)
                 dev.IsSelected = false; ;
         }
+        switch (device)
+        {
+            case ImageResultEntryDevices.V275:
+                IsV275Selected = false;
+                break;
+            case ImageResultEntryDevices.V5:
+                IsV5Selected = false;
+                break;
+            case ImageResultEntryDevices.L95:
+                IsL95Selected = false;
+                break;
+        }
     }
 
     public ImageResultsManager()
     {
-        WeakReferenceMessenger.Default.Register<RequestMessage<ImageRollEntry>>(
+        WeakReferenceMessenger.Default.Register<RequestMessage<ImageRoll>>(
         this,
         (recipient, message) => message.Reply(SelectedImageRoll));
 
@@ -132,7 +172,7 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         RequestMessage<PrinterSettings> ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
         if (ret2.HasReceivedResponse)
-            Receive(new PropertyChangedMessage<PrinterSettings>("", "" , null, ret2.Response));
+            Receive(new PropertyChangedMessage<PrinterSettings>("", "", null, ret2.Response));
 
         //RequestMessage<ImageRollEntry> ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRollEntry>());
         //if (ret3.HasReceivedResponse)
@@ -152,12 +192,12 @@ public partial class ImageResultsManager : ObservableRecipient,
 
     }
 
-    public async Task LoadImageResultsList()
+    public async Task LoadImageResultsEntries()
     {
         if (SelectedImageRoll == null)
             return;
 
-        System.Windows.Threading.DispatcherOperation clrTsk = Application.Current.Dispatcher.BeginInvoke(() => ImageResultsList.Clear());
+        System.Windows.Threading.DispatcherOperation clrTsk = Application.Current.Dispatcher.BeginInvoke(() => ImageResultsEntries.Clear());
 
         if (SelectedImageRoll.Images.Count == 0)
             await SelectedImageRoll.LoadImages();
@@ -188,17 +228,28 @@ public partial class ImageResultsManager : ObservableRecipient,
     {
         ImageResultEntry tmp = new(img, this);
 
-        //if (img.NewData is V5_REST_Lib.Controllers.FullReport v5)
-        //    tmp.ProcessFullReport(v5);
+        if (img.NewData is V5_REST_Lib.Controllers.FullReport v5)
+        {
+            if (tmp.ImageResultDeviceEntries.FirstOrDefault((e) => e.Device == ImageResultEntryDevices.V5) is ImageResultDeviceEntry_V5 ird)
+            {
+                ird.ProcessFullReport(v5);
+            }
+        }
 
-        //else if (img.NewData is FullReport l95)
-        //    tmp.L95xxProcessResults(l95, false);
 
-        ImageResultsList.Add(tmp);
+        else if (img.NewData is FullReport l95)
+        {
+            if (tmp.ImageResultDeviceEntries.FirstOrDefault((e) => e.Device == ImageResultEntryDevices.L95) is ImageResultDeviceEntry_L95 ird)
+            {
+                ird.ProcessFullReport(l95, true);
+            }
+        }
+
+        ImageResultsEntries.Add(tmp);
     }
     private void RemoveImageResultEntry(ImageEntry img)
     {
-        ImageResultEntry itm = ImageResultsList.FirstOrDefault(ir => ir.SourceImage == img);
+        ImageResultEntry itm = ImageResultsEntries.FirstOrDefault(ir => ir.SourceImage == img);
         if (itm != null)
         {
             if (!SelectedImageRoll.ImageRollsDatabase.DeleteImage(SelectedImageRoll.UID, img.UID))
@@ -206,12 +257,12 @@ public partial class ImageResultsManager : ObservableRecipient,
                 Logger.LogError("Could not delete image from database.");
                 return;
             }
-            _ = ImageResultsList.Remove(itm);
+            _ = ImageResultsEntries.Remove(itm);
         }
 
         // Reorder the remaining items in the list
         var order = 1;
-        foreach (ImageResultEntry item in ImageResultsList.OrderBy(item => item.SourceImage.Order))
+        foreach (ImageResultEntry item in ImageResultsEntries.OrderBy(item => item.SourceImage.Order))
         {
             item.SourceImage.Order = order++;
             SelectedImageRoll.SaveImage(item.SourceImage);
@@ -226,7 +277,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     [RelayCommand] private void MoveImageTop(ImageResultEntry imageResult) => ChangeOrderTo(imageResult, 1);
     [RelayCommand] private void MoveImageUp(ImageResultEntry imageResult) => AdjustOrderForMove(imageResult, false);
     [RelayCommand] private void MoveImageDown(ImageResultEntry imageResult) => AdjustOrderForMove(imageResult, true);
-    [RelayCommand] private void MoveImageBottom(ImageResultEntry imageResult) => ChangeOrderTo(imageResult, ImageResultsList.Count);
+    [RelayCommand] private void MoveImageBottom(ImageResultEntry imageResult) => ChangeOrderTo(imageResult, ImageResultsEntries.Count);
 
     [RelayCommand]
     private async Task AddV5Image()
@@ -271,13 +322,13 @@ public partial class ImageResultsManager : ObservableRecipient,
     {
         List<ImageResultEntry> newImages = PromptForNewImages(); // Prompt the user to select multiple images
         if (newImages != null && newImages.Count != 0)
-            InsertImageAtOrder(newImages, ImageResultsList.Count + 1);
+            InsertImageAtOrder(newImages, ImageResultsEntries.Count + 1);
     }
 
     [RelayCommand]
     private void StoreAllCurrentResults()
     {
-        foreach (ImageResultEntry img in ImageResultsList)
+        foreach (ImageResultEntry img in ImageResultsEntries)
         {
             img.StoreCommand.Execute(ImageResultEntryDevices.V275);
             img.StoreCommand.Execute(ImageResultEntryDevices.V5);
@@ -288,7 +339,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     [RelayCommand]
     private void ClearAllCurrentResults()
     {
-        foreach (ImageResultEntry img in ImageResultsList)
+        foreach (ImageResultEntry img in ImageResultsEntries)
         {
             img.ClearCurrentCommand.Execute(ImageResultEntryDevices.V275);
             img.ClearCurrentCommand.Execute(ImageResultEntryDevices.V5);
@@ -300,7 +351,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     private void CopyAllSectorsToClipboard()
     {
         var data = "";
-        IOrderedEnumerable<ImageResultEntry> sorted = ImageResultsList.OrderBy(i => i.SourceImage.Order);
+        IOrderedEnumerable<ImageResultEntry> sorted = ImageResultsEntries.OrderBy(i => i.SourceImage.Order);
         foreach (ImageResultEntry img in sorted)
         {
             foreach (IImageResultDeviceEntry device in img.ImageResultDeviceEntries)
@@ -326,7 +377,7 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         return res;
     }
-    private void L95xxProcess(FullReport message)
+    private void L95Process(FullReport message)
     {
         if (message == null || message.Report == null)
             return;
@@ -344,13 +395,13 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         SelectedImageRoll.AddImage(imagEntry);
 
-        //L95xxCurrentSectors.Add(new Sector(message, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
-        //List<ISector> secs = L95xxCurrentSectors.ToList();
+        //L95CurrentSectors.Add(new Sector(message, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+        //List<ISector> secs = L95CurrentSectors.ToList();
         //SortList(secs);
-        //SortObservableCollectionByList(secs, L95xxCurrentSectors);
+        //SortObservableCollectionByList(secs, L95CurrentSectors);
 
-        //L95xxCurrentImage = new ImageEntry(ImageRollUID, message.Report.Thumbnail, 600);
-        //UpdateL95xxCurrentImageOverlay();
+        //L95CurrentImage = new ImageEntry(ImageRollUID, message.Report.Thumbnail, 600);
+        //UpdateL95CurrentImageOverlay();
         //V5CurrentTemplate = config;
         //V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(triggerResults.ReportJSON);
 
@@ -438,7 +489,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     public void IncreaseOrder(ImageResultEntry itemToMove)
     {
         var currentItemOrder = itemToMove.SourceImage.Order;
-        ImageResultEntry nextItem = ImageResultsList.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder + 1);
+        ImageResultEntry nextItem = ImageResultsEntries.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder + 1);
         if (nextItem != null)
         {
             // Swap the order values
@@ -452,7 +503,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     public void DecreaseOrder(ImageResultEntry itemToMove)
     {
         var currentItemOrder = itemToMove.SourceImage.Order;
-        ImageResultEntry previousItem = ImageResultsList.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder - 1);
+        ImageResultEntry previousItem = ImageResultsEntries.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder - 1);
         if (previousItem != null)
         {
             // Swap the order values
@@ -476,7 +527,7 @@ public partial class ImageResultsManager : ObservableRecipient,
         if (newOrder > originalOrder)
         {
             // Moving down in the list
-            foreach (ImageResultEntry item in ImageResultsList.Where(item => item.SourceImage.Order > originalOrder && item.SourceImage.Order <= newOrder))
+            foreach (ImageResultEntry item in ImageResultsEntries.Where(item => item.SourceImage.Order > originalOrder && item.SourceImage.Order <= newOrder))
             {
                 item.SourceImage.Order--;
                 SelectedImageRoll.SaveImage(item.SourceImage);
@@ -485,7 +536,7 @@ public partial class ImageResultsManager : ObservableRecipient,
         else
         {
             // Moving up in the list
-            foreach (ImageResultEntry item in ImageResultsList.Where(item => item.SourceImage.Order < originalOrder && item.SourceImage.Order >= newOrder))
+            foreach (ImageResultEntry item in ImageResultsEntries.Where(item => item.SourceImage.Order < originalOrder && item.SourceImage.Order >= newOrder))
             {
                 item.SourceImage.Order++;
                 SelectedImageRoll.SaveImage(item.SourceImage);
@@ -528,7 +579,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     }
     private void AdjustOrdersBeforeInsert(int targetOrder)
     {
-        foreach (ImageResultEntry item in ImageResultsList)
+        foreach (ImageResultEntry item in ImageResultsEntries)
         {
             if (item.SourceImage.Order >= targetOrder)
             {
@@ -540,7 +591,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     }
     private void AdjustOrdersBeforeInsert(int targetOrder, int numberOfNewItems)
     {
-        foreach (ImageResultEntry item in ImageResultsList)
+        foreach (ImageResultEntry item in ImageResultsEntries)
         {
             if (item.SourceImage.Order >= targetOrder)
             {
@@ -557,14 +608,14 @@ public partial class ImageResultsManager : ObservableRecipient,
             if (await OkCancelDialog("Missing Stored Sectors", "There are images that do not have stored sectors. Are you sure you want to continue?") == MessageDialogResult.Negative)
                 return;
 
-        //_ = RunViewModel.RunController.Init(ImageResultsList, LoopCount, SelectedDatabase, SelectedV275Node);
+        //_ = RunViewModel.RunController.Init(ImageResultsEntries, LoopCount, SelectedDatabase, SelectedV275Node);
 
         //RunViewModel.StartRunRequest();
     }
 
     private bool StartRunCheck()
     {
-        foreach (ImageResultEntry lab in ImageResultsList)
+        foreach (ImageResultEntry lab in ImageResultsEntries)
             foreach (IImageResultDeviceEntry device in lab.ImageResultDeviceEntries)
                 if (device.StoredSectors.Count == 0)
                     return false;
@@ -578,11 +629,11 @@ public partial class ImageResultsManager : ObservableRecipient,
     /// Attach to the PropertyChanged event of the new ImageRoll.
     /// </summary>
     /// <param name="message"></param>
-    public void Receive(PropertyChangedMessage<ImageRollEntry> message)
+    public void Receive(PropertyChangedMessage<ImageRoll> message)
     {
-        if(SelectedImageRoll != null)
+        if (SelectedImageRoll != null)
             SelectedImageRoll.PropertyChanged -= SelectedImageRoll_PropertyChanged;
-        
+
         SelectedImageRoll = message.NewValue;
 
         if (SelectedImageRoll != null)
@@ -593,8 +644,8 @@ public partial class ImageResultsManager : ObservableRecipient,
     /// </summary>
     private void SelectedImageRoll_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(ImageRollEntry.SectorType))
-            foreach (ImageResultEntry lab in ImageResultsList)
+        if (e.PropertyName is nameof(ImageRoll.SectorType))
+            foreach (ImageResultEntry lab in ImageResultsEntries)
                 lab.HandlerUpdate(ImageResultEntryDevices.All);
     }
 
@@ -616,7 +667,7 @@ public partial class ImageResultsManager : ObservableRecipient,
         if (SelectedV275Node != null && SelectedV275Node.Controller != null)
             SelectedV275Node.Controller.PropertyChanged += V275Controller_PropertyChanged;
 
-        foreach (ImageResultEntry lab in ImageResultsList)
+        foreach (ImageResultEntry lab in ImageResultsEntries)
             lab.HandlerUpdate(ImageResultEntryDevices.V275);
     }
     /// <summary>
@@ -625,7 +676,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     private void V275Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(Node.Controller.IsSimulator) or nameof(Node.Controller.IsLoggedIn_Control))
-            foreach (ImageResultEntry lab in ImageResultsList)
+            foreach (ImageResultEntry lab in ImageResultsEntries)
                 lab.HandlerUpdate(ImageResultEntryDevices.V275);
     }
 
@@ -639,14 +690,14 @@ public partial class ImageResultsManager : ObservableRecipient,
         if (SelectedV5 != null && SelectedV5.Controller != null)
             SelectedV5.Controller.PropertyChanged += V5Controller_PropertyChanged;
 
-        foreach (ImageResultEntry lab in ImageResultsList)
+        foreach (ImageResultEntry lab in ImageResultsEntries)
             lab.HandlerUpdate(ImageResultEntryDevices.V5);
 
     }
     private void V5Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(V5_REST_Lib.Controllers.Controller.IsSimulator) or nameof(V5_REST_Lib.Controllers.Controller.IsConnected))
-            foreach (ImageResultEntry lab in ImageResultsList)
+            foreach (ImageResultEntry lab in ImageResultsEntries)
                 lab.HandlerUpdate(ImageResultEntryDevices.V5);
     }
 
@@ -660,20 +711,20 @@ public partial class ImageResultsManager : ObservableRecipient,
         if (SelectedL95 != null && SelectedL95.Controller != null)
             SelectedL95.Controller.PropertyChanged += L95Controller_PropertyChanged;
 
-        foreach (ImageResultEntry lab in ImageResultsList)
+        foreach (ImageResultEntry lab in ImageResultsEntries)
             lab.HandlerUpdate(ImageResultEntryDevices.L95);
     }
     private void L95Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(Lvs95xx.lib.Core.Controllers.Controller.IsSimulator) or nameof(Lvs95xx.lib.Core.Controllers.Controller.IsConnected))
-            foreach (ImageResultEntry lab in ImageResultsList)
+        if (e.PropertyName is nameof(Lvs95xx.lib.Core.Controllers.Controller.IsSimulator) or nameof(Lvs95xx.lib.Core.Controllers.Controller.IsConnected) or nameof(Lvs95xx.lib.Core.Controllers.Controller.ProcessState))
+            foreach (ImageResultEntry lab in ImageResultsEntries)
                 lab.HandlerUpdate(ImageResultEntryDevices.L95);
     }
 
     public void Receive(PropertyChangedMessage<FullReport> message)
     {
-        if (IsL95xxSelected)
-            _ = App.Current.Dispatcher.BeginInvoke(() => L95xxProcess(message.NewValue));
+        if (IsL95Selected)
+            _ = App.Current.Dispatcher.BeginInvoke(() => L95Process(message.NewValue));
     }
     #endregion
 

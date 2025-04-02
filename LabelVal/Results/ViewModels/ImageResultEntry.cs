@@ -158,8 +158,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             //        ? V5StoredImage.ImageBytes
             //        : type == ImageResultEntryImageTypes.V5Current
             //        ? V5CurrentImage.ImageBytes
-            //        : type == ImageResultEntryImageTypes.L95xxStored
-            //        ? L95xxStoredImage.ImageBytes
+            //        : type == ImageResultEntryImageTypes.L95Stored
+            //        ? L95StoredImage.ImageBytes
             //        : type == ImageResultEntryImageTypes.Source
             //        ? SourceImage.ImageBytes : null;
 
@@ -224,18 +224,18 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         }
         dev.ClearCurrent();
 
-        //else if (device == ImageResultEntryDevices.L95xx)
+        //else if (device == ImageResultEntryDevices.L95)
         //{
-        //    //No CurrentReport for L95xx
-        //    //No template used for L95xx
+        //    //No CurrentReport for L95
+        //    //No template used for L95
 
-        //    _ = L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
-        //    L95xxDiffSectors.Clear();
+        //    _ = L95CurrentSectors.Remove(L95CurrentSectorSelected);
+        //    L95DiffSectors.Clear();
 
-        //    if (L95xxCurrentSectors.Count == 0)
+        //    if (L95CurrentSectors.Count == 0)
         //    {
-        //        L95xxCurrentImage = null;
-        //        L95xxCurrentImageOverlay = null;
+        //        L95CurrentImage = null;
+        //        L95CurrentImageOverlay = null;
         //    }
         //}
     }
@@ -257,6 +257,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             }
             dev.HandlerUpdate();
         }
+        
+        ImageResultsManager.HandlerUpdate();
     }
 
     //[RelayCommand] private void RedoFiducial() => ImageUtilities.lib.Core.ImageUtilities.RedrawFiducial(SourceImage.Path, false);
