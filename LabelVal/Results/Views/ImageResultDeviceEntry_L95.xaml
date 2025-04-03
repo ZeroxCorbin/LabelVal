@@ -634,9 +634,13 @@
                 <Style TargetType="{x:Type ContentControl}">
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ImageResultEntry.ShowDetails}" Value="True" />
+                                <Condition Binding="{Binding ResultRow, Converter={StaticResource IsNotNull}}" Value="true" />
+                            </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </ContentControl.Style>
@@ -999,9 +1003,13 @@
                 <Style TargetType="{x:Type ContentControl}">
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding CurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ImageResultEntry.ShowDetails}" Value="True" />
+                                <Condition Binding="{Binding Path=DataContext.CurrentImage, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource IsNotNull}}" Value="True" />
+                            </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </ContentControl.Style>

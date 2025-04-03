@@ -155,7 +155,21 @@
         </DockPanel>
 
         <!--  Details  -->
-        <ContentControl Content="{Binding SourceImage}" ContentTemplate="{StaticResource imageDetailsTemplate}" />
+        <ContentControl Content="{Binding SourceImage}" ContentTemplate="{StaticResource imageDetailsTemplate}" >
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ShowDetails}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
 
     </DockPanel>
 </UserControl>

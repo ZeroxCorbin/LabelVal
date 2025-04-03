@@ -280,7 +280,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
 
     }
 
-    private void btnCopySectorsCsvToClipboard_Click(object sender, RoutedEventArgs e)
+    private void btnCopyToClipboard_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.Tag is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
         {
@@ -289,18 +289,21 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
         }
         else if (sender is Button btn2 && btn2.Tag is ImageEntry image)
         {
-            ImageToClipboard(image.ImageBytes);
+            ImageToClipboard(image);
         }
     }
 
-    private void ImageToClipboard(byte[] imageBytes)
+    private void ImageToClipboard(ImageEntry ie)
     {
-        using var img = new ImageMagick.MagickImage(imageBytes);
+
         //If the shift key is pressed, copy the image as Bitmap.
-        if (!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
-            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img.ToByteArray(ImageMagick.MagickFormat.Bmp3)));
+        if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
+            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(ie.ImageBytes));
         else
-            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img.ToByteArray(ImageMagick.MagickFormat.Png)));
+        {
+ Clipboard.SetImage(ie.Image);
+        }
+           
     }
 
     private void lstDissimilarSector_Click(object sender, MouseButtonEventArgs e)

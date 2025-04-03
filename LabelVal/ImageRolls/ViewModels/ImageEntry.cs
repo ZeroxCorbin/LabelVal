@@ -5,6 +5,7 @@ using SQLite;
 using System.Drawing.Printing;
 using System.IO;
 using System.Security.Cryptography;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace LabelVal.ImageRolls.ViewModels;
@@ -52,8 +53,8 @@ public partial class ImageEntry : ObservableObject
         {
             OriginalImage = value;
 
-            Image = ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(OriginalImage);
-            ImageLow = ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(OriginalImage, 400);
+            Image = ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(OriginalImage, asPng: true);
+            ImageLow = ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(OriginalImage, asPng: true, decodePixelWidth: 400);
         }
     }
 
@@ -68,10 +69,12 @@ public partial class ImageEntry : ObservableObject
 
     [ObservableProperty] double imageDpiX;
     [ObservableProperty] double imageDpiY;
-    [JsonProperty] public double ImageWidth { get; set; }
-    [JsonProperty] public double ImageHeight { get; set; }
-    [JsonProperty] public long ImageTotalPixels { get; set; }
-    public int ImageBitDepth => Image.Format.BitsPerPixel;
+    [JsonProperty] public double ImageWidth => Math.Round(Image.PixelWidth / Image.DpiX, 2);
+    [JsonProperty] public double ImageHeight => Math.Round(Image.PixelHeight / Image.DpiY, 2);
+    [JsonProperty] public long ImageTotalPixels => Image.PixelWidth * Image.PixelHeight;
+    [JsonProperty] public int ImageBitDepth => Image.Format.BitsPerPixel;
+    [JsonProperty] public int ImagePixelWidth => Image.PixelWidth;
+    [JsonProperty] public PixelFormat ImagePixeFormat => Image.Format;
 
     [ObservableProperty][property: SQLite.Ignore] private double v52ImageTotalPixelDeviation;
 
@@ -104,10 +107,6 @@ public partial class ImageEntry : ObservableObject
         var cmt = Path.Replace(System.IO.Path.GetExtension(Path), ".txt");
         if (File.Exists(cmt))
             Comment = File.ReadAllText(cmt);
-
-        ImageWidth = Math.Round(Image.PixelWidth / Image.DpiX, 2);
-        ImageHeight = Math.Round(Image.PixelHeight / Image.DpiY, 2);
-        ImageTotalPixels = Image.PixelWidth * Image.PixelHeight;
     }
 
     public ImageEntry(string rollUID, byte[] image, int imageDpi = 0, string comment = null)
@@ -127,10 +126,6 @@ public partial class ImageEntry : ObservableObject
         RollUID = rollUID;
 
         Comment = comment;
-
-        ImageWidth = Math.Round(Image.PixelWidth / Image.DpiX, 2);
-        ImageHeight = Math.Round(Image.PixelHeight / Image.DpiY, 2);
-        ImageTotalPixels = Image.PixelWidth * Image.PixelHeight;
     }
 
     public ImageEntry Clone() => new(RollUID, ImageBytes, comment: Comment);

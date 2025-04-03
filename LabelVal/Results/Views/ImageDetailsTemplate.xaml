@@ -11,16 +11,6 @@
 
     <DataTemplate x:Key="imageDetailsTemplate" DataType="{x:Type image:ImageEntry}">
         <DockPanel VerticalAlignment="Top">
-            <DockPanel.Style>
-                <Style TargetType="{x:Type DockPanel}">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=DataContext.ShowDetails, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DockPanel.Style>
 
             <!--  Image Details  -->
             <md:Card
@@ -150,6 +140,14 @@
                             IsHitTestVisible="False"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             Text="{Binding ImageBitDepth, Mode=OneWay}" />
+
+                        <TextBox
+                            HorizontalContentAlignment="Center"
+                            md:HintAssist.Hint="Format"
+                            BorderThickness="0"
+                            IsHitTestVisible="False"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            Text="{Binding ImagePixeFormat, Mode=OneWay}" />
                     </DockPanel>
 
                 </DockPanel>
@@ -164,7 +162,7 @@
 
                 <DockPanel Margin="3">
 
-                    <DockPanel DockPanel.Dock="Top">
+                    <!--<DockPanel DockPanel.Dock="Top">
 
                         <TextBox
                             Margin="3,0"
@@ -175,18 +173,18 @@
                             DockPanel.Dock="Top"
                             IsHitTestVisible="False"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                            Text="{Binding Path=DataContext.ImageResultsEntry.SourceImage.UID, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource shortenUID}}" />
+                            Text="{Binding Path=DataContext.SourceImage.UID, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource shortenUID}}" />-->
 
                         <TextBox
                             Margin="3,0"
                             HorizontalContentAlignment="Center"
                             md:HintAssist.FloatingHintHorizontalAlignment="Left"
-                            md:HintAssist.Hint="This Hash"
+                            md:HintAssist.Hint="Hash"
                             BorderThickness="0"
                             IsHitTestVisible="False"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             Text="{Binding Path=UID, Converter={StaticResource shortenUID}}" />
-                    </DockPanel>
+                    <!--</DockPanel>-->
 
                 </DockPanel>
 

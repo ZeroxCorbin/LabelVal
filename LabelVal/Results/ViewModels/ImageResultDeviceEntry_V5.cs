@@ -180,7 +180,7 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
 
         if (Handler is LabelHandlers.SimulatorRestore or LabelHandlers.SimulatorDetect or LabelHandlers.SimulatorTrigger)
         {
-            if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
+            if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Source || (ResultRow?.SourceImage == null && ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored))
                 lab.Image = ImageResultEntry.SourceImage.BitmapBytes;
             else if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
                 lab.Image = ResultRow.Stored.ImageBytes;
