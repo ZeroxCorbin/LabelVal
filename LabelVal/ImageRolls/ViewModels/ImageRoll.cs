@@ -46,6 +46,16 @@ public enum ImageRollSectorTypes
     Dynamic
 }
 
+[SQLite.StoreAsText]
+[JsonConverter(typeof(StringEnumConverter))]
+public enum ImageAddPositions
+{
+    Top,
+    Above,
+    Below,
+    Bottom
+}
+
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
@@ -151,21 +161,21 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         Logger.LogInfo($"Loading label images from standards directory: {App.AssetsImageRollsRoot}\\{Name}\\");
 
         List<string> images = [];
-        foreach (string f in Directory.EnumerateFiles(Path))
+        foreach (var f in Directory.EnumerateFiles(Path))
             if (System.IO.Path.GetExtension(f) == ".png")
                 images.Add(f);
 
         List<Task> taskList = [];
 
-        List<string> sorted = images.OrderBy(x => x).ToList();
-        int i = 1;
-        foreach (string f in sorted)
+        var sorted = images.OrderBy(x => x).ToList();
+        var order = 1;
+        foreach (var f in sorted)
         {
-            ImageEntry image = GetNewImageEntry(f, i++);
+            ImageEntry image = GetNewImageEntry(f, order++);
             if (image == null)
                 continue;
 
-            Task tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(image)).Task;
+            Task tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(ImageAddPositions.Bottom, image)).Task;
             taskList.Add(tsk);
         }
 
@@ -191,7 +201,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
         foreach (ImageEntry f in images)
         {
-            Task tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(f)).Task;
+            Task tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(ImageAddPositions.Bottom, f)).Task;
 
             taskList.Add(tsk);
         }
@@ -201,11 +211,11 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
     private void CheckImageEntryOrder(ImageEntry[] entries)
     {
-        bool invalid = entries.Any(x => x.Order < 0);
+        var invalid = entries.Any(x => x.Order < 0);
 
         List<ImageEntry> images = !invalid ? [.. entries.OrderBy(x => x.Order)] : [.. entries.OrderBy(x => x.Path)];
 
-        for (int i = 0; i < images.Count; i++)
+        for (var i = 0; i < images.Count; i++)
         {
             if (images[i].Order != i + 1)
             {
@@ -219,21 +229,18 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     {
         try
         {
-            var img = new ImageMagick.MagickImage(path);
-            var pngImage = img.ToByteArray(ImageMagick.MagickFormat.Png);
+            var ire = new ImageEntry(UID, path);
 
-            ImageEntry image = new(UID, pngImage, TargetDPI)
-            {
-                Order = order
-            };
-
-            if (Images.Any(e => e.UID == image.UID))
+            ImageEntry imageEntry = Images.FirstOrDefault(x => x.UID == ire.UID);
+            if (imageEntry != null)
             {
                 Logger.LogWarning($"Image already exists in roll: {Path}");
-                return null;
+                return imageEntry;
             }
 
-            return image;
+            ire.Order = order;
+
+            return ire;
         }
         catch (Exception ex)
         {
@@ -242,24 +249,22 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
         return null;
     }
-    public ImageEntry GetNewImageEntry(byte[] rawImage)
+    public ImageEntry GetNewImageEntry(byte[] rawImage, ImageAddPositions position)
     {
         try
         {
-            using var img = new ImageMagick.MagickImage(rawImage);
-            var png = img.ToByteArray(ImageMagick.MagickFormat.Png);
-            ImageEntry image = new(UID, png, TargetDPI)
-            {
-                Order = Images.Count > 0 ? Images.Max(img => img.Order) + 1 : 1
-            };
+            var ire = new ImageEntry(UID, rawImage, TargetDPI);
 
-            if (Images.Any(e => e.UID == image.UID))
+            ImageEntry imageentry = Images.FirstOrDefault(x => x.UID == ire.UID);
+            if (imageentry != null)
             {
                 Logger.LogWarning($"Image already exists in roll: {Path}");
-                return null;
+                return imageentry;
             }
 
-            return image;
+            ire.Order = position == ImageAddPositions.Top ? 1 : Images.Count + 1;
+
+            return ire;
         }
         catch (Exception ex)
         {
@@ -267,93 +272,6 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         }
 
         return null;
-    }
-
-    [RelayCommand]
-    private async Task AddImagesFromDrive()
-    {
-        Utilities.FileUtilities.LoadFileDialogSettings settings = new()
-        {
-            Title = "Select image(s) to add to roll.",
-            Multiselect = true,
-            Filters =
-            [
-                new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"]),
-                new Utilities.FileUtilities.FileDialogFilter("Image Files (Add Fiducial)", ["png", "bmp"]),
-            ]
-        };
-
-        if (Utilities.FileUtilities.LoadFileDialog(settings))
-        {
-            //Sort the selected files by name
-            List<string> sorted = settings.SelectedFiles.OrderBy(x => x).ToList();
-
-            int last = 0;
-            if (Images.Count > 0)
-            {
-                List<ImageEntry> sortedImages = Images.OrderBy(x => x.Order).ToList();
-                last = sortedImages.Last().Order;
-            }
-            List<ImageEntry> newImgs = [];
-            int i = last + 1;
-            foreach (string f in sorted)
-                newImgs.Add(GetNewImageEntry(f, i++));
-
-            AddImages(newImgs);
-        }
-    }
-
-    public void AddImage(ImageEntry image)
-    {
-        if (image == null)
-            return;
-
-        if (!App.Current.Dispatcher.CheckAccess())
-        {
-            _ = App.Current.Dispatcher.BeginInvoke(() => AddImage(image));
-            return;
-        }
-
-        //Add new/update ImageEntry in database if not Rooted
-        SaveImage(image);
-
-        try
-        {
-            Images.Add(image);
-            ImageCount = Images.Count;
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, $"Failed to load image: {Path}");
-        }
-    }
-
-    public void AddImages(List<ImageEntry> images)
-    {
-        if (images == null || images.Count == 0)
-            return;
-
-        if (!App.Current.Dispatcher.CheckAccess())
-        {
-            _ = App.Current.Dispatcher.BeginInvoke(() => AddImages(images));
-            return;
-        }
-
-        foreach (ImageEntry image in images)
-        {
-            //Add new/update ImageEntry in database if not Rooted
-            SaveImage(image);
-
-            try
-            {
-                Images.Add(image);
-                ImageCount = Images.Count;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, $"Failed to load image: {Path}");
-            }
-        }
     }
 
     public void DeleteImage(ImageEntry imageEntry)
@@ -382,4 +300,66 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
     public ImageRoll CopyLite() => JsonConvert.DeserializeObject<ImageRoll>(JsonConvert.SerializeObject(this));
 
+    public void AddImage(ImageAddPositions position, ImageEntry newImage, ImageEntry relativeTo = null) => AddImages(position, [newImage], relativeTo);
+    public void AddImages(ImageAddPositions position, List<ImageEntry> newImages, ImageEntry relativeTo = null)
+    {
+        // Prompt the user to select an image or multiple images
+        if (newImages != null && newImages.Count != 0)
+        {
+            switch (position)
+            {
+                case ImageAddPositions.Top:
+                    InsertImagesAtOrder(newImages, 1);
+                    break;
+                case ImageAddPositions.Bottom:
+                    InsertImagesAtOrder(newImages, Images.Count + 1);
+                    break;
+                case ImageAddPositions.Above:
+                    if (relativeTo == null)
+                    {
+                        Logger.LogWarning("No image result provided for insertion above.");
+                        return;
+                    }
+                    InsertImagesAtOrder(newImages, relativeTo.Order);
+                    break;
+                case ImageAddPositions.Below:
+                    if (relativeTo == null)
+                    {
+                        Logger.LogWarning("No image result provided for insertion below.");
+                        return;
+                    }
+                    InsertImagesAtOrder(newImages, relativeTo.Order + 1);
+                    break;
+            }
+        }
+    }
+
+    public void InsertImagesAtOrder(List<ImageEntry> newImages, int targetOrder)
+    {
+        // Adjust the order of existing items to make space for the new item
+        AdjustOrdersBeforeInsert(targetOrder, newImages.Count);
+
+        // Insert each new image at the adjusted target order
+        foreach (ImageEntry newImage in newImages)
+        {
+            // Set the order of the new item
+            newImage.Order = targetOrder++;
+            SaveImage(newImage);
+            Images.Add(newImage);
+        }
+    }
+
+    private void AdjustOrdersBeforeInsert(int targetOrder, int count)
+    {
+        var sorted = Images.OrderBy(img => img.Order).ToList();
+        foreach (ImageEntry item in sorted)
+        {
+            if (item.Order >= targetOrder)
+            {
+                // Increment the order of existing items that come after the target order
+                item.Order += count;
+                SaveImage(item);
+            }
+        }
+    }
 }

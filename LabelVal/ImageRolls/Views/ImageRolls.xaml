@@ -339,8 +339,8 @@
                 SelectedItem="{Binding DataContext.SelectedUserImageRoll, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 SelectionChanged="ListViewUser_SelectionChanged"
                 Style="{StaticResource MahApps.Styles.ListView}"
-                VirtualizingPanel.IsVirtualizingWhenGrouping="False"
                 VirtualizingPanel.IsVirtualizing="False"
+                VirtualizingPanel.IsVirtualizingWhenGrouping="False"
                 VirtualizingPanel.VirtualizationMode="Recycling">
 
                 <ListView.ItemContainerStyle>

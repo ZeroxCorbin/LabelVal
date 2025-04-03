@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SQLite;
 using System.Drawing.Printing;
@@ -13,6 +13,8 @@ namespace LabelVal.ImageRolls.ViewModels;
 public partial class ImageEntry : ObservableObject
 {
     public string Serialize => JsonConvert.SerializeObject(this);
+
+    public static string GetUID(byte[] bytes) => BitConverter.ToString(SHA256.HashData(bytes)).Replace("-", string.Empty);
 
     [JsonProperty]
     [Indexed(Name = "CompositeKey", Order = 1, Unique = true)]
@@ -95,7 +97,7 @@ public partial class ImageEntry : ObservableObject
 
         ImageBytes = img.ToByteArray(ImageMagick.MagickFormat.Png);
 
-        UID = BitConverter.ToString(SHA256.HashData(img.GetPixels().ToArray())).Replace("-", string.Empty);
+        UID = GetUID(img.GetPixels().ToArray());
 
         RollUID = rollUID;
 
@@ -120,7 +122,7 @@ public partial class ImageEntry : ObservableObject
 
         ImageBytes = img.ToByteArray(ImageMagick.MagickFormat.Png);
 
-        UID = BitConverter.ToString(SHA256.HashData(img.GetPixels().ToArray())).Replace("-", string.Empty);
+        UID = GetUID(img.GetPixels().ToArray());
 
         RollUID = rollUID;
 

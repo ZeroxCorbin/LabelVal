@@ -145,6 +145,15 @@
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
 
+            <ObjectDataProvider
+                x:Key="ImageImageAddPositionsTypes"
+                MethodName="GetValues"
+                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="imageRoll_enums:ImageAddPositions" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
             <Style BasedOn="{StaticResource MahApps.Styles.ScrollBar}" TargetType="ScrollBar">
                 <!--<Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}"/>-->
             </Style>

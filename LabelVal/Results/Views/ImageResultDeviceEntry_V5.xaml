@@ -430,10 +430,10 @@
                         <DockPanel>
 
                             <iconPacks:PackIconMaterial
-                            Width="12"
-                            Margin="3"
-                            VerticalAlignment="Top"
-                            Kind="StoreOutline" />
+                                Width="12"
+                                Margin="3"
+                                VerticalAlignment="Top"
+                                Kind="StoreOutline" />
                             <!--  Title  -->
                             <md:Card
                                 Margin="0,3"

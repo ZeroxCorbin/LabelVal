@@ -56,11 +56,11 @@
                 <DockPanel>
 
                     <iconPacks:PackIconMaterial
-                            Width="12"
-                            Margin="3"
-                            VerticalAlignment="Top"
-                            Kind="OpenSourceInitiative" />
-                    
+                        Width="12"
+                        Margin="3"
+                        VerticalAlignment="Top"
+                        Kind="OpenSourceInitiative" />
+
                     <!--  Title  -->
                     <md:Card
                         Margin="0,3"

@@ -175,7 +175,7 @@
                             DockPanel.Dock="Top"
                             IsHitTestVisible="False"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                            Text="{Binding Path=DataContext.SourceImage.UID, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource shortenUID}}" />
+                            Text="{Binding Path=DataContext.ImageResultsEntry.SourceImage.UID, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource shortenUID}}" />
 
                         <TextBox
                             Margin="3,0"

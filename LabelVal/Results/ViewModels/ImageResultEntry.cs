@@ -258,7 +258,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             dev.HandlerUpdate();
         }
         
-        ImageResultsManager.HandlerUpdate();
+        //ImageResultsManager.HandlerUpdate();
     }
 
     //[RelayCommand] private void RedoFiducial() => ImageUtilities.lib.Core.ImageUtilities.RedrawFiducial(SourceImage.Path, false);

@@ -104,7 +104,7 @@
                                 DockPanel.Dock="Top"
                                 Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                 Text="V275"
-                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Visibility="{Binding ImageResultsManager.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <Grid Background="{DynamicResource V275_Brush}">
 
@@ -360,7 +360,7 @@
                                 DockPanel.Dock="Top"
                                 Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                 Text="V5"
-                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Visibility="{Binding ImageResultsManager.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <Grid Background="{DynamicResource V5_Brush}">
 
@@ -616,7 +616,7 @@
                                 DockPanel.Dock="Top"
                                 Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                 Text="L95"
-                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Visibility="{Binding ImageResultsManager.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <Grid Background="{DynamicResource L95_Brush}">
 
@@ -630,6 +630,7 @@
                                     IsIndeterminate="{Binding IsWorking}"
                                     Visibility="{Binding IsWorking, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
+                                <!--  Camera  -->
                                 <Grid
                                     Margin="0,6"
                                     HorizontalAlignment="Left"
@@ -661,6 +662,7 @@
                                         Kind="CameraIris" />
                                 </Grid>
 
+                                <!--  Simulator  -->
                                 <Grid
                                     Margin="0,6"
                                     HorizontalAlignment="Left"
@@ -682,16 +684,48 @@
                                         </Style>
                                     </Grid.Style>
 
-                                    <iconPacks:PackIconMaterial
-                                        Width="18"
-                                        Height="18"
-                                        Margin="3,0"
-                                        VerticalAlignment="Center"
-                                        Kind="Image" />
+                                    <Grid>
+                                        <Grid.Style>
+                                            <Style TargetType="{x:Type Grid}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImageResultsManager.SelectedImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Source}">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
 
+                                        <iconPacks:PackIconMaterial
+                                            Width="18"
+                                            Height="18"
+                                            Margin="3,0"
+                                            VerticalAlignment="Center"
+                                            Kind="OpenSourceInitiative" />
+                                    </Grid>
+
+                                    <Grid>
+                                        <Grid.Style>
+                                            <Style TargetType="{x:Type Grid}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImageResultsManager.SelectedImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Stored}">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
+
+                                        <iconPacks:PackIconMaterial
+                                            Width="18"
+                                            Height="18"
+                                            Margin="3,0"
+                                            VerticalAlignment="Center"
+                                            Kind="StoreOutline" />
+                                    </Grid>
                                 </Grid>
 
-
+                                <!--  Detect  -->
                                 <Grid
                                     Margin="0,6"
                                     HorizontalAlignment="Right"
@@ -715,9 +749,10 @@
                                         Height="18"
                                         Margin="3,0"
                                         VerticalAlignment="Center"
-                                        Kind="SmokeDetector" />
+                                        Kind="DataMatrixScan" />
                                 </Grid>
 
+                                <!--  Restore  -->
                                 <Grid
                                     Margin="0,6"
                                     HorizontalAlignment="Right"
@@ -741,9 +776,10 @@
                                         Height="18"
                                         Margin="3,0"
                                         VerticalAlignment="Center"
-                                        Kind="Restore" />
+                                        Kind="StoreOutline" />
                                 </Grid>
 
+                                <!--  Trigger  -->
                                 <Grid
                                     Margin="0,6"
                                     HorizontalAlignment="Right"
@@ -767,7 +803,7 @@
                                         Height="18"
                                         Margin="3,0"
                                         VerticalAlignment="Center"
-                                        Kind="Crosshairs" />
+                                        Kind="Minus" />
                                 </Grid>
                             </Grid>
                         </DockPanel>
@@ -797,7 +833,7 @@
                                                 DockPanel.Dock="Top"
                                                 Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                                 Text="L95"
-                                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                Visibility="{Binding ImageResultsManager.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                             <Grid>
                                                 <Image
@@ -823,7 +859,7 @@
                                                     DockPanel.Dock="Top"
                                                     Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                                     Text="L95"
-                                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                    Visibility="{Binding ImageResultsManager.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                                 <Grid Background="{DynamicResource L95_Brush}">
                                                     <Grid
@@ -865,7 +901,7 @@
         </DataTemplate>
 
         <helpers:ImageResultDeviceEntryTemplateSelector
-            x:Key="ImageResultDeviceEntryButtonsTemplateSelector"
+            x:Key="DeviceButtonsTemplateSelector"
             x:Shared="false"
             L95Template="{StaticResource L95Buttons}"
             V275Template="{StaticResource V275Buttons}"
@@ -936,7 +972,7 @@
                     </Grid>
                 </Button>
 
-                <ItemsControl ItemTemplateSelector="{StaticResource ImageResultDeviceEntryButtonsTemplateSelector}" ItemsSource="{Binding ImageResultDeviceEntries}">
+                <ItemsControl ItemTemplateSelector="{StaticResource DeviceButtonsTemplateSelector}" ItemsSource="{Binding ImageResultDeviceEntries}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <DockPanel />
