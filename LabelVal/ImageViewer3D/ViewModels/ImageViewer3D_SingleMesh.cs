@@ -73,22 +73,9 @@ public partial class ImageViewer3D_SingleMesh : BaseViewModel
     [ObservableProperty] private CuttingOperation cuttingOperation = CuttingOperation.Intersect;
 
     public ImageViewer3D_SingleMesh(byte[] image)
-    {   
-        using var img = new ImageMagick.MagickImage(image);
-        OriginalImageArray = img.ToByteArray(ImageMagick.MagickFormat.Png);
-
-        // Convert the image to a 8bpp indexed bmp, if needed. This will be used to generate the mesh
-        img.ColorSpace = ImageMagick.ColorSpace.Gray;
-        img.Depth = 8;
-        img.Format = ImageMagick.MagickFormat.Bmp;
-
-        //The material needs a 32 Bpp image
-        img.ColorSpace = ImageMagick.ColorSpace.sRGB;
-        img.Depth = 32;
-        img.Format = ImageMagick.MagickFormat.Bmp3;
-
-        BitmapArray = img.ToByteArray(ImageMagick.MagickFormat.Bmp3);
-        // SobelImageArray = SobelEdgeDetection.CreateBitmapFromEdgeDetection1ByteColor(SobelEdgeDetection.ApplySobelEdgeDetection1ByteColor(BitmapArray, wd, ht), wd, ht);
+    {
+        OriginalImageArray = Utilities.DotImagingUtilities.GetBmp(image, PixelFormat.Format32bppArgb);
+        BitmapArray = Utilities.DotImagingUtilities.GetBmp(image, PixelFormat.Format8bppIndexed);
 
         // Convert the image to a BitmapImage for display
         Image = BitmapImage.CreateBitmapImage(image);

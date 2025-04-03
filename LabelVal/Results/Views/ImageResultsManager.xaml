@@ -480,7 +480,7 @@
         </DockPanel>
 
         <DockPanel x:Key="L95Buttons">
-            
+
             <!--  L95 Trigger  -->
             <Border
                 Margin="3,0,0,0"
