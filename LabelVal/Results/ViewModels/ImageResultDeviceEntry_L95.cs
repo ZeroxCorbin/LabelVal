@@ -264,8 +264,6 @@ public partial class ImageResultDeviceEntry_L95
         //}
     }
 
-
-
     [RelayCommand]
     public void Process()
     {
@@ -362,6 +360,7 @@ public partial class ImageResultDeviceEntry_L95
         finally
         {
             IsWorking = false;
+            App.Current.Dispatcher.Invoke(ImageResultEntry.BringIntoViewHandler);
         }
     }
 

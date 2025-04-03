@@ -50,8 +50,8 @@
 
                     <Button
                         Width="28"
-                        Command="{Binding SaveCommand}"
-                        CommandParameter="{x:Static vm:ImageResultEntryImageTypes.V275Stored}"
+                        Command="{Binding ImageResultEntry.SaveCommand}"
+                        CommandParameter="{Binding StoredImage.BitmapBytes}"
                         Content="{iconPacks:Material Kind=ContentSave}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -105,11 +105,11 @@
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Setter Property="Tag" Value="{Binding StoredSectors}" />
-                            <Setter Property="ToolTip" Value="Copy the sectors as DelimeterSV.&#x0a;Hold Shift for XLS." />
+                            <Setter Property="ToolTip" Value="Copy the sectors to the clipboard as Delimited values." />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
                                     <Setter Property="Tag" Value="{Binding StoredImage}" />
-                                    <Setter Property="ToolTip" Value="Copy the image to the clipboard and PNG.&#x0a;Hold Shift for BMP." />
+                                    <Setter Property="ToolTip" Value="Copy the image to the clipboard as a bitmap." />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -184,8 +184,8 @@
 
                     <Button
                         Width="28"
-                        Command="{Binding SaveCommand}"
-                        CommandParameter="{x:Static vm:ImageResultEntryImageTypes.V275Current}"
+                        Command="{Binding ImageResultEntry.SaveCommand}"
+                        CommandParameter="{Binding CurrentImage.BitmapBytes}"
                         Content="{iconPacks:Material Kind=ContentSave}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -273,11 +273,11 @@
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Setter Property="Tag" Value="{Binding CurrentSectors}" />
-                            <Setter Property="ToolTip" Value="Copy the sectors as CSV." />
+                            <Setter Property="ToolTip" Value="Copy the sectors to the clipboard as Delimited values." />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
                                     <Setter Property="Tag" Value="{Binding CurrentImage}" />
-                                    <Setter Property="ToolTip" Value="Copy the image as a Bitmap." />
+                                    <Setter Property="ToolTip" Value="Copy the image to the clipboard as a bitmap." />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>

@@ -217,7 +217,6 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
         _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
 
         return true;
-
     }
 
     private void currentSectorMouseEnter(object sender, MouseEventArgs e)
@@ -238,8 +237,7 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
                 sector.IsMouseOver = false;
 
-            if (DataContext is ViewModels.IImageResultDeviceEntry ire)
-                _ = App.Current.Dispatcher.BeginInvoke(() => ire.RefreshCurrentOverlay());
+            _ = App.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshCurrentOverlay());
         }
     }
     private void storedSectorMouseEnter(object sender, MouseEventArgs e)
@@ -249,8 +247,7 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
                 sector.IsMouseOver = true;
 
-            if (DataContext is ViewModels.IImageResultDeviceEntry ire)
-                _ = App.Current.Dispatcher.BeginInvoke(() => ire.RefreshStoredOverlay());
+            _ = App.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshStoredOverlay());
         }
     }
     private void storedSectorMouseLeave(object sender, MouseEventArgs e)
@@ -260,8 +257,7 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
                 sector.IsMouseOver = false;
 
-            if (DataContext is ViewModels.IImageResultDeviceEntry ire)
-                _ = App.Current.Dispatcher.BeginInvoke(() => ire.RefreshStoredOverlay());
+            _ = App.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshStoredOverlay());
         }
     }
 
@@ -281,7 +277,7 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
 
     }
 
-    private void btnCopySectorsCsvToClipboard_Click(object sender, RoutedEventArgs e)
+    private void btnCopyToClipboard_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.Tag is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
         {
@@ -289,21 +285,16 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
         }
         else if (sender is Button btn2 && btn2.Tag is ImageEntry image)
         {
-            ImageToClipboard(image.ImageBytes);
+            Clipboard.SetImage(image.Image);
         }
     }
 
-    private void ImageToClipboard(byte[] imageBytes)
+    private void lstDissimilarSector_Click(object sender, MouseButtonEventArgs e)
     {
-        using var img = new ImageMagick.MagickImage(imageBytes);
-        //If the shift key is pressed, copy the image as Bitmap.
-        if (!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
-            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img.ToByteArray(ImageMagick.MagickFormat.Bmp3)));
-        else
-            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img.ToByteArray(ImageMagick.MagickFormat.Png)));
+
     }
 
-    private void lstDissimilarSector_Click(object sender, MouseButtonEventArgs e)
+    private void btnSaveImage(object sender, RoutedEventArgs e)
     {
 
     }

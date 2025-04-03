@@ -213,6 +213,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
         //}
 
     }
+
     [RelayCommand]
     private async Task Delete(Databases.ImageResultsDatabase imageResultsDatabase)
     {

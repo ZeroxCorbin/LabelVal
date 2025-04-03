@@ -174,7 +174,6 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
     [RelayCommand]
     public void Process()
     {
-        //BringIntoView?.Invoke();
 
         V5_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? ResultRow.Template : null, Handler, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table);
 
@@ -269,6 +268,7 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
         finally
         {
             IsWorking = false;
+            App.Current.Dispatcher.Invoke(ImageResultEntry.BringIntoViewHandler);
         }
     }
 

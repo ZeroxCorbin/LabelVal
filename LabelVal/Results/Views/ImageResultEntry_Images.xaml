@@ -79,7 +79,7 @@
                     <Button
                         Width="28"
                         Command="{Binding SaveCommand}"
-                        CommandParameter="{x:Static ViewModels:ImageResultEntryImageTypes.Source}"
+                        CommandParameter="{Binding SourceImage.BitmapBytes}"
                         Content="{iconPacks:Material Kind=ContentSave}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -155,7 +155,7 @@
         </DockPanel>
 
         <!--  Details  -->
-        <ContentControl Content="{Binding SourceImage}" ContentTemplate="{StaticResource imageDetailsTemplate}" >
+        <ContentControl Content="{Binding SourceImage}" ContentTemplate="{StaticResource imageDetailsTemplate}">
             <ContentControl.Style>
                 <Style TargetType="ContentControl">
                     <Setter Property="Visibility" Value="Collapsed" />

@@ -294,24 +294,28 @@ public partial class ImageResultsManager : ObservableRecipient,
     }
 
     [RelayCommand]
-    private async Task AddDeviceImage(ImageResultEntryDevices device)
+    private Task AddDeviceImage(ImageResultEntryDevices device)
     {
-        switch (device)
+        return App.Current.Dispatcher.Invoke(async () =>
         {
-            case ImageResultEntryDevices.V275:
+            switch (device)
+            {
+                case ImageResultEntryDevices.V275:
 
-                V275_REST_Lib.Controllers.FullReport res = await SelectedV275Node.Controller.ReadTask(-1);
-                ProcessFullReport(res);
-                break;
-            case ImageResultEntryDevices.V5:
-                V5_REST_Lib.Controllers.FullReport res1 = await SelectedV5.Controller.Trigger_Wait_Return(true);
-                ProcessFullReport(res1);
-                break;
-            case ImageResultEntryDevices.L95:
-                FullReport res2 = SelectedL95.Controller.GetFullReport(-1);
-                ProcessFullReport(res2);
-                break;
-        }
+                    V275_REST_Lib.Controllers.FullReport res = await SelectedV275Node.Controller.ReadTask(-1);
+                    ProcessFullReport(res);
+                    break;
+                case ImageResultEntryDevices.V5:
+                    V5_REST_Lib.Controllers.FullReport res1 = await SelectedV5.Controller.Trigger_Wait_Return(true);
+                    ProcessFullReport(res1);
+                    break;
+                case ImageResultEntryDevices.L95:
+                    FullReport res2 = SelectedL95.Controller.GetFullReport(-1);
+                    ProcessFullReport(res2);
+                    break;
+            }
+        });
+
     }
 
     public void Receive(PropertyChangedMessage<FullReport> message)

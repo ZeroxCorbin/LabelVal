@@ -9,6 +9,7 @@ using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -26,6 +27,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
 
     public delegate void DeleteImageDelegate(ImageResultEntry imageResults);
     public event DeleteImageDelegate DeleteImage;
+
+    public void BringIntoViewHandler() => BringIntoView?.Invoke();
 
     //Could be handled with dependency injection.
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
@@ -142,7 +145,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     }
 
     [RelayCommand]
-    private void Save(ImageResultEntryImageTypes type)
+    private void Save(byte[] bmp)
     {
         var path = GetSaveFilePath();
 
@@ -163,16 +166,16 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             //        : type == ImageResultEntryImageTypes.Source
             //        ? SourceImage.ImageBytes : null;
 
-            //if (bmp != null)
-            //{
-            //    using var img = new ImageMagick.MagickImage(bmp);
-            //    if (Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase))
-            //        File.WriteAllBytes(path, img.ToByteArray(ImageMagick.MagickFormat.Png));
-            //    else
-            //        File.WriteAllBytes(path, img.ToByteArray(ImageMagick.MagickFormat.Bmp3));
+            if (bmp != null)
+            {
+                using var img = new ImageMagick.MagickImage(bmp);
+                if (Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase))
+                    File.WriteAllBytes(path, img.ToByteArray(ImageMagick.MagickFormat.Png));
+                else
+                    File.WriteAllBytes(path, img.ToByteArray(ImageMagick.MagickFormat.Bmp3));
 
-            //    Clipboard.SetText(path);
-            //}
+                Clipboard.SetText(path);
+            }
         }
         catch { }
     }
@@ -257,7 +260,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             }
             dev.HandlerUpdate();
         }
-        
+
         //ImageResultsManager.HandlerUpdate();
     }
 

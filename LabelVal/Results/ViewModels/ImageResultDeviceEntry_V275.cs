@@ -185,11 +185,11 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
     [RelayCommand]
     public void Process()
     {
-        //ImageResultEntry.BringIntoView?.Invoke();
+
 
         V275_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? [.. ResultRow.Template["sectors"]] : null, Handler, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table);
 
-        if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
+        if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Source || Handler is LabelHandlers.CameraTrigger or LabelHandlers.CameraRestore or LabelHandlers.CameraDetect || (ResultRow?.Stored == null && ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored))
             lab.Image = ImageResultEntry.SourceImage.BitmapBytes;
         else if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
             lab.Image = ResultRow.Stored.ImageBytes;
@@ -281,6 +281,7 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
         finally
         {
             IsWorking = false;
+            App.Current.Dispatcher.Invoke(ImageResultEntry.BringIntoViewHandler);
         }
     }
 

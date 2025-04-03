@@ -73,7 +73,6 @@ public partial class ImageEntry : ObservableObject
     [JsonProperty] public double ImageHeight => Math.Round(Image.PixelHeight / Image.DpiY, 2);
     [JsonProperty] public long ImageTotalPixels => Image.PixelWidth * Image.PixelHeight;
     [JsonProperty] public int ImageBitDepth => Image.Format.BitsPerPixel;
-    [JsonProperty] public int ImagePixelWidth => Image.PixelWidth;
     [JsonProperty] public PixelFormat ImagePixeFormat => Image.Format;
 
     [ObservableProperty][property: SQLite.Ignore] private double v52ImageTotalPixelDeviation;
@@ -126,6 +125,8 @@ public partial class ImageEntry : ObservableObject
         RollUID = rollUID;
 
         Comment = comment;
+
+        
     }
 
     public ImageEntry Clone() => new(RollUID, ImageBytes, comment: Comment);
