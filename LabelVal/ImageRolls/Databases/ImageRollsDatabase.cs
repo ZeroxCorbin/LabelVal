@@ -40,7 +40,7 @@ public class ImageRollsDatabase
 
     }
     public ImageRoll SelectImageRoll(string uid) => Connection.Table<ImageRoll>().Where(v => v.UID == uid).FirstOrDefault();
-    public List<ImageRoll> SelectAllImageRolls() => Connection.Query<ImageRoll>("select * from ImageRollEntry");
+    public List<ImageRoll> SelectAllImageRolls() => Connection.Query<ImageRoll>("select * from ImageRoll");
     public bool DeleteImageRoll(string uid) => Connection.Delete<ImageRoll>(uid) > 0;
 
     public int InsertOrReplaceImage(ImageEntry img) => Connection.InsertOrReplace(img);

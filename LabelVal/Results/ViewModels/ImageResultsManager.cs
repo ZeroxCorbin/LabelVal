@@ -454,9 +454,38 @@ public partial class ImageResultsManager : ObservableRecipient,
     }
 
     [RelayCommand]
-    public void DeleteImage(ImageResultEntry imageToDelete) =>
-    // Remove the specified image from the list
-    SelectedImageRoll.Images.Remove(imageToDelete.SourceImage);
+    public async Task DeleteImage(ImageResultEntry imageToDelete)
+    {
+        // Remove the image from the database
+        if (SelectedImageRoll.IsLocked)
+        {
+            Logger.LogWarning("The database is locked. Cannot delete image.");
+            return;
+        }
+
+        MessageDialogResult answer = await AllImageCancelDialog("Delete Image & Remove Results", $"Are you sure you want to delete this image from the Image Roll?\r\nThis can not be undone!");
+        if (answer == MessageDialogResult.FirstAuxiliary)
+            return;
+        else
+        if (answer == MessageDialogResult.Affirmative)
+        {
+            // Remove the image from the ImageRoll and remove all result entries
+            foreach (ImageResultEntry img in ImageResultsEntries)
+            {
+                if (img.SourceImage.UID == imageToDelete.SourceImage.UID)
+                {
+                    img.DeleteStored();
+                }
+            }
+            _ = SelectedImageRoll.Images.Remove(imageToDelete.SourceImage);
+        }
+        else
+        if (answer == MessageDialogResult.Negative)
+        {
+            // Remove the image from the ImageRoll
+            _ = SelectedImageRoll.Images.Remove(imageToDelete.SourceImage);
+        }
+    }
 
     [RelayCommand]
     private void StoreAllCurrentResults()
@@ -725,6 +754,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     #region Dialogs
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
+    public async Task<MessageDialogResult> AllImageCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, new MetroDialogSettings() { DefaultButtonFocus = MessageDialogResult.FirstAuxiliary, AffirmativeButtonText = "Image & Results", NegativeButtonText = "Image Only", FirstAuxiliaryButtonText = "Cancel" });
     #endregion
 
 }

@@ -4,10 +4,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.Main.ViewModels;
 using LabelVal.Results.ViewModels;
+using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace LabelVal.ImageRolls.ViewModels;
@@ -64,14 +66,11 @@ public partial class ImageRolls : ObservableRecipient
     private ImageRoll selectedUserImageRoll;
     partial void OnSelectedUserImageRollChanged(ImageRoll value)
     {
-        if (value != null)
-        {
-            SelectedFixedImageRoll = null;
-            SelectedImageRoll = value;
-        }
+        SelectedFixedImageRoll = null;
+        SelectedImageRoll = value;
     }
 
-    [ObservableProperty] [NotifyPropertyChangedRecipients]private ImageRoll selectedImageRoll;
+    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRoll selectedImageRoll;
     partial void OnSelectedImageRollChanged(ImageRoll value)
     {
         App.Settings.SetValue(nameof(SelectedImageRoll), value);
@@ -379,13 +378,17 @@ public partial class ImageRolls : ObservableRecipient
     }
 
     [RelayCommand]
-    public void Delete()
+    public async Task Delete()
     {
         if (UserDatabases == null || SelectedUserImageRoll == null)
             return;
 
+        if (await OkCancelDialog("Delete Image Roll?", $"Are you sure you want to delete image roll {SelectedUserImageRoll.Name} and images and results?") != MessageDialogResult.Affirmative)
+            return;
+
         foreach (ImageEntry img in SelectedUserImageRoll.Images)
         {
+
             if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImage(SelectedUserImageRoll.UID, img.UID))
                 Logger.LogInfo($"Deleted image: {img.UID}");
             else
@@ -409,5 +412,8 @@ public partial class ImageRolls : ObservableRecipient
 
     [RelayCommand]
     private void UIDToClipboard() => Clipboard.SetText(Guid.NewGuid().ToString());
+
+    private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
+    public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
 
 }

@@ -17,6 +17,9 @@
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Classes"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels"
+        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+    Dialog:DialogParticipation.Register="{Binding}"
+    Unloaded="UserControl_Unloaded"
     d:DataContext="{d:DesignInstance Type=vm:ImageResultsManager}"
     mc:Ignorable="d">
     

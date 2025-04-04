@@ -216,6 +216,12 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             dev.GetStored();
         }
     }
+    public void DeleteStored()
+    {
+        _ = SelectedDatabase.Delete_Result(ImageResultEntryDevices.L95, ImageRollUID, SourceImageUID, ImageRollUID);
+        _ = SelectedDatabase.Delete_Result(ImageResultEntryDevices.V275, ImageRollUID, SourceImageUID, ImageRollUID);
+        _ = SelectedDatabase.Delete_Result(ImageResultEntryDevices.V5, ImageRollUID, SourceImageUID, ImageRollUID);
+    }
     [RelayCommand]
     private void ClearCurrent(ImageResultEntryDevices device)
     {

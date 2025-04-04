@@ -16,6 +16,9 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:services="clr-namespace:LabelVal.ImageRolls.Services"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
+            xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+    Dialog:DialogParticipation.Register="{Binding}"
+    Unloaded="UserControl_Unloaded"
     xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewModels:ImageRolls}"
     mc:Ignorable="d">

@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using MahApps.Metro.Controls.Dialogs;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace LabelVal.Results.Views;
 /// <summary>
@@ -21,6 +23,7 @@ public partial class ImageResultsManager : UserControl
 
         App.Settings.PropertyChanged += Settings_PropertyChanged;
     }
+    private void UserControl_Unloaded(object sender, RoutedEventArgs e) => DialogParticipation.SetRegister(this, null);
 
     private void ImageResultsManager_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e) => throw new NotImplementedException();
 

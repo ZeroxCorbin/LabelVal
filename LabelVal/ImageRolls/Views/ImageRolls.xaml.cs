@@ -1,4 +1,5 @@
 ﻿using LabelVal.ImageRolls.ViewModels;
+using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -53,6 +54,11 @@ public partial class ImageRolls : UserControl
                 }
             }
         };
+    }
+
+    private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+    {
+        DialogParticipation.SetRegister(this, null);
     }
 
     private List<ListView> fixedLists = [];
