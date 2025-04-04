@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using Gma.System.MouseKeyHook;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.L95.ViewModels;
 using LabelVal.Main.ViewModels;
@@ -35,6 +36,9 @@ public partial class ImageResultsManager : ObservableRecipient,
     IRecipient<PropertyChangedMessage<FullReport>>
 {
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+
+    private IKeyboardMouseEvents _globalHook;
+    private bool _shiftPressed = false;
 
     /// <see cref="ImagesMaxHeight"/>
     [ObservableProperty] private int imagesMaxHeight = App.Settings.GetValue(nameof(ImagesMaxHeight), 200, true);
@@ -99,8 +103,8 @@ public partial class ImageResultsManager : ObservableRecipient,
     partial void OnIsV275SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.V275); }
     public LabelHandlers V275Handler => SelectedV275Node?.Controller != null && SelectedV275Node.Controller.IsLoggedIn_Control
                 ? SelectedV275Node.Controller.IsSimulator
-                    ? SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
-                    : SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic ? LabelHandlers.CameraDetect : LabelHandlers.CameraTrigger
+                    ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
+                    : _shiftPressed ? LabelHandlers.CameraDetect : LabelHandlers.CameraTrigger
                 : LabelHandlers.Offline;
 
     /// <see cref="IsV5Selected"/>
@@ -108,8 +112,8 @@ public partial class ImageResultsManager : ObservableRecipient,
     partial void OnIsV5SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.V5); }
     public LabelHandlers V5Handler => SelectedV5?.Controller != null && SelectedV5.Controller.IsConnected
                 ? SelectedV5.Controller.IsSimulator
-                    ? SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
-                    : SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic ? LabelHandlers.CameraDetect : LabelHandlers.CameraTrigger
+                    ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
+                    : _shiftPressed ? LabelHandlers.CameraDetect : LabelHandlers.CameraTrigger
                 : LabelHandlers.Offline;
 
     /// <see cref="IsL95Selected"/>
@@ -118,8 +122,8 @@ public partial class ImageResultsManager : ObservableRecipient,
 
     public LabelHandlers L95Handler => SelectedL95?.Controller != null && SelectedL95.Controller.IsConnected && SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running
                 ? SelectedL95.Controller.IsSimulator
-                    ? SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
-                    : SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic ? LabelHandlers.CameraDetect : LabelHandlers.CameraTrigger
+                    ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
+                    : _shiftPressed ? LabelHandlers.CameraDetect : LabelHandlers.CameraTrigger
                 : LabelHandlers.Offline;
 
     public ImageResultsManager()
@@ -128,8 +132,35 @@ public partial class ImageResultsManager : ObservableRecipient,
         this,
         (recipient, message) => message.Reply(SelectedImageRoll));
 
+        _globalHook = Hook.GlobalEvents();
+        _globalHook.KeyDown += _globalHook_KeyDown;
+        _globalHook.KeyUp += _globalHook_KeyUp; ;
+
         IsActive = true;
         RecieveAll();
+    }
+    ~ImageResultsManager()
+    {
+        _globalHook.KeyDown -= _globalHook_KeyDown;
+        _globalHook.KeyUp -= _globalHook_KeyUp;
+        _globalHook.Dispose();
+    }
+
+    private void _globalHook_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+    {
+        if (e.KeyCode is System.Windows.Forms.Keys.LShiftKey or System.Windows.Forms.Keys.RShiftKey)
+        {
+            _shiftPressed = false;
+            HandlerUpdate();
+        }
+    }
+    private void _globalHook_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+    {
+        if (e.KeyCode is System.Windows.Forms.Keys.LShiftKey or System.Windows.Forms.Keys.RShiftKey)
+        {
+            _shiftPressed = true;
+            HandlerUpdate();
+        }
     }
 
     private void RecieveAll()
@@ -224,6 +255,8 @@ public partial class ImageResultsManager : ObservableRecipient,
                 ird.ProcessFullReport(l95, true);
             }
         }
+
+        img.NewData = null;
     }
     private void RemoveImageResultEntry(ImageEntry img)
     {
@@ -294,29 +327,42 @@ public partial class ImageResultsManager : ObservableRecipient,
     }
 
     [RelayCommand]
-    private Task AddDeviceImage(ImageResultEntryDevices device)
-    {
-        return App.Current.Dispatcher.Invoke(async () =>
-        {
-            switch (device)
-            {
-                case ImageResultEntryDevices.V275:
+    private async Task AddDeviceImage(ImageResultEntryDevices device) => await App.Current.Dispatcher.Invoke(async () =>
+                                                                              {
+                                                                                  switch (device)
+                                                                                  {
+                                                                                      case ImageResultEntryDevices.V275:
+                                                                                          if (V275Handler is LabelHandlers.CameraDetect or LabelHandlers.SimulatorDetect)
+                                                                                          {
+                                                                                              var label = new V275_REST_Lib.Controllers.Label(ProcessRepeat, null, V275Handler, SelectedImageRoll.SelectedGS1Table);
+                                                                                              await SelectedV275Node.Controller.ProcessLabel(0, label);
+                                                                                          }
+                                                                                          else
+                                                                                          {
+                                                                                              V275_REST_Lib.Controllers.FullReport res = await SelectedV275Node.Controller.ReadTask(-1);
+                                                                                              ProcessFullReport(res);
+                                                                                          }
 
-                    V275_REST_Lib.Controllers.FullReport res = await SelectedV275Node.Controller.ReadTask(-1);
-                    ProcessFullReport(res);
-                    break;
-                case ImageResultEntryDevices.V5:
-                    V5_REST_Lib.Controllers.FullReport res1 = await SelectedV5.Controller.Trigger_Wait_Return(true);
-                    ProcessFullReport(res1);
-                    break;
-                case ImageResultEntryDevices.L95:
-                    FullReport res2 = SelectedL95.Controller.GetFullReport(-1);
-                    ProcessFullReport(res2);
-                    break;
-            }
-        });
+                                                                                          break;
+                                                                                      case ImageResultEntryDevices.V5:
+                                                                                          if (V5Handler is LabelHandlers.CameraDetect or LabelHandlers.SimulatorDetect)
+                                                                                          {
+                                                                                              var label = new V5_REST_Lib.Controllers.Label(ProcessRepeat, null, V5Handler, SelectedImageRoll.SelectedGS1Table);
+                                                                                              _ = await SelectedV5.Controller.ProcessLabel(label);
+                                                                                          }
+                                                                                          else
+                                                                                          {
+                                                                                              V5_REST_Lib.Controllers.FullReport res1 = await SelectedV5.Controller.Trigger_Wait_Return(true);
+                                                                                              ProcessFullReport(res1);
+                                                                                          }
 
-    }
+                                                                                          break;
+                                                                                      case ImageResultEntryDevices.L95:
+                                                                                          FullReport res2 = SelectedL95.Controller.GetFullReport(-1);
+                                                                                          ProcessFullReport(res2);
+                                                                                          break;
+                                                                                  }
+                                                                              });
 
     public void Receive(PropertyChangedMessage<FullReport> message)
     {
@@ -324,10 +370,24 @@ public partial class ImageResultsManager : ObservableRecipient,
             _ = App.Current.Dispatcher.BeginInvoke(() => ProcessFullReport(message.NewValue));
     }
 
+    private void ProcessRepeat(V5_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat.FullReport);
     public void ProcessFullReport(V5_REST_Lib.Controllers.FullReport res)
     {
         if (res == null)
             return;
+
+        var ire = new ImageEntry(SelectedImageRoll.UID, res.Image, SelectedImageRoll.TargetDPI);
+
+        if (SelectedImageRoll.IsLocked)
+        {
+            if (SelectedImageRoll.Images.FirstOrDefault(x => x.UID == ire.UID) == null)
+            {
+                Logger.LogWarning("The database is locked. Cannot add image.");
+                return;
+            }
+
+            //This assumes the image is already in the database and the results will be added to it.
+        }
         ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(res.Image, ImageAddPosition);
         if (imagEntry == null)
             return;
@@ -336,10 +396,26 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         SelectedImageRoll.AddImage(ImageAddPosition, imagEntry);
     }
+
+    private void ProcessRepeat(V275_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat.FullReport);
     public void ProcessFullReport(V275_REST_Lib.Controllers.FullReport res)
     {
         if (res == null)
             return;
+
+        var ire = new ImageEntry(SelectedImageRoll.UID, res.Image, SelectedImageRoll.TargetDPI);
+
+        if (SelectedImageRoll.IsLocked)
+        {
+            if (SelectedImageRoll.Images.FirstOrDefault(x => x.UID == ire.UID) == null)
+            {
+                Logger.LogWarning("The database is locked. Cannot add image.");
+                return;
+            }
+
+            //This assumes the image is already in the database and the results will be added to it.
+        }
+
         ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(res.Image, ImageAddPosition);
         if (imagEntry == null)
             return;
@@ -351,6 +427,19 @@ public partial class ImageResultsManager : ObservableRecipient,
     {
         if (res == null || res.Report == null)
             return;
+
+        var ire = new ImageEntry(SelectedImageRoll.UID, res.Template.GetParameter<byte[]>("Report.Thumbnail"), SelectedImageRoll.TargetDPI);
+
+        if (SelectedImageRoll.IsLocked)
+        {
+            if (SelectedImageRoll.Images.FirstOrDefault(x => x.UID == ire.UID) == null)
+            {
+                Logger.LogWarning("The database is locked. Cannot add image.");
+                return;
+            }
+
+            //This assumes the image is already in the database and the results will be added to it.
+        }
 
         //TODO Find a good name
         _ = res.Template.SetParameter<string>("Name", "Verify_1");

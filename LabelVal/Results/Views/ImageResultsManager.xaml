@@ -19,7 +19,7 @@
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels"
     d:DataContext="{d:DesignInstance Type=vm:ImageResultsManager}"
     mc:Ignorable="d">
-
+    
     <UserControl.Resources>
 
         <CollectionViewSource

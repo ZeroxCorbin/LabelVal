@@ -1495,6 +1495,7 @@
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
 			<Version>1.1.135</Version>
 		</PackageReference>
+		<PackageReference Include="MouseKeyHook" Version="5.7.1" />
 		<PackageReference Include="MySql.Data">
 			<Version>9.2.0</Version>
 		</PackageReference>
