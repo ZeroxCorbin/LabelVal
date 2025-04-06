@@ -450,7 +450,7 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
             if (!await ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.AddSector(sec.Template.Name, JsonConvert.SerializeObject(((V275.Sectors.SectorTemplate)sec.Template).Original)))
                 return -1;
 
-            if (sec.Template.BlemishMask.Layers != null)
+            if (sec.Template?.BlemishMask?.Layers != null)
             {
 
                 foreach (V275_REST_Lib.Models.Job.Layer layer in sec.Template.BlemishMask.Layers)

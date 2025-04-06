@@ -258,11 +258,11 @@
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Setter Property="Tag" Value="{Binding StoredSectors}" />
+                            <Setter Property="Tag" Value="{Binding CurrentSectors}" />
                             <Setter Property="ToolTip" Value="Copy the sectors to the clipboard as Delimited values." />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Tag" Value="{Binding StoredImage}" />
+                                    <Setter Property="Tag" Value="{Binding CurrentImage}" />
                                     <Setter Property="ToolTip" Value="Copy the image to the clipboard as a bitmap." />
                                 </DataTrigger>
                             </Style.Triggers>

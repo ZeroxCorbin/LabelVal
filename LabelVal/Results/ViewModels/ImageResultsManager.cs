@@ -162,7 +162,7 @@ public partial class ImageResultsManager : ObservableRecipient,
         if (e.KeyCode is System.Windows.Forms.Keys.LShiftKey or System.Windows.Forms.Keys.RShiftKey)
         {
             _shiftPressed = false;
-            HandlerUpdate();
+            App.Current.Dispatcher.Invoke(HandlerUpdate);
         }
     }
     private void _globalHook_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
@@ -170,7 +170,7 @@ public partial class ImageResultsManager : ObservableRecipient,
         if (e.KeyCode is System.Windows.Forms.Keys.LShiftKey or System.Windows.Forms.Keys.RShiftKey)
         {
             _shiftPressed = true;
-            HandlerUpdate();
+            App.Current.Dispatcher.Invoke(HandlerUpdate);
         }
     }
 
@@ -228,7 +228,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     }
     private void SelectedImageRoll_Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-        
+
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         {
             foreach (ImageEntry itm in e.NewItems.Cast<ImageEntry>())
@@ -345,23 +345,26 @@ public partial class ImageResultsManager : ObservableRecipient,
         }
     }
 
-    [RelayCommand] private void MoveImageTop(ImageResultEntry imageResult)
+    [RelayCommand]
+    private void MoveImageTop(ImageResultEntry imageResult)
     {
 
     }
-    [RelayCommand] private void MoveImageUp(ImageResultEntry imageResult)
+    [RelayCommand]
+    private void MoveImageUp(ImageResultEntry imageResult)
     {
 
     }
-    [RelayCommand] private void MoveImageDown(ImageResultEntry imageResult)
+    [RelayCommand]
+    private void MoveImageDown(ImageResultEntry imageResult)
     {
 
     }
-    [RelayCommand] private void MoveImageBottom(ImageResultEntry imageResult)
+    [RelayCommand]
+    private void MoveImageBottom(ImageResultEntry imageResult)
     {
 
     }
-
 
     [RelayCommand]
     private void AddImage() => AddImage(ImageAddPosition, null);
@@ -429,37 +432,46 @@ public partial class ImageResultsManager : ObservableRecipient,
     private void ProcessRepeat(V5_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat.FullReport);
     public void ProcessFullReport(V5_REST_Lib.Controllers.FullReport res)
     {
-        if (res == null)
-            return;
-
-        var ire = new ImageEntry(SelectedImageRoll.UID, res.Image, SelectedImageRoll.TargetDPI);
-
-        if (SelectedImageRoll.IsLocked)
+        try
         {
-            if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
-            {
-                Logger.LogWarning("The database is locked. Cannot add image.");
+            if (res == null)
                 return;
+
+            var ire = new ImageEntry(SelectedImageRoll.UID, res.Image, SelectedImageRoll.TargetDPI);
+
+            if (SelectedImageRoll.IsLocked)
+            {
+                if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
+                {
+                    Logger.LogWarning("The database is locked. Cannot add image.");
+                    return;
+                }
+
+                //This assumes the image is already in the database and the results will be added to it.
             }
 
-            //This assumes the image is already in the database and the results will be added to it.
+            (ImageEntry entry, bool isNew) = SelectedImageRoll.GetImageEntry(res.Image);
+            if (entry == null)
+                return;
+
+            entry.NewData = res;
+
+            if (isNew)
+                SelectedImageRoll.AddImage(ImageAddPosition, entry);
+            else
+                AddImageResultEntry(entry);
         }
-
-        var imagEntry = SelectedImageRoll.GetImageEntry(res.Image);
-        if (imagEntry.entry == null)
-            return;
-
-        imagEntry.entry.NewData = res;
-
-        if (imagEntry.isNew)
-            SelectedImageRoll.AddImage(ImageAddPosition, imagEntry.entry);
-        else
-            AddImageResultEntry(imagEntry.entry);
+        finally
+        {
+            WorkingUpdate(ImageResultEntryDevices.V5, false);
+        }
     }
 
     private void ProcessRepeat(V275_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat.FullReport);
     public void ProcessFullReport(V275_REST_Lib.Controllers.FullReport res)
     {
+        try
+        {
         if (res == null)
             return;
 
@@ -476,20 +488,28 @@ public partial class ImageResultsManager : ObservableRecipient,
             //This assumes the image is already in the database and the results will be added to it.
         }
 
-        var imagEntry = SelectedImageRoll.GetImageEntry(res.Image);
-        if (imagEntry.entry == null)
+        (ImageEntry entry, bool isNew) = SelectedImageRoll.GetImageEntry(res.Image);
+        if (entry == null)
             return;
 
-        imagEntry.entry.NewData = res;
+        entry.NewData = res;
 
-        if (imagEntry.isNew)
-            SelectedImageRoll.AddImage(ImageAddPosition, imagEntry.entry);
+        if (isNew)
+            SelectedImageRoll.AddImage(ImageAddPosition, entry);
         else
-            AddImageResultEntry(imagEntry.entry);
+            AddImageResultEntry(entry);
+        }
+        finally
+        {
+            WorkingUpdate(ImageResultEntryDevices.V275, false);
+        }
+
 
     }
     public void ProcessFullReport(FullReport res)
     {
+        try
+        {
         if (res == null || res.Report == null)
             return;
 
@@ -509,16 +529,22 @@ public partial class ImageResultsManager : ObservableRecipient,
         //TODO Find a good name
         _ = res.Template.SetParameter<string>("Name", "Verify_1");
 
-        var imagEntry = SelectedImageRoll.GetImageEntry(res.Template.GetParameter<byte[]>("Report.Thumbnail"));
-        if (imagEntry.entry == null)
+        (ImageEntry entry, bool isNew) = SelectedImageRoll.GetImageEntry(res.Template.GetParameter<byte[]>("Report.Thumbnail"));
+        if (entry == null)
             return;
 
-        imagEntry.entry.NewData = res;
+        entry.NewData = res;
 
-        if (imagEntry.isNew)
-            SelectedImageRoll.AddImage(ImageAddPosition, imagEntry.entry);
+        if (isNew)
+            SelectedImageRoll.AddImage(ImageAddPosition, entry);
         else
-            AddImageResultEntry(imagEntry.entry);
+            AddImageResultEntry(entry);
+        }
+        finally
+        {
+            WorkingUpdate(ImageResultEntryDevices.L95, false);
+        }
+
     }
 
     [RelayCommand]
@@ -612,10 +638,10 @@ public partial class ImageResultsManager : ObservableRecipient,
             List<ImageEntry> newImages = [];
             foreach (var filePath in settings.SelectedFiles) // Iterate over selected files
             {
-                var newImage = SelectedImageRoll.GetImageEntry(filePath); // Order will be set in InsertImageAtOrder
-                if (newImage.entry != null && newImage.isNew)
+                (ImageEntry entry, bool isNew) = SelectedImageRoll.GetImageEntry(filePath); // Order will be set in InsertImageAtOrder
+                if (entry != null && isNew)
                 {
-                    newImages.Add(newImage.entry);
+                    newImages.Add(entry);
                 }
             }
             return newImages;

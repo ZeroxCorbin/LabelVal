@@ -102,11 +102,10 @@ public partial class ImageResultDeviceEntry_V5 : UserControl
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
 
-            if (_viewModel.Result != null)
-            {
+
                 _viewModel.ImageResultsManager.FocusedTemplate = _viewModel.CurrentTemplate;
                 _viewModel.ImageResultsManager.FocusedReport = _viewModel.CurrentReport;
-            }
+            
         }
         else
         {

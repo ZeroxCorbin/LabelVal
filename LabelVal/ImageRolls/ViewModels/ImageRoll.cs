@@ -182,6 +182,8 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         }
 
         await Task.WhenAll([.. taskList]);
+
+        ImageCount = ImageEntries.Count;
     }
     public async Task LoadImagesFromDatabase()
     {
@@ -221,7 +223,10 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
                 SaveImage(images[i]);
             }
         }
-       // SortObservableCollectionByList(images, ImageEntries);
+
+        ImageCount = ImageEntries.Count;
+        SaveRoll();
+        // SortObservableCollectionByList(images, ImageEntries);
     }
 
     //public static void SortObservableCollectionByList(List<ImageEntry> list, ObservableCollection<ImageEntry> observableCollection)
@@ -364,7 +369,6 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         if (ImageEntries.Remove(imageEntry))
         {
             Logger.LogInfo($"Image deleted from roll: {imageEntry.UID}");
-            ImageCount = ImageEntries.Count;
 
             ResetImageOrderAndSort();
         }
