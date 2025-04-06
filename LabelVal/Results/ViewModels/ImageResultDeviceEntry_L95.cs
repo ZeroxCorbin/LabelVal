@@ -52,11 +52,19 @@ public partial class ImageResultDeviceEntry_L95
     [ObservableProperty] private Sectors.Interfaces.ISector focusedCurrentSector = null;
 
     [ObservableProperty] private bool isWorking = false;
-    partial void OnIsWorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotWorking));
+    partial void OnIsWorkingChanged(bool value)
+    {
+        ImageResultsManager.WorkingUpdate(Device, value);
+        OnPropertyChanged(nameof(IsNotWorking));
+    }
     public bool IsNotWorking => !IsWorking;
 
     [ObservableProperty] private bool isFaulted = false;
-    partial void OnIsFaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotFaulted));
+    partial void OnIsFaultedChanged(bool value)
+    {
+        ImageResultsManager.FaultedUpdate(Device, value);
+        OnPropertyChanged(nameof(IsNotFaulted));
+    }
     public bool IsNotFaulted => !IsFaulted;
 
     ////95xx Only

@@ -66,8 +66,8 @@ public partial class ImageResultsManager : ObservableRecipient,
     {
         if (oldValue != null)
         {
-            oldValue.Images.CollectionChanged -= SelectedImageRoll_Images_CollectionChanged;
-            oldValue.Images.Clear();
+            oldValue.ImageEntries.CollectionChanged -= SelectedImageRoll_Images_CollectionChanged;
+            oldValue.ImageEntries.Clear();
         }
 
         if (newValue != null)
@@ -98,28 +98,39 @@ public partial class ImageResultsManager : ObservableRecipient,
     /// <see cref="SelectedPrinter"/>
     [ObservableProperty] private PrinterSettings selectedPrinter;
 
+    /// <see cref="IsV275Working"/>
+    [ObservableProperty] private bool isV275Working;
     /// <see cref="IsV275Selected"/>
     [ObservableProperty] private bool isV275Selected;
     partial void OnIsV275SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.V275); }
+    /// <see cref="IsV5Faulted"/>
+    [ObservableProperty] private bool isV275Faulted;
     public LabelHandlers V275Handler => SelectedV275Node?.Controller != null && SelectedV275Node.Controller.IsLoggedIn_Control
                 ? SelectedV275Node.Controller.IsSimulator
                     ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
                     : _shiftPressed ? LabelHandlers.CameraDetect : LabelHandlers.CameraTrigger
                 : LabelHandlers.Offline;
 
+    /// <see cref="IsV5Working"/>
+    [ObservableProperty] private bool isV5Working;
     /// <see cref="IsV5Selected"/>
     [ObservableProperty] private bool isV5Selected;
     partial void OnIsV5SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.V5); }
+    /// <see cref="IsV5Faulted"/>
+    [ObservableProperty] private bool isV5Faulted;
     public LabelHandlers V5Handler => SelectedV5?.Controller != null && SelectedV5.Controller.IsConnected
                 ? SelectedV5.Controller.IsSimulator
                     ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
                     : _shiftPressed ? LabelHandlers.CameraDetect : LabelHandlers.CameraTrigger
                 : LabelHandlers.Offline;
 
+    /// <see cref="IsL95Working"/>
+    [ObservableProperty] private bool isL95Working;
     /// <see cref="IsL95Selected"/>
     [ObservableProperty] private bool isL95Selected;
     partial void OnIsL95SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.L95); }
-
+    /// <see cref="IsL95Faulted"/>
+    [ObservableProperty] private bool isL95Faulted;
     public LabelHandlers L95Handler => SelectedL95?.Controller != null && SelectedL95.Controller.IsConnected && SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running
                 ? SelectedL95.Controller.IsSimulator
                     ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
@@ -128,9 +139,9 @@ public partial class ImageResultsManager : ObservableRecipient,
 
     public ImageResultsManager()
     {
-        WeakReferenceMessenger.Default.Register<RequestMessage<ImageRoll>>(
-        this,
-        (recipient, message) => message.Reply(SelectedImageRoll));
+        //WeakReferenceMessenger.Default.Register<RequestMessage<ImageRoll>>(
+        //this,
+        //(recipient, message) => message.Reply(SelectedImageRoll));
 
         _globalHook = Hook.GlobalEvents();
         _globalHook.KeyDown += _globalHook_KeyDown;
@@ -173,7 +184,7 @@ public partial class ImageResultsManager : ObservableRecipient,
         if (ret2.HasReceivedResponse)
             Receive(new PropertyChangedMessage<PrinterSettings>("", "", null, ret2.Response));
 
-        //RequestMessage<ImageRollEntry> ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRollEntry>());
+        //RequestMessage<ImageRoll> ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRoll>());
         //if (ret3.HasReceivedResponse)
         //    SelectedImageRoll = ret3.Response;
 
@@ -198,15 +209,15 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         System.Windows.Threading.DispatcherOperation clrTsk = Application.Current.Dispatcher.BeginInvoke(() => ImageResultsEntries.Clear());
 
-        if (SelectedImageRoll.Images.Count == 0)
+        if (SelectedImageRoll.ImageEntries.Count == 0)
             await SelectedImageRoll.LoadImages();
 
         _ = clrTsk.Wait();
 
-        foreach (ImageEntry img in SelectedImageRoll.Images)
+        foreach (ImageEntry img in SelectedImageRoll.ImageEntries)
             AddImageResultEntry(img);
 
-        SelectedImageRoll.Images.CollectionChanged += SelectedImageRoll_Images_CollectionChanged;
+        SelectedImageRoll.ImageEntries.CollectionChanged += SelectedImageRoll_Images_CollectionChanged;
 
     }
     private void SelectedImageRoll_Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -237,6 +248,7 @@ public partial class ImageResultsManager : ObservableRecipient,
             if (ire.ImageResultDeviceEntries.FirstOrDefault((e) => e.Device == ImageResultEntryDevices.V275) is ImageResultDeviceEntry_V275 ird)
             {
                 ird.ProcessFullReport(v275);
+                WorkingUpdate(ird.Device, false);
             }
         }
 
@@ -245,6 +257,7 @@ public partial class ImageResultsManager : ObservableRecipient,
             if (ire.ImageResultDeviceEntries.FirstOrDefault((e) => e.Device == ImageResultEntryDevices.V5) is ImageResultDeviceEntry_V5 ird)
             {
                 ird.ProcessFullReport(v5);
+                WorkingUpdate(ird.Device, false);
             }
         }
 
@@ -253,7 +266,9 @@ public partial class ImageResultsManager : ObservableRecipient,
             if (ire.ImageResultDeviceEntries.FirstOrDefault((e) => e.Device == ImageResultEntryDevices.L95) is ImageResultDeviceEntry_L95 ird)
             {
                 ird.ProcessFullReport(l95, true);
+                WorkingUpdate(ird.Device, false);
             }
+           
         }
 
         img.NewData = null;
@@ -263,21 +278,16 @@ public partial class ImageResultsManager : ObservableRecipient,
         ImageResultEntry itm = ImageResultsEntries.FirstOrDefault(ir => ir.SourceImage == img);
         if (itm != null)
         {
-            if (!SelectedImageRoll.ImageRollsDatabase.DeleteImage(SelectedImageRoll.UID, img.UID))
-            {
-                Logger.LogError("Could not delete image from database.");
-                return;
-            }
             _ = ImageResultsEntries.Remove(itm);
         }
 
-        // Reorder the remaining items in the list
-        var order = 1;
-        foreach (ImageResultEntry item in ImageResultsEntries.OrderBy(item => item.SourceImage.Order))
-        {
-            item.SourceImage.Order = order++;
-            SelectedImageRoll.SaveImage(item.SourceImage);
-        }
+        //// Reorder the remaining items in the list
+        //var order = 1;
+        //foreach (ImageResultEntry item in ImageResultsEntries.OrderBy(item => item.SourceImage.Order))
+        //{
+        //    item.SourceImage.Order = order++;
+        //    SelectedImageRoll.SaveImage(item.SourceImage);
+        //}
     }
 
     public void HandlerUpdate()
@@ -285,6 +295,26 @@ public partial class ImageResultsManager : ObservableRecipient,
         OnPropertyChanged(nameof(V275Handler));
         OnPropertyChanged(nameof(V5Handler));
         OnPropertyChanged(nameof(L95Handler));
+    }
+
+    public void WorkingUpdate(ImageResultEntryDevices device, bool state)
+    {
+        if (device == ImageResultEntryDevices.V275)
+            IsV275Working = state;
+        else if (device == ImageResultEntryDevices.V5)
+            IsV5Working = state;
+        else if (device == ImageResultEntryDevices.L95)
+            IsL95Working = state;
+    }
+
+    public void FaultedUpdate(ImageResultEntryDevices device, bool state)
+    {
+        if (device == ImageResultEntryDevices.V275)
+            IsV275Faulted = state;
+        else if (device == ImageResultEntryDevices.V5)
+            IsV5Faulted = state;
+        else if (device == ImageResultEntryDevices.L95)
+            IsL95Faulted = state;
     }
 
     public void ResetSelected(ImageResultEntryDevices device)
@@ -332,19 +362,25 @@ public partial class ImageResultsManager : ObservableRecipient,
                                                                                   switch (device)
                                                                                   {
                                                                                       case ImageResultEntryDevices.V275:
+
+                                                                                          WorkingUpdate(device, true);
+
                                                                                           if (V275Handler is LabelHandlers.CameraDetect or LabelHandlers.SimulatorDetect)
-                                                                                          {
-                                                                                              var label = new V275_REST_Lib.Controllers.Label(ProcessRepeat, null, V275Handler, SelectedImageRoll.SelectedGS1Table);
-                                                                                              await SelectedV275Node.Controller.ProcessLabel(0, label);
-                                                                                          }
-                                                                                          else
-                                                                                          {
-                                                                                              V275_REST_Lib.Controllers.FullReport res = await SelectedV275Node.Controller.ReadTask(-1);
-                                                                                              ProcessFullReport(res);
-                                                                                          }
+                                                                                              {
+                                                                                                  var label = new V275_REST_Lib.Controllers.Label(ProcessRepeat, null, V275Handler, SelectedImageRoll.SelectedGS1Table);
+                                                                                                  await SelectedV275Node.Controller.ProcessLabel(0, label);
+                                                                                              }
+                                                                                              else
+                                                                                              {
+                                                                                                  V275_REST_Lib.Controllers.FullReport res = await SelectedV275Node.Controller.ReadTask(-1);
+                                                                                                  ProcessFullReport(res);
+                                                                                              }
+                                                                           
 
                                                                                           break;
                                                                                       case ImageResultEntryDevices.V5:
+                                                                                          WorkingUpdate(device, true);
+
                                                                                           if (V5Handler is LabelHandlers.CameraDetect or LabelHandlers.SimulatorDetect)
                                                                                           {
                                                                                               var label = new V5_REST_Lib.Controllers.Label(ProcessRepeat, null, V5Handler, SelectedImageRoll.SelectedGS1Table);
@@ -358,6 +394,8 @@ public partial class ImageResultsManager : ObservableRecipient,
 
                                                                                           break;
                                                                                       case ImageResultEntryDevices.L95:
+                                                                                          WorkingUpdate(device, true);
+
                                                                                           FullReport res2 = SelectedL95.Controller.GetFullReport(-1);
                                                                                           ProcessFullReport(res2);
                                                                                           break;
@@ -380,7 +418,7 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         if (SelectedImageRoll.IsLocked)
         {
-            if (SelectedImageRoll.Images.FirstOrDefault(x => x.UID == ire.UID) == null)
+            if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
             {
                 Logger.LogWarning("The database is locked. Cannot add image.");
                 return;
@@ -407,7 +445,7 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         if (SelectedImageRoll.IsLocked)
         {
-            if (SelectedImageRoll.Images.FirstOrDefault(x => x.UID == ire.UID) == null)
+            if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
             {
                 Logger.LogWarning("The database is locked. Cannot add image.");
                 return;
@@ -432,7 +470,7 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         if (SelectedImageRoll.IsLocked)
         {
-            if (SelectedImageRoll.Images.FirstOrDefault(x => x.UID == ire.UID) == null)
+            if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
             {
                 Logger.LogWarning("The database is locked. Cannot add image.");
                 return;
@@ -477,13 +515,13 @@ public partial class ImageResultsManager : ObservableRecipient,
                     img.DeleteStored();
                 }
             }
-            _ = SelectedImageRoll.Images.Remove(imageToDelete.SourceImage);
+            SelectedImageRoll.DeleteImage(imageToDelete.SourceImage);
         }
         else
         if (answer == MessageDialogResult.Negative)
         {
             // Remove the image from the ImageRoll
-            _ = SelectedImageRoll.Images.Remove(imageToDelete.SourceImage);
+            SelectedImageRoll.DeleteImage(imageToDelete.SourceImage);
         }
     }
 

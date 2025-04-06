@@ -45,11 +45,19 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
     [ObservableProperty] private Sectors.Interfaces.ISector focusedCurrentSector = null;
 
     [ObservableProperty] private bool isWorking = false;
-    partial void OnIsWorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotWorking));
+    partial void OnIsWorkingChanged(bool value)
+    {
+        ImageResultsManager.WorkingUpdate(Device, value);
+        OnPropertyChanged(nameof(IsNotWorking));
+    }
     public bool IsNotWorking => !IsWorking;
 
     [ObservableProperty] private bool isFaulted = false;
-    partial void OnIsFaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotFaulted));
+    partial void OnIsFaultedChanged(bool value)
+    {
+        ImageResultsManager.FaultedUpdate(Device, value);
+        OnPropertyChanged(nameof(IsNotFaulted));
+    }
     public bool IsNotFaulted => !IsFaulted;
 
     [ObservableProperty] private bool isSelected = false;
@@ -184,8 +192,9 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
 
     [RelayCommand]
     public void Process()
-    {
-
+    {    
+        IsWorking = true;
+        IsFaulted = false;
 
         V275_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? [.. ResultRow.Template["sectors"]] : null, Handler, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table);
 
@@ -198,8 +207,7 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
             ? ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.ProcessLabel_Simulator(lab)
             : ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.ProcessLabel_Printer(lab, ImageResultEntry.PrintCount, ImageResultEntry.SelectedPrinter.PrinterName);
 
-        IsWorking = true;
-        IsFaulted = false;
+
     }
     private void ProcessRepeat(V275_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat.FullReport);
     public void ProcessFullReport(V275_REST_Lib.Controllers.FullReport report)
@@ -402,15 +410,26 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
     private Task<bool> Read() => ReadTask(0);
     public async Task<bool> ReadTask(int repeat)
     {
-        V275_REST_Lib.Controllers.FullReport report;
-        if ((report = await ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.GetFullReport(repeat, true)) == null)
+        try
         {
-            Logger.LogError("Unable to read the repeat report from the node.");
-            ClearCurrent();
-            return false;
-        }
+            IsWorking = true;
+            IsFaulted = false;
 
-        ProcessFullReport(report);
+            V275_REST_Lib.Controllers.FullReport report;
+            if ((report = await ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.GetFullReport(repeat, true)) == null)
+            {
+                Logger.LogError("Unable to read the repeat report from the node.");
+                ClearCurrent();
+                return false;
+            }
+
+            ProcessFullReport(report);
+        }
+        finally
+        {
+            IsWorking = false;
+            App.Current.Dispatcher.Invoke(ImageResultEntry.BringIntoViewHandler);
+        }
         return true;
     }
 

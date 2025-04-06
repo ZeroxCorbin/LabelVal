@@ -22,21 +22,18 @@ public partial class ImageRolls : UserControl
 
                 ImageRoll ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRolls.SelectedImageRoll));
 
-                _viewModel.SelectedUserImageRoll = null;
-                _viewModel.SelectedFixedImageRoll = null;
-
                 _viewModel.SelectedFixedImageRoll = ir != null ? _viewModel.FixedImageRolls.FirstOrDefault((e) => e.UID == ir.UID) : null;
                 _viewModel.SelectedUserImageRoll = ir != null ? _viewModel.UserImageRolls.FirstOrDefault((e) => e.UID == ir.UID) : null;
 
-                
+
             };
 
         tabCtlUserIR.Loaded += (s, e) =>
         {
-            if(_viewModel.SelectedUserImageRoll != null)
+            if (_viewModel.SelectedUserImageRoll != null)
             {
-                var item = tabCtlUserIR.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedUserImageRoll));
-                if(item != null)
+                CollectionViewGroup item = tabCtlUserIR.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedUserImageRoll));
+                if (item != null)
                 {
                     tabCtlUserIR.SelectedItem = item;
                 }
@@ -47,7 +44,7 @@ public partial class ImageRolls : UserControl
         {
             if (_viewModel.SelectedFixedImageRoll != null)
             {
-                var item = tabCtlFixedIR.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedFixedImageRoll));
+                CollectionViewGroup item = tabCtlFixedIR.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedFixedImageRoll));
                 if (item != null)
                 {
                     tabCtlFixedIR.SelectedItem = item;
@@ -56,14 +53,10 @@ public partial class ImageRolls : UserControl
         };
     }
 
-    private void UserControl_Unloaded(object sender, RoutedEventArgs e)
-    {
-        DialogParticipation.SetRegister(this, null);
-    }
+    private void UserControl_Unloaded(object sender, RoutedEventArgs e) => DialogParticipation.SetRegister(this, null);
 
     private List<ListView> fixedLists = [];
     private List<ListView> userLists = [];
-
 
     private void ListView_Loaded(object sender, RoutedEventArgs e)
     {
@@ -88,7 +81,7 @@ public partial class ImageRolls : UserControl
         if (sender is not ListView lst)
             return;
 
-        if(lst.SelectedItem is not ViewModels.ImageRoll ir)
+        if (lst.SelectedItem is not ViewModels.ImageRoll ir)
             return;
 
         if (Utilities.VisualTreeHelp.GetVisualParent<TabControl>(lst) is not TabControl tab)

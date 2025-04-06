@@ -48,10 +48,9 @@ public partial class ImageRolls : ObservableRecipient
     partial void OnSelectedFixedImageRollChanged(ImageRoll value)
     {
         if (value != null)
-        {
             SelectedUserImageRoll = null;
-            SelectedImageRoll = value;
-        }
+
+        SelectedImageRoll = value;
     }
 
     /// <summary>
@@ -66,7 +65,9 @@ public partial class ImageRolls : ObservableRecipient
     private ImageRoll selectedUserImageRoll;
     partial void OnSelectedUserImageRollChanged(ImageRoll value)
     {
-        SelectedFixedImageRoll = null;
+        if (value != null)
+            SelectedFixedImageRoll = null;
+
         SelectedImageRoll = value;
     }
 
@@ -386,7 +387,7 @@ public partial class ImageRolls : ObservableRecipient
         if (await OkCancelDialog("Delete Image Roll?", $"Are you sure you want to delete image roll {SelectedUserImageRoll.Name} and images and results?") != MessageDialogResult.Affirmative)
             return;
 
-        foreach (ImageEntry img in SelectedUserImageRoll.Images)
+        foreach (ImageEntry img in SelectedUserImageRoll.ImageEntries)
         {
 
             if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImage(SelectedUserImageRoll.UID, img.UID))

@@ -33,8 +33,7 @@
                 <componentmodel:SortDescription Direction="Ascending" PropertyName="SourceImage.Order" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
-
-
+        
         <DockPanel x:Key="V275Buttons">
 
             <!--  V275  -->
@@ -106,8 +105,8 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
                                 Foreground="White"
-                                IsIndeterminate="{Binding IsWorking}"
-                                Visibility="{Binding IsWorking, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                IsIndeterminate="{Binding IsV275Working}"
+                                Visibility="{Binding IsV275Working, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <!--  Camera  -->
                             <Grid
@@ -330,8 +329,8 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
                                 Foreground="White"
-                                IsIndeterminate="{Binding IsWorking}"
-                                Visibility="{Binding IsWorking, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                IsIndeterminate="{Binding IsV5Working}"
+                                Visibility="{Binding IsV5Working, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <!--  Camera  -->
                             <Grid
@@ -553,8 +552,8 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
                                 Foreground="White"
-                                IsIndeterminate="{Binding IsWorking}"
-                                Visibility="{Binding IsWorking, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                IsIndeterminate="{Binding IsL95Working}"
+                                Visibility="{Binding IsL95Working, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <!--  Camera  -->
                             <Grid
@@ -1484,17 +1483,6 @@
                     Style="{StaticResource MahApps.Styles.ScrollViewer}">
 
                     <ItemsControl ItemsSource="{Binding Source={StaticResource cvsImageResultsEntries}}">
-                        <!--<ItemsControl.Style>
-                        <Style TargetType="ItemsControl">
-                            <Setter Property="ItemsPanel">
-                                <Setter.Value>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel />
-                                    </ItemsPanelTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ItemsControl.Style>-->
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <local:ImageResultEntry />

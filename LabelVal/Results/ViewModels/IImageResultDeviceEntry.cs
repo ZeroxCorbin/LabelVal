@@ -4,13 +4,16 @@ using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using LabelVal.Utilities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
-
+[SQLite.StoreAsText]
+[JsonConverter(typeof(StringEnumConverter))]
 public enum ImageResultEntryDevices
 {
     V275,
@@ -19,6 +22,8 @@ public enum ImageResultEntryDevices
     All
 }
 
+[SQLite.StoreAsText]
+[JsonConverter(typeof(StringEnumConverter))]
 public enum ImageResultEntryImageTypes
 {
     Source,
