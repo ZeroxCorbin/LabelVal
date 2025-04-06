@@ -742,9 +742,9 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             Logger.LogWarning("No image to add.");
             return;
         }
-        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(RawImage, ImageAddPositions.Top);
+        var imagEntry = SelectedImageRoll.GetImageEntry(RawImage);
 
-        SelectedImageRoll.AddImage(ImageAddPositions.Top, imagEntry);
+        SelectedImageRoll.AddImage(ImageAddPositions.Top, imagEntry.entry);
     }
 
     private void Clear()

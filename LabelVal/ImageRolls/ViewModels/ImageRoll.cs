@@ -168,15 +168,17 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         List<Task> taskList = [];
 
         var sorted = images.OrderBy(x => x).ToList();
-        var order = 1;
         foreach (var f in sorted)
         {
-            ImageEntry image = GetNewImageEntry(f, order++);
-            if (image == null)
+            (ImageEntry entry, var isNew) = GetImageEntry(f);
+            if (entry == null)
                 continue;
 
-            Task tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(ImageAddPositions.Bottom, image)).Task;
-            taskList.Add(tsk);
+            if (isNew)
+            {
+                Task tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(ImageAddPositions.Bottom, entry)).Task;
+                taskList.Add(tsk);
+            }
         }
 
         await Task.WhenAll([.. taskList]);
@@ -219,47 +221,45 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
                 SaveImage(images[i]);
             }
         }
-        SortObservableCollectionByList(images, ImageEntries);
+       // SortObservableCollectionByList(images, ImageEntries);
     }
 
-    public static void SortObservableCollectionByList(List<ImageEntry> list, ObservableCollection<ImageEntry> observableCollection)
-    {
-        for (var i = 0; i < list.Count; i++)
-        {
-            ImageEntry item = list[i];
-            var currentIndex = observableCollection.IndexOf(item);
-            if (currentIndex != i)
-            {
-                observableCollection.Move(currentIndex, i);
-            }
-        }
-    }
+    //public static void SortObservableCollectionByList(List<ImageEntry> list, ObservableCollection<ImageEntry> observableCollection)
+    //{
+    //    for (var i = 0; i < list.Count; i++)
+    //    {
+    //        ImageEntry item = list[i];
+    //        var currentIndex = observableCollection.IndexOf(item);
+    //        if (currentIndex != i)
+    //        {
+    //            observableCollection.Move(currentIndex, i);
+    //        }
+    //    }
+    //}
 
-    public ImageEntry GetNewImageEntry(string path, int order)
+    public (ImageEntry entry, bool isNew) GetImageEntry(string path)
     {
         try
         {
             var ire = new ImageEntry(UID, path);
 
-            ImageEntry imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
-            if (imageEntry != null)
+            ImageEntry imageentry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
+            if (imageentry != null)
             {
                 Logger.LogWarning($"Image already exists in roll: {Path}");
-                return imageEntry;
+                return (imageentry, false);
             }
 
-            ire.Order = order;
-
-            return ire;
+            return (ire, true);
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, $"Failed to load image: {Path}");
         }
 
-        return null;
+        return (null, false);
     }
-    public ImageEntry GetNewImageEntry(byte[] rawImage, ImageAddPositions position)
+    public (ImageEntry entry, bool isNew) GetImageEntry(byte[] rawImage)
     {
         try
         {
@@ -269,19 +269,17 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
             if (imageentry != null)
             {
                 Logger.LogWarning($"Image already exists in roll: {Path}");
-                return imageentry;
+                return (imageentry, false);
             }
 
-            ire.Order = position == ImageAddPositions.Top ? 1 : ImageEntries.Count + 1;
-
-            return ire;
+            return (ire, true);
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, $"Failed to load image: {Path}");
         }
 
-        return null;
+        return (null, false);
     }
 
     [RelayCommand]
@@ -310,10 +308,10 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
             switch (position)
             {
                 case ImageAddPositions.Top:
-                    InsertImagesAtOrder(newImages, 0);
+                    InsertImagesAtOrder(newImages, 1);
                     break;
                 case ImageAddPositions.Bottom:
-                    InsertImagesAtOrder(newImages, ImageEntries.Count);
+                    InsertImagesAtOrder(newImages, ImageEntries.Count + 1);
                     break;
                 case ImageAddPositions.Above:
                     if (relativeTo == null)
@@ -321,7 +319,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
                         Logger.LogWarning("No image result provided for insertion above.");
                         return;
                     }
-                    InsertImagesAtOrder(newImages, ImageEntries.IndexOf(relativeTo));
+                    InsertImagesAtOrder(newImages, ImageEntries.IndexOf(relativeTo) + 1);
                     break;
                 case ImageAddPositions.Below:
                     if (relativeTo == null)
@@ -329,20 +327,11 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
                         Logger.LogWarning("No image result provided for insertion below.");
                         return;
                     }
-                    InsertImagesAtOrder(newImages, ImageEntries.IndexOf(relativeTo) + 1);
+                    InsertImagesAtOrder(newImages, ImageEntries.IndexOf(relativeTo) + 2);
                     break;
             }
+            ResetImageOrderAndSort();
 
-            var order = 1;
-            foreach (ImageEntry f in ImageEntries)
-            {
-                if (f.Order != order)
-                {
-                    f.Order = order;
-                    SaveImage(f);
-                }
-                order++;
-            }
         }
 
         OnPropertyChanged(nameof(ImageEntries));
@@ -350,13 +339,20 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
     public void InsertImagesAtOrder(List<ImageEntry> newImages, int targetOrder)
     {
+        var ordered = ImageEntries.OrderBy(x => x.Order).ToList();
         //// Adjust the order of existing items to make space for the new item
-        //AdjustOrdersBeforeInsert(targetOrder);
+        foreach (ImageEntry currentImage in ordered)
+        {
+            if (currentImage.Order >= targetOrder)
+                currentImage.Order += targetOrder + (newImages.Count - 1);
+        }
 
         // Insert each new image at the adjusted target order
         foreach (ImageEntry newImage in newImages)
         {
-            ImageEntries.Insert(targetOrder++, newImage);
+            newImage.Order = targetOrder;
+            ImageEntries.Add(newImage);
+            SaveImage(newImage);
         }
     }
 

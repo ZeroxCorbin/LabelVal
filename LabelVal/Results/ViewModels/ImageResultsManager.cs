@@ -202,26 +202,33 @@ public partial class ImageResultsManager : ObservableRecipient,
 
     }
 
+    private bool isLoadingImages = false;
     public async Task LoadImageResultsEntries()
     {
         if (SelectedImageRoll == null)
             return;
+        try
+        {
+            System.Windows.Threading.DispatcherOperation clrTsk = Application.Current.Dispatcher.BeginInvoke(() => ImageResultsEntries.Clear());
 
-        System.Windows.Threading.DispatcherOperation clrTsk = Application.Current.Dispatcher.BeginInvoke(() => ImageResultsEntries.Clear());
+            isLoadingImages = true;
+            if (SelectedImageRoll.ImageEntries.Count == 0)
+                await SelectedImageRoll.LoadImages();
 
-        if (SelectedImageRoll.ImageEntries.Count == 0)
-            await SelectedImageRoll.LoadImages();
+            _ = clrTsk.Wait();
 
-        _ = clrTsk.Wait();
+        }
+        finally
+        {
+            isLoadingImages = false;
+        }
 
-        foreach (ImageEntry img in SelectedImageRoll.ImageEntries)
-            AddImageResultEntry(img);
-
-        SelectedImageRoll.ImageEntries.CollectionChanged += SelectedImageRoll_Images_CollectionChanged;
-
+        //foreach (ImageEntry img in SelectedImageRoll.ImageEntries)
+        //    AddImageResultEntry(img);
     }
     private void SelectedImageRoll_Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
+        
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         {
             foreach (ImageEntry itm in e.NewItems.Cast<ImageEntry>())
@@ -268,7 +275,6 @@ public partial class ImageResultsManager : ObservableRecipient,
                 ird.ProcessFullReport(l95, true);
                 WorkingUpdate(ird.Device, false);
             }
-           
         }
 
         img.NewData = null;
@@ -339,10 +345,23 @@ public partial class ImageResultsManager : ObservableRecipient,
         }
     }
 
-    [RelayCommand] private void MoveImageTop(ImageResultEntry imageResult) => ChangeOrderTo(imageResult, 1);
-    [RelayCommand] private void MoveImageUp(ImageResultEntry imageResult) => AdjustOrderForMove(imageResult, false);
-    [RelayCommand] private void MoveImageDown(ImageResultEntry imageResult) => AdjustOrderForMove(imageResult, true);
-    [RelayCommand] private void MoveImageBottom(ImageResultEntry imageResult) => ChangeOrderTo(imageResult, ImageResultsEntries.Count);
+    [RelayCommand] private void MoveImageTop(ImageResultEntry imageResult)
+    {
+
+    }
+    [RelayCommand] private void MoveImageUp(ImageResultEntry imageResult)
+    {
+
+    }
+    [RelayCommand] private void MoveImageDown(ImageResultEntry imageResult)
+    {
+
+    }
+    [RelayCommand] private void MoveImageBottom(ImageResultEntry imageResult)
+    {
+
+    }
+
 
     [RelayCommand]
     private void AddImage() => AddImage(ImageAddPosition, null);
@@ -366,16 +385,15 @@ public partial class ImageResultsManager : ObservableRecipient,
                                                                                           WorkingUpdate(device, true);
 
                                                                                           if (V275Handler is LabelHandlers.CameraDetect or LabelHandlers.SimulatorDetect)
-                                                                                              {
-                                                                                                  var label = new V275_REST_Lib.Controllers.Label(ProcessRepeat, null, V275Handler, SelectedImageRoll.SelectedGS1Table);
-                                                                                                  await SelectedV275Node.Controller.ProcessLabel(0, label);
-                                                                                              }
-                                                                                              else
-                                                                                              {
-                                                                                                  V275_REST_Lib.Controllers.FullReport res = await SelectedV275Node.Controller.ReadTask(-1);
-                                                                                                  ProcessFullReport(res);
-                                                                                              }
-                                                                           
+                                                                                          {
+                                                                                              var label = new V275_REST_Lib.Controllers.Label(ProcessRepeat, null, V275Handler, SelectedImageRoll.SelectedGS1Table);
+                                                                                              await SelectedV275Node.Controller.ProcessLabel(0, label);
+                                                                                          }
+                                                                                          else
+                                                                                          {
+                                                                                              V275_REST_Lib.Controllers.FullReport res = await SelectedV275Node.Controller.ReadTask(-1);
+                                                                                              ProcessFullReport(res);
+                                                                                          }
 
                                                                                           break;
                                                                                       case ImageResultEntryDevices.V5:
@@ -426,13 +444,17 @@ public partial class ImageResultsManager : ObservableRecipient,
 
             //This assumes the image is already in the database and the results will be added to it.
         }
-        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(res.Image, ImageAddPosition);
-        if (imagEntry == null)
+
+        var imagEntry = SelectedImageRoll.GetImageEntry(res.Image);
+        if (imagEntry.entry == null)
             return;
 
-        imagEntry.NewData = res;
+        imagEntry.entry.NewData = res;
 
-        SelectedImageRoll.AddImage(ImageAddPosition, imagEntry);
+        if (imagEntry.isNew)
+            SelectedImageRoll.AddImage(ImageAddPosition, imagEntry.entry);
+        else
+            AddImageResultEntry(imagEntry.entry);
     }
 
     private void ProcessRepeat(V275_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat.FullReport);
@@ -454,12 +476,17 @@ public partial class ImageResultsManager : ObservableRecipient,
             //This assumes the image is already in the database and the results will be added to it.
         }
 
-        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(res.Image, ImageAddPosition);
-        if (imagEntry == null)
+        var imagEntry = SelectedImageRoll.GetImageEntry(res.Image);
+        if (imagEntry.entry == null)
             return;
 
-        imagEntry.NewData = res;
-        SelectedImageRoll.AddImage(ImageAddPosition, imagEntry);
+        imagEntry.entry.NewData = res;
+
+        if (imagEntry.isNew)
+            SelectedImageRoll.AddImage(ImageAddPosition, imagEntry.entry);
+        else
+            AddImageResultEntry(imagEntry.entry);
+
     }
     public void ProcessFullReport(FullReport res)
     {
@@ -482,13 +509,16 @@ public partial class ImageResultsManager : ObservableRecipient,
         //TODO Find a good name
         _ = res.Template.SetParameter<string>("Name", "Verify_1");
 
-        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(res.Template.GetParameter<byte[]>("Report.Thumbnail"), ImageAddPosition);
-        if (imagEntry == null)
+        var imagEntry = SelectedImageRoll.GetImageEntry(res.Template.GetParameter<byte[]>("Report.Thumbnail"));
+        if (imagEntry.entry == null)
             return;
 
-        imagEntry.NewData = res;
+        imagEntry.entry.NewData = res;
 
-        SelectedImageRoll.AddImage(ImageAddPositions.Top, imagEntry);
+        if (imagEntry.isNew)
+            SelectedImageRoll.AddImage(ImageAddPosition, imagEntry.entry);
+        else
+            AddImageResultEntry(imagEntry.entry);
     }
 
     [RelayCommand]
@@ -582,92 +612,16 @@ public partial class ImageResultsManager : ObservableRecipient,
             List<ImageEntry> newImages = [];
             foreach (var filePath in settings.SelectedFiles) // Iterate over selected files
             {
-                ImageEntry newImage = SelectedImageRoll.GetNewImageEntry(filePath, 0); // Order will be set in InsertImageAtOrder
-                if (newImage != null)
+                var newImage = SelectedImageRoll.GetImageEntry(filePath); // Order will be set in InsertImageAtOrder
+                if (newImage.entry != null && newImage.isNew)
                 {
-                    newImages.Add(newImage);
+                    newImages.Add(newImage.entry);
                 }
             }
             return newImages;
         }
 
         return null;
-    }
-
-    private void AdjustOrderForMove(ImageResultEntry itemToMove, bool increase)
-    {
-        // This method can be used to generalize the adjustment logic if needed
-        if (increase)
-        {
-            IncreaseOrder(itemToMove);
-        }
-        else
-        {
-            DecreaseOrder(itemToMove);
-        }
-    }
-    public void IncreaseOrder(ImageResultEntry itemToMove)
-    {
-        var currentItemOrder = itemToMove.SourceImage.Order;
-        ImageResultEntry nextItem = ImageResultsEntries.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder + 1);
-        if (nextItem != null)
-        {
-            // Swap the order values
-            itemToMove.SourceImage.Order++;
-            nextItem.SourceImage.Order--;
-
-            SelectedImageRoll.SaveImage(itemToMove.SourceImage);
-            SelectedImageRoll.SaveImage(nextItem.SourceImage);
-        }
-    }
-    public void DecreaseOrder(ImageResultEntry itemToMove)
-    {
-        var currentItemOrder = itemToMove.SourceImage.Order;
-        ImageResultEntry previousItem = ImageResultsEntries.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder - 1);
-        if (previousItem != null)
-        {
-            // Swap the order values
-            itemToMove.SourceImage.Order--;
-            previousItem.SourceImage.Order++;
-
-            SelectedImageRoll.SaveImage(itemToMove.SourceImage);
-            SelectedImageRoll.SaveImage(previousItem.SourceImage);
-        }
-    }
-
-    public void ChangeOrderTo(ImageResultEntry itemToMove, int newOrder)
-    {
-        var originalOrder = itemToMove.SourceImage.Order;
-
-        if (newOrder == originalOrder) return; // No change needed
-
-        // Temporarily assign a placeholder order to avoid conflicts during adjustment
-        itemToMove.SourceImage.Order = int.MinValue;
-
-        if (newOrder > originalOrder)
-        {
-            // Moving down in the list
-            foreach (ImageResultEntry item in ImageResultsEntries.Where(item => item.SourceImage.Order > originalOrder && item.SourceImage.Order <= newOrder))
-            {
-                item.SourceImage.Order--;
-                SelectedImageRoll.SaveImage(item.SourceImage);
-            }
-        }
-        else
-        {
-            // Moving up in the list
-            foreach (ImageResultEntry item in ImageResultsEntries.Where(item => item.SourceImage.Order < originalOrder && item.SourceImage.Order >= newOrder))
-            {
-                item.SourceImage.Order++;
-                SelectedImageRoll.SaveImage(item.SourceImage);
-            }
-        }
-
-        // Set the item to its new order
-        itemToMove.SourceImage.Order = newOrder;
-        SelectedImageRoll.SaveImage(itemToMove.SourceImage);
-
-        // Sort or notify UI if necessary
     }
 
     #region Recieve Messages
@@ -680,12 +634,18 @@ public partial class ImageResultsManager : ObservableRecipient,
     public void Receive(PropertyChangedMessage<ImageRoll> message)
     {
         if (SelectedImageRoll != null)
+        {
             SelectedImageRoll.PropertyChanged -= SelectedImageRoll_PropertyChanged;
+            SelectedImageRoll.ImageEntries.CollectionChanged -= SelectedImageRoll_Images_CollectionChanged;
+        }
 
         SelectedImageRoll = message.NewValue;
 
         if (SelectedImageRoll != null)
+        {
             SelectedImageRoll.PropertyChanged += SelectedImageRoll_PropertyChanged;
+            SelectedImageRoll.ImageEntries.CollectionChanged += SelectedImageRoll_Images_CollectionChanged;
+        }
     }
     /// <summary>
     /// This will update the Handler for all ImageResultDeviceEntries.

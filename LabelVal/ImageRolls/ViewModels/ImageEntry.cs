@@ -34,6 +34,10 @@ public partial class ImageEntry : ObservableObject
     private string name;
 
     [ObservableProperty][property: JsonProperty] private int order = -1;
+    partial void OnOrderChanged(int value)
+    {
+
+    }
     [JsonProperty] public bool IsPlaceholder { get; set; }
     [property: SQLite.Ignore] public object NewData { get; set; }
 

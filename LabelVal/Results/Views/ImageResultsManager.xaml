@@ -2,6 +2,7 @@
     x:Class="LabelVal.Results.Views.ImageResultsManager"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
     xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
     xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -17,12 +18,11 @@
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Classes"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels"
-        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
     Dialog:DialogParticipation.Register="{Binding}"
-    Unloaded="UserControl_Unloaded"
     d:DataContext="{d:DesignInstance Type=vm:ImageResultsManager}"
+    Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
-    
+
     <UserControl.Resources>
 
         <CollectionViewSource
@@ -33,7 +33,7 @@
                 <componentmodel:SortDescription Direction="Ascending" PropertyName="SourceImage.Order" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
-        
+
         <DockPanel x:Key="V275Buttons">
 
             <!--  V275  -->
