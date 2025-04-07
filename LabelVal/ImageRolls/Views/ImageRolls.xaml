@@ -541,43 +541,17 @@
                 <DockPanel>
                     <DockPanel>
 
-                        <Button
-                            Width="48"
-                            HorizontalAlignment="Center"
-                            Background="Teal"
-                            Click="btnOpenImageRollsLocation"
-                            DockPanel.Dock="Top"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}">
-                            <StackPanel
-                                Width="36"
-                                Height="36"
-                                Margin="0,2"
-                                VerticalAlignment="Center">
+                        <DockPanel DockPanel.Dock="Top" Background="Teal">
+                            <Button
+                                Width="48"
+                                Padding="3"
+                                HorizontalAlignment="Center"
+                                Click="btnOpenImageRollsLocation"
+                                Content="{iconPacks:Material Kind=FilmstripBoxMultiple, Height=30, Width=30}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+                        </DockPanel>
 
-                                <DockPanel>
-                                    <iconPacks:PackIconMaterial
-                                        Height="14"
-                                        HorizontalAlignment="Center"
-                                        Kind="ImageMultiple" />
-                                    <iconPacks:PackIconMaterial
-                                        Height="14"
-                                        HorizontalAlignment="Center"
-                                        Kind="ImageMultiple" />
-                                </DockPanel>
-
-                                <iconPacks:PackIconMaterial
-                                    Height="6"
-                                    Margin="0,0,0,1"
-                                    HorizontalAlignment="Center"
-                                    Kind="ChevronDown" />
-                                <iconPacks:PackIconMaterial
-                                    Width="36"
-                                    Height="14"
-                                    HorizontalAlignment="Center"
-                                    Kind="Database" />
-                            </StackPanel>
-                        </Button>
 
                         <Border DockPanel.Dock="Top" Style="{StaticResource imageBarHor}" />
 

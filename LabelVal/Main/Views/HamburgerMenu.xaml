@@ -81,32 +81,14 @@
             <Border Style="{StaticResource hamMenuBottomBar}" />
 
             <DockPanel Width="48" Height="48">
-                <StackPanel
-                    Width="36"
-                    Height="36"
-                    Margin="0,2"
-                    VerticalAlignment="Top">
-                    <DockPanel>
-                        <iconPacks:PackIconMaterial
-                            Height="14"
-                            HorizontalAlignment="Center"
-                            Kind="ImageMultiple" />
-                        <iconPacks:PackIconMaterial
-                            Height="14"
-                            HorizontalAlignment="Center"
-                            Kind="ListBoxOutline" />
-                    </DockPanel>
-                    <iconPacks:PackIconMaterial
-                        Height="6"
-                        Margin="0,0,0,1"
-                        HorizontalAlignment="Center"
-                        Kind="ChevronDown" />
+
                     <iconPacks:PackIconMaterial
                         Width="36"
-                        Height="14"
-                        HorizontalAlignment="Center"
-                        Kind="Database" />
-                </StackPanel>
+                    Height="36"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                           Kind="ListBoxOutline" />
+          
             </DockPanel>
 
             <Border Style="{StaticResource imageBar}" />
@@ -451,47 +433,29 @@
     </DataTemplate>
 
     <DataTemplate x:Key="imageRollMenuItem">
-        <DockPanel DataContext="{Binding Content.SelectedImageRoll}" >
+        <DockPanel DataContext="{Binding Content.SelectedImageRoll}">
 
             <DockPanel
                 Width="48"
-                MinHeight="48"
+                Height="48"
                 Background="Teal">
-                <StackPanel
-                    Width="36"
-                    Height="36"
-                    Margin="0,2"
-                    VerticalAlignment="Center">
 
-                    <DockPanel>
-                        <iconPacks:PackIconMaterial
-                            Height="14"
-                            HorizontalAlignment="Center"
-                            Kind="ImageMultiple" />
-                        <iconPacks:PackIconMaterial
-                            Height="14"
-                            HorizontalAlignment="Center"
-                            Kind="ImageMultiple" />
-                    </DockPanel>
 
-                    <iconPacks:PackIconMaterial
-                        Height="6"
-                        Margin="0,0,0,1"
-                        HorizontalAlignment="Center"
-                        Kind="ChevronDown" />
-                    <iconPacks:PackIconMaterial
-                        Width="36"
-                        Height="14"
-                        HorizontalAlignment="Center"
-                        Kind="Database" />
-                </StackPanel>
+                <iconPacks:PackIconMaterial
+                    Width="48"
+                    Height="48"
+                    Padding="6"
+                    HorizontalAlignment="Center"
+                    Kind="FilmstripBoxMultiple" />
+
             </DockPanel>
 
             <Border Style="{StaticResource imageBar}" />
 
-            <DockPanel HorizontalAlignment="Center"
+            <DockPanel
                 MaxWidth="240"
                 Margin="3"
+                HorizontalAlignment="Left"
                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">

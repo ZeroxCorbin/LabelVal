@@ -25,120 +25,7 @@
     </UserControl.Resources>
 
 
-    <StatusBar>
-        <StatusBarItem>
-            <Button x:Name="btnShowViewer" Click="btnShowViewer_Click">
-                <iconPacks:PackIconMaterial Kind="Exclamation" />
-            </Button>
-        </StatusBarItem>
-        <UniformGrid Rows="1">
-
-
-            <StatusBarItem Margin="3,0" VerticalAlignment="Top">
-                <StatusBarItem.Style>
-                    <Style TargetType="StatusBarItem">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding LatestInfo, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </StatusBarItem.Style>
-
-                <StackPanel>
-                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Latest Info" />
-                    <ScrollViewer MaxHeight="32">
-                        <TextBlock Text="{Binding LatestInfo.Message, Mode=OneWay}" TextWrapping="Wrap" />
-                    </ScrollViewer>
-                </StackPanel>
-
-            </StatusBarItem>
-            <StatusBarItem Margin="3,0" VerticalAlignment="Top">
-                <StatusBarItem.Style>
-                    <Style TargetType="StatusBarItem">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding LatestWarning, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </StatusBarItem.Style>
-
-                <StackPanel>
-                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Latest Warning" Foreground="Yellow"  />
-                    <ScrollViewer MaxHeight="32">
-                        <TextBlock Text="{Binding LatestWarning.Message, Mode=OneWay}" TextWrapping="Wrap" />
-                    </ScrollViewer>
-                </StackPanel>
-
-            </StatusBarItem>
-            <StatusBarItem Margin="3,0" VerticalAlignment="Top">
-                <StatusBarItem.Style>
-                    <Style TargetType="StatusBarItem">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding LatestError, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </StatusBarItem.Style>
-
-                <StackPanel>
-                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Latest Error" Foreground="DarkRed"/>
-                    <ScrollViewer MaxHeight="32">
-                        
-                    <TextBlock Text="{Binding LatestError.Message}"  TextWrapping="Wrap"/>
-                    </ScrollViewer>
-                </StackPanel>
-
-            </StatusBarItem>
-            <StatusBarItem Margin="3,0" VerticalAlignment="Top">
-                <StatusBarItem.Style>
-                    <Style TargetType="StatusBarItem">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding LatestDebug, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </StatusBarItem.Style>
-
-                <StackPanel>
-                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Latest Debug" />
-                    <ScrollViewer MaxHeight="32">
-                        <TextBlock Text="{Binding LatestDebug.Message}"  TextWrapping="Wrap"/>
-                    </ScrollViewer>
-                </StackPanel>
-
-            </StatusBarItem>
-        </UniformGrid>
-
-        <!--<StatusBarItem>
-
-            <TextBlock>
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding LatestDebug, Converter={StaticResource IsNullOrEmpty}}" Value="False">
-                                <Setter Property="Text" Value="{Binding LatestDebug.Message}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding LatestInfo, Converter={StaticResource IsNullOrEmpty}}" Value="False">
-                                <Setter Property="Text" Value="{Binding LatestInfo.Message}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding LatestWarning, Converter={StaticResource IsNullOrEmpty}}" Value="False">
-                                <Setter Property="Text" Value="{Binding LatestWarning.Message}" />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding LatestError, Converter={StaticResource IsNullOrEmpty}}" Value="False">
-                                <Setter Property="Text" Value="{Binding LatestError.Message}" />
-                                <Setter Property="Foreground" Value="Red" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-            </TextBlock>
-        </StatusBarItem>-->
-
+    <DockPanel>
         <Popup
             x:Name="popupViewer"
             Placement="Top"
@@ -147,5 +34,51 @@
             <local:LoggingViewer DataContext="{Binding .}" />
         </Popup>
 
-    </StatusBar>
+        <Button
+            x:Name="btnShowViewer"
+            Margin="3,0"
+            Click="btnShowViewer_Click">
+            <iconPacks:PackIconMaterial Kind="Exclamation" />
+        </Button>
+
+        <UniformGrid Columns="4" Rows="1">
+
+            <StackPanel Margin="6,0">
+                <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Latest Info" />
+                <ScrollViewer MaxHeight="32" HorizontalAlignment="Stretch">
+                    <TextBlock Text="{Binding LatestInfo.Message, Mode=OneWay}" TextWrapping="Wrap" />
+                </ScrollViewer>
+            </StackPanel>
+
+            <StackPanel Margin="6,0">
+                <TextBlock
+                    Foreground="Yellow"
+                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                    Text="Latest Warning" />
+                <ScrollViewer MaxHeight="32" HorizontalContentAlignment="Stretch">
+                    <TextBlock Text="{Binding LatestWarning.Message, Mode=OneWay}" TextWrapping="Wrap" />
+                </ScrollViewer>
+            </StackPanel>
+
+            <StackPanel Margin="6,0">
+                <TextBlock
+                    Foreground="DarkRed"
+                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                    Text="Latest Error" />
+                <ScrollViewer MaxHeight="32" HorizontalContentAlignment="Stretch">
+
+                    <TextBlock Text="{Binding LatestError.Message}" TextWrapping="Wrap" />
+                </ScrollViewer>
+            </StackPanel>
+
+            <StackPanel Margin="6,0">
+                <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Latest Debug" />
+                <ScrollViewer MaxHeight="32" HorizontalContentAlignment="Stretch">
+                    <TextBlock Text="{Binding LatestDebug.Message}" TextWrapping="Wrap" />
+                </ScrollViewer>
+            </StackPanel>
+
+        </UniformGrid>
+
+    </DockPanel>
 </UserControl>

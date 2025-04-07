@@ -30,41 +30,19 @@
 
             <DockPanel>
                 <DockPanel>
-                    <Button
-                        Width="48"
-                        HorizontalAlignment="Center"
-                        Click="btnOpenImageResultLocation"
-                        DockPanel.Dock="Top"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}">
-                        <StackPanel
-                            Width="36"
-                            Height="36"
-                            Margin="0,2"
-                            VerticalAlignment="Top">
-                            <DockPanel>
-                                <iconPacks:PackIconMaterial
-                                    Height="14"
-                                    HorizontalAlignment="Center"
-                                    Kind="ImageMultiple" />
-                                <iconPacks:PackIconMaterial
-                                    Height="14"
-                                    HorizontalAlignment="Center"
-                                    Kind="ListBoxOutline" />
-                            </DockPanel>
-                            <iconPacks:PackIconMaterial
-                                Height="6"
-                                Margin="0,0,0,1"
-                                HorizontalAlignment="Center"
-                                Kind="ChevronDown" />
-                            <iconPacks:PackIconMaterial
-                                Width="36"
-                                Height="14"
-                                HorizontalAlignment="Center"
-                                Kind="Database" />
-                        </StackPanel>
-                    </Button>
 
+                    <DockPanel DockPanel.Dock="Top" Background="Purple">
+                        <Button
+                                Width="48"
+                                Padding="3"
+                                HorizontalAlignment="Center"
+                                Click="btnOpenImageResultLocation"
+                                Content="{iconPacks:Material Kind=ListBoxOutline, Height=30, Width=30}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+                    </DockPanel>
+
+                    
                     <Border DockPanel.Dock="Top" Style="{StaticResource imageBarHor}" />
 
                     <mah:DropDownButton

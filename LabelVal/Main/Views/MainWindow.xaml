@@ -160,17 +160,16 @@
 
                         <mah:HamburgerMenu
                             x:Name="hamMenu"
-                            
                             DockPanel.Dock="Left"
                             HamburgerButtonTemplate="{StaticResource ImageRollEntryEditTemplate}"
-                            ItemClick="hamMenu_ItemClick"
                             IsPaneOpen="{Binding AppSettings.ShowMainMenu}"
+                            ItemClick="hamMenu_ItemClick"
                             ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"
                             ItemsSource="{Binding MenuItems}"
                             LayoutUpdated="hamMenu_LayoutUpdated"
                             SelectedItem="{Binding SelectedMenuItem}">
 
-                            <mah:HamburgerMenu.Style>
+                            <!--<mah:HamburgerMenu.Style>
                                 <Style TargetType="mah:HamburgerMenu">
                                     <Setter Property="DisplayMode" Value="CompactOverlay" />
                                     <Setter Property="Width" Value="52" />
@@ -201,7 +200,7 @@
                                         </MultiDataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </mah:HamburgerMenu.Style>
+                            </mah:HamburgerMenu.Style>-->
 
                             <mah:HamburgerMenu.ContentTemplate>
                                 <DataTemplate>

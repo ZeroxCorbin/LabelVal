@@ -79,10 +79,11 @@ public partial class MainWindow : ObservableRecipient
 
         MenuItems =
         [
-            new HamburgerMenuItem { Label = "ImageRolls", Content = ImageRolls },
+            new HamburgerMenuItem { Label = "ImageRolls", Content = ImageRolls }, 
+            new HamburgerMenuItem { Label = "Results", Content = ImageResultsDatabases },
             new HamburgerMenuItem { Label = "Printer", Content = Printer, IsNotSelectable = true },
             new HamburgerMenuItem { Label = "Run", Content = RunManager },
-            new HamburgerMenuItem { Label = "Results", Content = ImageResultsDatabases },
+
 
             new HamburgerMenuItem { Label = "V275", Content = V275Manager },
             new HamburgerMenuItem { Label = "V5", Content = ScannerManager },

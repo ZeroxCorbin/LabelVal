@@ -806,12 +806,35 @@
 
                 <DockPanel>
 
-                    <iconPacks:PackIconMaterial
-                        Width="36"
-                        Height="36"
-                        Margin="3"
-                        HorizontalAlignment="Center"
-                        Kind="Film" />
+                    <StackPanel>
+                        <iconPacks:PackIconMaterial
+                            Width="48"
+                            Height="40"
+                            Margin="1,0"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            Kind="FilmstripBox" />
+
+                        <Border Style="{StaticResource imageBarHor}" />
+                        
+                        <ListBox
+                            Padding="3"
+                            VerticalAlignment="Center"
+                            md:ListBoxAssist.CanUserToggleSelectedItem="True"
+                            BorderThickness="0"
+                            Focusable="False"
+                            SelectedValue="{Binding ImageAddPosition}"
+                            Style="{StaticResource MahApps.Styles.ListBox}">
+                            <ListBox.ItemContainerStyle>
+                                <Style BasedOn="{StaticResource MaterialDesignToolToggleListBoxItem}" TargetType="ListBoxItem">
+                                    <Setter Property="Padding" Value="4" />
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <x:Static Member="imageroll:ImageAddPositions.Top" />
+                            <x:Static Member="imageroll:ImageAddPositions.Bottom" />
+                        </ListBox>
+                    </StackPanel>
+
 
                     <Border Style="{StaticResource imageBar}" />
 
@@ -1012,26 +1035,6 @@
                         <DockPanel Margin="0,3,0,6">
 
                             <DockPanel HorizontalAlignment="Left">
-
-                                <ListBox
-                                    Width="48"
-                                    Height="48"
-                                    Margin="3,3,0,0"
-                                    VerticalAlignment="Center"
-                                    md:ListBoxAssist.CanUserToggleSelectedItem="True"
-                                    BorderThickness="0"
-                                    Focusable="False"
-                                    SelectedValue="{Binding ImageAddPosition}"
-                                    Style="{StaticResource MahApps.Styles.ListBox}">
-                                    <ListBox.ItemContainerStyle>
-                                        <Style BasedOn="{StaticResource MaterialDesignToolToggleListBoxItem}" TargetType="ListBoxItem">
-                                            <Setter Property="Padding" Value="4" />
-                                        </Style>
-                                    </ListBox.ItemContainerStyle>
-                                    <x:Static Member="imageroll:ImageAddPositions.Top" />
-                                    <x:Static Member="imageroll:ImageAddPositions.Bottom" />
-                                </ListBox>
-
 
                                 <Button
                                     Width="48"
