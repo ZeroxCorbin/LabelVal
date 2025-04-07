@@ -40,7 +40,10 @@
 
 
             <DataTemplate x:Key="ImageRollEntryEditTemplate">
-                <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" Height="48" Width="48"/>
+                <ToggleButton
+                    Width="48"
+                    Height="48"
+                    Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
             </DataTemplate>
         </ResourceDictionary>
 
@@ -157,10 +160,10 @@
                         <mah:HamburgerMenu
                             x:Name="hamMenu"
                             DockPanel.Dock="Left"
+                            HamburgerButtonTemplate="{StaticResource ImageRollEntryEditTemplate}"
                             ItemClick="hamMenu_ItemClick"
                             ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"
                             ItemsSource="{Binding MenuItems}"
-                            HamburgerButtonTemplate="{StaticResource ImageRollEntryEditTemplate}"
                             LayoutUpdated="hamMenu_LayoutUpdated"
                             SelectedItem="{Binding SelectedMenuItem}">
 

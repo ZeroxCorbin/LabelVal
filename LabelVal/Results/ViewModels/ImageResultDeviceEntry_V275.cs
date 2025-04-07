@@ -41,6 +41,8 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
     public ObservableCollection<Sectors.Interfaces.ISector> StoredSectors { get; } = [];
     public ObservableCollection<SectorDifferences> DiffSectors { get; } = [];
 
+    [ObservableProperty] private Sectors.Interfaces.ISector currentSelectedSector = null;
+
     [ObservableProperty] private Sectors.Interfaces.ISector focusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector focusedCurrentSector = null;
 

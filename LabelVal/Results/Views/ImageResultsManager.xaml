@@ -1375,7 +1375,7 @@
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     Style="{StaticResource MaterialDesignHamburgerToggleButton}">
                     <ToggleButton.LayoutTransform>
-                        <RotateTransform Angle="180"/>
+                        <RotateTransform Angle="180" />
                     </ToggleButton.LayoutTransform>
                 </ToggleButton>
             </md:Card>

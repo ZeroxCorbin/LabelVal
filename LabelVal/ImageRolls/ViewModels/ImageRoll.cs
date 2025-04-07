@@ -182,8 +182,6 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         }
 
         await Task.WhenAll([.. taskList]);
-
-        ImageCount = ImageEntries.Count;
     }
     public async Task LoadImagesFromDatabase()
     {

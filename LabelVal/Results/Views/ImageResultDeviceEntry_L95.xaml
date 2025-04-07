@@ -191,7 +191,7 @@
                                 <DataTrigger Binding="{Binding ImageResultsManager.SelectedDatabase.IsLocked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding CurrentSectorSelected, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                <DataTrigger Binding="{Binding CurrentSelectedSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                     <Setter Property="IsEnabled" Value="False" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
@@ -827,7 +827,7 @@
                         <ListBox
                             Padding="0,1,0,0"
                             ItemsSource="{Binding CurrentSectors}"
-                            SelectedItem="{Binding CurrentSectorSelected}"
+                            SelectedItem="{Binding CurrentSelectedSector}"
                             Tag="l95Current">
 
                             <ListBox.Style>
