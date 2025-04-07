@@ -39,8 +39,9 @@
             <printerConverters:PrinterSettingThousandthsToInches x:Key="printerSettingThousandthsToInches" />
 
 
-
-
+            <DataTemplate x:Key="ImageRollEntryEditTemplate">
+                <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" Height="48" Width="48"/>
+            </DataTemplate>
         </ResourceDictionary>
 
 
@@ -159,6 +160,7 @@
                             ItemClick="hamMenu_ItemClick"
                             ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"
                             ItemsSource="{Binding MenuItems}"
+                            HamburgerButtonTemplate="{StaticResource ImageRollEntryEditTemplate}"
                             LayoutUpdated="hamMenu_LayoutUpdated"
                             SelectedItem="{Binding SelectedMenuItem}">
 

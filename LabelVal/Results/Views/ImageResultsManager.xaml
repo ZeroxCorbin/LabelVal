@@ -1362,17 +1362,22 @@
                 </DockPanel>
             </md:Card>
 
-            <md:Card HorizontalAlignment="Right">
-                <Button
+            <md:Card HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <ToggleButton
                     x:Name="btnRightSideBar"
                     Width="48"
+                    Height="48"
                     Margin="6,0"
                     Click="btnRightSideBar_Click"
                     Content="{iconPacks:Material Kind=ArrowCollapseLeft,
                                                  Width=24,
                                                  Height=24}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+                    Style="{StaticResource MaterialDesignHamburgerToggleButton}">
+                    <ToggleButton.LayoutTransform>
+                        <RotateTransform Angle="180"/>
+                    </ToggleButton.LayoutTransform>
+                </ToggleButton>
             </md:Card>
 
         </DockPanel>
