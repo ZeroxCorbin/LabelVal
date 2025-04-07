@@ -13,5 +13,7 @@ namespace LabelVal.Main.ViewModels
 
         public bool ShowButtonText { get => App.Settings.GetValue("GlobalAppSettings_ShowButtonText", true, true); set => App.Settings.SetValue("GlobalAppSettings_ShowButtonText", value); }
 
+        public bool ShowMainMenu { get => App.Settings.GetValue("GlobalAppSettings_ShowMainMenu", true, true); set => App.Settings.SetValue("GlobalAppSettings_ShowMainMenu", value); }
+
     }
 }

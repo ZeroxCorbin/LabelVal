@@ -451,7 +451,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="imageRollMenuItem">
-        <DockPanel DataContext="{Binding Content.SelectedImageRoll}">
+        <DockPanel DataContext="{Binding Content.SelectedImageRoll}" >
 
             <DockPanel
                 Width="48"
@@ -489,7 +489,7 @@
 
             <Border Style="{StaticResource imageBar}" />
 
-            <DockPanel
+            <DockPanel HorizontalAlignment="Center"
                 MaxWidth="240"
                 Margin="3"
                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}">

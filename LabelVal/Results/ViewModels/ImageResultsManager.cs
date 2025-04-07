@@ -49,7 +49,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     partial void OnDualSectorColumnsChanged(bool value) => App.Settings.SetValue(nameof(DualSectorColumns), value);
 
     /// <see cref="ShowExtendedData"/>
-    [ObservableProperty] private bool showExtendedData = App.Settings.GetValue(nameof(ShowExtendedData), true, true);
+    [ObservableProperty] private bool showExtendedData = App.Settings.GetValue(nameof(ShowExtendedData), false, true);
     partial void OnShowExtendedDataChanged(bool value) => App.Settings.SetValue(nameof(ShowExtendedData), value);
 
     /// <see cref="HideErrorsWarnings"/>

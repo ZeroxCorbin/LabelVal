@@ -43,6 +43,7 @@
                 <ToggleButton
                     Width="48"
                     Height="48"
+                    IsChecked="{Binding DataContext.AppSettings.ShowMainMenu, Mode=OneWay, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}"
                     Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
             </DataTemplate>
         </ResourceDictionary>
@@ -159,9 +160,11 @@
 
                         <mah:HamburgerMenu
                             x:Name="hamMenu"
+                            
                             DockPanel.Dock="Left"
                             HamburgerButtonTemplate="{StaticResource ImageRollEntryEditTemplate}"
                             ItemClick="hamMenu_ItemClick"
+                            IsPaneOpen="{Binding AppSettings.ShowMainMenu}"
                             ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"
                             ItemsSource="{Binding MenuItems}"
                             LayoutUpdated="hamMenu_LayoutUpdated"
