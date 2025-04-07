@@ -31,18 +31,20 @@
             <DockPanel>
                 <DockPanel>
 
-                    <DockPanel DockPanel.Dock="Top" Background="Purple">
+                    <DockPanel Background="Purple" DockPanel.Dock="Top">
                         <Button
-                                Width="48"
-                                Padding="3"
-                                HorizontalAlignment="Center"
-                                Click="btnOpenImageResultLocation"
-                                Content="{iconPacks:Material Kind=ListBoxOutline, Height=30, Width=30}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+                            Width="48"
+                            Padding="3"
+                            HorizontalAlignment="Center"
+                            Click="btnOpenImageResultLocation"
+                            Content="{iconPacks:Material Kind=ListBoxOutline,
+                                                         Height=30,
+                                                         Width=30}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
                     </DockPanel>
 
-                    
+
                     <Border DockPanel.Dock="Top" Style="{StaticResource imageBarHor}" />
 
                     <mah:DropDownButton

@@ -82,13 +82,13 @@
 
             <DockPanel Width="48" Height="48">
 
-                    <iconPacks:PackIconMaterial
-                        Width="36"
+                <iconPacks:PackIconMaterial
+                    Width="36"
                     Height="36"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                           Kind="ListBoxOutline" />
-          
+                    Kind="ListBoxOutline" />
+
             </DockPanel>
 
             <Border Style="{StaticResource imageBar}" />
