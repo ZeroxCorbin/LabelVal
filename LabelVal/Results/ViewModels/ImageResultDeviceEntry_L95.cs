@@ -14,7 +14,6 @@ using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NHibernate.Linq.GroupJoin;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -92,7 +91,7 @@ public partial class ImageResultDeviceEntry_L95
     public ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEntry)
     {
         ImageResultEntry = imageResultsEntry;
-        this.IsActive = true;
+        IsActive = true;
     }
 
     public void Receive(PropertyChangedMessage<FullReport> message)
@@ -119,7 +118,7 @@ public partial class ImageResultDeviceEntry_L95
 
         try
         {
-            var row = ImageResultEntry.SelectedDatabase.Select_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
+            Result row = ImageResultEntry.SelectedDatabase.Select_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
 
             if (row == null)
             {
@@ -128,7 +127,7 @@ public partial class ImageResultDeviceEntry_L95
             }
 
             List<Sectors.Interfaces.ISector> tempSectors = [];
-            foreach (var rSec in row.Report.GetParameter<JArray>("AllReports"))
+            foreach (JToken rSec in row.Report.GetParameter<JArray>("AllReports"))
                 tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
 
             if (tempSectors.Count > 0)
@@ -150,6 +149,55 @@ public partial class ImageResultDeviceEntry_L95
         }
     }
 
+    [RelayCommand]
+    public async Task StoreSingle()
+    {
+        if (CurrentSectors.Count == 0)
+        {
+            Logger.LogError("No sectors to store.");
+            return;
+        }
+
+        if (ImageResultEntry.SelectedDatabase == null)
+        {
+            Logger.LogError("No image results database selected.");
+            return;
+        }
+
+        Sectors.Interfaces.ISector old = StoredSectors.FirstOrDefault(x => x.Template.Name == CurrentSelectedSector.Template.Name);
+        if (old != null)
+        {
+            if (await ImageResultEntry.OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+                return;
+        }
+
+        //Save the list to the database.
+        List<FullReport> temp = [];
+        foreach (Sectors.Interfaces.ISector sector in StoredSectors)
+            temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
+
+        temp.Add(new FullReport(((L95.Sectors.Sector)CurrentSelectedSector).Template.Original, ((L95.Sectors.Sector)CurrentSelectedSector).Report.Original));
+
+        JObject report = new()
+        {
+            ["AllReports"] = JArray.FromObject(temp)
+        };
+
+        _ = ImageResultEntry.SelectedDatabase.InsertOrReplace_Result(new Databases.Result
+        {
+            Device = Device,
+            ImageRollUID = ImageResultEntry.ImageRollUID,
+            SourceImageUID = ImageResultEntry.SourceImageUID,
+            RunUID = ImageResultEntry.ImageRollUID,
+
+            Template = CurrentTemplate,
+            Report = report,
+            Stored = CurrentImage,
+        });
+
+        GetStored();
+        ClearSingle();
+    }
     [RelayCommand]
     public async Task Store()
     {
@@ -174,7 +222,7 @@ public partial class ImageResultDeviceEntry_L95
         foreach (Sectors.Interfaces.ISector sector in CurrentSectors)
             temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
 
-        JObject report= new()
+        JObject report = new()
         {
             ["AllReports"] = JArray.FromObject(temp)
         };
@@ -185,10 +233,10 @@ public partial class ImageResultDeviceEntry_L95
             ImageRollUID = ImageResultEntry.ImageRollUID,
             SourceImageUID = ImageResultEntry.SourceImageUID,
             RunUID = ImageResultEntry.ImageRollUID,
+
             Template = CurrentTemplate,
             Report = report,
             Stored = CurrentImage,
-            
         };
 
         if (ImageResultEntry.SelectedDatabase.InsertOrReplace_Result(res) == null)
@@ -256,7 +304,6 @@ public partial class ImageResultDeviceEntry_L95
         //    foreach (Sectors.Interfaces.ISector sector in L95CurrentSectors)
 
         //        temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
-
 
         //    _ = SelectedDatabase.InsertOrReplace_L95Result(new Databases.L95Result
         //    {
@@ -375,6 +422,32 @@ public partial class ImageResultDeviceEntry_L95
     }
 
     [RelayCommand]
+    public void ClearSingle()
+    {
+        if (!App.Current.Dispatcher.CheckAccess())
+        {
+            _ = App.Current.Dispatcher.BeginInvoke(() => ClearCurrent());
+            return;
+        }
+
+        if (CurrentSelectedSector == null)
+        {
+            Logger.LogError("No sector selected to clear.");
+            return;
+        }
+
+        _ = CurrentSectors.Remove(CurrentSelectedSector);
+
+        if (CurrentSectors.Count == 0)
+        {
+            CurrentImage = null;
+            CurrentImageOverlay = null;
+        }
+        else
+            CurrentImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
+    }
+
+    [RelayCommand]
     public void ClearCurrent()
     {
         if (!App.Current.Dispatcher.CheckAccess())
@@ -386,9 +459,6 @@ public partial class ImageResultDeviceEntry_L95
         CurrentSectors.Clear();
         DiffSectors.Clear();
 
-        //CurrentTemplate = null;
-        CurrentReport = null;
-        CurrentImage = null;
         CurrentImageOverlay = null;
     }
 

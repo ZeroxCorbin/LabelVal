@@ -154,7 +154,6 @@
                 <Button
                     Width="28"
                     Command="{Binding StoreCommand}"
-                    CommandParameter="{x:Static vm:ImageResultEntryDevices.L95}"
                     Content="{iconPacks:Material Kind=StorePlusOutline}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     ToolTip="Store the current sectors and images to the database.">
@@ -177,8 +176,7 @@
                 <!--  Sectors Only  -->
                 <Button
                     Width="28"
-                    Command="{Binding StoreCommand}"
-                    CommandParameter="{x:Static vm:ImageResultEntryDevices.L95}"
+                    Command="{Binding StoreSingleCommand}"
                     Content="{iconPacks:Material Kind=ChevronDoubleLeft}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     ToolTip="Store the selected sector to the database.">
@@ -205,7 +203,6 @@
                 <Button
                     Width="28"
                     Command="{Binding ClearCurrentCommand}"
-                    CommandParameter="{x:Static vm:ImageResultEntryDevices.L95}"
                     Content="{iconPacks:MaterialDesign Kind=Clear}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     ToolTip="Clear the selected sector.">
