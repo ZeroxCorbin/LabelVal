@@ -10,12 +10,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
-public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntry) : ObservableObject, IImageResultDeviceEntry
+public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultDeviceEntry
 {
-    public ImageResultEntry ImageResultEntry { get; } = imageResultsEntry;
+    public ImageResultEntry ImageResultEntry { get; }
     public ImageResultsManager ImageResultsManager => ImageResultEntry.ImageResultsManager;
 
     public ImageResultEntryDevices Device { get; } = ImageResultEntryDevices.V5;
@@ -53,6 +54,8 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
         OnPropertyChanged(nameof(IsNotWorking));
     }
     public bool IsNotWorking => !IsWorking;
+    private const int _isWorkingTimerInterval = 30000;
+    private Timer _IsWorkingTimer = new Timer(_isWorkingTimerInterval);
 
     [ObservableProperty] private bool isFaulted = false;
     partial void OnIsFaultedChanged(bool value)
@@ -63,6 +66,20 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
     public bool IsNotFaulted => !IsFaulted;
 
     [ObservableProperty] private bool isSelected = false;
+
+    public ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntry)
+    {
+        ImageResultEntry = imageResultsEntry;
+        _IsWorkingTimer.AutoReset = false;
+        _IsWorkingTimer.Elapsed += _IsWorkingTimer_Elapsed;
+    }
+
+    private void _IsWorkingTimer_Elapsed(object sender, ElapsedEventArgs e)
+    {
+        Logger.LogError($"Working timer elapsed for {Device}.");
+        IsWorking = false;
+        IsFaulted = true;
+    }
     partial void OnIsSelectedChanging(bool value) { if (value) ImageResultEntry.ImageResultsManager.ResetSelected(Device); }
 
     public LabelHandlers Handler => ImageResultsManager?.SelectedV5?.Controller != null && ImageResultsManager.SelectedV5.Controller.IsConnected ? ImageResultsManager.SelectedV5.Controller.IsSimulator

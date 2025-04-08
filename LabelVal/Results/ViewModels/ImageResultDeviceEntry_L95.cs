@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
@@ -59,6 +60,8 @@ public partial class ImageResultDeviceEntry_L95
         OnPropertyChanged(nameof(IsNotWorking));
     }
     public bool IsNotWorking => !IsWorking;
+    private const int _isWorkingTimerInterval = 30000;
+    private Timer _IsWorkingTimer = new Timer(_isWorkingTimerInterval);
 
     [ObservableProperty] private bool isFaulted = false;
     partial void OnIsFaultedChanged(bool value)
@@ -91,7 +94,18 @@ public partial class ImageResultDeviceEntry_L95
     public ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEntry)
     {
         ImageResultEntry = imageResultsEntry;
+
+        _IsWorkingTimer.AutoReset = false;
+        _IsWorkingTimer.Elapsed += _IsWorkingTimer_Elapsed;
+
         IsActive = true;
+    }
+
+    private void _IsWorkingTimer_Elapsed(object sender, ElapsedEventArgs e)
+    {
+        Logger.LogError($"Working timer elapsed for {Device}.");
+        IsWorking = false;
+        IsFaulted = true;
     }
 
     public void Receive(PropertyChangedMessage<FullReport> message)
