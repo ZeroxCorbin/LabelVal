@@ -333,7 +333,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
                     InsertImagesAtOrder(newImages, ImageEntries.IndexOf(relativeTo) + 2);
                     break;
             }
-            ResetImageOrderAndSort();
+
 
         }
 
