@@ -9,6 +9,8 @@ namespace LabelVal.Utilities;
 /// Represents the different types of scaling.
 /// </summary>
 /// <seealso cref="https://msdn.microsoft.com/en-us/library/windows/desktop/dn280511.aspx"/>
+/// [SQLite.StoreAsText]
+
 public enum DPITypes
 {
     EFFECTIVE = 0,

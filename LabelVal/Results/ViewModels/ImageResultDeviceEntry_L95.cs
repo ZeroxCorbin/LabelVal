@@ -474,6 +474,7 @@ public partial class ImageResultDeviceEntry_L95
         DiffSectors.Clear();
 
         CurrentImageOverlay = null;
+        CurrentImage = null;
     }
 
     [RelayCommand]

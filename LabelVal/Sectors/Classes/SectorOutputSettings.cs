@@ -1,13 +1,21 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json.Converters;
+using SQLite;
+using System.Text.Json.Serialization;
 
 namespace LabelVal.Sectors.Classes;
 
+[JsonConverter(typeof(StringEnumConverter))]
+[StoreAsText]
 public enum SectorOutputType
 {
     Delimited,
     Excel,
     JSON
 }
+
+[JsonConverter(typeof(StringEnumConverter))]
+[StoreAsText]
 
 public enum SectorOutputDelimiter
 {
@@ -17,6 +25,8 @@ public enum SectorOutputDelimiter
     Pipe = '|'
 }
 
+[JsonConverter(typeof(StringEnumConverter))]
+[StoreAsText]
 public enum SectorOutputStringQuote
 {
     None,
@@ -24,6 +34,8 @@ public enum SectorOutputStringQuote
     Delimiter
 }
 
+[JsonConverter(typeof(StringEnumConverter))]
+[StoreAsText]
 public enum SectorOutputIncludeParameters
 {
     Relevant,

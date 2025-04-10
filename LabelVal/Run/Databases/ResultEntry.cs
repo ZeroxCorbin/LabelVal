@@ -1,11 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Results.Databases;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SQLite;
 
 namespace LabelVal.Run.Databases;
-
-[StoreAsText]
+[SQLite.StoreAsText]
+[JsonConverter(typeof(StringEnumConverter))]
 public enum DeviceTypes
 {
     V275,
@@ -13,6 +14,7 @@ public enum DeviceTypes
     L95
 }
 
+[JsonConverter(typeof(StringEnumConverter))]
 [StoreAsText]
 public enum ImageResultTypes
 {

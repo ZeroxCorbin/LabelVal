@@ -34,3 +34,6 @@ Popups need to be flyouts.
 V5 color of the bounding box.
 
 Show software version somewhere in the results.
+
+Export sector data as CSV. Is not working for Current sectors.
+
