@@ -15,6 +15,9 @@ public static class ListReportDataExtensions
         //I want to know if the point falls within the sector
         point.X >= sector.Report.Left && point.X <= sector.Report.Left + sector.Report.Width &&
                point.Y >= sector.Report.Top && point.Y <= sector.Report.Top + sector.Report.Height;
+    public static bool Contains(this System.Drawing.Point point, System.Drawing.Point contains, double radius = 50) => 
+        Math.Sqrt(Math.Pow(point.X - contains.X, 2) + Math.Pow(point.Y - contains.Y, 2)) <= radius;
+
 
     public static string GetSectorReport(this ISector sector, string rollID, bool toClipboard = false, bool noPArams = false)
     {

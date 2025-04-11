@@ -20,6 +20,8 @@ public class SectorTemplate : ISectorTemplate
     public double Height { get; set; }
     public double AngleDeg { get; set; }
 
+    public System.Drawing.Point CenterPoint => new System.Drawing.Point((int)(Left + Width / 2), (int)(Top + Height / 2));
+
     public double Orientation { get; set; }
     public TemplateMatchMode MatchSettings { get; set; }
     public BlemishMaskLayers BlemishMask { get; set; }

@@ -541,13 +541,15 @@
                 <DockPanel>
                     <DockPanel>
 
-                        <DockPanel DockPanel.Dock="Top" Background="Teal">
+                        <DockPanel Background="Teal" DockPanel.Dock="Top">
                             <Button
                                 Width="48"
                                 Padding="3"
                                 HorizontalAlignment="Center"
                                 Click="btnOpenImageRollsLocation"
-                                Content="{iconPacks:Material Kind=FilmstripBoxMultiple, Height=30, Width=30}"
+                                Content="{iconPacks:Material Kind=FilmstripBoxMultiple,
+                                                             Height=30,
+                                                             Width=30}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
                         </DockPanel>

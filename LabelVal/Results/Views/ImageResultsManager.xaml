@@ -816,7 +816,7 @@
                             Kind="FilmstripBox" />
 
                         <Border Style="{StaticResource imageBarHor}" />
-                        
+
                         <ListBox
                             Padding="3"
                             VerticalAlignment="Center"

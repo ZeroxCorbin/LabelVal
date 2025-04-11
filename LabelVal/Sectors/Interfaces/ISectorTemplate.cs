@@ -17,6 +17,8 @@ public interface ISectorTemplate
     double Height { get; set; }
     double AngleDeg { get; set; }
 
+    System.Drawing.Point CenterPoint { get; }
+
     double Orientation { get; set; }
 
     TemplateMatchMode MatchSettings { get; set; }

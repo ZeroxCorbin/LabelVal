@@ -29,6 +29,19 @@
 
             <converters:Double2String x:Key="double2String" />
 
+            <CollectionViewSource x:Key="StoredSectorsViewSource" Source="{Binding StoredSectors}">
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription PropertyName="CenterPoint.X" />
+                    <componentmodel:SortDescription PropertyName="CenterPoint.Y" />
+                </CollectionViewSource.SortDescriptions>
+            </CollectionViewSource>
+
+            <CollectionViewSource x:Key="CurrentSectorsViewSource" Source="{Binding CurrentSectors}">
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription PropertyName="CenterPoint.X" />
+                    <componentmodel:SortDescription PropertyName="CenterPoint.Y" />
+                </CollectionViewSource.SortDescriptions>
+            </CollectionViewSource>
 
             <!--  Stored Toolbar  -->
             <DockPanel x:Key="Stored_Toolbar" x:Shared="False">

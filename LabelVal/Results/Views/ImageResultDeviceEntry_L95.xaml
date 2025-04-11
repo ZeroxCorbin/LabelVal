@@ -6,6 +6,7 @@
     xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:converters="clr-namespace:LabelVal.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:LabelVal.Results.Helpers"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:LabelVal.Results.Views"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
@@ -23,6 +24,20 @@
                 <ResourceDictionary Source="ImageDetailsTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+
+            <CollectionViewSource x:Key="StoredSectorsViewSource" Source="{Binding StoredSectors}">
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription PropertyName="CenterPoint.X" />
+                    <componentmodel:SortDescription PropertyName="CenterPoint.Y" />
+                </CollectionViewSource.SortDescriptions>
+            </CollectionViewSource>
+
+            <CollectionViewSource x:Key="CurrentSectorsViewSource" Source="{Binding CurrentSectors}">
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription PropertyName="CenterPoint.X" />
+                    <componentmodel:SortDescription PropertyName="CenterPoint.Y" />
+                </CollectionViewSource.SortDescriptions>
+            </CollectionViewSource>
 
             <DockPanel x:Key="L95Stored_Toolbar" x:Shared="False">
                 <Border Margin="3,0" Style="{StaticResource imageBar}" />
@@ -519,7 +534,7 @@
                         <ListBox
                             Padding="0,1,0,0"
                             DockPanel.Dock="Top"
-                            ItemsSource="{Binding StoredSectors}"
+                            ItemsSource="{Binding Source={StaticResource StoredSectorsViewSource}}"
                             Tag="l95Stored">
 
                             <ListBox.Style>
@@ -823,7 +838,7 @@
 
                         <ListBox
                             Padding="0,1,0,0"
-                            ItemsSource="{Binding CurrentSectors}"
+                            ItemsSource="{Binding Source={StaticResource CurrentSectorsViewSource}}"
                             SelectedItem="{Binding CurrentSelectedSector}"
                             Tag="l95Current">
 

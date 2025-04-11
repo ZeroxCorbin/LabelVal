@@ -25,5 +25,14 @@ public partial interface ISector
     bool IsFocused { get; set; }
     bool IsMouseOver { get; set; }
 
+    public static bool FallsWithin(System.Drawing.Point point, ISector sector, double radius = 50)
+    {
+        //I want to know if the point is within a radius of the center point of the sector
+
+        return point.X >= sector.Report.CenterPoint.X - radius &&
+               point.X <= sector.Report.CenterPoint.X + radius &&
+               point.Y >= sector.Report.CenterPoint.Y - radius &&
+               point.Y <= sector.Report.CenterPoint.Y + radius;
+    }
 }
 

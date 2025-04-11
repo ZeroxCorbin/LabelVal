@@ -270,8 +270,15 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         else if (img.NewData is FullReport l95)
         {
+            System.Drawing.Point center = new(l95.Template.GetParameter<int>("Report.X1") + (l95.Template.GetParameter<int>("Report.SizeX") / 2), l95.Template.GetParameter<int>("Report.Y1") + (l95.Template.GetParameter<int>("Report.SizeY") / 2));
             if (ire.ImageResultDeviceEntries.FirstOrDefault((e) => e.Device == ImageResultEntryDevices.L95) is ImageResultDeviceEntry_L95 ird)
             {
+                string name = null;
+                if ((name = ire.GetName(center)) == null)
+                    name ??= $"Verify_{ird.CurrentSectors.Count + 1}";
+
+                _ = l95.Template.SetParameter<string>("Name", name);
+
                 ird.ProcessFullReport(l95, true);
                 WorkingUpdate(ird.Device, false);
             }
@@ -372,10 +379,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     {
         List<ImageEntry> newImages = PromptForNewImages(); // Prompt the user to select an image or multiple images
 
-        if (newImages != null && newImages.Count != 0)
-        {
-            SelectedImageRoll.AddImages(position, newImages, imageResult?.SourceImage);
-        }
+        SelectedImageRoll.AddImages(ImageAddPositions.Top, newImages);
     }
 
     [RelayCommand]
@@ -450,7 +454,7 @@ public partial class ImageResultsManager : ObservableRecipient,
                 //This assumes the image is already in the database and the results will be added to it.
             }
 
-            (ImageEntry entry, bool isNew) = SelectedImageRoll.GetImageEntry(res.Image);
+            (ImageEntry entry, var isNew) = SelectedImageRoll.GetImageEntry(res.Image);
             if (entry == null)
                 return;
 
@@ -472,79 +476,73 @@ public partial class ImageResultsManager : ObservableRecipient,
     {
         try
         {
-        if (res == null)
-            return;
-
-        var ire = new ImageEntry(SelectedImageRoll.UID, res.Image, SelectedImageRoll.TargetDPI);
-
-        if (SelectedImageRoll.IsLocked)
-        {
-            if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
-            {
-                Logger.LogWarning("The database is locked. Cannot add image.");
+            if (res == null)
                 return;
+
+            var ire = new ImageEntry(SelectedImageRoll.UID, res.Image, SelectedImageRoll.TargetDPI);
+
+            if (SelectedImageRoll.IsLocked)
+            {
+                if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
+                {
+                    Logger.LogWarning("The database is locked. Cannot add image.");
+                    return;
+                }
+
+                //This assumes the image is already in the database and the results will be added to it.
             }
 
-            //This assumes the image is already in the database and the results will be added to it.
-        }
+            (ImageEntry entry, var isNew) = SelectedImageRoll.GetImageEntry(res.Image);
+            if (entry == null)
+                return;
 
-        (ImageEntry entry, bool isNew) = SelectedImageRoll.GetImageEntry(res.Image);
-        if (entry == null)
-            return;
+            entry.NewData = res;
 
-        entry.NewData = res;
-
-        if (isNew)
-            SelectedImageRoll.AddImage(ImageAddPosition, entry);
-        else
-            AddImageResultEntry(entry);
+            if (isNew)
+                SelectedImageRoll.AddImage(ImageAddPosition, entry);
+            else
+                AddImageResultEntry(entry);
         }
         finally
         {
             WorkingUpdate(ImageResultEntryDevices.V275, false);
         }
-
-
     }
     public void ProcessFullReport(FullReport res)
     {
         try
         {
-        if (res == null || res.Report == null)
-            return;
-
-        var ire = new ImageEntry(SelectedImageRoll.UID, res.Template.GetParameter<byte[]>("Report.Thumbnail"), SelectedImageRoll.TargetDPI);
-
-        if (SelectedImageRoll.IsLocked)
-        {
-            if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
-            {
-                Logger.LogWarning("The database is locked. Cannot add image.");
+            if (res == null || res.Report == null)
                 return;
+
+            var ire = new ImageEntry(SelectedImageRoll.UID, res.Template.GetParameter<byte[]>("Report.Thumbnail"), SelectedImageRoll.TargetDPI);
+
+            if (SelectedImageRoll.IsLocked)
+            {
+                if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
+                {
+                    Logger.LogWarning("The database is locked. Cannot add image.");
+                    return;
+                }
+
+                //This assumes the image is already in the database and the results will be added to it.
             }
 
-            //This assumes the image is already in the database and the results will be added to it.
-        }
+            (ImageEntry entry, var isNew) = SelectedImageRoll.GetImageEntry(res.Template.GetParameter<byte[]>("Report.Thumbnail"));
+            if (entry == null)
+                return;
 
-        //TODO Find a good name
-        _ = res.Template.SetParameter<string>("Name", "Verify_1");
+            entry.NewData = res;
 
-        (ImageEntry entry, bool isNew) = SelectedImageRoll.GetImageEntry(res.Template.GetParameter<byte[]>("Report.Thumbnail"));
-        if (entry == null)
-            return;
-
-        entry.NewData = res;
-
-        if (isNew)
-            SelectedImageRoll.AddImage(ImageAddPosition, entry);
-        else
-            AddImageResultEntry(entry);
+            if (isNew)
+                SelectedImageRoll.AddImage(ImageAddPosition, entry);
+            else
+                AddImageResultEntry(entry);
         }
         finally
         {
             WorkingUpdate(ImageResultEntryDevices.L95, false);
         }
-
     }
 
     [RelayCommand]
@@ -638,7 +636,7 @@ public partial class ImageResultsManager : ObservableRecipient,
             List<ImageEntry> newImages = [];
             foreach (var filePath in settings.SelectedFiles) // Iterate over selected files
             {
-                (ImageEntry entry, bool isNew) = SelectedImageRoll.GetImageEntry(filePath); // Order will be set in InsertImageAtOrder
+                (ImageEntry entry, var isNew) = SelectedImageRoll.GetImageEntry(filePath); // Order will be set in InsertImageAtOrder
                 if (entry != null && isNew)
                 {
                     newImages.Add(entry);

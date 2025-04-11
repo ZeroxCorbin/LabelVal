@@ -5,6 +5,8 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
+using LabelVal.Sectors.Extensions;
+using LabelVal.Sectors.Interfaces;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
@@ -247,6 +249,57 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         //        L95CurrentImageOverlay = null;
         //    }
         //}
+    }
+
+    public string GetName(System.Drawing.Point center)
+    {
+        string name = string.Empty;
+        foreach (IImageResultDeviceEntry dev in ImageResultDeviceEntries)
+        {
+            //Check the Report center points
+            foreach(var sec in dev.StoredSectors)
+            {
+                if(sec.Report.CenterPoint.Contains(center))
+                {
+                    name = sec.Template.Name;
+                    break;
+                }
+            }
+            if (!string.IsNullOrEmpty(name)) break;
+
+            foreach (var sec in dev.CurrentSectors)
+            {
+                if (sec.Report.CenterPoint.Contains(center))
+                {
+                    name = sec.Template.Name;
+                    break;
+                }
+            }
+            if (!string.IsNullOrEmpty(name)) break;
+
+            //Check the Template center points
+            foreach (var sec in dev.StoredSectors)
+            {
+                if (sec.Template.CenterPoint.Contains(center))
+                {
+                    name = sec.Template.Name;
+                    break;
+                }
+            }
+            if (!string.IsNullOrEmpty(name)) break;
+
+            foreach (var sec in dev.CurrentSectors)
+            {
+                if (sec.Template.CenterPoint.Contains(center))
+                {
+                    name = sec.Template.Name;
+                    break;
+                }
+            }
+            if (!string.IsNullOrEmpty(name)) break;
+
+        }
+        return name;
     }
 
     public void HandlerUpdate(ImageResultEntryDevices device)

@@ -377,28 +377,11 @@ public partial class ImageResultDeviceEntry_L95
                 return;
             }
 
-            //CurrentTemplate = message.Template;
-            //CurrentReport = message.Report;
-
             System.Drawing.Point center = new(message.Template.GetParameter<int>("Report.X1") + (message.Template.GetParameter<int>("Report.SizeX") / 2), message.Template.GetParameter<int>("Report.Y1") + (message.Template.GetParameter<int>("Report.SizeY") / 2));
 
             string name = null;
-
-            foreach (ISector sec in StoredSectors)
-                if (center.FallsWithin(sec))
-                    name = sec.Template.Username;
-
-            //if (name == null)
-            //    foreach (ISector sec in V275StoredSectors)
-            //        if (center.FallsWithin(sec))
-            //            name = sec.Template.Username;
-
-            //if (name == null)
-            //    foreach (ISector sec in V5StoredSectors)
-            //        if (center.FallsWithin(sec))
-            //            name = sec.Template.Username;
-
-            name ??= $"Verify_{CurrentSectors.Count + 1}";
+            if((name = ImageResultEntry.GetName(center)) == null)
+                name ??= $"Verify_{CurrentSectors.Count + 1}";
 
             _ = message.Template.SetParameter<string>("Name", name);
 

@@ -355,8 +355,13 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         {
             newImage.Order = targetOrder;
             ImageEntries.Add(newImage);
-            SaveImage(newImage);
         }
+        foreach(var img in ImageEntries)
+            SaveImage(img);
+
+        ImageCount = ImageEntries.Count;
+        SaveRoll();
+
     }
 
     public void DeleteImage(ImageEntry imageEntry)
