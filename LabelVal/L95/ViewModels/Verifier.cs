@@ -13,7 +13,7 @@ using Watchers.lib.Process;
 namespace LabelVal.L95.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
-public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>, IRecipient<Win32_ProcessWatcherMessage>
+public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
 {
     [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
 
@@ -26,10 +26,6 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
     [ObservableProperty][property: JsonProperty] private string selectedComBaudRate = "9600";
     [ObservableProperty] private string databasePath = @"C:\Users\Public\LVS-95XX\LVS-95XX.mdb";
     [ObservableProperty] private string passwordOfTheDay;
-
-    [ObservableProperty] private System.Diagnostics.Process process;
-    [ObservableProperty] private Win32_ProcessWatcherProcessState processState;
-
 
 
     partial void OnDatabasePathChanged(string value)
@@ -52,13 +48,6 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
         RequestMessage<RegistryMessage> ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<RegistryMessage>());
         if (ret3.HasReceivedResponse)
             DatabasePath = ExtractDatabasePath(ret3.Response.RegistryValue);
-
-        RequestMessage<Win32_ProcessWatcherMessage> ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<Win32_ProcessWatcherMessage>());
-        if (ret4.HasReceivedResponse)
-        {
-            Process = ret4.Response.Process;
-            ProcessState = ret4.Response.State;
-        }
     }
 
     private string ExtractDatabasePath(string registry) => !string.IsNullOrWhiteSpace(registry) ? registry[(registry.IndexOf("Data Source=") + "Data Source=".Length)..].Trim('\"') : DatabasePath;
@@ -101,13 +90,4 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
         DatabasePath = ExtractDatabasePath(message.RegistryValue);
     }
 
-    public void Receive(Win32_ProcessWatcherMessage message)
-    {
-        //if (message.AppName != "LVS-95XX.exe")
-        //    return;
-
-        Process = message.Process;
-        ProcessState = message.State;
-
-    }
 }

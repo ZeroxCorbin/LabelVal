@@ -251,9 +251,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         //}
     }
 
-    public string GetName(System.Drawing.Point center)
+    public string? GetName(System.Drawing.Point center)
     {
-        string name = string.Empty;
+        string name = null;
         foreach (IImageResultDeviceEntry dev in ImageResultDeviceEntries)
         {
             //Check the Report center points
