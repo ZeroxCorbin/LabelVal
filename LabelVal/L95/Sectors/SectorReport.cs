@@ -108,7 +108,7 @@ public class SectorReport : ISectorReport
         if (dataBarType != null)
             sym = $"DataBar {dataBarType}";
 
-        SymbolType = sym.GetSymbology(AvailableDevices.L95);
+        SymbolType = sym.Replace("GS1 ", "").GetSymbology(AvailableDevices.L95);
 
         //Set RegionType
         RegionType = SymbolType.GetSymbologyRegionType(AvailableDevices.L95);
