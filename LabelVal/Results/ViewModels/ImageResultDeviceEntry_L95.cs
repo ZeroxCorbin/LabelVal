@@ -231,27 +231,7 @@ public partial class ImageResultDeviceEntry_L95
             if (await ImageResultEntry.OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
 
-        //Save the list to the database.
-        List<FullReport> temp = [];
-        foreach (Sectors.Interfaces.ISector sector in CurrentSectors)
-            temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
-
-        JObject report = new()
-        {
-            ["AllReports"] = JArray.FromObject(temp)
-        };
-
-        var res = new Databases.Result
-        {
-            Device = Device,
-            ImageRollUID = ImageResultEntry.ImageRollUID,
-            SourceImageUID = ImageResultEntry.SourceImageUID,
-            RunUID = ImageResultEntry.ImageRollUID,
-
-            Template = CurrentTemplate,
-            Report = report,
-            Stored = CurrentImage,
-        };
+        var res = GetCurrentReport();
 
         if (ImageResultEntry.SelectedDatabase.InsertOrReplace_Result(res) == null)
             Logger.LogError($"Error while storing results to: {ImageResultEntry.SelectedDatabase.File.Name}");
@@ -333,6 +313,33 @@ public partial class ImageResultDeviceEntry_L95
 
         //    L95GetStored();
         //}
+    }
+
+    private Result GetCurrentReport()
+    {
+        //Save the list to the database.
+        List<FullReport> temp = [];
+        foreach (Sectors.Interfaces.ISector sector in CurrentSectors)
+            temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
+
+        JObject report = new()
+        {
+            ["AllReports"] = JArray.FromObject(temp)
+        };
+
+        var res = new Databases.Result
+        {
+            Device = Device,
+            ImageRollUID = ImageResultEntry.ImageRollUID,
+            SourceImageUID = ImageResultEntry.SourceImageUID,
+            RunUID = ImageResultEntry.ImageRollUID,
+
+            Template = CurrentTemplate,
+            Report = report,
+            Stored = CurrentImage,
+        };
+
+        return res;
     }
 
     [RelayCommand]
