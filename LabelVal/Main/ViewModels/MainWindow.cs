@@ -30,6 +30,8 @@ public partial class MainWindow : ObservableRecipient
     public V275.ViewModels.V275Manager V275Manager { get; }
     public V275.ViewModels.NodeDetails NodeDetails { get; }
 
+    public LabelBuilder.ViewModels.LabelBuilderViewModel LabelBuilderViewModel { get; }
+
     public Printer.ViewModels.Printer Printer { get; }
     public Printer.ViewModels.PrinterDetails PrinterDetails { get; }
 
@@ -77,13 +79,15 @@ public partial class MainWindow : ObservableRecipient
 
         RunManager = new Run.ViewModels.RunManager(ImageResults);
 
+        LabelBuilderViewModel = new LabelBuilder.ViewModels.LabelBuilderViewModel();
+
         MenuItems =
         [
             new HamburgerMenuItem { Label = "ImageRolls", Content = ImageRolls }, 
             new HamburgerMenuItem { Label = "Results", Content = ImageResultsDatabases },
             new HamburgerMenuItem { Label = "Printer", Content = Printer, IsNotSelectable = true },
             new HamburgerMenuItem { Label = "Run", Content = RunManager },
-
+            new HamburgerMenuItem { Label = "Label", Content = LabelBuilderViewModel },
 
             new HamburgerMenuItem { Label = "V275", Content = V275Manager },
             new HamburgerMenuItem { Label = "V5", Content = ScannerManager },

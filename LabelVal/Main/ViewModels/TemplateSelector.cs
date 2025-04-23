@@ -11,6 +11,7 @@ namespace LabelVal.Main.ViewModels
     public class TemplateSelector : DataTemplateSelector
     {
         public DataTemplate Run { get; set; }
+        public DataTemplate LabelBuilder { get; set; }
         public DataTemplate Printer { get; set; }
         public DataTemplate V275 { get; set; }
         public DataTemplate V5 { get; set; }
@@ -54,6 +55,10 @@ namespace LabelVal.Main.ViewModels
                 else if (hmi.Content is ImageRolls.ViewModels.ImageRolls)
                 {
                     return ImageRolls;
+                }
+                else if (hmi.Content is LabelBuilder.ViewModels.LabelBuilderViewModel)
+                {
+                    return LabelBuilder;
                 }
 
 

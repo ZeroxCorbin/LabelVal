@@ -8,6 +8,8 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:imageRoll_enums="clr-namespace:LabelVal.ImageRolls.ViewModels"
     xmlns:imageRolls="clr-namespace:LabelVal.ImageRolls.Views"
+    xmlns:labelBuilder="clr-namespace:LabelVal.LabelBuilder.Views"
+    xmlns:labelBuilderVm="clr-namespace:LabelVal.LabelBuilder.ViewModels"
     xmlns:loc="clr-namespace:LabelVal.Localization"
     xmlns:local="clr-namespace:LabelVal.Main.Views"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
@@ -51,6 +53,11 @@
     <DataTemplate x:Key="imageRollsContent">
         <imageRolls:ImageRolls />
     </DataTemplate>
+
+    <DataTemplate x:Key="labelBuilderContent">
+        <labelBuilder:LabelBuilderView />
+    </DataTemplate>
+
 
     <!--  Printer Menu  -->
     <DataTemplate x:Key="printerMenuItem">
@@ -262,6 +269,32 @@
 
         </DockPanel>
     </DataTemplate>
+
+    <!--  Label Builder  -->
+    <DataTemplate x:Key="labelBuilderMenuItem" DataType="{x:Type labelBuilderVm:LabelBuilderViewModel}">
+        <!--  DataContext must be set to Content here.  -->
+        <DockPanel DataContext="{Binding Content}">
+            <Border Style="{StaticResource hamMenuBottomBar}" />
+
+            <DockPanel Width="48" Height="48">
+                <iconPacks:PackIconMaterial
+                    Width="36"
+                    Height="36"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Kind="Barcode" />
+            </DockPanel>
+
+            <Border Style="{StaticResource imageBar}" />
+
+            <DockPanel
+                Margin="10,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center" />
+
+        </DockPanel>
+    </DataTemplate>
+
 
     <!--  V275  -->
     <DataTemplate x:Key="v275MenuItem">
@@ -714,6 +747,7 @@
         ImageResultsDatabases="{StaticResource imageRDMenuItem}"
         ImageRolls="{StaticResource imageRollMenuItem}"
         L96XX="{StaticResource l95MenuItem}"
+        LabelBuilder="{StaticResource labelBuilderMenuItem}"
         Printer="{StaticResource printerMenuItem}"
         Run="{StaticResource runMenuItem}"
         V275="{StaticResource v275MenuItem}"
@@ -724,6 +758,7 @@
         ImageResultsDatabases="{StaticResource imageRDContent}"
         ImageRolls="{StaticResource imageRollsContent}"
         L96XX="{StaticResource l95Content}"
+        LabelBuilder="{StaticResource labelBuilderContent}"
         Printer="{StaticResource printerContent}"
         Run="{StaticResource runContent}"
         V275="{StaticResource v275Content}"

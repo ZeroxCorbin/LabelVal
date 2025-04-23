@@ -230,7 +230,7 @@ public class SectorReport : ISectorReport
             foreach (string str in spl)
                 list.Add($"({str}");
         }
-        GS1Results = new GS1Decode(AvailableParameters.GS1Data, Device, SymbolType, pass, DecodeText, data, pass.Equals("PASS") ? list : null, "");
+        GS1Results = new GS1Decode(AvailableParameters.GS1Data, Device, SymbolType, pass, DecodeText, data, list, "");
         return true;
     }
 

@@ -253,6 +253,7 @@ public partial class App : Application
 
     public App()
     {
+        //ExtractRunDetails();
        //SetupExceptionHandling();
 
         Version version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -479,51 +480,96 @@ public partial class App : Application
         public int Removed { get; set; }
         public int Voided { get; set; }
     }
-    //private void ExtractRunDetails()
-    //{
-    //    var db = new Run.Database().Open(@"C:\Users\Jack\GitHub\LabelVal\LabelVal\bin\Debug\_p-000334 rev. 2_RunLog_Run10.db");
-    //    var entries = db.SelectAllRunEntries().OrderBy(v => v.cycleID).ToList();
 
-    //    var final = new FinalReport();
 
-    //    var first = true;
-    //    foreach (var entry in entries)
-    //    {
-    //        var report = Newtonsoft.Json.JsonConvert.DeserializeObject<Report>(entry.reportData);
+    private void ExtractRunDetails()
+    {
+        var db = new V275_REST_Lib.LocalDatabases.RunLogDatabase().Open(@"impede_RunLog_FR25040802U CARTON_Run180.db");
+        var entries = db.SelectAllRunEntries().OrderBy(v => v.cycleId).ToList();
 
-    //        if (first)
-    //        {
-    //            final.LogName = "p-000334 rev. 2_RunLog_Run10";
-    //            final.TemplateName = "p-000334 rev. 2";
-    //            final.Operator = "epalacio";
-    //            final.StartTime = entry.timeStamp;
-    //            final.EndTime = entries.Last().timeStamp;
-    //            final.Inspected = entries.Count;
-    //            first = false;
-    //        }
+        var final = new FinalReport();
 
-    //        if (report.inspectLabel.result == "pass")
-    //        {
-    //            final.GoodAccepted++;
-    //        }
-    //        else
-    //        {
-    //            final.Failed++;
-    //            if (report.inspectLabel.userAction.action == "accepted")
-    //                final.FailedAccepted++;
-    //            else if (report.inspectLabel.userAction.action == "removed")
-    //                final.Removed++;
-    //            else if (report.inspectLabel.userAction.action == "voided")
-    //                final.Voided++;
-    //        }
-    //    }
+        var first = true;
+        foreach (var entry in entries)
+        {
+            var report = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(entry.reportData);
 
-    //    File.WriteAllText("result.json", Newtonsoft.Json.JsonConvert.SerializeObject(final));
-    //}
+            if (first)
+            {
+                final.LogName = "impede_RunLog_FR25040802U CARTON_Run180.db";
+                final.TemplateName = "FR25040802U CARTON";
+                final.Operator = "PanC";
+                final.StartTime = entry.timeStamp;
+                final.EndTime = entries.Last().timeStamp;
+                final.Inspected = entries.Count;
+                first = false;
+            }
 
-    // create an image of the desired size
+            if (report["inspectLabel"]["result"].Value<string>() == "pass")
+            {
+                final.GoodAccepted++;
+            }
+            else
+            {
+                final.Failed++;
 
-    // save image to file or stream
+                var action = report["inspectLabel"]?["userAction"]?["action"]?.Value<string>();
+                if (!string.IsNullOrEmpty(action))
+                {
+                    if (action == "accepted")
+                        final.FailedAccepted++;
+                    else if (action == "removed")
+                        final.Removed++;
+                    else if (action == "voided")
+                        final.Voided++;
+                }
+                else
+                {
+                    var sectors = report["inspectLabel"]?["inspectSector"];
+                    if (sectors == null)
+                        continue;
 
-    //}
+                    bool found = false;
+                    foreach (var sec in sectors)
+                    {
+                        var alarms = sec["data"]?["alarms"];
+                        if (alarms == null)
+                            continue;
+
+                        foreach (var alarm in alarms)
+                        {
+                            var userAction = alarm["userAction"];
+                            if (userAction != null)
+                            {
+                                action = userAction["action"]?.Value<string>();
+                                if (!string.IsNullOrEmpty(action))
+                                {
+                                    if (action == "accept")
+                                        final.FailedAccepted++;
+                                    else if (action == "remove")
+                                        final.Removed++;
+                                    else if (action == "void")
+                                        final.Voided++;
+                                    else
+                                    {
+
+                                    }
+                                    found = true;
+                                    break;
+                                }
+                               
+                            }
+                        }
+                        if(found)
+                            break;
+                    }
+                }
+
+            }
+        }
+
+        File.WriteAllText("result.json", Newtonsoft.Json.JsonConvert.SerializeObject(final));
+    }
+
+   
 }

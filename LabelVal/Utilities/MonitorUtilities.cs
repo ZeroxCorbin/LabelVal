@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
@@ -9,12 +10,14 @@ namespace LabelVal.Utilities;
 /// Represents the different types of scaling.
 /// </summary>
 /// <seealso cref="https://msdn.microsoft.com/en-us/library/windows/desktop/dn280511.aspx"/>
-/// [SQLite.StoreAsText]
-
+[SQLite.StoreAsText]
 public enum DPITypes
 {
+    [Description("Effective DPI")]
     EFFECTIVE = 0,
+    [Description("Angular DPI")]
     ANGULAR = 1,
+    [Description("Raw DPI")]
     RAW = 2,
 }
 

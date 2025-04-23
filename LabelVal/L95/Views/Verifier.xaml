@@ -192,7 +192,7 @@
 
                     </DockPanel>
 
-                    <DockPanel HorizontalAlignment="Left" >
+                    <DockPanel HorizontalAlignment="Left">
 
                         <TextBox
                             Margin="3,3,-10,3"
@@ -241,13 +241,13 @@
                         <mah:ToggleSwitch
                             Margin="3"
                             IsOn="{Binding Controller.UseOldGT}"
-                            OnContent="Old GT"
                             OffContent="New GT"
+                            OnContent="Old GT"
                             Visibility="{Binding Controller.IsNewGT, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <mah:ToggleSwitch.LayoutTransform>
                                 <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
                             </mah:ToggleSwitch.LayoutTransform>
-                            
+
                         </mah:ToggleSwitch>
                     </DockPanel>
                 </StackPanel>
