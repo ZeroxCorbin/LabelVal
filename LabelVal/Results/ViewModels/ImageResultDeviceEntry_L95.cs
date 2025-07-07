@@ -395,6 +395,8 @@ public partial class ImageResultDeviceEntry_L95
             if (replaceSectors)
                 CurrentSectors.Clear();
 
+            System.IO.File.WriteAllText(System.IO.Path.Combine(App.UserDataDirectory, "L95Report.json"), message.Report.ToString());
+
             CurrentSectors.Add(new Sector(message.Template, message.Report, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
 
             var tempSectors = CurrentSectors.ToList();
@@ -415,7 +417,6 @@ public partial class ImageResultDeviceEntry_L95
         catch (Exception ex)
         {
             Logger.LogError(ex);
-            Logger.LogError($"Error while processing results from: {Device}");
             IsFaulted = true;
         }
         finally

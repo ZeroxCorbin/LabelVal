@@ -38,7 +38,6 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
 
         Sector = sector;
 
-
         //Get thew symbology enum
         AvailableSymbologies theSymbology = Sector.Report.SymbolType;
 
@@ -46,7 +45,23 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         AvailableRegionTypes theRegionType = theSymbology.GetSymbologyRegionType(Sector.Report.Device);
 
         //Get the parameters list based on the region type.
-        List<AvailableParameters> theParamters = Params.ParameterGroups[theRegionType][Sector.Report.Device];
+        List<AvailableParameters> theParamters = Params.ParameterGroups[theRegionType][Sector.Report.Device].ToList();
+
+        if (sector.Report.Standard == AvailableStandards.DPM)
+        {
+            var dpmParameters = Params.ParameterGroups[AvailableRegionTypes.DPM][Sector.Report.Device];
+            //Add but do not duplicate DPM parameters
+            foreach (var dpmParameter in dpmParameters)
+            {
+                if (!theParamters.Contains(dpmParameter))
+                {
+                    theParamters.Add(dpmParameter);
+                }
+            }
+        }
+
+        //Sort the parameters by their name
+        theParamters.Sort((x, y) => x.ToString().CompareTo(y.ToString()));
 
         JObject report = (JObject)Sector.Report.Original;
         JObject template = (JObject)Sector.Template.Original;

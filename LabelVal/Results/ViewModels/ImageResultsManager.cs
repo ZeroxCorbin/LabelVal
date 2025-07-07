@@ -57,7 +57,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     partial void OnHideErrorsWarningsChanged(bool value) => App.Settings.SetValue(nameof(HideErrorsWarnings), value);
 
     /// <see cref="ImageAddPosition"/>
-    [ObservableProperty] private ImageAddPositions imageAddPosition = App.Settings.GetValue(nameof(ImageAddPosition), ImageAddPositions.Top, true);
+    [ObservableProperty] private ImageAddPositions imageAddPosition = App.Settings.GetValue(nameof(ImageAddPosition), ImageAddPositions.Bottom, true);
     partial void OnImageAddPositionChanged(ImageAddPositions value) => App.Settings.SetValue(nameof(ImageAddPosition), value);
 
     /// <see cref="SelectedImageRoll"/>
@@ -285,6 +285,8 @@ public partial class ImageResultsManager : ObservableRecipient,
         }
 
         img.NewData = null;
+
+        ire.BringIntoViewHandler();
     }
     private void RemoveImageResultEntry(ImageEntry img)
     {
@@ -425,6 +427,7 @@ public partial class ImageResultsManager : ObservableRecipient,
                                                                                           ProcessFullReport(res2);
                                                                                           break;
                                                                                   }
+                                                                                  
                                                                               });
 
     public void Receive(PropertyChangedMessage<FullReport> message)
@@ -538,6 +541,8 @@ public partial class ImageResultsManager : ObservableRecipient,
                 SelectedImageRoll.AddImage(ImageAddPosition, entry);
             else
                 AddImageResultEntry(entry);
+
+
         }
         finally
         {

@@ -87,14 +87,17 @@
 
             <Border Style="{StaticResource hamMenuBottomBar}" />
 
-            <DockPanel Width="48" Height="48">
+            <DockPanel
+                Width="48"
+                MinHeight="48"
+                Background="Purple">
 
                 <iconPacks:PackIconMaterial
                     Width="36"
                     Height="36"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Kind="ListBoxOutline" />
+                    Kind="StoreOutline" />
 
             </DockPanel>
 

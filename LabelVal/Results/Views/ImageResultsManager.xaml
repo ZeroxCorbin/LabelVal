@@ -807,13 +807,17 @@
                 <DockPanel>
 
                     <StackPanel>
-                        <iconPacks:PackIconMaterial
-                            Width="48"
-                            Height="40"
-                            Margin="1,0"
-                            Padding="6"
-                            HorizontalAlignment="Center"
-                            Kind="FilmstripBox" />
+
+                        <DockPanel Background="Teal">
+                            <iconPacks:PackIconMaterial
+                                Width="48"
+                                Height="40"
+                                Margin="1,0"
+                                Padding="6"
+                                HorizontalAlignment="Center"
+                                Kind="FilmstripBoxMultiple" />
+                        </DockPanel>
+
 
                         <Border Style="{StaticResource imageBarHor}" />
 
@@ -902,7 +906,7 @@
                                         <iconPacks:PackIconMaterial HorizontalAlignment="Left" VerticalAlignment="Center">
                                             <iconPacks:PackIconMaterial.Style>
                                                 <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                                                    <Setter Property="Kind" Value="OpenSourceInitiative" />
+                                                    <Setter Property="Kind" Value="FilmstripBox" />
                                                     <Setter Property="ToolTip" Value="The source image will be used." />
 
                                                     <Style.Triggers>

@@ -55,15 +55,19 @@
 
                 <DockPanel>
 
-                    <iconPacks:PackIconMaterial
-                        Width="12"
-                        Margin="3"
-                        VerticalAlignment="Top"
-                        Kind="OpenSourceInitiative" />
+                    <DockPanel Background="Teal">
+                         <iconPacks:PackIconMaterial
+                            Width="12"
+                            Margin="3"
+                            VerticalAlignment="Center"
+                            Kind="FilmstripBox" />                       
+                    </DockPanel>
+
+
 
                     <!--  Title  -->
                     <md:Card
-                        Margin="0,3"
+                        Margin="3,3,0,3"
                         Padding="4,1"
                         HorizontalAlignment="Left"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">

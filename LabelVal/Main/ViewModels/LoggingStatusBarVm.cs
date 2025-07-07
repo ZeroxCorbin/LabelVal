@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Logging.lib;
 using RingBuffer.lib;
 
 namespace LabelVal.Main.ViewModels;
@@ -44,7 +43,7 @@ public partial class LoggingStatusBarVm : ObservableRecipient, IRecipient<Loggin
 
         if (App.Current != null && !App.Current.Dispatcher.CheckAccess())
         {
-            App.Current.Dispatcher.BeginInvoke(() => AddMessage(message));
+            _ = App.Current.Dispatcher.BeginInvoke(() => AddMessage(message));
             return;
         }
         LoggerMessages.Add(message);

@@ -483,6 +483,7 @@ public partial class Controller : ObservableObject
 
             Image = ire.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored ? ire.ImageResultEntry.SourceImage.BitmapBytes : ire.StoredImage.BitmapBytes
         };
+
         if (ire.ImageResultsManager.SelectedImageRoll.SelectedGS1Table != AvailableTables.Unknown)
             lab.Config.Table = ((AvailableTables)ire.ImageResultsManager.SelectedImageRoll.SelectedGS1Table).GetTableName();
 

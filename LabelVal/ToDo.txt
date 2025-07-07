@@ -4,8 +4,7 @@ Complete: Display the details panels when dissimilar sectors are selected.
 Complete: Clicking on current sector details opens the equivelent stored sector details. Clicking on stored sector details only opens stored. Then if already open current does not overwrite stored.
 Complete: Work on sector coloring based on standard not just random.
 Complete: Shift click sector details all sectors open.
-
-Add the instructions for installing com0com.
+Complete: Default Top/Bottom to Bottom.
 
 When viewing the run results and it is a simulation run the sector outlines are not shown. Maybe show the repeat and not the label?
 
@@ -37,3 +36,9 @@ Show software version somewhere in the results.
 
 Export sector data as CSV. Is not working for Current sectors.
 
+
+Select the only availbel 95xx in the list.
+Always focus newest entry. Setting maybe?
+User image roll database managment.
+
+Add parameters for DPM Maxi,postal...

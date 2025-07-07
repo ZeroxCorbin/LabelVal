@@ -388,7 +388,7 @@
                                     <Setter Property="Text">
                                         <Setter.Value>
                                             <MultiBinding Mode="OneWay" StringFormat="{}{0} {1}">
-                                                <Binding Path="SelectedCamera.Name" />
+                                                <Binding Converter="{StaticResource EnumValueToDescription}" Path="SelectedCamera.LensDescription" />
                                                 <Binding Path="SelectedCamera.Sensor.PixelCount" />
                                             </MultiBinding>
                                         </Setter.Value>

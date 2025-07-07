@@ -394,15 +394,17 @@
 
                         <DockPanel>
 
-                            <iconPacks:PackIconMaterial
+                            <DockPanel Background="Purple">
+                                <iconPacks:PackIconMaterial
                                 Width="12"
                                 Margin="3"
-                                VerticalAlignment="Top"
+                                VerticalAlignment="Center"
                                 Kind="StoreOutline" />
+                            </DockPanel>
 
                             <!--  Title  -->
                             <md:Card
-                                Margin="0,3"
+                                Margin="3,3,0,3"
                                 Padding="4,1"
                                 HorizontalAlignment="Left"
                                 Background="{DynamicResource V275_Brush}">
@@ -465,15 +467,17 @@
                         <StackPanel>
                             <DockPanel>
 
-                                <iconPacks:PackIconMaterial
+                                <DockPanel Background="Purple">
+                                    <iconPacks:PackIconMaterial
                                     Width="12"
                                     Margin="3"
-                                    VerticalAlignment="Top"
+                                    VerticalAlignment="Center"
                                     Kind="StoreOutline" />
+                                </DockPanel>
 
                                 <!--  Title  -->
                                 <md:Card
-                                    Margin="0,3"
+                                    Margin="3,3,0,3"
                                     Padding="4,1"
                                     HorizontalAlignment="Left"
                                     Background="{DynamicResource V275_Brush}">

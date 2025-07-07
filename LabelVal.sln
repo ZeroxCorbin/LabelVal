@@ -18,8 +18,6 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lvs95xx.lib.Core", "..\Lvs95xx.lib.Core\Lvs95xx.lib.Core.csproj", "{6C314B85-FDC1-472B-AAF1-3D7C9CD55BE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingBuffer.lib", "..\RingBuffer.lib\RingBuffer.lib.csproj", "{311657AF-AD8B-4403-B3A5-3C4D489337B1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinAPI.lib", "..\WinAPI.lib\WinAPI.lib.csproj", "{B66A8BAF-F6D0-4AC1-B8C5-9D79A72E76E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watchers.lib", "..\Watchers.lib\Watchers.lib.csproj", "{D35664AC-F77B-4820-A91F-F9911BE73542}"
@@ -41,6 +39,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZintNet", "..\ZintNet\ZintNet.csproj", "{0AEC3B89-AAC5-4DE3-861F-4DFD9364C5AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zint.CLI", "..\Zint.CLI\Zint.CLI.csproj", "{BDCC88B5-8453-6D5B-C0B0-E3779D4160A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingBuffer.lib", "..\RingBuffer.lib\RingBuffer.lib.csproj", "{8829F62E-BCDD-4926-367E-5233DB557921}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,10 +78,6 @@ Global
 		{6C314B85-FDC1-472B-AAF1-3D7C9CD55BE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C314B85-FDC1-472B-AAF1-3D7C9CD55BE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C314B85-FDC1-472B-AAF1-3D7C9CD55BE8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{311657AF-AD8B-4403-B3A5-3C4D489337B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{311657AF-AD8B-4403-B3A5-3C4D489337B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{311657AF-AD8B-4403-B3A5-3C4D489337B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{311657AF-AD8B-4403-B3A5-3C4D489337B1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B66A8BAF-F6D0-4AC1-B8C5-9D79A72E76E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B66A8BAF-F6D0-4AC1-B8C5-9D79A72E76E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B66A8BAF-F6D0-4AC1-B8C5-9D79A72E76E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -126,6 +122,10 @@ Global
 		{BDCC88B5-8453-6D5B-C0B0-E3779D4160A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDCC88B5-8453-6D5B-C0B0-E3779D4160A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDCC88B5-8453-6D5B-C0B0-E3779D4160A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8829F62E-BCDD-4926-367E-5233DB557921}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8829F62E-BCDD-4926-367E-5233DB557921}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8829F62E-BCDD-4926-367E-5233DB557921}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8829F62E-BCDD-4926-367E-5233DB557921}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -189,7 +189,7 @@
                                             Height="18"
                                             Margin="3,0"
                                             VerticalAlignment="Center"
-                                            Kind="OpenSourceInitiative" />
+                                            Kind="FilmstripBox" />
                                     </Grid>
 
                                     <Grid>
@@ -445,7 +445,7 @@
                                             Height="18"
                                             Margin="3,0"
                                             VerticalAlignment="Center"
-                                            Kind="OpenSourceInitiative" />
+                                            Kind="FilmstripBox" />
                                     </Grid>
 
                                     <Grid>
@@ -701,7 +701,7 @@
                                             Height="18"
                                             Margin="3,0"
                                             VerticalAlignment="Center"
-                                            Kind="OpenSourceInitiative" />
+                                            Kind="FilmstripBox" />
                                     </Grid>
 
                                     <Grid>

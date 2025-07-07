@@ -37,7 +37,7 @@
                             Padding="3"
                             HorizontalAlignment="Center"
                             Click="btnOpenImageResultLocation"
-                            Content="{iconPacks:Material Kind=ListBoxOutline,
+                            Content="{iconPacks:Material Kind=StoreOutline,
                                                          Height=30,
                                                          Width=30}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
