@@ -24,7 +24,7 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
 
     [ObservableProperty][property: JsonProperty] private string selectedComName;
     [ObservableProperty][property: JsonProperty] private string selectedComBaudRate = "9600";
-    [ObservableProperty] private string databasePath = @"C:\Users\Public\LVS-95XX\LVS-95XX.mdb";
+    [ObservableProperty] private string databasePath = string.Empty;
     [ObservableProperty] private string passwordOfTheDay;
 
 

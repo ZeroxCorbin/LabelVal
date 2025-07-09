@@ -378,10 +378,10 @@
 
                         <DockPanel Background="Purple">
                             <iconPacks:PackIconMaterial
-                            Width="12"
-                            Margin="3"
-                            VerticalAlignment="Center"
-                            Kind="StoreOutline" />
+                                Width="12"
+                                Margin="3"
+                                VerticalAlignment="Center"
+                                Kind="StoreOutline" />
                         </DockPanel>
 
                         <!--  Title  -->
@@ -446,12 +446,12 @@
 
                             <DockPanel Background="Purple">
                                 <iconPacks:PackIconMaterial
-                                Width="12"
-                                Margin="3"
-                                VerticalAlignment="Center"
-                                Kind="StoreOutline" />
+                                    Width="12"
+                                    Margin="3"
+                                    VerticalAlignment="Center"
+                                    Kind="StoreOutline" />
                             </DockPanel>
-                            
+
                             <!--  Title  -->
                             <md:Card
                                 Margin="3,3,0,3"

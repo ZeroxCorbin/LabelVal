@@ -72,7 +72,7 @@ public static class ListReportDataExtensions
         {
             foreach (AvailableParameters param in Enum.GetValues(typeof(AvailableParameters)))
             {
-                if (Params.CommonParameters.Contains(param) || param is AvailableParameters.Unknown)
+                if (Parameters.CommonParameters.Contains(param) || param is AvailableParameters.Unknown)
                     continue;
 
                 parameters.Add(param);

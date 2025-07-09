@@ -45,11 +45,11 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         AvailableRegionTypes theRegionType = theSymbology.GetSymbologyRegionType(Sector.Report.Device);
 
         //Get the parameters list based on the region type.
-        List<AvailableParameters> theParamters = Params.ParameterGroups[theRegionType][Sector.Report.Device].ToList();
+        List<AvailableParameters> theParamters = [.. BarcodeVerification.lib.ISO.Parameters.DeviceParameters[(theRegionType, Sector.Report.Device)]];
 
         if (sector.Report.Standard == AvailableStandards.DPM)
         {
-            var dpmParameters = Params.ParameterGroups[AvailableRegionTypes.DPM][Sector.Report.Device];
+            List<AvailableParameters> dpmParameters = [.. BarcodeVerification.lib.ISO.Parameters.DeviceParameters[(AvailableRegionTypes.DPM, Sector.Report.Device)]];
             //Add but do not duplicate DPM parameters
             foreach (var dpmParameter in dpmParameters)
             {

@@ -56,11 +56,11 @@
                 <DockPanel>
 
                     <DockPanel Background="Teal">
-                         <iconPacks:PackIconMaterial
+                        <iconPacks:PackIconMaterial
                             Width="12"
                             Margin="3"
                             VerticalAlignment="Center"
-                            Kind="FilmstripBox" />                       
+                            Kind="FilmstripBox" />
                     </DockPanel>
 
 

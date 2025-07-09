@@ -48,7 +48,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         AvailableRegionTypes theRegionType = theSymbology.GetSymbologyRegionType(Sector.Report.Device);
 
         //Get the parameters list based on the region type.
-        List<AvailableParameters> theParamters = Params.ParameterGroups[theRegionType][Sector.Report.Device];
+        List<AvailableParameters> theParamters = [.. BarcodeVerification.lib.ISO.Parameters.DeviceParameters[(theRegionType, Sector.Report.Device)]];
 
         JObject report = (JObject)Sector.Report.Original;
         JObject template = (JObject)Sector.Template.Original;
