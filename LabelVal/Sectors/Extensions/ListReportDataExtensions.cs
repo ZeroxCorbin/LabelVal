@@ -1,6 +1,5 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.Extensions;
-using BarcodeVerification.lib.ISO;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Models;
@@ -66,13 +65,13 @@ public static class ListReportDataExtensions
         System.Text.StringBuilder sb = new();
 
         //Add each parameter to the list of parameters.
-        List<AvailableParameters> parameters = [];
+        List<Parameters> parameters = [];
 
         if (SectorOutputSettings.CurrentIncludeParameters == SectorOutputIncludeParameters.All)
         {
-            foreach (AvailableParameters param in Enum.GetValues(typeof(AvailableParameters)))
+            foreach (Parameters param in Enum.GetValues(typeof(Parameters)))
             {
-                if (Parameters.CommonParameters.Contains(param) || param is AvailableParameters.Unknown)
+                if (Parameters.CommonParameters.Contains(param) || param is Parameters.Unknown)
                     continue;
 
                 parameters.Add(param);
@@ -90,9 +89,9 @@ public static class ListReportDataExtensions
             }
         }
 
-        Dictionary<AvailableParameters, List<string>> parameterCsvs = [];
+        Dictionary<Parameters, List<string>> parameterCsvs = [];
 
-        foreach (AvailableParameters parameter in parameters)
+        foreach (Parameters parameter in parameters)
         {
             foreach (ISector sector in sectors)
             {
@@ -144,7 +143,7 @@ public static class ListReportDataExtensions
                 _ = sb.AppendLine();
         }
 
-        foreach (KeyValuePair<AvailableParameters, List<string>> keyValuePair in parameterCsvs)
+        foreach (KeyValuePair<Parameters, List<string>> keyValuePair in parameterCsvs)
         {
             foreach (string csv in keyValuePair.Value)
             {

@@ -1,7 +1,6 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.Extensions;
 using BarcodeVerification.lib.GS1;
-using BarcodeVerification.lib.ISO;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
@@ -17,9 +16,9 @@ public class SectorReport : ISectorReport
 {
     public JObject Original { get; private set; }
 
-    public AvailableDevices Device => AvailableDevices.V275;
+    public Devices Device => Devices.V275;
     public AvailableRegionTypes RegionType { get; private set; }
-    public AvailableSymbologies SymbolType { get; private set; }
+    public Symbologies SymbolType { get; private set; }
 
     public AvailableStandards Standard { get; private set; }
     public AvailableTables GS1Table { get; private set; }
@@ -70,7 +69,7 @@ public class SectorReport : ISectorReport
         //Set Symbolog
         _ = SetSymbologyAndRegionType(report);
 
-        DecodeText = report.GetParameter<string>(AvailableParameters.DecodeText, Device, SymbolType);
+        DecodeText = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.DecodeText, Device, SymbolType);
 
         _ = SetStandardAndTable((JObject)secTemplate.Original);
 
@@ -102,10 +101,10 @@ public class SectorReport : ISectorReport
 
     private bool SetSymbologyAndRegionType(JObject report)
     {
-        string sym = report.GetParameter<string>(AvailableParameters.Symbology, Device, AvailableSymbologies.Unknown);
+        string sym = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Symbology, Device, Symbologies.Unknown);
         if (sym == null)
         {
-            Logger.LogError($"Could not find: '{AvailableParameters.Symbology.GetParameterPath(Device, AvailableSymbologies.Unknown)}' in ReportData. {Device}");
+            Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Symbology.GetParameterPath(Device, Symbologies.Unknown)}' in ReportData. {Device}");
             return false;
         }
 
@@ -118,7 +117,7 @@ public class SectorReport : ISectorReport
         //Set RegionType
         RegionType = SymbolType.GetSymbologyRegionType(Device);
 
-        if (SymbolType == AvailableSymbologies.Unknown)
+        if (SymbolType == Symbologies.Unknown)
         {
             Logger.LogError($"Could not determine symbology from: '{sym}' {Device}");
             return false;
@@ -129,12 +128,12 @@ public class SectorReport : ISectorReport
 
     private bool SetOverallGrade(JObject report)
     {
-        JObject overall = report.GetParameter<JObject>(AvailableParameters.OverallGrade, Device, SymbolType);
+        JObject overall = report.GetParameter<JObject>(BarcodeVerification.lib.Common.Parameters.OverallGrade, Device, SymbolType);
         if (overall != null)
             OverallGrade = GetOverallGrade(overall);
         else
         {
-            Logger.LogError($"Could not find: '{AvailableParameters.OverallGrade.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
+            Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.OverallGrade.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
             return false;
         }
         return true;
@@ -142,7 +141,7 @@ public class SectorReport : ISectorReport
 
     private bool SetStandardAndTable(JObject template)
     {
-        bool isGs1 = template.GetParameter<bool>(AvailableParameters.Standard, Device, SymbolType);
+        bool isGs1 = template.GetParameter<bool>(BarcodeVerification.lib.Common.Parameters.Standard, Device, SymbolType);
 
         if (!isGs1)
         {
@@ -152,7 +151,7 @@ public class SectorReport : ISectorReport
         else
         {
             Standard = AvailableStandards.GS1;
-            GS1Table = template.GetParameter<string>(AvailableParameters.GS1Table, Device, SymbolType).GetTable(Device);
+            GS1Table = template.GetParameter<string>(Parameters.GS1Table, Device, SymbolType).GetTable(Device);
         }
 
         return true;
@@ -166,8 +165,8 @@ public class SectorReport : ISectorReport
             return true;
         }
 
-        string data = report.GetParameter<string>(AvailableParameters.GS1Data, Device, SymbolType);
-        bool pass = report.GetParameter<bool>(AvailableParameters.GS1DataStructure, Device, SymbolType);
+        string data = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.GS1Data, Device, SymbolType);
+        bool pass = report.GetParameter<bool>(BarcodeVerification.lib.Common.Parameters.GS1DataStructure, Device, SymbolType);
 
         List<string> list = [];
         if (!string.IsNullOrEmpty(data))
@@ -176,21 +175,21 @@ public class SectorReport : ISectorReport
             foreach (string str in spl)
                 list.Add($"({str}");
         }
-        GS1Results = new GS1Decode(AvailableParameters.GS1Data, Device, SymbolType, pass ? "PASS" : "FAIL", DecodeText, data, list , "");
+        GS1Results = new GS1Decode(BarcodeVerification.lib.Common.Parameters.GS1Data, Device, SymbolType, pass ? "PASS" : "FAIL", DecodeText, data, list , "");
         return true;
     }
 
     private bool SetXdimAndUnits(JObject report)
     {
-        JObject xdim = report.GetParameter<JObject>(AvailableParameters.Xdim, Device, SymbolType);
+        JObject xdim = report.GetParameter<JObject>(BarcodeVerification.lib.Common.Parameters.Xdim, Device, SymbolType);
         XDimension = xdim != null
             ? xdim.GetParameter<double>("value")
-            : report.GetParameter<double>(AvailableParameters.XDimension, Device, SymbolType);
+            : report.GetParameter<double>(BarcodeVerification.lib.Common.Parameters.XDimension, Device, SymbolType);
 
-        string unit = report.GetParameter<string>(AvailableParameters.Units, Device, SymbolType);
+        string unit = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Units, Device, SymbolType);
         if (unit == null)
         {
-            Logger.LogError($"Could not find: '{AvailableParameters.Units.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
+            Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Units.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
             return false;
         }
 
@@ -201,7 +200,7 @@ public class SectorReport : ISectorReport
 
     private bool SetApeture(JObject report)
     {
-        Aperture = report.GetParameter<double>(AvailableParameters.Aperture, Device, SymbolType);
+        Aperture = report.GetParameter<double>(BarcodeVerification.lib.Common.Parameters.Aperture, Device, SymbolType);
 
         return true;
     }
@@ -211,12 +210,12 @@ public class SectorReport : ISectorReport
 
         string[] spl = json["string"].ToString().Split('/', StringSplitOptions.RemoveEmptyEntries);
 
-        Grade grade = new(AvailableParameters.OverallGrade, Device, json["grade"]["value"].Value<double>());
+        Grade grade = new(BarcodeVerification.lib.Common.Parameters.OverallGrade, Device, json["grade"]["value"].Value<double>());
         return new OverallGrade(Device, grade, json["string"].ToString(), spl[1], spl[2]);
     }
 
 
-    private void AddParameter(AvailableParameters parameter, AvailableSymbologies theSymbology, ObservableCollection<IParameterValue> target, JObject report, JObject template)
+    private void AddParameter(Parameters parameter, Symbologies theSymbology, ObservableCollection<IParameterValue> target, JObject report, JObject template)
     {
         Type type = parameter.GetParameterDataType(Device, theSymbology);
 
@@ -251,7 +250,7 @@ public class SectorReport : ISectorReport
         }
         else if (type == typeof(ValueString))
         {
-            ValueString valueString = parameter is AvailableParameters.Standard or AvailableParameters.GS1Table
+            ValueString valueString = parameter is BarcodeVerification.lib.Common.Parameters.Standard or BarcodeVerification.lib.Common.Parameters.GS1Table
                 ? GetValueString(parameter, template.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)))
                 : GetValueString(parameter, report.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)));
             if (valueString != null) { target.Add(valueString); return; }
@@ -281,7 +280,7 @@ public class SectorReport : ISectorReport
     }
 
 
-    private GradeValue GetGradeValue(AvailableParameters parameter, JObject gradeValue)
+    private GradeValue GetGradeValue(Parameters parameter, JObject gradeValue)
     {
         if (gradeValue is null)
             return null;
@@ -291,7 +290,7 @@ public class SectorReport : ISectorReport
         return new GradeValue(parameter, Device, SymbolType, grade, value);
     }
 
-    private Grade GetGrade(AvailableParameters parameter, JObject grade)
+    private Grade GetGrade(Parameters parameter, JObject grade)
     {
         if (grade is null)
             return null;
@@ -300,15 +299,15 @@ public class SectorReport : ISectorReport
         return new Grade(parameter, Device, value);
     }
 
-    private ValueDouble GetValueDouble(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value)
+    private ValueDouble GetValueDouble(Parameters parameter, string value) => string.IsNullOrWhiteSpace(value)
             ? null
             : string.IsNullOrWhiteSpace(value) ? null : new ValueDouble(parameter, Device, SymbolType, value);
 
-    private ValueString GetValueString(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new ValueString(parameter, Device, value);
+    private ValueString GetValueString(Parameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new ValueString(parameter, Device, value);
 
-    private PassFail GetPassFail(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, Device, value);
+    private PassFail GetPassFail(Parameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, Device, value);
 
-    public ValuePassFail GetValuePassFail(AvailableParameters parameter, JObject valuePassFail)
+    public ValuePassFail GetValuePassFail(Parameters parameter, JObject valuePassFail)
     {
         if (valuePassFail is null)
             return null;

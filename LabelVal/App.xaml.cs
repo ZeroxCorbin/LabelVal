@@ -1,6 +1,5 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.GS1;
-using BarcodeVerification.lib.ISO;
 using LibSimpleDatabase;
 using Lvs95xx.Producer.Watchers;
 using MaterialDesignThemes.Wpf;
@@ -95,7 +94,7 @@ public partial class App : Application
 
             IEnumerable<dynamic> records = csv.GetRecords<dynamic>();
 
-            Dictionary<AvailableRegionTypes, List<AvailableParameters>> results = [];
+            Dictionary<AvailableRegionTypes, List<Parameters>> results = [];
 
             foreach (dynamic record in records)
             {
@@ -109,7 +108,7 @@ public partial class App : Application
 
                     string val = ConvertToCamelCase(item.Value);
 
-                    if (!Enum.TryParse<AvailableParameters>(val, out AvailableParameters param))
+                    if (!Enum.TryParse<Parameters>(val, out Parameters param))
                         continue;
 
                     if (!results.ContainsKey(type))
@@ -123,15 +122,15 @@ public partial class App : Application
                 }
             }
 
-            List<AvailableParameters> commonAll = new();
-            List<AvailableParameters> common1d = new();
-            List<AvailableParameters> common2d = new();
+            List<Parameters> commonAll = new();
+            List<Parameters> common1d = new();
+            List<Parameters> common2d = new();
             foreach (AvailableRegionTypes key in results.Keys)
             {
                 results[key] = results[key].Distinct().ToList();
 
                 //Check All common
-                foreach (AvailableParameters param in results[key])
+                foreach (Parameters param in results[key])
                 {
                     if (results.Values.All(v => v.Contains(param)))
                     {
@@ -141,7 +140,7 @@ public partial class App : Application
                 }
 
                 //Check 1D common
-                foreach (AvailableParameters param in results[key])
+                foreach (Parameters param in results[key])
                 {
                     if (results[AvailableRegionTypes._1D].Contains(param)
                         && results[AvailableRegionTypes._1D1].Contains(param)
@@ -156,7 +155,7 @@ public partial class App : Application
                 }
 
                 //Check 2D common
-                foreach (AvailableParameters param in results[key])
+                foreach (Parameters param in results[key])
                 {
                     if (results[AvailableRegionTypes.DataMatrix].Contains(param)
                         && results[AvailableRegionTypes.QR].Contains(param)

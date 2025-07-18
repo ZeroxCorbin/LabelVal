@@ -12,7 +12,7 @@ namespace LabelVal.L95.Sectors;
 
 public partial class Sector : ObservableObject, ISector
 {
-    public AvailableDevices Device { get; } = AvailableDevices.L95;
+    public Devices Device { get; } = Devices.L95;
     public string Version { get; }
 
     public ISectorTemplate Template { get; }

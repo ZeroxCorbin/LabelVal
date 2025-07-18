@@ -1,5 +1,5 @@
-﻿using BarcodeVerification.lib.Extensions;
-using BarcodeVerification.lib.ISO;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.Extensions;
 using System.Windows.Data;
 
 namespace LabelVal.Sectors.Converters;
@@ -8,7 +8,7 @@ public class ParameterEnumToParameterDescription : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
-        if (value is AvailableParameters parameterEnum)
+        if (value is Parameters parameterEnum)
         {
             return parameterEnum.GetParameterDescription();
         }

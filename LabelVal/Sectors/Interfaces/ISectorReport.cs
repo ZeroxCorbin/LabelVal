@@ -11,12 +11,12 @@ public interface ISectorReport
 {
     JObject Original { get; }
 
-    AvailableDevices Device { get; }
-    AvailableRegionTypes RegionType { get; }
-    AvailableSymbologies SymbolType { get; }
+    public Symbologies Symbology { get; }
+    public ApplicationStandards ApplicationStandard { get; }
+    public AvailableTables GS1Table { get; }
+    public GradingStandards GradingStandard { get; }
 
-    AvailableStandards Standard { get; }
-    AvailableTables GS1Table { get; }
+    public Devices Device => Devices.L95;
 
     ObservableCollection<IParameterValue> Parameters { get; }
 

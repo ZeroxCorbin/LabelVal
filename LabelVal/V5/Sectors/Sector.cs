@@ -11,7 +11,7 @@ namespace LabelVal.V5.Sectors;
 
 public partial class Sector : ObservableObject, ISector
 {
-    public AvailableDevices Device { get; } = AvailableDevices.V5;
+    public Devices Device { get; } = Devices.V5;
     public string Version { get; }
 
     public ISectorTemplate Template { get; }

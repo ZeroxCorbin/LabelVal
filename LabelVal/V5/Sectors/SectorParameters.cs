@@ -1,6 +1,5 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.Extensions;
-using BarcodeVerification.lib.ISO;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Classes;
@@ -39,7 +38,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         JObject report = (JObject)Sector.Report.Original;
         JObject template = (JObject)Sector.Template.Original;
 
-        if (Sector.Report.SymbolType == AvailableSymbologies.Unknown)
+        if (Sector.Report.SymbolType == Symbologies.Unknown)
         {
             if (!report.GetParameter<bool>("read"))
             {
@@ -51,15 +50,15 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
             return;
         }
         //Get thew symbology enum
-        AvailableSymbologies theSymbology = Sector.Report.SymbolType;
+        Symbologies theSymbology = Sector.Report.SymbolType;
 
         //Get the region type for the symbology
         AvailableRegionTypes theRegionType = theSymbology.GetSymbologyRegionType(Sector.Report.Device);
 
         //Get the parameters list based on the region type.
-        List<AvailableParameters> theParamters = [.. BarcodeVerification.lib.ISO.Parameters.DeviceParameters[(theRegionType, Sector.Report.Device)]];
+        List<Parameters> theParamters = [.. BarcodeVerification.lib.Common.Parameters.DeviceParameters[(theRegionType, Sector.Report.Device)]];
 
-        foreach (AvailableParameters parameter in theParamters)
+        foreach (Parameters parameter in theParamters)
         {
             try
             {
@@ -118,7 +117,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         //}
     }
 
-    private void AddParameter(AvailableParameters parameter, AvailableSymbologies theSymbology, ObservableCollection<IParameterValue> target, JObject report, JObject template)
+    private void AddParameter(Parameters parameter, Symbologies theSymbology, ObservableCollection<IParameterValue> target, JObject report, JObject template)
     {
         Type type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);
 
@@ -163,7 +162,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         }
         else if (type == typeof(Custom))
         {
-            if (parameter is AvailableParameters.CellSize or AvailableParameters.CellWidth or AvailableParameters.CellHeight)
+            if (parameter is BarcodeVerification.lib.Common.Parameters.CellSize or BarcodeVerification.lib.Common.Parameters.CellWidth or BarcodeVerification.lib.Common.Parameters.CellHeight)
             {
                 ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.SymbolType, Sector.Report.XDimension);
                 if (valueDouble != null)
@@ -198,7 +197,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)}' missing or parse issue.");
     }
 
-    private IParameterValue GetGradeValue(AvailableParameters parameter, JObject gradeValue)
+    private IParameterValue GetGradeValue(Parameters parameter, JObject gradeValue)
     {
         if (gradeValue is null)
             return null;
@@ -210,15 +209,15 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
             : new GradeValue(parameter, Sector.Report.Device, Sector.Report.SymbolType, grade, value.ParseDouble());
     }
 
-    private ValueDouble GetValueDouble(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value)
+    private ValueDouble GetValueDouble(Parameters parameter, string value) => string.IsNullOrWhiteSpace(value)
             ? null
             : string.IsNullOrWhiteSpace(value) ? null : new ValueDouble(parameter, Sector.Report.Device, Sector.Report.SymbolType, value);
 
-    private ValueString GetValueString(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new ValueString(parameter, Sector.Report.Device, value);
+    private ValueString GetValueString(Parameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new ValueString(parameter, Sector.Report.Device, value);
 
-    private PassFail GetPassFail(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, Sector.Report.Device, value);
+    private PassFail GetPassFail(Parameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, Sector.Report.Device, value);
 
-    public ValuePassFail GetValuePassFail(AvailableParameters parameter, JObject valuePassFail)
+    public ValuePassFail GetValuePassFail(Parameters parameter, JObject valuePassFail)
     {
         if (valuePassFail is null)
             return null;
