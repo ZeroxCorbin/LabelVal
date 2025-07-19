@@ -84,9 +84,13 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
     [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty][property: JsonProperty] private int imageCount;
-    [ObservableProperty][property: JsonProperty("Standard")][property: SQLite.Column("Standard")] private AvailableStandards selectedStandard;
-    partial void OnSelectedStandardChanged(AvailableStandards value) { if (value != AvailableStandards.GS1) SelectedGS1Table = GS1Tables.Unknown; OnPropertyChanged(nameof(StandardDescription)); }
-    public string StandardDescription => SelectedStandard.GetDescription();
+    [ObservableProperty][property: JsonProperty("GradingStandard")][property: SQLite.Column("GradingStandard")] private GradingStandards selectedGradingStandard;
+    partial void OnSelectedGradingStandardChanged(GradingStandards value) { OnPropertyChanged(nameof(GradingStandardDescription)); }
+    public string GradingStandardDescription => SelectedGradingStandard.GetDescription();
+
+    [ObservableProperty][property: JsonProperty("ApplicationStandard")][property: SQLite.Column("ApplicationStandard")] private ApplicationStandards selectedApplicationStandard;
+    partial void OnSelectedApplicationStandardChanged(ApplicationStandards value) { OnPropertyChanged(nameof(ApplicationStandardDescription)); }
+    public string ApplicationStandardDescription => SelectedApplicationStandard.GetDescription();
 
     [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private GS1Tables selectedGS1Table;
     partial void OnSelectedGS1TableChanged(GS1Tables value) => OnPropertyChanged(nameof(GS1TableNumber));

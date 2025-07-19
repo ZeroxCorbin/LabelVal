@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
 
 namespace LabelVal.V5.Sectors;
 
@@ -21,71 +22,49 @@ public partial class Sector : ObservableObject, ISector
     public bool IsWarning { get; }
     public bool IsError { get; }
 
-    public AvailableStandards DesiredStandard { get; set; }
-    public GS1Tables DesiredGS1Table { get; set; }
+    public ApplicationStandards DesiredApplicationStandard { get; }
+    public ObservableCollection<GradingStandards> DesiredGradingStandards { get; } = new ObservableCollection<GradingStandards>();
+    public GS1Tables DesiredGS1Table { get; }
+
     public bool IsWrongStandard
     {
         get
         {
-            switch (DesiredStandard)
+            if (DesiredApplicationStandard == ApplicationStandards.None && DesiredGradingStandards.Count == 0)
+                return false;
+
+            bool found = false;
+            foreach (var gradingStandard in DesiredGradingStandards)
             {
-                case AvailableStandards.Unknown:
-                    return false;
-                case AvailableStandards.DPM:
-                    {
-                        return Report.Standard switch
-                        {
-                            AvailableStandards.DPM => false,
-                            _ => true,
-                        };
-                    }
-                case AvailableStandards.ISO:
-                    {
-                        return Report.Standard switch
-                        {
-                            AvailableStandards.ISO or AvailableStandards.ISO15415 or AvailableStandards.ISO15416 => false,
-                            _ => true,
-                        };
-                    }
-                case AvailableStandards.ISO15415:
-                    {
-                        return Report.Standard switch
-                        {
-                            AvailableStandards.ISO or AvailableStandards.ISO15415 => false,
-                            _ => true,
-                        };
-                    }
-                case AvailableStandards.ISO15416:
-                    {
-                        return Report.Standard switch
-                        {
-                            AvailableStandards.ISO or AvailableStandards.ISO15416 => false,
-                            _ => true,
-                        };
-                    }
-                case AvailableStandards.GS1:
-                    {
-                        return Report.Standard switch
-                        {
-                            AvailableStandards.GS1 => Report.GS1Table != DesiredGS1Table,
-                            _ => true,
-                        };
-                    }
-                default:
-                    return true;
+                if (gradingStandard == Report.GradingStandard)
+                {
+                    found = true;
+                    break;
+                }
             }
+
+            return (DesiredApplicationStandard == ApplicationStandards.None && !found) || ((DesiredApplicationStandard != ApplicationStandards.None || !found) && (DesiredApplicationStandard != Report.ApplicationStandard || !found));
+
         }
     }
 
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(JObject report, JObject template, AvailableStandards standard, GS1Tables table, string version)
+    public Sector(JObject report, JObject template, GradingStandards[] gradingStandards, ApplicationStandards appStandard, GS1Tables table, string version)
     {
         Version = version;
-        DesiredStandard = standard;
+
+        DesiredApplicationStandard = appStandard;
+        if (gradingStandards != null && gradingStandards.Length > 0)
+        {
+            foreach (var standard in gradingStandards)
+            {
+                DesiredGradingStandards.Add(standard);
+            }
+        }
         DesiredGS1Table = table;
-        
+
         string toolUid = report.GetParameter<string>("toolUid");
         if (string.IsNullOrWhiteSpace(toolUid))
         {

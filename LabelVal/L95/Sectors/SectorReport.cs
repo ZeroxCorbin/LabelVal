@@ -209,7 +209,7 @@ public class SectorReport : ISectorReport
             Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.GradingStandard.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
             return false;
         }
-        GradingStandard = stdString.GetGradingStandard(Devices.L95);
+        GradingStandard = stdString.GetGradingStandard(Devices.L95, Specification);
 
         if (GradingStandard == GradingStandards.None)
         {
@@ -218,7 +218,7 @@ public class SectorReport : ISectorReport
         }
 
         if (tblString != null)
-            GS1Table = tblString.GetTable(Devices.L95);
+            GS1Table = tblString.GetGS1Table(Devices.L95);
         else
         {
             GS1Table = GS1Tables.Unknown;

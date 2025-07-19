@@ -1,6 +1,7 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.GS1;
 using BarcodeVerification.lib.ISO;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using Wpf.lib.Extentions;
@@ -18,8 +19,10 @@ public partial interface ISector
     bool IsWarning { get; }
     bool IsError { get; }
 
-    AvailableStandards DesiredStandard { get; }
-    GS1Tables DesiredGS1Table { get; }
+    public ApplicationStandards DesiredApplicationStandard { get; }
+    public ObservableCollection<GradingStandards> DesiredGradingStandards { get; }
+    public GS1Tables DesiredGS1Table { get; }
+
     bool IsWrongStandard { get; }
 
     bool IsFocused { get; set; }
