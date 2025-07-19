@@ -22,7 +22,7 @@ public partial class Sector : ObservableObject, ISector
     public bool IsError { get; }
 
     public AvailableStandards DesiredStandard { get; set; }
-    public AvailableTables DesiredGS1Table { get; set; }
+    public GS1Tables DesiredGS1Table { get; set; }
     public bool IsWrongStandard
     {
         get
@@ -80,7 +80,7 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(JObject report, JObject template, AvailableStandards standard, AvailableTables table, string version)
+    public Sector(JObject report, JObject template, AvailableStandards standard, GS1Tables table, string version)
     {
         Version = version;
         DesiredStandard = standard;

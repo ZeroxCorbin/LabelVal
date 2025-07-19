@@ -85,12 +85,12 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty][property: JsonProperty] private int imageCount;
     [ObservableProperty][property: JsonProperty("Standard")][property: SQLite.Column("Standard")] private AvailableStandards selectedStandard;
-    partial void OnSelectedStandardChanged(AvailableStandards value) { if (value != AvailableStandards.GS1) SelectedGS1Table = AvailableTables.Unknown; OnPropertyChanged(nameof(StandardDescription)); }
+    partial void OnSelectedStandardChanged(AvailableStandards value) { if (value != AvailableStandards.GS1) SelectedGS1Table = GS1Tables.Unknown; OnPropertyChanged(nameof(StandardDescription)); }
     public string StandardDescription => SelectedStandard.GetDescription();
 
-    [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private AvailableTables selectedGS1Table;
-    partial void OnSelectedGS1TableChanged(AvailableTables value) => OnPropertyChanged(nameof(GS1TableNumber));
-    public double GS1TableNumber => SelectedGS1Table is AvailableTables.Unknown ? 0 : double.Parse(SelectedGS1Table.GetDescription());
+    [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private GS1Tables selectedGS1Table;
+    partial void OnSelectedGS1TableChanged(GS1Tables value) => OnPropertyChanged(nameof(GS1TableNumber));
+    public double GS1TableNumber => SelectedGS1Table is GS1Tables.Unknown ? 0 : double.Parse(SelectedGS1Table.GetDescription());
 
     /// <summary>
     /// <see cref="TargetDPI"/>

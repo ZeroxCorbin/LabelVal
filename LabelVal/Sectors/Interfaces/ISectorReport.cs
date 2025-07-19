@@ -1,4 +1,5 @@
 ﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.Extensions;
 using BarcodeVerification.lib.GS1;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Classes;
@@ -9,16 +10,20 @@ namespace LabelVal.Sectors.Interfaces;
 
 public interface ISectorReport
 {
-    JObject Original { get; }
+
+    public Devices Device { get; }
 
     public Symbologies Symbology { get; }
-    public ApplicationStandards ApplicationStandard { get; }
-    public AvailableTables GS1Table { get; }
-    public GradingStandards GradingStandard { get; }
+    public SymbologySpecifications Specification { get; }
+    public SymbologySpecificationTypes Type { get; }
 
-    public Devices Device => Devices.L95;
+    public ApplicationStandards ApplicationStandard { get; }
+    public GradingStandards GradingStandard { get; }
+    public GS1Tables GS1Table { get; }
 
     ObservableCollection<IParameterValue> Parameters { get; }
+
+    JObject Original { get; }
 
     OverallGrade OverallGrade { get; }
 

@@ -484,8 +484,8 @@ public partial class Controller : ObservableObject
             Image = ire.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored ? ire.ImageResultEntry.SourceImage.BitmapBytes : ire.StoredImage.BitmapBytes
         };
 
-        if (ire.ImageResultsManager.SelectedImageRoll.SelectedGS1Table != AvailableTables.Unknown)
-            lab.Config.Table = ((AvailableTables)ire.ImageResultsManager.SelectedImageRoll.SelectedGS1Table).GetTableName();
+        if (ire.ImageResultsManager.SelectedImageRoll.SelectedGS1Table != GS1Tables.Unknown)
+            lab.Config.Table = ((GS1Tables)ire.ImageResultsManager.SelectedImageRoll.SelectedGS1Table).GetTableName();
 
         Lvs95xx.lib.Core.Controllers.FullReport res = await L95.ProcessLabelAsync(lab);
         if (res == null)

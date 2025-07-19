@@ -19,7 +19,7 @@ public partial interface ISector
     bool IsError { get; }
 
     AvailableStandards DesiredStandard { get; }
-    AvailableTables DesiredGS1Table { get; }
+    GS1Tables DesiredGS1Table { get; }
     bool IsWrongStandard { get; }
 
     bool IsFocused { get; set; }

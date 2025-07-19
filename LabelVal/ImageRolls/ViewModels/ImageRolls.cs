@@ -344,7 +344,7 @@ public partial class ImageRolls : ObservableRecipient
             return;
         }
 
-        if (NewImageRoll.SelectedStandard is AvailableStandards.GS1 && NewImageRoll.SelectedGS1Table is AvailableTables.Unknown)
+        if (NewImageRoll.SelectedStandard is AvailableStandards.GS1 && NewImageRoll.SelectedGS1Table is GS1Tables.Unknown)
         {
             Logger.LogWarning("GS1 Table is required for GS1 image rolls.");
             return;

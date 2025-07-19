@@ -73,7 +73,7 @@
                 MethodName="GetValues"
                 ObjectType="{x:Type system:Enum}">
                 <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="bar_gs1:AvailableTables" />
+                    <x:Type TypeName="bar_gs1:GS1Tables" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
 
