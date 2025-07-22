@@ -21,7 +21,7 @@ public interface ISectorReport
     public GradingStandards GradingStandard { get; }
     public GS1Tables GS1Table { get; }
 
-    ObservableCollection<IParameterValue> Parameters { get; }
+   // ObservableCollection<IParameterValue> Parameters { get; }
 
     JObject Original { get; }
 

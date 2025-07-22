@@ -142,7 +142,7 @@ public partial class ImageResultDeviceEntry_L95
 
             List<Sectors.Interfaces.ISector> tempSectors = [];
             foreach (JToken rSec in row.Report.GetParameter<JArray>("AllReports"))
-                tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
+                tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
 
             if (tempSectors.Count > 0)
             {
@@ -349,12 +349,12 @@ public partial class ImageResultDeviceEntry_L95
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
-                ApplicationStandard = ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedStandard.GetDescription(),
+                ApplicationStandard = ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard.GetDescription(),
             },
             RepeatAvailable = ProcessFullReport,
         };
 
-        if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedStandard == AvailableStandards.GS1)
+        if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard == ApplicationStandards.GS1)
             lab.Config.Table = ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table.GetTableName();
 
         if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
@@ -397,7 +397,7 @@ public partial class ImageResultDeviceEntry_L95
 
             System.IO.File.WriteAllText(System.IO.Path.Combine(App.UserDataDirectory, "L95Report.json"), message.Report.ToString());
 
-            CurrentSectors.Add(new Sector(message.Template, message.Report, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
+            CurrentSectors.Add(new Sector(message.Template, message.Report, [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
 
             var tempSectors = CurrentSectors.ToList();
 
@@ -490,7 +490,7 @@ public partial class ImageResultDeviceEntry_L95
             foreach (Sector cSec in CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
-                    if (sec.Report.SymbolType == cSec.Report.SymbolType)
+                    if (sec.Report.Symbology == cSec.Report.Symbology)
                     {
                         SectorDifferences res = sec.SectorDetails.Compare(cSec.SectorDetails);
                         if (res == null)
@@ -504,7 +504,7 @@ public partial class ImageResultDeviceEntry_L95
                         {
                             Username = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
-                            SectorMissingText = $"Stored Sector {sec.Report.SymbolType.GetDescription()} : Current Sector {cSec.Report.SymbolType.GetDescription()}"
+                            SectorMissingText = $"Stored Sector {sec.Report.Symbology.GetDescription()} : Current Sector {cSec.Report.Symbology.GetDescription()}"
                         };
                         diff.Add(dat);
                     }

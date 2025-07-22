@@ -344,7 +344,7 @@ public partial class ImageRolls : ObservableRecipient
             return;
         }
 
-        if (NewImageRoll.SelectedStandard is AvailableStandards.GS1 && NewImageRoll.SelectedGS1Table is GS1Tables.Unknown)
+        if (NewImageRoll.SelectedApplicationStandard is ApplicationStandards.GS1 && NewImageRoll.SelectedGS1Table is GS1Tables.Unknown)
         {
             Logger.LogWarning("GS1 Table is required for GS1 image rolls.");
             return;
@@ -357,8 +357,9 @@ public partial class ImageRolls : ObservableRecipient
             ImageRoll update = UserImageRolls.FirstOrDefault((e) => e.UID == NewImageRoll.UID);
             if (update != null)
             {
+                SelectedImageRoll.SelectedApplicationStandard = NewImageRoll.SelectedApplicationStandard;
+                SelectedImageRoll.SelectedGradingStandard = NewImageRoll.SelectedGradingStandard;
                 SelectedImageRoll.SelectedGS1Table = NewImageRoll.SelectedGS1Table;
-                SelectedImageRoll.SelectedStandard = NewImageRoll.SelectedStandard;
                 SelectedImageRoll.Name = NewImageRoll.Name;
                 SelectedImageRoll.SectorType = NewImageRoll.SectorType;
                 SelectedImageRoll.ImageType = NewImageRoll.ImageType;

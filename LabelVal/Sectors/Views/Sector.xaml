@@ -20,7 +20,7 @@
     <UserControl.Resources>
 
         <converters:StringCamelUnspaced2StringPascalSpaced x:Key="stringToUpper" />
-        <v275Converters:V275_OCMatchModeToString x:Key="matchModeToString" />
+        <!--<v275Converters:V275_OCMatchModeToString x:Key="matchModeToString" />-->
 
         <converters:ShortenString x:Key="ShortenString" />
         <Image x:Key="imgGS1" Source="/Assets/Images/GS1.png" />
@@ -78,7 +78,7 @@
                         Text="{Binding Report.OverallGrade.Value}" />
                 </Grid>
 
-                <TextBlock Margin="5,0,0,0" HorizontalAlignment="Left">
+                <!--<TextBlock Margin="5,0,0,0" HorizontalAlignment="Left">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Visibility" Value="Collapsed" />
@@ -159,7 +159,7 @@
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
-                </TextBlock>
+                </TextBlock>-->
 
             </DockPanel>
 
@@ -195,7 +195,7 @@
                         <Image.Style>
                             <Style TargetType="{x:Type Image}">
                                 <Setter Property="Source" Value="/Assets/Images/barcode-1d.png" />
-                                <Style.Triggers>
+                                <!--<Style.Triggers>
                                     <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
                                         <Setter Property="Source" Value="/Assets/Images/barcode-2d.png" />
                                     </DataTrigger>
@@ -223,7 +223,7 @@
                                     <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
                                         <Setter Property="Source" Value="/Assets/Images/FlawTool.png" />
                                     </DataTrigger>
-                                </Style.Triggers>
+                                </Style.Triggers>-->
                             </Style>
                         </Image.Style>
                     </Image>
@@ -235,9 +235,9 @@
                     <TextBlock Margin="3,0" DockPanel.Dock="Top">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
+                                <Setter Property="Text" Value="{Binding Report.Symbology, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
                                 <Setter Property="TextWrapping" Value="Wrap" />
-                                <Style.Triggers>
+                                <!--<Style.Triggers>
                                     <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                         <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}" />
                                         <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}" />
@@ -248,7 +248,7 @@
                                     <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
                                         <Setter Property="Text" Value="" />
                                     </DataTrigger>
-                                </Style.Triggers>
+                                </Style.Triggers>-->
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
@@ -259,7 +259,7 @@
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource ShortenString}, ConverterParameter=13, Mode=OneTime}" />
                                 <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
-                                <Style.Triggers>
+                                <!--<Style.Triggers>
 
                                     <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                         <Setter Property="Text" Value="{Binding Report.Text, Converter={StaticResource ShortenString}, Mode=OneTime}" />
@@ -276,7 +276,7 @@
                                         <Setter Property="ToolTip" Value="" />
                                     </DataTrigger>
 
-                                </Style.Triggers>
+                                </Style.Triggers>-->
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
@@ -327,12 +327,12 @@
                                     <Setter Property="BorderThickness" Value="3" />
                                 </DataTrigger>
 
-                                <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
+                                <!--<DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                     <Setter Property="IsHitTestVisible" Value="False" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
                                     <Setter Property="IsHitTestVisible" Value="False" />
-                                </DataTrigger>
+                                </DataTrigger>-->
 
                                 <DataTrigger Binding="{Binding Report.OverallGrade.Grade.Letter, Mode=OneTime}" Value="B">
                                     <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush}" />
@@ -354,7 +354,7 @@
                             <TextBlock.Style>
                                 <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
                                     <Setter Property="Text" Value="{Binding Report.OverallGrade.Grade.Value, StringFormat=N1, Mode=OneTime}" />
-                                    <Style.Triggers>
+                                    <!--<Style.Triggers>
 
                                         <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                             <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}" />
@@ -365,7 +365,7 @@
                                         <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
                                             <Setter Property="Text" Value="{Binding Report.BlemishCount, Mode=OneTime}" />
                                         </DataTrigger>
-                                    </Style.Triggers>
+                                    </Style.Triggers>-->
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>

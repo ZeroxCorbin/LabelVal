@@ -112,7 +112,8 @@ public partial class Controller : ObservableObject
     private bool OpenDatabase() => (ResultsDatabase = new ResultsDatabase().Open($"{App.RunsRoot}\\RunResults.sqlite")) != null;
     private bool UpdateRunEntry()
     {
-        RunEntry.GradingStandard = ImageRollEntry.SelectedStandard;
+        RunEntry.GradingStandard = ImageRollEntry.SelectedGradingStandard;
+        RunEntry.ApplicationStandard = ImageRollEntry.SelectedApplicationStandard;
         RunEntry.Gs1TableName = ImageRollEntry.SelectedGS1Table;
         RunEntry.DesiredLoops = LoopCount;
         RunEntry.ImageRollName = ImageRollEntry.Name;
@@ -478,7 +479,7 @@ public partial class Controller : ObservableObject
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
-                ApplicationStandard = ire.ImageResultsManager.SelectedImageRoll.SelectedStandard.GetDescription(),
+                ApplicationStandard = ire.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard.GetDescription(),
             },
 
             Image = ire.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored ? ire.ImageResultEntry.SourceImage.BitmapBytes : ire.StoredImage.BitmapBytes

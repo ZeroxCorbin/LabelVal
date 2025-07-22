@@ -62,189 +62,189 @@ public partial class App : Application
     //The first row is the header. the columns should match the AvailableRegionType enum by element name.
     //The remaining rows are the AvailableParameters that match the AvailableRegionType key.
 
-    public class Regions
-    {
-        public static string GetUniqueList()
-        {
-            string filePath = "DeviceParameters.json";
-            string jsonContent = File.ReadAllText(filePath);
-            JObject jsonObject = JObject.Parse(jsonContent);
+    // public class Regions
+    // {
+    //     public static string GetUniqueList()
+    //     {
+    //         string filePath = "DeviceParameters.json";
+    //         string jsonContent = File.ReadAllText(filePath);
+    //         JObject jsonObject = JObject.Parse(jsonContent);
 
-            foreach (JProperty category in jsonObject.Properties())
-            {
-                List<string> v275List = category.Value["V275"].ToObject<List<string>>();
-                List<string> l95List = category.Value["L95"].ToObject<List<string>>();
+    //         foreach (JProperty category in jsonObject.Properties())
+    //         {
+    //             List<string> v275List = category.Value["V275"].ToObject<List<string>>();
+    //             List<string> l95List = category.Value["L95"].ToObject<List<string>>();
 
-                List<string> combinedList = v275List.Union(l95List).ToList();
+    //             List<string> combinedList = v275List.Union(l95List).ToList();
 
-                category.Value["V275"] = JArray.FromObject(combinedList);
-                category.Value["L95"] = JArray.FromObject(combinedList);
-            }
-            string ret = jsonObject.ToString();
-            return ret;
-        }
-        public static string LoadParameters()
-        {
-            using CsvHelper.CsvReader csv = new(new StreamReader("parameters.csv"), CultureInfo.InvariantCulture);
-            _ = csv.Read();
-            if (!csv.ReadHeader())
-            {
-                return "";
-            }
+    //             category.Value["V275"] = JArray.FromObject(combinedList);
+    //             category.Value["L95"] = JArray.FromObject(combinedList);
+    //         }
+    //         string ret = jsonObject.ToString();
+    //         return ret;
+    //     }
+    //     public static string LoadParameters()
+    //     {
+    //         using CsvHelper.CsvReader csv = new(new StreamReader("parameters.csv"), CultureInfo.InvariantCulture);
+    //         _ = csv.Read();
+    //         if (!csv.ReadHeader())
+    //         {
+    //             return "";
+    //         }
 
-            IEnumerable<dynamic> records = csv.GetRecords<dynamic>();
+    //         IEnumerable<dynamic> records = csv.GetRecords<dynamic>();
 
-            Dictionary<AvailableRegionTypes, List<Parameters>> results = [];
+    //         Dictionary<AvailableRegionTypes, List<Parameters>> results = [];
 
-            foreach (dynamic record in records)
-            {
-                foreach (dynamic item in record)
-                {
-                    if (!Enum.TryParse<AvailableRegionTypes>(item.Key, out AvailableRegionTypes type))
-                        continue;
+    //         foreach (dynamic record in records)
+    //         {
+    //             foreach (dynamic item in record)
+    //             {
+    //                 if (!Enum.TryParse<AvailableRegionTypes>(item.Key, out AvailableRegionTypes type))
+    //                     continue;
 
-                    if (string.IsNullOrWhiteSpace(item.Value))
-                        continue;
+    //                 if (string.IsNullOrWhiteSpace(item.Value))
+    //                     continue;
 
-                    string val = ConvertToCamelCase(item.Value);
+    //                 string val = ConvertToCamelCase(item.Value);
 
-                    if (!Enum.TryParse<Parameters>(val, out Parameters param))
-                        continue;
+    //                 if (!Enum.TryParse<Parameters>(val, out Parameters param))
+    //                     continue;
 
-                    if (!results.ContainsKey(type))
-                        results[type] = [];
+    //                 if (!results.ContainsKey(type))
+    //                     results[type] = [];
 
-                    results[type].Add(param);
+    //                 results[type].Add(param);
 
-                    //var region = Enum.Parse<AvailableRegionTypes>(item.Key);
-                    //var parameters = item.Value.Split(',').Select(v => Enum.Parse<AvailableParameters>(v)).ToList();
-                    //RegionParameters.Add(region, parameters);
-                }
-            }
+    //                 //var region = Enum.Parse<AvailableRegionTypes>(item.Key);
+    //                 //var parameters = item.Value.Split(',').Select(v => Enum.Parse<AvailableParameters>(v)).ToList();
+    //                 //RegionParameters.Add(region, parameters);
+    //             }
+    //         }
 
-            List<Parameters> commonAll = new();
-            List<Parameters> common1d = new();
-            List<Parameters> common2d = new();
-            foreach (AvailableRegionTypes key in results.Keys)
-            {
-                results[key] = results[key].Distinct().ToList();
+    //         List<Parameters> commonAll = new();
+    //         List<Parameters> common1d = new();
+    //         List<Parameters> common2d = new();
+    //         foreach (AvailableRegionTypes key in results.Keys)
+    //         {
+    //             results[key] = results[key].Distinct().ToList();
 
-                //Check All common
-                foreach (Parameters param in results[key])
-                {
-                    if (results.Values.All(v => v.Contains(param)))
-                    {
-                        if (!commonAll.Contains(param))
-                            commonAll.Add(param);
-                    }
-                }
+    //             //Check All common
+    //             foreach (Parameters param in results[key])
+    //             {
+    //                 if (results.Values.All(v => v.Contains(param)))
+    //                 {
+    //                     if (!commonAll.Contains(param))
+    //                         commonAll.Add(param);
+    //                 }
+    //             }
 
-                //Check 1D common
-                foreach (Parameters param in results[key])
-                {
-                    if (results[AvailableRegionTypes._1D].Contains(param)
-                        && results[AvailableRegionTypes._1D1].Contains(param)
-                        && results[AvailableRegionTypes._1D2].Contains(param)
-                        && results[AvailableRegionTypes._1D3].Contains(param)
-                        && results[AvailableRegionTypes._1D4].Contains(param)
-                        && results[AvailableRegionTypes._1D5].Contains(param))
-                    {
-                        if (!common1d.Contains(param))
-                            common1d.Add(param);
-                    }
-                }
+    //             //Check 1D common
+    //             foreach (Parameters param in results[key])
+    //             {
+    //                 if (results[AvailableRegionTypes._1D].Contains(param)
+    //                     && results[AvailableRegionTypes._1D1].Contains(param)
+    //                     && results[AvailableRegionTypes._1D2].Contains(param)
+    //                     && results[AvailableRegionTypes._1D3].Contains(param)
+    //                     && results[AvailableRegionTypes._1D4].Contains(param)
+    //                     && results[AvailableRegionTypes._1D5].Contains(param))
+    //                 {
+    //                     if (!common1d.Contains(param))
+    //                         common1d.Add(param);
+    //                 }
+    //             }
 
-                //Check 2D common
-                foreach (Parameters param in results[key])
-                {
-                    if (results[AvailableRegionTypes.DataMatrix].Contains(param)
-                        && results[AvailableRegionTypes.QR].Contains(param)
-                        && results[AvailableRegionTypes.QRMicro].Contains(param)
-                        && results[AvailableRegionTypes.MaxiCode].Contains(param))
-                    {
-                        if (!common2d.Contains(param))
-                            common2d.Add(param);
-                    }
-                }
-            }
+    //             //Check 2D common
+    //             foreach (Parameters param in results[key])
+    //             {
+    //                 if (results[AvailableRegionTypes.DataMatrix].Contains(param)
+    //                     && results[AvailableRegionTypes.QR].Contains(param)
+    //                     && results[AvailableRegionTypes.QRMicro].Contains(param)
+    //                     && results[AvailableRegionTypes.MaxiCode].Contains(param))
+    //                 {
+    //                     if (!common2d.Contains(param))
+    //                         common2d.Add(param);
+    //                 }
+    //             }
+    //         }
 
-            foreach (AvailableRegionTypes key in results.Keys)
-            {
-                results[key] = results[key].Distinct().ToList();
-            }
+    //         foreach (AvailableRegionTypes key in results.Keys)
+    //         {
+    //             results[key] = results[key].Distinct().ToList();
+    //         }
 
-            return JsonConvert.SerializeObject(results);
+    //         return JsonConvert.SerializeObject(results);
 
-        }
+    //     }
 
-        //I would like to convert " a string with spaces " to "AStringWithSpaces"
-        private static string ConvertToCamelCase(string value)
-        {
-            string[] parts = value.Split(' ');
-            for (int i = 0; i < parts.Length; i++)
-            {
-                parts[i] = parts[i][..1].ToUpper() + parts[i][1..];
-            }
-            return string.Join("", parts);
+    //     //I would like to convert " a string with spaces " to "AStringWithSpaces"
+    //     private static string ConvertToCamelCase(string value)
+    //     {
+    //         string[] parts = value.Split(' ');
+    //         for (int i = 0; i < parts.Length; i++)
+    //         {
+    //             parts[i] = parts[i][..1].ToUpper() + parts[i][1..];
+    //         }
+    //         return string.Join("", parts);
 
-        }
-        //Symbology	Here is a list of supported symbologies: Code 39, ITF (I 2 of 5), Code 128, Codabar, GS1-128, UPC-A, UPC-E, EAN/JAN-8, EAN/JAN-13, DataBar-14 (linear), DataBar-stacked, DataBar-limited, DataBar-CCA, CCB, CCC, Pharmacode, PDF-417, Data Matrix ECC-200 (104x104 max), Data Matrix ECC-200 rectangular, PDF417, Micro-PDF417, QRCode, Aztec Code.
-        //Xdim The nominal size of the narrow element(1x) in the symbol.
+    //     }
+    //     //Symbology	Here is a list of supported symbologies: Code 39, ITF (I 2 of 5), Code 128, Codabar, GS1-128, UPC-A, UPC-E, EAN/JAN-8, EAN/JAN-13, DataBar-14 (linear), DataBar-stacked, DataBar-limited, DataBar-CCA, CCB, CCC, Pharmacode, PDF-417, Data Matrix ECC-200 (104x104 max), Data Matrix ECC-200 rectangular, PDF417, Micro-PDF417, QRCode, Aztec Code.
+    //     //Xdim The nominal size of the narrow element(1x) in the symbol.
 
-        public static void GetComments()
-        {
-            //open the file Descriptions.txt and for (each line) split the line into a key and a value seperated by a tab
-            //There can be multiple values for a key, so the value should be a list of strings
-            Dictionary<string, List<string>> comments = [];
-            using StreamReader sr = new("Descriptions.txt");
-            string line;
+    //     public static void GetComments()
+    //     {
+    //         //open the file Descriptions.txt and for (each line) split the line into a key and a value seperated by a tab
+    //         //There can be multiple values for a key, so the value should be a list of strings
+    //         Dictionary<string, List<string>> comments = [];
+    //         using StreamReader sr = new("Descriptions.txt");
+    //         string line;
 
-            while ((line = sr.ReadLine()) != null)
-            {
-                string[] parts = line.Split('\t');
-                if (parts.Length != 2)
-                    continue;
+    //         while ((line = sr.ReadLine()) != null)
+    //         {
+    //             string[] parts = line.Split('\t');
+    //             if (parts.Length != 2)
+    //                 continue;
 
-                if (!comments.ContainsKey(parts[0]))
-                {
+    //             if (!comments.ContainsKey(parts[0]))
+    //             {
 
-                    comments[parts[0]] = [];
-                    comments[parts[0]].Add(parts[1]);
-                    continue;
-                }
+    //                 comments[parts[0]] = [];
+    //                 comments[parts[0]].Add(parts[1]);
+    //                 continue;
+    //             }
 
-                bool found = false;
+    //             bool found = false;
 
-                var str2 = parts[1].Trim();
-                foreach (string comment in comments[parts[0]].ToArray())
-                {
-                   var str1 = comment.Trim();
+    //             var str2 = parts[1].Trim();
+    //             foreach (string comment in comments[parts[0]].ToArray())
+    //             {
+    //                var str1 = comment.Trim();
                     
-                    // Compare the strings
-                    bool areEqual = str1.Equals(str2, StringComparison.Ordinal);
-                    if (areEqual)
-                    {
-                        found = true;
-                        break;
-                    }
+    //                 // Compare the strings
+    //                 bool areEqual = str1.Equals(str2, StringComparison.Ordinal);
+    //                 if (areEqual)
+    //                 {
+    //                     found = true;
+    //                     break;
+    //                 }
 
-                }
+    //             }
 
-                if (!found)
-                    comments[parts[0]].Add(parts[1]);
-            }
+    //             if (!found)
+    //                 comments[parts[0]].Add(parts[1]);
+    //         }
 
-            StringBuilder sb = new();
-            foreach (string key in comments.Keys)
-            {
-                foreach (string value in comments[key])
-                {
-                    sb.AppendLine($"{key}\t{value}");
-                }
-            }
-            File.WriteAllText("Comments.txt", sb.ToString());
-        }
-    }
+    //         StringBuilder sb = new();
+    //         foreach (string key in comments.Keys)
+    //         {
+    //             foreach (string value in comments[key])
+    //             {
+    //                 sb.AppendLine($"{key}\t{value}");
+    //             }
+    //         }
+    //         File.WriteAllText("Comments.txt", sb.ToString());
+    //     }
+    // }
 
 
 

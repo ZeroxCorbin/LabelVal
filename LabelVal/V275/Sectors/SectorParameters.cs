@@ -34,29 +34,24 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
         Sector = sector;
 
-        if (Sector.Report.SymbolType == Symbologies.Unknown)
+        if (Sector.Report.Symbology == Symbologies.Unknown)
         {
             IsSectorMissing = true;
             SectorMissingText = "Sector is missing";
             return;
         }
-        //Get thew symbology enum
-        Symbologies theSymbology = Sector.Report.SymbolType;
-
-        //Get the region type for the symbology
-        AvailableRegionTypes theRegionType = theSymbology.GetSymbologyRegionType(Sector.Report.Device);
 
         //Get the parameters list based on the region type.
-        List<Parameters> theParamters = [.. BarcodeVerification.lib.Common.Parameters.DeviceParameters[(theRegionType, Sector.Report.Device)]];
+        var parameters = Sector.Report.Symbology.GetParameters(Sector.Report.Device, Sector.Report.GradingStandard, Sector.Report.ApplicationStandard);
 
         JObject report = (JObject)Sector.Report.Original;
         JObject template = (JObject)Sector.Template.Original;
 
-        foreach (Parameters parameter in theParamters)
+        foreach (Parameters parameter in parameters)
         {
             try
             {
-                AddParameter(parameter, theSymbology, Parameters, report, template);
+                AddParameter(parameter, Sector.Report.Symbology, Parameters, report, template);
             }
             catch (System.Exception ex)
             {
@@ -76,11 +71,11 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
     private void AddParameter(Parameters parameter, Symbologies theSymbology, ObservableCollection<IParameterValue> target, JObject report, JObject template)
     {
-        Type type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);
+        Type type = parameter.GetDataType(Sector.Report.Device, theSymbology);
 
         if (type == typeof(GradeValue) || type == typeof(Grade))
         {
-            IParameterValue gradeValue = GetGradeValueOrGrade(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            IParameterValue gradeValue = GetGradeValueOrGrade(parameter, report.GetParameter<JObject>(parameter.GetPath(Sector.Report.Device, Sector.Report.Symbology)));
 
             if (gradeValue != null)
             {
@@ -90,7 +85,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         }
         else if (type == typeof(ValueDouble))
         {
-            ValueDouble valueDouble = GetValueDouble(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            ValueDouble valueDouble = GetValueDouble(parameter, report.GetParameter<string>(parameter.GetPath(Sector.Report.Device, Sector.Report.Symbology)));
             if (valueDouble != null)
             {
                 target.Add(valueDouble);
@@ -99,19 +94,19 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         }
         else if (type == typeof(ValueString))
         {
-            ValueString valueString = parameter is Parameters.GS1Table
-                ? GetValueString(parameter, template.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)))
-                : GetValueString(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            ValueString valueString = parameter is BarcodeVerification.lib.Common.Parameters.GS1Table
+                ? GetValueString(parameter, template.GetParameter<string>(parameter.GetPath(Sector.Report.Device, Sector.Report.Symbology)))
+                : GetValueString(parameter, report.GetParameter<string>(parameter.GetPath(Sector.Report.Device, Sector.Report.Symbology)));
             if (valueString != null) { target.Add(valueString); return; }
         }
         else if (type == typeof(PassFail))
         {
-            PassFail passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            PassFail passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetPath(Sector.Report.Device, Sector.Report.Symbology)));
             if (passFail != null) { target.Add(passFail); return; }
         }
         else if (type == typeof(ValuePassFail))
         {
-            ValuePassFail valuePassFail = GetValuePassFail(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            ValuePassFail valuePassFail = GetValuePassFail(parameter, report.GetParameter<JObject>(parameter.GetPath(Sector.Report.Device, Sector.Report.Symbology)));
             if (valuePassFail != null) { target.Add(valuePassFail); return; }
         }
         else if (type == typeof(Custom))
@@ -119,7 +114,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
             //if (parameter is AvailableParameters.UnusedEC)
             //{
-            //    ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.SymbolType, report.GetParameter<double>("Datamatrix.uec"));
+            //    ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.Symbology, report.GetParameter<double>("Datamatrix.uec"));
             //    if (valueDouble != null)
             //    {
             //        Parameters.Add(valueDouble);
@@ -129,7 +124,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
             //if (parameter is AvailableParameters.MinimumEC)
             //{
-            //    ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.SymbolType, report.GetParameter<double>("Datamatrix.ecc"));
+            //    ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.Symbology, report.GetParameter<double>("Datamatrix.ecc"));
             //    if (valueDouble != null)
             //    {
             //        Parameters.Add(valueDouble);
@@ -139,7 +134,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         }
 
         target.Add(new Missing(parameter));
-        Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)}' missing or parse issue.");
+        Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetPath(Sector.Report.Device, Sector.Report.Symbology)}' missing or parse issue.");
     }
 
     private IParameterValue GetGradeValueOrGrade(Parameters parameter, JObject gradeValue)
@@ -150,7 +145,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         Grade grade = GetGrade(parameter, (JObject)gradeValue["grade"]);
         return grade == null
             ? new Grade(parameter, Sector.Report.Device, value)
-            : new GradeValue(parameter, Sector.Report.Device, Sector.Report.SymbolType, grade, value);
+            : new GradeValue(parameter, Sector.Report.Device, Sector.Report.Symbology, grade, value);
     }
     private Grade GetGrade(Parameters parameter, JObject gradeValue) => gradeValue is null
             ? null
@@ -158,7 +153,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
     private ValueDouble GetValueDouble(Parameters parameter, string value) => string.IsNullOrWhiteSpace(value)
             ? null
-            : string.IsNullOrWhiteSpace(value) ? null : new ValueDouble(parameter, Sector.Report.Device, Sector.Report.SymbolType, value);
+            : string.IsNullOrWhiteSpace(value) ? null : new ValueDouble(parameter, Sector.Report.Device, Sector.Report.Symbology, value);
 
     private ValueString GetValueString(Parameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new ValueString(parameter, Sector.Report.Device, value);
 
@@ -166,5 +161,5 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
     public ValuePassFail GetValuePassFail(Parameters parameter, JObject valuePassFail) => valuePassFail is null
             ? null
-            : new ValuePassFail(parameter, Sector.Report.Device, Sector.Report.SymbolType, valuePassFail["value"].ToString(), valuePassFail["result"].ToString());
+            : new ValuePassFail(parameter, Sector.Report.Device, Sector.Report.Symbology, valuePassFail["value"].ToString(), valuePassFail["result"].ToString());
 }

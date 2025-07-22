@@ -10,7 +10,7 @@ public class ParameterEnumToParameterDescription : IValueConverter
     {
         if (value is Parameters parameterEnum)
         {
-            return parameterEnum.GetParameterDescription();
+            return parameterEnum.GetDescription();
         }
         return string.Empty;
     }

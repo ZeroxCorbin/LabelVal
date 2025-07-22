@@ -115,8 +115,8 @@ public interface IImageResultDeviceEntry
         GeometryGroup secCenter = new();
         foreach (Sectors.Interfaces.ISector newSec in sectors)
         {
-            if (newSec.Report.RegionType is AvailableRegionTypes.OCR or AvailableRegionTypes.OCV or AvailableRegionTypes.Blemish)
-                continue;
+            //if (newSec.Report.RegionType is AvailableRegionTypes.OCR or AvailableRegionTypes.OCV or AvailableRegionTypes.Blemish)
+            //    continue;
 
             var hasReportSec = newSec.Report.Width > 0;
 
@@ -229,7 +229,7 @@ public interface IImageResultDeviceEntry
             if (sect == null)
                 continue;
 
-            if (sect.Report.SymbolType is Symbologies.QRCode or Symbologies.DataMatrix)
+            if (sect.Report.Symbology is Symbologies.QRCode or Symbologies.DataMatrix)
             {
                 Sectors.Interfaces.ISectorReport res = sect.Report;
 
@@ -242,11 +242,11 @@ public interface IImageResultDeviceEntry
                 GeometryGroup moduleGrid = new();
                 DrawingGroup textGrp = new();
 
-                double qzX = (sect.Report.SymbolType == Symbologies.DataMatrix) ? 0 : res.ExtendedData.QuietZone;
+                double qzX = (sect.Report.Symbology == Symbologies.DataMatrix) ? 0 : res.ExtendedData.QuietZone;
                 double qzY = res.ExtendedData.QuietZone;
 
-                var dX = (sect.Report.SymbolType == Symbologies.DataMatrix) ? 0 : (res.ExtendedData.DeltaX / 2);
-                var dY = (sect.Report.SymbolType == Symbologies.DataMatrix) ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
+                var dX = (sect.Report.Symbology == Symbologies.DataMatrix) ? 0 : (res.ExtendedData.DeltaX / 2);
+                var dY = (sect.Report.Symbology == Symbologies.DataMatrix) ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
 
                 var startX = -0.5;// sec.left + res.ExtendedData.Xnw - dX + 1 - (qzX * res.ExtendedData.DeltaX);
                 var startY = -0.5;// sec.top + res.ExtendedData.Ynw - dY + 1 - (qzY * res.ExtendedData.DeltaY);
@@ -372,7 +372,7 @@ public interface IImageResultDeviceEntry
 
                 if (sect.Template.Orientation == 90)
                 {
-                    var x = sect.Report.SymbolType == Symbologies.DataMatrix
+                    var x = sect.Report.Symbology == Symbologies.DataMatrix
                         ? sect.Report.Width - res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - 1
                         : sect.Report.Width - res.ExtendedData.Ynw - dY - ((res.ExtendedData.NumColumns + qzY) * res.ExtendedData.DeltaY);
                     transGroup.Children.Add(new TranslateTransform(

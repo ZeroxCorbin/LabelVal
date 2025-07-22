@@ -148,7 +148,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
                             if (jSec["name"].ToString() == rSec["name"].ToString())
                             {
 
-                                tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, rSec, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, row.Template["jobVersion"].ToString()));
+                                tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, rSec, [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, row.Template["jobVersion"].ToString()));
 
                                 break;
                             }
@@ -280,7 +280,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
                     {
                         if (templateSec["name"].ToString() == currentSect["name"].ToString())
                         {
-                            tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, report.Job["jobVersion"].ToString()));
+                            tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, report.Job["jobVersion"].ToString()));
                             break;
                         }
                     }
@@ -360,7 +360,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
             foreach (Sectors.Interfaces.ISector cSec in CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
-                    if (sec.Report.SymbolType == cSec.Report.SymbolType)
+                    if (sec.Report.Symbology == cSec.Report.Symbology)
                     {
                         SectorDifferences res = sec.SectorDetails.Compare(cSec.SectorDetails);
                         if (res != null)
@@ -372,7 +372,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
                         {
                             Username = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
-                            SectorMissingText = $"Stored Sector {sec.Report.SymbolType.GetDescription()}  : Current Sector  {cSec.Report.SymbolType.GetDescription()}"
+                            SectorMissingText = $"Stored Sector {sec.Report.Symbology.GetDescription()}  : Current Sector  {cSec.Report.Symbology.GetDescription()}"
                         };
                         diff.Add(dat);
                     }

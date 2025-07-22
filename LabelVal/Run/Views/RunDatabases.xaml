@@ -165,7 +165,7 @@
                                                 <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
                                                     <Setter Property="Visibility" Value="Collapsed" />
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding GradingStandard}" Value="{x:Static bar_common:AvailableStandards.GS1}">
+                                                        <DataTrigger Binding="{Binding GradingStandard}" Value="{x:Static bar_common:ApplicationStandards.GS1}">
                                                             <Setter Property="Visibility" Value="Visible" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -237,21 +237,18 @@
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.GS1}">
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:ApplicationStandards.GS1}">
                                     <Setter Property="Source" Value="/Assets/Images/GS1.png" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO}">
-                                    <Setter Property="Source" Value="/Assets/Images/all-codes.png" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15416}">
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15415}">
                                     <Setter Property="Source" Value="/Assets/Images/barcode-2d.png" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15415}">
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15416}">
                                     <Setter Property="Source" Value="/Assets/Images/barcode-1d1.png" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.OCR}">
+                                <!--<DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.OCR}">
                                     <Setter Property="Source" Value="/Assets/Images/OCR.png" />
-                                </DataTrigger>
+                                </DataTrigger>-->
                                 <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
                                     <Setter Property="Source" Value="/Assets/Images/all-codes.png" />
                                 </DataTrigger>

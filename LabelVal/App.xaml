@@ -59,11 +59,20 @@
             <!--  Barcode Enums  -->
 
             <ObjectDataProvider
-                x:Key="AvailableStandards"
+                x:Key="GradingStandards"
                 MethodName="GetValues"
                 ObjectType="{x:Type system:Enum}">
                 <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="bar_common:AvailableStandards" />
+                    <x:Type TypeName="bar_common:GradingStandards" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+            <ObjectDataProvider
+                x:Key="ApplicationStandards"
+                MethodName="GetValues"
+                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="bar_common:ApplicationStandards" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
 

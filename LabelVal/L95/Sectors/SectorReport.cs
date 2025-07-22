@@ -25,8 +25,6 @@ public class SectorReport : ISectorReport
     public GradingStandards GradingStandard { get; private set; }
     public GS1Tables GS1Table { get; private set; }
 
-    public ObservableCollection<IParameterValue> Parameters { get; } = [];
-
     public JObject Original { get; private set; }
 
     public OverallGrade OverallGrade { get; private set; }
@@ -56,10 +54,6 @@ public class SectorReport : ISectorReport
 
     //V275 2D module data
     public ModuleData ExtendedData { get; private set; }
-
-
-
-
 
     public SectorReport(JObject report, ISectorTemplate template)
     {
@@ -115,9 +109,6 @@ public class SectorReport : ISectorReport
 
         Symbology = sym.Replace("GS1 ", "").GetSymbology(Devices.L95);
 
-        //Set RegionType
-        //RegionType = Symbology.GetSymbologyRegionType(Devices.L95);
-
         if (Symbology == Symbologies.Unknown)
         {
             Logger.LogError($"Could not determine symbology from: '{sym}' {Device}");
@@ -126,65 +117,6 @@ public class SectorReport : ISectorReport
 
         return true;
     }
-
-    private void AddParameter(Parameters parameter, Symbologies theSymbology, ObservableCollection<IParameterValue> target, JObject report)
-    {
-        Type type = parameter.GetDataType(Device, theSymbology);
-
-        if (type == typeof(GradeValue))
-        {
-            GradeValue gradeValue = GetGradeValue(parameter, report.GetParameter<string>(parameter.GetPath(Device, Symbology)));
-
-            if (gradeValue != null)
-            {
-                target.Add(gradeValue);
-                return;
-            }
-        }
-        else if (type == typeof(Grade))
-        {
-            Grade grade = GetGrade(parameter, report.GetParameter<string>(parameter.GetPath(Device, Symbology)));
-
-            if (grade != null)
-            {
-                target.Add(grade);
-                return;
-            }
-        }
-        else if (type == typeof(ValueDouble))
-        {
-            ValueDouble valueDouble = GetValueDouble(parameter, report.GetParameter<string>(parameter.GetPath(Device, Symbology)));
-            if (valueDouble != null)
-            {
-                target.Add(valueDouble);
-                return;
-            }
-        }
-        else if (type == typeof(ValueString))
-        {
-            ValueString valueString = GetValueString(parameter, report.GetParameter<string>(parameter.GetPath(Device, Symbology)));
-            if (valueString != null)
-            {
-                target.Add(valueString); 
-                return;
-            }
-        }
-        else if (type == typeof(PassFail))
-        {
-            PassFail passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetPath(Device, Symbology)));
-            if (passFail != null) { target.Add(passFail); return; }
-        }
-        else if (type == typeof(Custom))
-        {
-
-        }
-
-        target.Add(new Missing(parameter));
-        Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetPath(Device, Symbology)}' missing or parse issue.");
-    }
-
-
-
 
     private bool SetOverallGrade(JObject report)
     {

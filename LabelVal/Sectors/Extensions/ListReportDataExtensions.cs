@@ -32,9 +32,9 @@ public static class ListReportDataExtensions
         _ = writer.AppendLine($"Roll ID{delimiter}{rollID}{GetDelimiter(2)}");
         _ = writer.AppendLine($"Sector Name{delimiter}{sector.Template.Name}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Sector Username{delimiter}{sector.Template.Username}{GetDelimiter(3)}");
-        _ = writer.AppendLine($"Region Type{delimiter}{sector.Report.RegionType.GetDescription()}{GetDelimiter(3)}");
-        _ = writer.AppendLine($"Standard{delimiter}{sector.Report.Standard.GetDescription()}{GetDelimiter(3)}");
-        _ = writer.AppendLine($"{sector.Report.SymbolType}{delimiter}\"{sector.Report.DecodeText.Replace("\r", "").Replace("\n", "")}\"{GetDelimiter(2)}{sector.Report.OverallGrade.Grade.Value}{delimiter}{sector.Report.OverallGrade.Grade.Letter}");
+        _ = writer.AppendLine($"Application Standard{delimiter}{sector.Report.ApplicationStandard.GetDescription()}{GetDelimiter(3)}");
+        _ = writer.AppendLine($"Grading Standard{delimiter}{sector.Report.GradingStandard.GetDescription()}{GetDelimiter(3)}");
+        _ = writer.AppendLine($"{sector.Report.Symbology}{delimiter}\"{sector.Report.DecodeText.Replace("\r", "").Replace("\n", "")}\"{GetDelimiter(2)}{sector.Report.OverallGrade.Grade.Value}{delimiter}{sector.Report.OverallGrade.Grade.Letter}");
         _ = writer.AppendLine(sector.Report.OverallGrade.ToDelimitedString(delimiter));
         _ = writer.AppendLine($"X Dimension{delimiter}{sector.Report.XDimension}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Angle{delimiter}{sector.Report.AngleDeg}{GetDelimiter(3)}");
@@ -55,7 +55,6 @@ public static class ListReportDataExtensions
             Clipboard.SetText(writer.ToString());
 
         return writer.ToString();
-
     }
     private static char delimiter => (char)SectorOutputSettings.CurrentDelimiter;
     private static string GetDelimiter(int count) => new(delimiter, count);
@@ -71,9 +70,6 @@ public static class ListReportDataExtensions
         {
             foreach (Parameters param in Enum.GetValues(typeof(Parameters)))
             {
-                if (Parameters.CommonParameters.Contains(param) || param is Parameters.Unknown)
-                    continue;
-
                 parameters.Add(param);
             }
         }
@@ -159,7 +155,7 @@ public static class ListReportDataExtensions
 
     //public static string GetParameter(this List<ReportData> report, AvailableParameters parameter, AvailableDevices device, AvailableSymbologies symbology)
     //{
-    //    string path = parameter.GetParameterPath(device, symbology);
+    //    string path = parameter.GetPath(device, symbology);
     //    return report.GetParameter(path);
     //}
     //public static string GetParameter(this List<ReportData> report, string key) => report.Find((e) => e.ParameterName.Equals(key))?.ParameterValue;

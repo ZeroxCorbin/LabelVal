@@ -646,7 +646,7 @@
                                 <Style BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}" TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static bar_common:AvailableStandards.GS1}">
+                                        <DataTrigger Binding="{Binding SelectedApplicationStandard}" Value="{x:Static bar_common:ApplicationStandards.GS1}">
                                             <Setter Property="Visibility" Value="Visible" />
                                         </DataTrigger>
                                     </Style.Triggers>

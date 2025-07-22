@@ -30,7 +30,7 @@ public partial class RunResult
                     if (jSec["name"].ToString() == rSec["name"].ToString())
                     {
 
-                        tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, (JObject)rSec, RunEntry.GradingStandard, RunEntry.Gs1TableName, StoredImageResultGroup.V275Result.Template["jobVersion"].ToString()));
+                        tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, (JObject)rSec, [RunEntry.GradingStandard], RunEntry.ApplicationStandard, RunEntry.Gs1TableName, StoredImageResultGroup.V275Result.Template["jobVersion"].ToString()));
 
                         break;
                     }
@@ -66,7 +66,7 @@ public partial class RunResult
                 {
                     if (jSec["name"].ToString() == rSec["name"].ToString())
                     {
-                        tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, (JObject)rSec, RunEntry.GradingStandard, RunEntry.Gs1TableName, CurrentImageResultGroup.V275Result.Template["jobVersion"].ToString()));
+                        tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, (JObject)rSec, [RunEntry.GradingStandard], RunEntry.ApplicationStandard, RunEntry.Gs1TableName, CurrentImageResultGroup.V275Result.Template["jobVersion"].ToString()));
                         break;
                     }
                 }
@@ -123,7 +123,7 @@ public partial class RunResult
             foreach (Sectors.Interfaces.ISector cSec in V275CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
-                    if (sec.Report.SymbolType == cSec.Report.SymbolType)
+                    if (sec.Report.Symbology == cSec.Report.Symbology)
                     {
                         diff.Add(sec.SectorDetails.Compare(cSec.SectorDetails));
                         continue;
@@ -134,7 +134,7 @@ public partial class RunResult
                         {
                             Username = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
-                            SectorMissingText = $"Stored Sector {sec.Report.SymbolType.GetDescription()} : Current Sector {cSec.Report.SymbolType.GetDescription()}"
+                            SectorMissingText = $"Stored Sector {sec.Report.Symbology.GetDescription()} : Current Sector {cSec.Report.Symbology.GetDescription()}"
                         };
                         diff.Add(dat);
                     }

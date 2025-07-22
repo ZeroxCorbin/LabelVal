@@ -6,6 +6,7 @@ using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
 using Newtonsoft.Json.Linq;
+using SharpDX.Direct2D1;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.L95.Sectors;
@@ -37,37 +38,18 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
 
         Sector = sector;
 
-        //Get thew symbology enum
-        Symbologies theSymbology = Sector.Report.Symbology;
-
         //Get the parameters list based on the region type.
-        List<Parameters> theParamters = [.. BarcodeVerification.lib.Common.Parameters.DeviceParameters[(theRegionType, Sector.Report.Device)]];
-
-        if (sector.Report.Standard == AvailableStandards.DPM)
-        {
-            List<Parameters> dpmParameters = [.. BarcodeVerification.lib.Common.Parameters.DeviceParameters[(AvailableRegionTypes.DPM, Sector.Report.Device)]];
-            //Add but do not duplicate DPM parameters
-            foreach (var dpmParameter in dpmParameters)
-            {
-                if (!theParamters.Contains(dpmParameter))
-                {
-                    theParamters.Add(dpmParameter);
-                }
-            }
-        }
-
-        //Sort the parameters by their name
-        theParamters.Sort((x, y) => x.ToString().CompareTo(y.ToString()));
+        var parameters = Sector.Report.Symbology.GetParameters(Sector.Report.Device, Sector.Report.GradingStandard, Sector.Report.ApplicationStandard).ToList();
 
         JObject report = (JObject)Sector.Report.Original;
         JObject template = (JObject)Sector.Template.Original;
 
         //Interate through the parameters
-        foreach (Parameters parameter in theParamters)
+        foreach (Parameters parameter in parameters)
         {
             try
             {
-                AddParameter(parameter, theSymbology, Parameters, report);
+                AddParameter(parameter, Sector.Report.Symbology, Parameters, report);
             }
             catch (System.Exception ex)
             {
@@ -147,4 +129,12 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
     private ValueString GetValueString(Parameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new ValueString(parameter, Sector.Report.Device, data);
     private PassFail GetPassFail(Parameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new PassFail(parameter, Sector.Report.Device, data);
 
+    private OverallGrade GetOverallGrade(string original)
+    {
+        string data = original.Replace("DPM", "");
+        string[] spl = data.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        Grade grade = new(BarcodeVerification.lib.Common.Parameters.OverallGrade, Sector.Device, spl[0]);
+        return new OverallGrade(Sector.Device, grade, original, spl[1], spl[2]);
+    }
 }

@@ -32,11 +32,11 @@ public class SectorDifferences
             IParameterValue cur = current.Parameters.FirstOrDefault(x => x.Parameter == pre.Parameter);
             if (cur != null)
             {
-                if (new SectorElement(pre, cur, current.Sector.Report.SymbolType).Difference)
-                    differences.Parameters.Add(new SectorElement( pre, cur, current.Sector.Report.SymbolType));
+                if (new SectorElement(pre, cur, current.Sector.Report.Symbology).Difference)
+                    differences.Parameters.Add(new SectorElement( pre, cur, current.Sector.Report.Symbology));
             }
             else
-                differences.Parameters.Add(new SectorElement(pre, null, current.Sector.Report.SymbolType));
+                differences.Parameters.Add(new SectorElement(pre, null, current.Sector.Report.Symbology));
         }
 
         return differences.Parameters.Count > 0 ? differences : null;

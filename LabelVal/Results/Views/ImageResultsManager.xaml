@@ -876,7 +876,7 @@
                                 <!--  Standard  -->
                                 <StackPanel Margin="6,0,0,0">
                                     <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Standard" />
-                                    <TextBlock Margin="3,0" Text="{Binding SelectedImageRoll.SelectedStandard, Converter={StaticResource EnumValueToDescription}}" />
+                                    <TextBlock Margin="3,0" Text="{Binding SelectedImageRoll.SelectedApplicationStandard, Converter={StaticResource EnumValueToDescription}}" />
                                 </StackPanel>
 
                                 <!--  GS1 Table  -->
@@ -885,7 +885,7 @@
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedImageRoll.SelectedStandard}" Value="{x:Static bar_common:AvailableStandards.GS1}">
+                                                <DataTrigger Binding="{Binding SelectedImageRoll.SelectedApplicationStandard}" Value="{x:Static bar_common:ApplicationStandards.GS1}">
                                                     <Setter Property="Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>

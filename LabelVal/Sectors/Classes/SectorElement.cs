@@ -6,7 +6,7 @@ namespace LabelVal.Sectors.Classes;
 
 public class SectorElement(IParameterValue previous, IParameterValue current, Symbologies symbol)
 {
-    public Type DataType => Parameter.GetParameterDataType(Device, Symbol);
+    public Type DataType => Parameter.GetDataType(Device, Symbol);
     public Parameters Parameter => GetParameter();
     public Devices Device => GetDevice();
     public Symbologies Symbol => symbol;

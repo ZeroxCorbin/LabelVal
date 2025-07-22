@@ -181,7 +181,7 @@ public class SectorReport : ISectorReport
         JObject xdim = report.GetParameter<JObject>(BarcodeVerification.lib.Common.Parameters.Xdim, Device, Symbology);
         XDimension = xdim != null
             ? xdim.GetParameter<double>("value")
-            : report.GetParameter<double>(BarcodeVerification.lib.Common.Parameters.XDimension, Device, Symbology);
+            : report.GetParameter<double>(BarcodeVerification.lib.Common.Parameters.Xdim, Device, Symbology);
 
         string unit = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Units, Device, Symbology);
         if (unit == null)
