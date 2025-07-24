@@ -43,20 +43,24 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
 
         JObject report = (JObject)Sector.Report.Original;
         JObject template = (JObject)Sector.Template.Original;
-
+                var pars = new List<IParameterValue>();
         //Interate through the parameters
         foreach (Parameters parameter in parameters)
         {
             try
             {
-                AddParameter(parameter, Sector.Report.Symbology, Parameters, report);
+
+                AddParameter(parameter, Sector.Report.Symbology, pars, report);
             }
             catch (System.Exception ex)
             {
                 Logger.LogError(ex, $"Error processing parameter: {parameter}");
             }
         }
+                pars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
 
+                foreach (IParameterValue p in pars)
+                    Parameters.Add(p);
         //Check for alarms
         var alarms = report.GetParameters<string>("Data[ParameterName:Warning].ParameterValue");
         if (alarms != null && alarms.Count > 0)
@@ -68,7 +72,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         }
     }
 
-    private void AddParameter(Parameters parameter, Symbologies theSymbology, ObservableCollection<IParameterValue> target, JObject report)
+    private void AddParameter(Parameters parameter, Symbologies theSymbology, List<IParameterValue> target, JObject report)
     {
         Type type = parameter.GetDataType(Sector.Report.Device, theSymbology);
 
