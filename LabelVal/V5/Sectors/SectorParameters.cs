@@ -21,6 +21,10 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
     public ObservableCollection<IParameterValue> Parameters { get; } = [];
 
+    public ObservableCollection<IParameterValue> GradingParameters { get; } = [];
+    public ObservableCollection<IParameterValue> ApplicationParameters { get; } = [];
+    public ObservableCollection<IParameterValue> SymbologyParameters { get; } = [];
+
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 

@@ -66,7 +66,7 @@ public partial class Sector : ObservableObject, ISector
 
         Template = new SectorTemplate(template, version);
         Report = new SectorReport(report, Template);
-        SectorDetails = new SectorDetails(this);
+        SectorDetails = new SectorParameters(this);
 
         foreach (Alarm alm in SectorDetails.Alarms)
         {

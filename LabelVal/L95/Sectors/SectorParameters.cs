@@ -22,6 +22,10 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
     [ObservableProperty] private string sectorMissingText;
 
     public ObservableCollection<IParameterValue> Parameters { get; } = [];
+    public ObservableCollection<IParameterValue> GradingParameters { get; } = [];
+    public ObservableCollection<IParameterValue> ApplicationParameters { get; } = [];
+    public ObservableCollection<IParameterValue> SymbologyParameters { get; } = [];
+
 
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
@@ -40,6 +44,62 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
 
         //Get the parameters list based on the region type.
         var parameters = Sector.Report.Symbology.GetParameters(Sector.Report.Device, Sector.Report.GradingStandard, Sector.Report.ApplicationStandard).ToList();
+
+
+        var symPars = Sector.Report.Symbology.GetParameters(Sector.Report.Device);
+        var gradingPars = Sector.Report.GradingStandard.GetParameters();
+        var applicationPars = Sector.Report.ApplicationStandard.GetParameters();
+
+        //Add the symbology parameters
+        var tempSymPars = new List<IParameterValue>();
+        foreach (Parameters parameter in symPars)
+        {
+            try
+            {
+                AddParameter(parameter, Sector.Report.Symbology, tempSymPars, Sector.Report.Original);
+            }
+            catch (System.Exception ex)
+            {
+                Logger.LogError(ex, $"Error processing symbology parameter: {parameter}");
+            }
+        }
+        tempSymPars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
+        foreach (IParameterValue p in tempSymPars)
+            SymbologyParameters.Add(p);
+
+        //Add the grading parameters
+        var tempGradingPars = new List<IParameterValue>();
+        foreach (Parameters parameter in gradingPars)
+        {
+            try
+            {
+                AddParameter(parameter, Sector.Report.Symbology, tempGradingPars, Sector.Report.Original);
+            }
+            catch (System.Exception ex)
+            {
+                Logger.LogError(ex, $"Error processing grading parameter: {parameter}");
+            }
+        }
+        tempGradingPars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
+        foreach (IParameterValue p in tempGradingPars)
+            GradingParameters.Add(p);
+
+        //Add the application parameters
+        var tempApplicationPars = new List<IParameterValue>();
+        foreach (Parameters parameter in applicationPars)
+        {
+            try
+            {
+                AddParameter(parameter, Sector.Report.Symbology, tempApplicationPars, Sector.Report.Original);
+            }
+            catch (System.Exception ex)
+            {
+                Logger.LogError(ex, $"Error processing application parameter: {parameter}");
+            }
+        }
+        tempApplicationPars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
+        foreach (IParameterValue p in tempApplicationPars)
+            ApplicationParameters.Add(p);
 
         JObject report = (JObject)Sector.Report.Original;
         JObject template = (JObject)Sector.Template.Original;

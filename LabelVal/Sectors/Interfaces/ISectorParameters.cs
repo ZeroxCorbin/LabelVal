@@ -16,6 +16,12 @@ public interface ISectorParameters
 
     ObservableCollection<IParameterValue> Parameters { get; }
 
+    ObservableCollection<IParameterValue> ApplicationParameters { get; }
+
+    ObservableCollection<IParameterValue> SymbologyParameters { get; }
+
+    ObservableCollection<IParameterValue> GradingParameters { get; }
+
     ObservableCollection<Alarm> Alarms { get; }
     ObservableCollection<Blemish> Blemishes { get; }
 

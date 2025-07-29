@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace LabelVal.V275.Sectors;
 
-public partial class SectorDetails : ObservableObject, ISectorParameters
+public partial class SectorParameters : ObservableObject, ISectorParameters
 {
     public ISector Sector { get; set; }
 
@@ -19,12 +19,15 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
     [ObservableProperty] private string sectorMissingText;
 
     public ObservableCollection<IParameterValue> Parameters { get; } = [];
+    public ObservableCollection<IParameterValue> GradingParameters { get; } = [];
+    public ObservableCollection<IParameterValue> ApplicationParameters { get; } = [];
+    public ObservableCollection<IParameterValue> SymbologyParameters { get; } = [];
 
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
-    public SectorDetails() { }
-    public SectorDetails(ISector sector) => Process(sector);
+    public SectorParameters() { }
+    public SectorParameters(ISector sector) => Process(sector);
     public SectorDifferences Compare(ISectorParameters compare) => SectorDifferences.Compare(this, compare);
 
     public void Process(ISector sector)

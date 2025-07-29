@@ -668,23 +668,50 @@
                     </UniformGrid>
 
                 </DockPanel>
-                <DockPanel>
+                <GroupBox>
+                    <GroupBox.Header>
 
-                    <ItemsControl
-                        Margin="6,0"
-                        ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
-                        ItemsSource="{Binding Report.Parameters, Mode=OneTime}" />
-                </DockPanel>
-                <!--  Parameters  -->
-                <DockPanel>
-
-                    <ItemsControl
-                        Margin="6,0"
-                        ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
-                        ItemsSource="{Binding SectorDetails.Parameters, Mode=OneTime}" />
-                </DockPanel>
+                        <TextBlock Text="Application" />
+                    </GroupBox.Header>
+                    <!--  Parameters  -->
+                    <StackPanel>
 
 
+                        <ItemsControl
+                            Margin="6,0"
+                            ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
+                            ItemsSource="{Binding SectorDetails.ApplicationParameters, Mode=OneTime}" />
+
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox>
+                    <GroupBox.Header>
+
+                        <TextBlock Text="Grading" />
+                    </GroupBox.Header>
+                    <!--  Parameters  -->
+                    <StackPanel>
+                        <ItemsControl
+                            Margin="6,0"
+                            ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
+                            ItemsSource="{Binding SectorDetails.GradingParameters, Mode=OneTime}" />
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox>
+                    <GroupBox.Header>
+
+                        <TextBlock Text="Symbology" />
+                    </GroupBox.Header>
+                    <!--  Parameters  -->
+                    <StackPanel>
+
+                        <ItemsControl
+                            Margin="6,0"
+                            ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
+                            ItemsSource="{Binding SectorDetails.SymbologyParameters, Mode=OneTime}" />
+                    </StackPanel>
+                </GroupBox>
 
                 <!--  Alarms  -->
                 <DockPanel>
