@@ -47,7 +47,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
 
 
         var symPars = Sector.Report.Symbology.GetParameters(Sector.Report.Device);
-        var gradingPars = Sector.Report.GradingStandard.GetParameters();
+        var gradingPars = Sector.Report.GradingStandard.GetParameters(Sector.Report.Specification);
         var applicationPars = Sector.Report.ApplicationStandard.GetParameters();
 
         //Add the symbology parameters
