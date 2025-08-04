@@ -279,7 +279,7 @@ public partial class App : Application
             ArchiveFileName = Path.Combine(UserDataDirectory, "log.${shortdate}.txt"),
             ArchiveAboveSize = 5242880,
             ArchiveEvery = NLog.Targets.FileArchivePeriod.Day,
-            ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.Rolling,
+            ArchiveSuffixFormat = "yyyy-MM-dd",
             MaxArchiveFiles = 3
         };
         config.AddRuleForAllLevels(logfile);
