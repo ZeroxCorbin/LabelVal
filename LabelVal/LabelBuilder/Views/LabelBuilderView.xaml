@@ -75,7 +75,7 @@
 
         </md:Card>
 
-        <ScrollViewer
+        <ScrollViewer HorizontalScrollBarVisibility="Auto"
             Grid.Row="1">
             <barcodeViews:NewBarcodeSettingsView
             Margin="0,0,0,0"
