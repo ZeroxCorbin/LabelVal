@@ -1,7 +1,8 @@
 {
   "UID": "a07011de-9bbd-4b7d-8011-c433a4815f01",
   "Name": "GS1",
-  "Standard": "GS1",
+  "ApplicationStandard": "GS1",
+  "GradingStandard": "None",
   "GS1Table": "_10",
   "SectorType": "Dynamic",
   "TargetDPI": 600,

@@ -21,16 +21,16 @@
         HorizontalAlignment="Left"
         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-        <DockPanel>
+        <StackPanel>
+
             <TextBox
                 Margin="3"
                 md:HintAssist.Hint="Name"
                 md:HintAssist.IsFloating="True"
-                DockPanel.Dock="Top"
                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                 Text="{Binding Name}" />
 
-            <DockPanel DockPanel.Dock="Top">
+            <DockPanel>
                 <StackPanel Margin="6,0,0,0">
                     <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Image Type" />
                     <ListBox ItemsSource="{Binding Source={StaticResource ImageRollImageTypes}}" SelectedItem="{Binding ImageType}" />
@@ -48,13 +48,14 @@
                     Text="{Binding TargetDPI}" />
 
             </DockPanel>
+
             <DockPanel>
                 <StackPanel Margin="6,0,0,0">
-                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Standards" />
+                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Application Standards" />
                     <ComboBox ItemsSource="{Binding Source={StaticResource ApplicationStandards}}" SelectedItem="{Binding SelectedApplicationStandard}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource EnumValueToDescription}}" />
+                                <TextBlock Text="{Binding .}" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -78,7 +79,7 @@
                     <ComboBox ItemsSource="{Binding Source={StaticResource AvailableTables}}" SelectedItem="{Binding SelectedGS1Table}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource EnumValueToDescription}}" />
+                                <TextBlock Text="{Binding .}" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
 
@@ -86,7 +87,20 @@
                 </StackPanel>
             </DockPanel>
 
+            <DockPanel>
+                <StackPanel Margin="6,0,0,0">
+                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Grading Standards" />
+                    <ComboBox ItemsSource="{Binding Source={StaticResource GradingStandards}}" SelectedItem="{Binding SelectedGradingStandard}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding .}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </DockPanel>
 
-        </DockPanel>
+
+        </StackPanel>
     </md:Card>
 </UserControl>

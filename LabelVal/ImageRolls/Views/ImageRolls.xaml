@@ -45,6 +45,7 @@
         <CollectionViewSource x:Key="UserImageRolls" Source="{Binding UserImageRolls}">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription Direction="Ascending" PropertyName="SelectedApplicationStandard" />
+                <componentmodel:SortDescription Direction="Ascending" PropertyName="SelectedGradingStandard" />
                 <componentmodel:SortDescription Direction="Ascending" PropertyName="GS1TableNumber" />
                 <componentmodel:SortDescription Direction="Ascending" PropertyName="Name" />
             </CollectionViewSource.SortDescriptions>
@@ -332,7 +333,6 @@
 
         <DataTemplate x:Key="userIRListView">
 
-
             <ListView
                 Margin="3,3,0,0"
                 md:ScrollViewerAssist.IsAutoHideEnabled="True"
@@ -358,36 +358,47 @@
             <DockPanel Name="dockBackground" Margin="-3,0">
                 <Grid Margin="6" Background="White">
 
-                    <Image Width="36" Height="36">
+                    <Image Width="42" Height="42">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:ApplicationStandards.GS1}">
-                                        <Setter Property="Source" Value="/Assets/Images/GS1.png" />
-                                    </DataTrigger>
-                                    <!--<DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO}">
-                                        <Setter Property="Source" Value="/Assets/Images/all-codes.png" />
-                                    </DataTrigger>-->
-                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15416}">
+
+
+                                    <DataTrigger Binding="{Binding Items[0].SelectedGradingStandard}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15416}">
                                         <Setter Property="Source" Value="/Assets/Images/barcode-2d.png" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15415}">
+                                    <DataTrigger Binding="{Binding Items[0].SelectedGradingStandard}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15415}">
                                         <Setter Property="Source" Value="/Assets/Images/barcode-1d1.png" />
                                     </DataTrigger>
-                                    <!--<DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.OCR}">
-                                        <Setter Property="Source" Value="/Assets/Images/OCR.png" />
-                                    </DataTrigger>-->
-                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_TR_29158}">
+                                    <DataTrigger Binding="{Binding Items[0].SelectedGradingStandard}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_TR_29158}">
                                         <Setter Property="Source" Value="/Assets/Images/dpm.png" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
+                                    <DataTrigger Binding="{Binding Items[0].SelectedGradingStandard}" Value="{x:Static bar_common:GradingStandards.None}">
                                         <Setter Property="Source" Value="/Assets/Images/all-codes.png" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Image.Style>
                     </Image>
+
                     <Image
+                        Width="32"
+                        Height="32"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+
+                                    <DataTrigger Binding="{Binding Items[0].SelectedApplicationStandard}" Value="{x:Static bar_common:ApplicationStandards.GS1}">
+                                        <Setter Property="Source" Value="/Assets/Images/GS1.png" />
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                    <!--<Image
                         Width="22"
                         Height="22"
                         HorizontalAlignment="Right"
@@ -395,9 +406,11 @@
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Style.Triggers>
-                                    <!--<DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO}">
+                    -->
+                    <!--<DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO}">
                                         <Setter Property="Source" Value="/Assets/Images/iec.png" />
                                     </DataTrigger>-->
+                    <!--
                                     <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15416}">
                                         <Setter Property="Source" Value="/Assets/Images/iec.png" />
                                     </DataTrigger>
@@ -416,9 +429,11 @@
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Style.Triggers>
-                                    <!--<DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO}">
+                    -->
+                    <!--<DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO}">
                                         <Setter Property="Source" Value="/Assets/Images/iso.png" />
                                     </DataTrigger>-->
+                    <!--
                                     <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15416}">
                                         <Setter Property="Source" Value="/Assets/Images/iso.png" />
                                     </DataTrigger>
@@ -428,7 +443,7 @@
                                 </Style.Triggers>
                             </Style>
                         </Image.Style>
-                    </Image>
+                    </Image>-->
 
 
                 </Grid>
@@ -474,7 +489,7 @@
                 <!--<DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.OCR}">
                     <Setter Property="ToolTip" Value="OCR/OCV" />
                 </DataTrigger>-->
-                <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.None}">
                     <Setter Property="ToolTip" Value="None" />
                 </DataTrigger>
             </Style.Triggers>
@@ -513,7 +528,7 @@
                 <!--<DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.OCR}">
                     <Setter Property="ToolTip" Value="OCR/OCV" />
                 </DataTrigger>-->
-                <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.None}">
                     <Setter Property="ToolTip" Value="None" />
                 </DataTrigger>
             </Style.Triggers>

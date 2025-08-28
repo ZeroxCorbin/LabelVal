@@ -1,9 +1,10 @@
 {
   "UID": "a07011de-9bbd-4b7d-8011-c433a4815d15",
   "Name": "Validation (IQ,OQ,PQ)",
-  "Standard": "ISO",
+  "ApplicationStandard": "None",
+  "GradingStandard": "None",
   "GS1Table": "Unknown",
-"SectorType": "Fixed",
+  "SectorType": "Fixed",
   "TargetDPI": 600,
   "IsLocked": true,
   "ImageCount": 50

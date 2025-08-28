@@ -31,13 +31,15 @@ public partial class Sector : ObservableObject, ISector
     {
         get
         {
-            if (DesiredApplicationStandard == ApplicationStandards.None && DesiredGradingStandards.Count == 0)
-                return false;
-
             bool found = false;
             foreach (var gradingStandard in DesiredGradingStandards)
             {
                 if (gradingStandard == Report.GradingStandard)
+                {
+                    found = true;
+                    break;
+                }
+                else if(gradingStandard == GradingStandards.None)
                 {
                     found = true;
                     break;

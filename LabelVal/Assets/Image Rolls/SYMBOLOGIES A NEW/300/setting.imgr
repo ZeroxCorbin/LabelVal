@@ -1,9 +1,10 @@
 {
   "UID": "a07011de-9bbd-4b7d-8011-c433a4815f26",
   "Name": "Symbologies A (New)",
-  "Standard": "ISO",
+  "ApplicationStandard": "None",
+  "GradingStandard": "None",
   "GS1Table": "Unknown",
-"SectorType": "Fixed",
+  "SectorType": "Fixed",
   "TargetDPI": 300,
   "IsLocked": true,
   "ImageCount": 1
