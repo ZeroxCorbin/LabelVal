@@ -445,11 +445,15 @@ public partial class ImageResultDeviceEntry_L95
 
         if (CurrentSectors.Count == 0)
         {
+            DiffSectors.Clear();
             CurrentImage = null;
             CurrentImageOverlay = null;
         }
         else
+        {
+            GetSectorDiff();
             CurrentImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
+        }
     }
 
     [RelayCommand]
@@ -475,6 +479,7 @@ public partial class ImageResultDeviceEntry_L95
         {
             _ = ImageResultEntry.SelectedDatabase.Delete_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
             GetStored();
+            GetSectorDiff();
         }
     }
 

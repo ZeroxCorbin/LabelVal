@@ -345,6 +345,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
         {
             _ = ImageResultEntry.SelectedDatabase.Delete_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
             GetStored();
+            GetSectorDiff();
         }
     }
 
