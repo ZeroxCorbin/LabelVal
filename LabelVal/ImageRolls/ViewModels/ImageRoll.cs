@@ -84,17 +84,20 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
     [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty][property: JsonProperty] private int imageCount;
+
     [ObservableProperty][property: JsonProperty("GradingStandard")][property: SQLite.Column("GradingStandard")] private GradingStandards selectedGradingStandard;
-    partial void OnSelectedGradingStandardChanged(GradingStandards value) { OnPropertyChanged(nameof(GradingStandardDescription)); }
+    partial void OnSelectedGradingStandardChanged(GradingStandards value) { OnPropertyChanged(nameof(GradingStandardDescription)); OnPropertyChanged(nameof(StandardGroup)); }
     public string GradingStandardDescription => SelectedGradingStandard.GetDescription();
 
     [ObservableProperty][property: JsonProperty("ApplicationStandard")][property: SQLite.Column("ApplicationStandard")] private ApplicationStandards selectedApplicationStandard;
-    partial void OnSelectedApplicationStandardChanged(ApplicationStandards value) { OnPropertyChanged(nameof(ApplicationStandardDescription)); }
+    partial void OnSelectedApplicationStandardChanged(ApplicationStandards value) { OnPropertyChanged(nameof(ApplicationStandardDescription)); OnPropertyChanged(nameof(StandardGroup)); }
     public string ApplicationStandardDescription => SelectedApplicationStandard.GetDescription();
 
     [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private GS1Tables selectedGS1Table;
     partial void OnSelectedGS1TableChanged(GS1Tables value) => OnPropertyChanged(nameof(GS1TableNumber));
     public double GS1TableNumber => SelectedGS1Table is GS1Tables.Unknown ? 0 : double.Parse(SelectedGS1Table.GetDescription());
+
+    public string StandardGroup => $"{SelectedApplicationStandard}-{SelectedGradingStandard}";
 
     /// <summary>
     /// <see cref="TargetDPI"/>
@@ -205,6 +208,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
         foreach (ImageEntry f in images)
         {
+            f.SaveRequested += OnImageEntrySaveRequested;
             Task tsk = App.Current.Dispatcher.BeginInvoke(() => ImageEntries.Add(f)).Task;
             taskList.Add(tsk);
         }
@@ -212,6 +216,11 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         await Task.WhenAll([.. taskList]);
 
         ResetImageOrderAndSort();
+    }
+
+    private void OnImageEntrySaveRequested(ImageEntry imageEntry)
+    {
+        SaveImage(imageEntry);
     }
 
     private void ResetImageOrderAndSort()
@@ -222,7 +231,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
             if (images[i].Order != i + 1)
             {
                 images[i].Order = i + 1;
-                SaveImage(images[i]);
+                // SaveImage is now called by the OnOrderChanged event in ImageEntry
             }
         }
 
@@ -249,6 +258,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         try
         {
             var ire = new ImageEntry(UID, path);
+            ire.SaveRequested += OnImageEntrySaveRequested;
 
             ImageEntry imageentry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
             if (imageentry != null)
@@ -271,6 +281,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         try
         {
             var ire = new ImageEntry(UID, rawImage, TargetDPI);
+            ire.SaveRequested += OnImageEntrySaveRequested;
 
             ImageEntry imageentry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
             if (imageentry != null)
@@ -346,26 +357,87 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
     public void InsertImagesAtOrder(List<ImageEntry> newImages, int targetOrder)
     {
+        if (targetOrder < 1) targetOrder = 1;
+        if (targetOrder > ImageEntries.Count + 1) targetOrder = ImageEntries.Count + 1;
+
         var ordered = ImageEntries.OrderBy(x => x.Order).ToList();
-        //// Adjust the order of existing items to make space for the new item
+        // Adjust the order of existing items to make space for the new item
         foreach (ImageEntry currentImage in ordered)
         {
             if (currentImage.Order >= targetOrder)
-                currentImage.Order += targetOrder + (newImages.Count - 1);
+                currentImage.Order += newImages.Count;
         }
 
         // Insert each new image at the adjusted target order
-        foreach (ImageEntry newImage in newImages)
+        for (int i = 0; i < newImages.Count; i++)
         {
-            newImage.Order = targetOrder;
+            ImageEntry newImage = newImages[i];
+            newImage.Order = targetOrder + i;
             ImageEntries.Add(newImage);
+            SaveImage(newImage);
         }
-        foreach(var img in ImageEntries)
-            SaveImage(img);
 
         ImageCount = ImageEntries.Count;
         SaveRoll();
+    }
 
+    public void MoveImageTop(ImageEntry imageToMove)
+    {
+        if (imageToMove == null || ImageEntries.Count < 2) return;
+        MoveImage(imageToMove, 1);
+    }
+
+    public void MoveImageUp(ImageEntry imageToMove)
+    {
+        if (imageToMove == null || ImageEntries.Count < 2) return;
+        int oldOrder = imageToMove.Order;
+        if (oldOrder > 1)
+        {
+            MoveImage(imageToMove, oldOrder - 1);
+        }
+    }
+       
+    public void MoveImageDown(ImageEntry imageToMove)
+    {
+        if (imageToMove == null || ImageEntries.Count < 2) return;
+        int oldOrder = imageToMove.Order;
+        if (oldOrder < ImageEntries.Count)
+        {
+            MoveImage(imageToMove, oldOrder + 1);
+        }
+    }
+
+    public void MoveImageBottom(ImageEntry imageToMove)
+    {
+        if (imageToMove == null || ImageEntries.Count < 2) return;
+        MoveImage(imageToMove, ImageEntries.Count);
+    }
+
+    private void MoveImage(ImageEntry imageToMove, int newOrder)
+    {
+        if (imageToMove.Order == newOrder) return;
+
+        int oldOrder = imageToMove.Order;
+
+        if (oldOrder < newOrder) // Moving down
+        {
+            foreach (var img in ImageEntries.Where(i => i.Order > oldOrder && i.Order <= newOrder))
+            {
+                img.Order--;
+            }
+        }
+        else // Moving up
+        {
+            foreach (var img in ImageEntries.Where(i => i.Order >= newOrder && i.Order < oldOrder))
+            {
+                img.Order++;
+            }
+        }
+
+        imageToMove.Order = newOrder;
+
+        // The UI should update automatically if ImageEntries is an ObservableCollection and it's bound with a sort description.
+        // If not, you may need to re-sort the view.
     }
 
     public void DeleteImage(ImageEntry imageEntry)
@@ -375,6 +447,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
         if (ImageEntries.Remove(imageEntry))
         {
+            imageEntry.SaveRequested -= OnImageEntrySaveRequested;
             Logger.LogInfo($"Image deleted from roll: {imageEntry.UID}");
 
             ResetImageOrderAndSort();

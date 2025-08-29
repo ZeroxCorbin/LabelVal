@@ -355,27 +355,6 @@ public partial class ImageResultsManager : ObservableRecipient,
     }
 
     [RelayCommand]
-    private void MoveImageTop(ImageResultEntry imageResult)
-    {
-
-    }
-    [RelayCommand]
-    private void MoveImageUp(ImageResultEntry imageResult)
-    {
-
-    }
-    [RelayCommand]
-    private void MoveImageDown(ImageResultEntry imageResult)
-    {
-
-    }
-    [RelayCommand]
-    private void MoveImageBottom(ImageResultEntry imageResult)
-    {
-
-    }
-
-    [RelayCommand]
     private void AddImage() => AddImage(ImageAddPosition, null);
     private void AddImage(ImageAddPositions position, ImageResultEntry imageResult)
     {

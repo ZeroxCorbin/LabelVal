@@ -51,7 +51,7 @@
             </CollectionViewSource.SortDescriptions>
 
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="SelectedApplicationStandard" />
+                <PropertyGroupDescription PropertyName="StandardGroup" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 

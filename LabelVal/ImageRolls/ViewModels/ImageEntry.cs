@@ -13,6 +13,8 @@ namespace LabelVal.ImageRolls.ViewModels;
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageEntry : ObservableObject
 {
+    public event Action<ImageEntry> SaveRequested;
+
     public string Serialize => JsonConvert.SerializeObject(this);
 
     public static string GetUID(byte[] bytes) => BitConverter.ToString(SHA256.HashData(bytes)).Replace("-", string.Empty);
@@ -36,7 +38,7 @@ public partial class ImageEntry : ObservableObject
     [ObservableProperty][property: JsonProperty] private int order = -1;
     partial void OnOrderChanged(int value)
     {
-
+        SaveRequested?.Invoke(this);
     }
     [JsonProperty] public bool IsPlaceholder { get; set; }
     [property: SQLite.Ignore] public object NewData { get; set; }

@@ -18,6 +18,8 @@ public partial class ImageResultEntry : UserControl
     {
         viewModel = (ViewModels.ImageResultEntry)DataContext;
         viewModel.BringIntoView += ViewModel_BringIntoView;
+
+
     }
     private void UserControl_Unloaded(object sender, RoutedEventArgs e)
     {
@@ -45,16 +47,16 @@ public partial class ImageResultEntry : UserControl
             switch (s)
             {
                 case "top":
-                    viewModel.ImageResultsManager.MoveImageTopCommand.Execute(viewModel);
+                    viewModel.ImageResultsManager.SelectedImageRoll.MoveImageTop(viewModel.SourceImage);
                     break;
                 case "up":
-                    viewModel.ImageResultsManager.MoveImageUpCommand.Execute(viewModel);
+                    viewModel.ImageResultsManager.SelectedImageRoll.MoveImageUp(viewModel.SourceImage);
                     break;
                 case "down":
-                    viewModel.ImageResultsManager.MoveImageDownCommand.Execute(viewModel);
+                    viewModel.ImageResultsManager.SelectedImageRoll.MoveImageDown(viewModel.SourceImage);
                     break;
                 case "bottom":
-                    viewModel.ImageResultsManager.MoveImageBottomCommand.Execute(viewModel);
+                    viewModel.ImageResultsManager.SelectedImageRoll.MoveImageBottom(viewModel.SourceImage);
                     break;
             }
 

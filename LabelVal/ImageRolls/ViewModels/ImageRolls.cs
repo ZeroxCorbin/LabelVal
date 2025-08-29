@@ -77,6 +77,8 @@ public partial class ImageRolls : ObservableRecipient
         App.Settings.SetValue(nameof(SelectedImageRoll), value);
     }
 
+    [ObservableProperty] private bool refreshView;
+
     [ObservableProperty] private bool rightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
     partial void OnRightAlignOverflowChanged(bool value) => App.Settings.SetValue(nameof(RightAlignOverflow), value);
 
@@ -372,6 +374,8 @@ public partial class ImageRolls : ObservableRecipient
             FileFolderEntry file = GetFileFolderEntry(App.UserImageRollDefaultFile);
             if (file != null)
                 file.IsSelected = true;
+
+            RefreshView = !RefreshView;
         }
         else
             Logger.LogError($"Failed to save image roll: {NewImageRoll.Name}");

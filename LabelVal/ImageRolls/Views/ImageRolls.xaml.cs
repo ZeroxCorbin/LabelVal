@@ -1,5 +1,6 @@
 ﻿using LabelVal.ImageRolls.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +20,8 @@ public partial class ImageRolls : UserControl
                 _viewModel = (ViewModels.ImageRolls)DataContext;
                 if (_viewModel == null)
                     return;
+
+                _viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
                 ImageRoll ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRolls.SelectedImageRoll));
 
@@ -51,6 +54,14 @@ public partial class ImageRolls : UserControl
                 }
             }
         };
+    }
+
+    private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ViewModels.ImageRolls.RefreshView))
+        {
+            Refresh();
+        }
     }
 
     private void UserControl_Unloaded(object sender, RoutedEventArgs e) => DialogParticipation.SetRegister(this, null);
@@ -143,6 +154,8 @@ public partial class ImageRolls : UserControl
             fixedChanging = false;
         }
     }
+
+    public void Refresh() { if (FindResource("UserImageRolls") is CollectionViewSource cvs) { cvs.View?.Refresh(); } }
 
     private void btnOpenImageRollsLocation(object sender, RoutedEventArgs e) => System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
     {
