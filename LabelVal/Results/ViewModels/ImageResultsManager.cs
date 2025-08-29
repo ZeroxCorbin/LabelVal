@@ -16,8 +16,11 @@ using LabelVal.V5.ViewModels;
 using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -67,11 +70,14 @@ public partial class ImageResultsManager : ObservableRecipient,
         if (oldValue != null)
         {
             oldValue.ImageEntries.CollectionChanged -= SelectedImageRoll_Images_CollectionChanged;
+            oldValue.ImageMoved -= SelectedImageRoll_ImageMoved;
             oldValue.ImageEntries.Clear();
         }
 
         if (newValue != null)
         {
+            newValue.ImageEntries.CollectionChanged += SelectedImageRoll_Images_CollectionChanged;
+            newValue.ImageMoved += SelectedImageRoll_ImageMoved;
             _ = LoadImageResultsEntries();
         }
         else
@@ -131,7 +137,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     partial void OnIsL95SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.L95); }
     /// <see cref="IsL95Faulted"/>
     [ObservableProperty] private bool isL95Faulted;
-    public LabelHandlers L95Handler => SelectedL95?.Controller != null && SelectedL95.Controller.IsConnected && SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running
+    public LabelHandlers L95Handler => SelectedL95?.Controller != null && SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running
                 ? SelectedL95.Controller.IsSimulator
                     ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
                     : _shiftPressed ? LabelHandlers.CameraDetect : LabelHandlers.CameraTrigger
@@ -207,24 +213,57 @@ public partial class ImageResultsManager : ObservableRecipient,
     {
         if (SelectedImageRoll == null)
             return;
+
+        isLoadingImages = true;
         try
         {
-            System.Windows.Threading.DispatcherOperation clrTsk = Application.Current.Dispatcher.BeginInvoke(() => ImageResultsEntries.Clear());
+            await Application.Current.Dispatcher.InvokeAsync(() => ImageResultsEntries.Clear());
 
-            isLoadingImages = true;
             if (SelectedImageRoll.ImageEntries.Count == 0)
-                await SelectedImageRoll.LoadImages();
-
-            _ = clrTsk.Wait();
-
+            {
+                await SelectedImageRoll.LoadImages(); // This will trigger CollectionChanged and populate ImageResultsEntries
+            }
+            else
+            {
+                // Manually populate if the collection is already filled
+                var existingEntries = SelectedImageRoll.ImageEntries.OrderBy(i => i.Order).ToList();
+                foreach (var entry in existingEntries)
+                {
+                    AddImageResultEntry(entry);
+                }
+            }
         }
         finally
         {
             isLoadingImages = false;
         }
 
-        //foreach (ImageEntry img in SelectedImageRoll.ImageEntries)
-        //    AddImageResultEntry(img);
+        // After loading is complete, bring the relevant item into view.
+        if (ImageResultsEntries.Any())
+        {
+            ImageResultEntry entryToView = null;
+            var sortedEntries = ImageResultsEntries.OrderBy(e => e.SourceImage.Order).ToList();
+            switch (ImageAddPosition)
+            {
+                case ImageAddPositions.Top:
+                case ImageAddPositions.Above:
+                    entryToView = sortedEntries.FirstOrDefault();
+                    break;
+                case ImageAddPositions.Bottom:
+                case ImageAddPositions.Below:
+                default:
+                    entryToView = sortedEntries.LastOrDefault();
+                    break;
+            }
+
+            if (entryToView != null)
+            {
+                _ = Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    entryToView.BringIntoViewHandler();
+                }), System.Windows.Threading.DispatcherPriority.ContextIdle);
+            }
+        }
     }
     private void SelectedImageRoll_Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
@@ -238,6 +277,15 @@ public partial class ImageResultsManager : ObservableRecipient,
         {
             foreach (ImageEntry itm in e.OldItems.Cast<ImageEntry>())
                 RemoveImageResultEntry(itm);
+        }
+    }
+
+    private void SelectedImageRoll_ImageMoved(object sender, ImageEntry imageEntry)
+    {
+        ImageResultEntry ire = ImageResultsEntries.FirstOrDefault(ir => ir.SourceImage.UID == imageEntry.UID);
+        if (ire != null)
+        {
+            ire.BringIntoViewHandler();
         }
     }
 
@@ -286,7 +334,13 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         img.NewData = null;
 
-        ire.BringIntoViewHandler();
+        if (!isLoadingImages)
+        {
+            _ = Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                ire.BringIntoViewHandler();
+            }), System.Windows.Threading.DispatcherPriority.ContextIdle);
+        }
     }
     private void RemoveImageResultEntry(ImageEntry img)
     {
@@ -360,54 +414,54 @@ public partial class ImageResultsManager : ObservableRecipient,
     {
         List<ImageEntry> newImages = PromptForNewImages(); // Prompt the user to select an image or multiple images
 
-        SelectedImageRoll.AddImages(ImageAddPositions.Top, newImages);
+        SelectedImageRoll.AddImages(position, newImages);
     }
 
     [RelayCommand]
     private async Task AddDeviceImage(ImageResultEntryDevices device) => await App.Current.Dispatcher.Invoke(async () =>
-                                                                              {
-                                                                                  switch (device)
-                                                                                  {
-                                                                                      case ImageResultEntryDevices.V275:
+    {
+        switch (device)
+        {
+            case ImageResultEntryDevices.V275:
 
-                                                                                          WorkingUpdate(device, true);
+                WorkingUpdate(device, true);
 
-                                                                                          if (V275Handler is LabelHandlers.CameraDetect or LabelHandlers.SimulatorDetect)
-                                                                                          {
-                                                                                              var label = new V275_REST_Lib.Controllers.Label(ProcessRepeat, null, V275Handler, SelectedImageRoll.SelectedGS1Table);
-                                                                                              await SelectedV275Node.Controller.ProcessLabel(0, label);
-                                                                                          }
-                                                                                          else
-                                                                                          {
-                                                                                              V275_REST_Lib.Controllers.FullReport res = await SelectedV275Node.Controller.ReadTask(-1);
-                                                                                              ProcessFullReport(res);
-                                                                                          }
+                if (V275Handler is LabelHandlers.CameraDetect or LabelHandlers.SimulatorDetect)
+                {
+                    var label = new V275_REST_Lib.Controllers.Label(ProcessRepeat, null, V275Handler, SelectedImageRoll.SelectedGS1Table);
+                    await SelectedV275Node.Controller.ProcessLabel(0, label);
+                }
+                else
+                {
+                    V275_REST_Lib.Controllers.FullReport res = await SelectedV275Node.Controller.ReadTask(-1);
+                    ProcessFullReport(res);
+                }
 
-                                                                                          break;
-                                                                                      case ImageResultEntryDevices.V5:
-                                                                                          WorkingUpdate(device, true);
+                break;
+            case ImageResultEntryDevices.V5:
+                WorkingUpdate(device, true);
 
-                                                                                          if (V5Handler is LabelHandlers.CameraDetect or LabelHandlers.SimulatorDetect)
-                                                                                          {
-                                                                                              var label = new V5_REST_Lib.Controllers.Label(ProcessRepeat, null, V5Handler, SelectedImageRoll.SelectedGS1Table);
-                                                                                              _ = await SelectedV5.Controller.ProcessLabel(label);
-                                                                                          }
-                                                                                          else
-                                                                                          {
-                                                                                              V5_REST_Lib.Controllers.FullReport res1 = await SelectedV5.Controller.Trigger_Wait_Return(true);
-                                                                                              ProcessFullReport(res1);
-                                                                                          }
+                if (V5Handler is LabelHandlers.CameraDetect or LabelHandlers.SimulatorDetect)
+                {
+                    var label = new V5_REST_Lib.Controllers.Label(ProcessRepeat, null, V5Handler, SelectedImageRoll.SelectedGS1Table);
+                    _ = await SelectedV5.Controller.ProcessLabel(label);
+                }
+                else
+                {
+                    V5_REST_Lib.Controllers.FullReport res1 = await SelectedV5.Controller.Trigger_Wait_Return(true);
+                    ProcessFullReport(res1);
+                }
 
-                                                                                          break;
-                                                                                      case ImageResultEntryDevices.L95:
-                                                                                          WorkingUpdate(device, true);
+                break;
+            case ImageResultEntryDevices.L95:
+                WorkingUpdate(device, true);
 
-                                                                                          FullReport res2 = SelectedL95.Controller.GetFullReport(-1);
-                                                                                          ProcessFullReport(res2);
-                                                                                          break;
-                                                                                  }
-                                                                                  
-                                                                              });
+                FullReport res2 = SelectedL95.Controller.GetFullReport(-1);
+                ProcessFullReport(res2);
+                break;
+        }
+
+    });
 
     public void Receive(PropertyChangedMessage<FullReport> message)
     {

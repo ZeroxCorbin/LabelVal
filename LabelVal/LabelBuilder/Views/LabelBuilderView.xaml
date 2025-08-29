@@ -75,10 +75,10 @@
 
         </md:Card>
 
-        <DockPanel Grid.Row="1">
+        <DockPanel Grid.Row="1" Margin="3,0">
             <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                <barcodeViews:NewBarcodeSettingsView
-                    Margin="0,0,0,0"
+                <barcodeViews:BarcodeSettingsView
+                    Margin="3,0"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     DataContext="{Binding BarcodeBuilderViewModel}" />
@@ -86,10 +86,18 @@
 
             <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
                 <barcodeViews:BarcodeManipulationView
-                    Margin="0,0,0,0"
+                    Margin="3,0"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     DataContext="{Binding BarcodeBuilderViewModel.BarcodeManipulationViewModel}" />
+            </ScrollViewer>
+
+            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+                <barcodeViews:BarcodeBuilderImagesView
+                    Margin="3,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    DataContext="{Binding BarcodeBuilderViewModel.BarcodeBuilderImagesViewModel}" />
             </ScrollViewer>
         </DockPanel>
 

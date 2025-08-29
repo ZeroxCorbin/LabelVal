@@ -5,6 +5,7 @@ Complete: Clicking on current sector details opens the equivelent stored sector 
 Complete: Work on sector coloring based on standard not just random.
 Complete: Shift click sector details all sectors open.
 Complete: Default Top/Bottom to Bottom.
+Complete: Show software version somewhere in the results.
 
 When viewing the run results and it is a simulation run the sector outlines are not shown. Maybe show the repeat and not the label?
 
@@ -22,8 +23,6 @@ If printer is slow open the umage details anyway.
 
 Work on grid view for runs and result views.
 
-Scroll to latestest image insert.
-
 Save the compare settings in the job/run entry.
 
 Click on the (I)nfo button and see a timedate stamp of when the current.
@@ -32,10 +31,7 @@ Popups need to be flyouts.
 
 V5 color of the bounding box.
 
-Show software version somewhere in the results.
-
 Export sector data as CSV. Is not working for Current sectors.
-
 
 Select the only availbel 95xx in the list.
 Always focus newest entry. Setting maybe?

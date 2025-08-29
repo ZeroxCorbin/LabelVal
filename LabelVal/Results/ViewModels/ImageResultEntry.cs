@@ -9,9 +9,11 @@ using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
+using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -155,18 +157,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
 
         try
         {
-            //var bmp = type == ImageResultEntryImageTypes.V275Stored
-            //        ? V275StoredImage.ImageBytes
-            //        : type == ImageResultEntryImageTypes.V275Current
-            //        ? V275CurrentImage.ImageBytes
-            //        : type == ImageResultEntryImageTypes.V5Stored
-            //        ? V5StoredImage.ImageBytes
-            //        : type == ImageResultEntryImageTypes.V5Current
-            //        ? V5CurrentImage.ImageBytes
-            //        : type == ImageResultEntryImageTypes.L95Stored
-            //        ? L95StoredImage.ImageBytes
-            //        : type == ImageResultEntryImageTypes.Source
-            //        ? SourceImage.ImageBytes : null;
 
             if (bmp != null)
             {
@@ -191,6 +181,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             return;
         }
         _ = dev.Store();
+        BringIntoViewHandler();
     }
     [RelayCommand]
     private void Process(ImageResultEntryDevices device)
@@ -202,6 +193,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             return;
         }
         dev.Process();
+        BringIntoViewHandler();
     }
     [RelayCommand]
     private async Task ClearStored(ImageResultEntryDevices device)
@@ -216,6 +208,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
                 return;
             }
             dev.GetStored();
+            BringIntoViewHandler();
         }
     }
     public void DeleteStored()
@@ -234,21 +227,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             return;
         }
         dev.ClearCurrent();
+        BringIntoViewHandler();
 
-        //else if (device == ImageResultEntryDevices.L95)
-        //{
-        //    //No CurrentReport for L95
-        //    //No template used for L95
-
-        //    _ = L95CurrentSectors.Remove(L95CurrentSectorSelected);
-        //    L95DiffSectors.Clear();
-
-        //    if (L95CurrentSectors.Count == 0)
-        //    {
-        //        L95CurrentImage = null;
-        //        L95CurrentImageOverlay = null;
-        //    }
-        //}
     }
 
     public string? GetName(System.Drawing.Point center)
@@ -257,9 +237,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         foreach (IImageResultDeviceEntry dev in ImageResultDeviceEntries)
         {
             //Check the Report center points
-            foreach(var sec in dev.StoredSectors)
+            foreach (var sec in dev.StoredSectors)
             {
-                if(sec.Report.CenterPoint.Contains(center))
+                if (sec.Report.CenterPoint.Contains(center))
                 {
                     name = sec.Template.Name;
                     break;
@@ -320,10 +300,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             dev.HandlerUpdate();
         }
 
-        //ImageResultsManager.HandlerUpdate();
     }
-
-    //[RelayCommand] private void RedoFiducial() => ImageUtilities.lib.Core.ImageUtilities.RedrawFiducial(SourceImage.Path, false);
 
     [RelayCommand] private void Delete() => DeleteImage?.Invoke(this);
 

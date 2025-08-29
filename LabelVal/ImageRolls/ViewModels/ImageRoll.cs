@@ -8,10 +8,13 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Main.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing.Printing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LabelVal.ImageRolls.ViewModels;
@@ -56,9 +59,13 @@ public enum ImageAddPositions
     Bottom
 }
 
+public delegate void ImageMovedEventHandler(object sender, ImageEntry imageEntry);
+
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
+    public event ImageMovedEventHandler ImageMoved;
+
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
     /// <summary>
@@ -308,6 +315,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
         _ = ImageRollsDatabase.InsertOrReplaceImageRoll(this);
     }
+
     [RelayCommand]
     public void SaveImage(ImageEntry image)
     {
@@ -396,7 +404,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
             MoveImage(imageToMove, oldOrder - 1);
         }
     }
-       
+
     public void MoveImageDown(ImageEntry imageToMove)
     {
         if (imageToMove == null || ImageEntries.Count < 2) return;
@@ -435,6 +443,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         }
 
         imageToMove.Order = newOrder;
+        ImageMoved?.Invoke(this, imageToMove);
 
         // The UI should update automatically if ImageEntries is an ObservableCollection and it's bound with a sort description.
         // If not, you may need to re-sort the view.
