@@ -49,6 +49,8 @@ public partial class ImageRolls : ObservableRecipient
     {
         if (value != null)
             SelectedUserImageRoll = null;
+        else
+            return;
 
         SelectedImageRoll = value;
     }
@@ -67,10 +69,15 @@ public partial class ImageRolls : ObservableRecipient
     {
         if (value != null)
             SelectedFixedImageRoll = null;
+        else
+            return;
 
         SelectedImageRoll = value;
     }
 
+    /// <summary>
+    /// <see cref="SelectedImageRoll"/>
+    /// </summary>
     [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRoll selectedImageRoll;
     partial void OnSelectedImageRollChanged(ImageRoll value)
     {
