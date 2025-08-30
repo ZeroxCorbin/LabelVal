@@ -24,9 +24,12 @@ public partial interface ISector
     public GS1Tables DesiredGS1Table { get; }
 
     bool IsWrongStandard { get; }
-
     bool IsFocused { get; set; }
     bool IsMouseOver { get; set; }
+
+    bool ShowApplicationParameters { get; set; }
+    bool ShowGradingParameters { get; set; }
+    bool ShowSymbologyParameters { get; set; }
 
     public static bool FallsWithin(System.Drawing.Point point, ISector sector, double radius = 50)
     {

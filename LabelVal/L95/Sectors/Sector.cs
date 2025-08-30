@@ -54,6 +54,37 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
+    public bool ShowApplicationParameters
+    {
+        get => App.Settings.GetValue(nameof(ShowApplicationParameters), true, true);
+        set
+        {
+            if (App.Settings.GetValue(nameof(ShowApplicationParameters), true, true) == value) return;
+            App.Settings.SetValue(nameof(ShowApplicationParameters), value);
+        }
+    }
+
+    public bool ShowGradingParameters
+    {
+        get => App.Settings.GetValue(nameof(ShowGradingParameters), true, true);
+        set
+        {
+            if (App.Settings.GetValue(nameof(ShowGradingParameters), true, true) == value) return;
+            App.Settings.SetValue(nameof(ShowGradingParameters), value);
+        }
+    }
+
+    public bool ShowSymbologyParameters
+    {
+        get => App.Settings.GetValue(nameof(ShowSymbologyParameters), true, true);
+        set
+        {
+            if (App.Settings.GetValue(nameof(ShowSymbologyParameters), true, true) == value) return;
+            App.Settings.SetValue(nameof(ShowSymbologyParameters), value);
+        }
+    }
+
+
     public Sector(JObject template, JObject report, GradingStandards[] gradingStandards, ApplicationStandards appStandard, GS1Tables table, string version)
     {
         Version = version;
@@ -80,6 +111,18 @@ public partial class Sector : ObservableObject, ISector
             if (alm.Category == AvaailableAlarmCategories.Error)
                 IsError = true;
         }
+
+        App.Settings.PropertyChanged += Settings_PropertyChanged;
+    }
+
+    private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if( e.PropertyName == nameof(ShowApplicationParameters))
+            OnPropertyChanged(nameof(ShowApplicationParameters));
+        if (e.PropertyName == nameof(ShowGradingParameters))
+            OnPropertyChanged(nameof(ShowGradingParameters));
+        if (e.PropertyName == nameof(ShowSymbologyParameters))
+            OnPropertyChanged(nameof(ShowSymbologyParameters));
     }
 
     [RelayCommand]

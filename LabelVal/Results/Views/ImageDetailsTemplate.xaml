@@ -10,7 +10,7 @@
 
 
     <DataTemplate x:Key="imageDetailsTemplate" DataType="{x:Type image:ImageEntry}">
-        <DockPanel VerticalAlignment="Top" >
+        <DockPanel VerticalAlignment="Top">
 
             <!--  Image Details  -->
             <md:Card

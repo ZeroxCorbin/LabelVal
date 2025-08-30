@@ -50,6 +50,25 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     }
 
     /// <summary>
+    /// Show the Application parameters expander.
+    /// </summary>
+    [ObservableProperty] private bool showApplicationParameters = App.Settings.GetValue(nameof(ShowApplicationParameters), true, true);
+    partial void OnShowApplicationParametersChanged(bool value) => App.Settings.SetValue(nameof(ShowApplicationParameters), value);
+
+    /// <summary>
+    /// Show the Grading parameters expander.
+    /// </summary>
+    [ObservableProperty] private bool showGradingParameters = App.Settings.GetValue(nameof(ShowGradingParameters), true, true);
+    partial void OnShowGradingParametersChanged(bool value) => App.Settings.SetValue(nameof(ShowGradingParameters), value);
+
+    /// <summary>
+    /// Show the Symbology parameters expander.
+    /// </summary>
+    [ObservableProperty] private bool showSymbologyParameters = App.Settings.GetValue(nameof(ShowSymbologyParameters), true, true);
+    partial void OnShowSymbologyParametersChanged(bool value) => App.Settings.SetValue(nameof(ShowSymbologyParameters), value);
+
+
+    /// <summary>
     /// Show the image details for the Source and Device image entries.
     /// </summary>
     [ObservableProperty] private bool showDetails;

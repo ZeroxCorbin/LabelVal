@@ -43,7 +43,7 @@
             <converters:EnumToInt x:Key="EnumToInt" />
             <converters:NumberGreaterThanZero x:Key="NumberGreaterThanZero" />
             <converters:NumberZeroOrNull x:Key="NumberZeroOrNull" />
-            <converters:NullOrCountZeroToVisibility x:Key="NullOrCountZeroToVisibility"/>
+            <converters:NullOrCountZeroToVisibility x:Key="NullOrCountZeroToVisibility" />
 
             <sys:Boolean x:Key="FalseValue">False</sys:Boolean>
             <sys:Boolean x:Key="TrueValue">True</sys:Boolean>

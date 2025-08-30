@@ -669,7 +669,10 @@
 
                 </DockPanel>
 
-                <Expander md:ExpanderAssist.HorizontalHeaderPadding="3,1" Visibility="{Binding SectorDetails.ApplicationParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
+                <Expander
+                    md:ExpanderAssist.HorizontalHeaderPadding="3,1"
+                    IsExpanded="{Binding ShowApplicationParameters}"
+                    Visibility="{Binding SectorDetails.ApplicationParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
                     <Expander.Header>
                         <DockPanel>
                             <TextBlock Margin="0,0,3,0" Text="Application" />
@@ -694,17 +697,17 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
 
-                         <TextBlock
-                             Margin="3,0"
-                             Background="{DynamicResource MahApps.Brushes.Accent3}"
-                             TextWrapping="Wrap">
-                             <TextBlock.Text>
-                                 <MultiBinding Converter="{StaticResource gs1FormattedOutput}">
-                                     <Binding Path="Report.GS1Results.Input" />
-                                     <Binding Path="Report.Symbology" />
-                                 </MultiBinding>
-                             </TextBlock.Text>
-                         </TextBlock>
+                            <TextBlock
+                                Margin="3,0"
+                                Background="{DynamicResource MahApps.Brushes.Accent3}"
+                                TextWrapping="Wrap">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource gs1FormattedOutput}">
+                                        <Binding Path="Report.GS1Results.Input" />
+                                        <Binding Path="Report.Symbology" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </DockPanel>
 
                         <ItemsControl
@@ -719,6 +722,7 @@
                 <Expander
                     Margin="0"
                     md:ExpanderAssist.HorizontalHeaderPadding="3,1"
+                    IsExpanded="{Binding ShowGradingParameters}"
                     Visibility="{Binding SectorDetails.GradingParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
                     <Expander.Header>
                         <DockPanel>
@@ -740,7 +744,10 @@
                     </StackPanel>
                 </Expander>
 
-                <Expander md:ExpanderAssist.HorizontalHeaderPadding="3,1" Visibility="{Binding SectorDetails.SymbologyParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
+                <Expander
+                    md:ExpanderAssist.HorizontalHeaderPadding="3,1"
+                    IsExpanded="{Binding ShowSymbologyParameters}"
+                    Visibility="{Binding SectorDetails.SymbologyParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
                     <Expander.Header>
 
                         <TextBlock Text="Symbology" />
