@@ -28,7 +28,7 @@
     </UserControl.Resources>
 
     <md:Card
-        MaxWidth="200"
+        Width="190"
         Margin="3"
         Padding="0"
         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
@@ -179,7 +179,7 @@
                     Height="30"
                     Margin="3,3,0,0"
                     VerticalAlignment="Top"
-                    Background="{DynamicResource MaterialDesignLightSeparatorBackground}">
+                    Background="White">
                     <Border.Style>
                         <Style TargetType="{x:Type Border}">
                             <Setter Property="Visibility" Value="Visible" />
@@ -232,7 +232,7 @@
                 <DockPanel Grid.Column="1">
 
                     <!--  Symbology Name  -->
-                    <TextBlock Margin="3,0" DockPanel.Dock="Top">
+                    <TextBlock Margin="3,1,0,0" DockPanel.Dock="Top">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Text" Value="{Binding Report.Symbology, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
@@ -254,7 +254,7 @@
                     </TextBlock>
 
                     <!--  Decode Text & OCR  -->
-                    <TextBlock Name="txtDecodeText" Margin="3,0">
+                    <TextBlock Name="txtDecodeText" Margin="3,1,0,0">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource ShortenString}, ConverterParameter=13, Mode=OneTime}" />

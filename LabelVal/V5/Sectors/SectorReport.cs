@@ -242,7 +242,7 @@ public class SectorReport : ISectorReport
         }
 
         string data = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.GS1Data, Device, Symbology);
-        bool pass = report.GetParameter<bool>(BarcodeVerification.lib.Common.Parameters.GS1DataStructure, Device, Symbology);
+        bool pass = report.GetParameter<bool>(BarcodeVerification.lib.Common.Parameters.Structure, Device, Symbology);
 
         List<string> list = [];
         if (!string.IsNullOrEmpty(data))

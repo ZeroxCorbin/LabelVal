@@ -241,8 +241,6 @@
 
                             <TextBlock Margin="3,0" Text="{Binding Path=Value, StringFormat=N1, Mode=OneTime}" />
 
-
-
                             <TextBlock Margin="3,0" Text="{Binding Path=Letter, Mode=OneTime}" />
                             <Border
                                 Width="10"
@@ -357,7 +355,7 @@
         </DockPanel.Background>
 
         <md:Card
-            MaxWidth="200"
+            Width="190"
             Margin="3"
             Padding="0"
             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
@@ -481,30 +479,17 @@
                         </TextBlock>
 
 
-                        <Expander md:ExpanderAssist.HorizontalHeaderPadding="1" IsEnabled="{Binding Report.GS1Results, Converter={StaticResource IsNotNull}}">
-                            <Expander.Style>
-                                <Style BasedOn="{StaticResource MaterialDesignExpander}" TargetType="{x:Type Expander}">
-
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Report.GS1Results, Converter={StaticResource IsNullOrEmpty}}" Value="true">
-                                            <Setter Property="md:ExpanderAssist.ExpanderButtonContent" Value="{x:Null}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Expander.Style>
-
-                            <Expander.Header>
-                                <!--  Decode Text & OCR  -->
-                                <TextBlock
-                                    MaxWidth="172"
-                                    Margin="3,0"
-                                    DockPanel.Dock="Top"
-                                    TextWrapping="Wrap">
-                                    <TextBlock.Style>
-                                        <Style TargetType="{x:Type TextBlock}">
-                                            <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}" />
-                                            <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
-                                            <!--<Style.Triggers>
+                        <!--  Decode Text & OCR  -->
+                        <TextBlock
+                            MaxWidth="172"
+                            Margin="3,0"
+                            DockPanel.Dock="Top"
+                            TextWrapping="Wrap">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}" />
+                                    <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
+                                    <!--<Style.Triggers>
                                                 <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                                     <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}" />
                                                     <Setter Property="ToolTip" Value="{Binding Report.Text, Mode=OneTime}" />
@@ -521,9 +506,24 @@
                                                 </DataTrigger>
 
                                             </Style.Triggers>-->
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!--<Expander md:ExpanderAssist.HorizontalHeaderPadding="1" IsEnabled="{Binding Report.GS1Results, Converter={StaticResource IsNotNull}}">
+                            <Expander.Style>
+                                <Style BasedOn="{StaticResource MaterialDesignExpander}" TargetType="{x:Type Expander}">
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Report.GS1Results, Converter={StaticResource IsNullOrEmpty}}" Value="true">
+                                            <Setter Property="md:ExpanderAssist.ExpanderButtonContent" Value="{x:Null}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Expander.Style>
+
+                            <Expander.Header>
+
                             </Expander.Header>
 
                             <DockPanel>
@@ -557,7 +557,7 @@
                                     </TextBlock.Style>
                                 </TextBlock>
                             </DockPanel>
-                        </Expander>
+                        </Expander>-->
 
                     </DockPanel>
 
@@ -668,50 +668,93 @@
                     </UniformGrid>
 
                 </DockPanel>
-                <GroupBox>
-                    <GroupBox.Header>
 
-                        <TextBlock Text="Application" />
-                    </GroupBox.Header>
+                <Expander md:ExpanderAssist.HorizontalHeaderPadding="3,1" Visibility="{Binding SectorDetails.ApplicationParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
+                    <Expander.Header>
+                        <DockPanel>
+                            <TextBlock Margin="0,0,3,0" Text="Application" />
+                            <TextBlock
+                                VerticalAlignment="Bottom"
+                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                Text="{Binding Report.ApplicationStandard, Converter={StaticResource EnumValueToDescription}}" />
+                        </DockPanel>
+                    </Expander.Header>
                     <!--  Parameters  -->
                     <StackPanel>
 
+                        <DockPanel>
+                            <ItemsControl
+                                Margin="3,0"
+                                DockPanel.Dock="Top"
+                                ItemsSource="{Binding Report.GS1Results.Fields, Mode=OneTime}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                         <TextBlock
+                             Margin="3,0"
+                             Background="{DynamicResource MahApps.Brushes.Accent3}"
+                             TextWrapping="Wrap">
+                             <TextBlock.Text>
+                                 <MultiBinding Converter="{StaticResource gs1FormattedOutput}">
+                                     <Binding Path="Report.GS1Results.Input" />
+                                     <Binding Path="Report.Symbology" />
+                                 </MultiBinding>
+                             </TextBlock.Text>
+                         </TextBlock>
+                        </DockPanel>
 
                         <ItemsControl
-                            Margin="6,0"
+                            Padding="6,0"
+                            Background="{DynamicResource MahApps.Brushes.Control.Background}"
                             ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
                             ItemsSource="{Binding SectorDetails.ApplicationParameters, Mode=OneTime}" />
 
                     </StackPanel>
-                </GroupBox>
-                <GroupBox>
-                    <GroupBox.Header>
+                </Expander>
 
-                        <TextBlock Text="Grading" />
-                    </GroupBox.Header>
+                <Expander
+                    Margin="0"
+                    md:ExpanderAssist.HorizontalHeaderPadding="3,1"
+                    Visibility="{Binding SectorDetails.GradingParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
+                    <Expander.Header>
+                        <DockPanel>
+                            <TextBlock Margin="0,0,3,0" Text="Grading" />
+                            <TextBlock
+                                VerticalAlignment="Bottom"
+                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                Text="{Binding Report.GradingStandard, Converter={StaticResource EnumValueToDescription}}" />
+                        </DockPanel>
+
+                    </Expander.Header>
                     <!--  Parameters  -->
                     <StackPanel>
                         <ItemsControl
-                            Margin="6,0"
+                            Padding="6,0"
+                            Background="{DynamicResource MahApps.Brushes.Control.Background}"
                             ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
                             ItemsSource="{Binding SectorDetails.GradingParameters, Mode=OneTime}" />
                     </StackPanel>
-                </GroupBox>
+                </Expander>
 
-                <GroupBox>
-                    <GroupBox.Header>
+                <Expander md:ExpanderAssist.HorizontalHeaderPadding="3,1" Visibility="{Binding SectorDetails.SymbologyParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
+                    <Expander.Header>
 
                         <TextBlock Text="Symbology" />
-                    </GroupBox.Header>
+                    </Expander.Header>
                     <!--  Parameters  -->
                     <StackPanel>
 
                         <ItemsControl
-                            Margin="6,0"
+                            Padding="6,0"
+                            Background="{DynamicResource MahApps.Brushes.Control.Background}"
                             ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
                             ItemsSource="{Binding SectorDetails.SymbologyParameters, Mode=OneTime}" />
                     </StackPanel>
-                </GroupBox>
+                </Expander>
 
                 <!--  Alarms  -->
                 <DockPanel>

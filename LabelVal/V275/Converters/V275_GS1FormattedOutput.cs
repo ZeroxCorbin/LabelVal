@@ -1,22 +1,53 @@
-﻿using BarcodeVerification.lib.GS1;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.GS1;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Data;
 
 namespace LabelVal.V275.Converters;
 
-internal class V275_GS1FormattedOutput : IValueConverter
+internal class V275_GS1FormattedOutput : IMultiValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is string val)
+        if (values.Length == 2 &&
+            values[0] != DependencyProperty.UnsetValue && values[1] != DependencyProperty.UnsetValue &&
+            values[0] is string val && values[1] is Symbologies symbology)
         {
             try
             {
                 if (val.StartsWith("^h", StringComparison.InvariantCultureIgnoreCase))
                     val = val.Replace("^", "");
 
-                App.GS1Encoder.DataStr = val;
+                if(val.StartsWith("#"))
+                    val = val.Replace("#", "^");
+
+                if(!val.StartsWith("^"))
+                    val = "^01" + val;
+
+                App.GS1Encoder.Sym = symbology switch
+                {
+                    Symbologies.DataBarOmni => GS1Encoder.Symbology.DataBarOmni,
+                    Symbologies.DataBarTruncated => GS1Encoder.Symbology.DataBarTruncated,
+                    Symbologies.DataBarStacked => GS1Encoder.Symbology.DataBarStacked,
+                    Symbologies.DataBarStackedOmni => GS1Encoder.Symbology.DataBarStackedOmni,
+                    Symbologies.DataBarLimited => GS1Encoder.Symbology.DataBarLimited,
+                    Symbologies.DataBarExpanded => GS1Encoder.Symbology.DataBarExpanded,
+                    Symbologies.DataBarExpandedStacked => GS1Encoder.Symbology.DataBarExpanded,
+                    Symbologies.UPCA => GS1Encoder.Symbology.UPCA,
+                    Symbologies.UPCE => GS1Encoder.Symbology.UPCE,
+                    Symbologies.EAN13 => GS1Encoder.Symbology.EAN13,
+                    Symbologies.EAN8 => GS1Encoder.Symbology.EAN8,
+                    Symbologies.Code128 => GS1Encoder.Symbology.GS1_128_CCA,
+                    Symbologies.CC_A => GS1Encoder.Symbology.GS1_128_CCA,
+                    Symbologies.CC_B => GS1Encoder.Symbology.GS1_128_CCA,
+                    Symbologies.CC_C => GS1Encoder.Symbology.GS1_128_CCC,
+                    Symbologies.QRCode => GS1Encoder.Symbology.QR,
+                    Symbologies.DataMatrix => GS1Encoder.Symbology.DM,
+                    _ => GS1Encoder.Symbology.NONE,
+                };
+                var rs = App.GS1Encoder.DataStr = val;
             }
             catch (Exception E)
             {
@@ -47,8 +78,8 @@ internal class V275_GS1FormattedOutput : IValueConverter
 
             return sb.ToString();
         }
-        return value;
+        return "";
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => null;
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) => null;
 }

@@ -3,25 +3,21 @@ using BarcodeVerification.lib.Extensions;
 using BarcodeVerification.lib.GS1;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Classes;
-using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
-using Lvs95xx.lib.Core.Controllers;
-using Lvs95xx.lib.Core.Models;
 using Newtonsoft.Json.Linq;
-using System.Collections.ObjectModel;
 using System.Drawing;
 
 namespace LabelVal.L95.Sectors;
 
 public class SectorReport : ISectorReport
-{  
+{
     public Devices Device => Devices.L95;
 
     public Symbologies Symbology { get; private set; }
     public SymbologySpecifications Specification => Symbology.GetSpecification(Device);
     public SymbologySpecificationTypes Type => Specification.GetCodeType();
 
-    public ApplicationStandards ApplicationStandard { get; private set; }  
+    public ApplicationStandards ApplicationStandard { get; private set; }
     public GradingStandards GradingStandard { get; private set; }
     public GS1Tables GS1Table { get; private set; }
 
@@ -96,14 +92,14 @@ public class SectorReport : ISectorReport
     }
     private bool SetSymbologyAndRegionType(JObject report)
     {
-        string sym = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Symbology, Device, Symbologies.Unknown);
+        var sym = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Symbology, Device, Symbologies.Unknown);
         if (sym == null)
         {
             Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Symbology.GetPath(Devices.L95, Symbologies.Unknown)}' in ReportData. {Device}");
             return false;
         }
 
-        string dataBarType = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.DataBarType, Device, Symbologies.Unknown);
+        var dataBarType = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.DataBarType, Device, Symbologies.Unknown);
         if (dataBarType != null)
             sym = $"DataBar {dataBarType}";
 
@@ -120,7 +116,7 @@ public class SectorReport : ISectorReport
 
     private bool SetOverallGrade(JObject report)
     {
-        string overall = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.OverallGrade, Device, Symbology);
+        var overall = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.OverallGrade, Device, Symbology);
         if (overall != null)
             OverallGrade = GetOverallGrade(overall);
         else
@@ -133,15 +129,15 @@ public class SectorReport : ISectorReport
 
     private bool SetStandardAndTable(JObject report)
     {
-        string stdString = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.GradingStandard, Device, Symbology);
-        string tblString = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.GS1Table, Device, Symbology);
+        var stdString = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.GradingStandard, Device, Symbology);
+        var tblString = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.GS1Table, Device, Symbology);
 
         if (stdString == null)
         {
             Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.GradingStandard.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
             return false;
         }
-        GradingStandard = stdString.GetGradingStandard(Devices.L95, Specification);
+        GradingStandard = "ISO".GetGradingStandard(Device, Specification);
 
         if (GradingStandard == GradingStandards.None)
         {
@@ -149,38 +145,43 @@ public class SectorReport : ISectorReport
             return false;
         }
 
-        if (tblString != null)
-            GS1Table = tblString.GetGS1Table(Devices.L95);
-        else
-        {
-            GS1Table = GS1Tables.Unknown;
-            return true;
-        }
+        ApplicationStandard = stdString.GetApplicationStandards(Device);
 
-        string data = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.GS1Data, Device, Symbology);
-        string pass = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.GS1DataStructure, Device, Symbology);
-
-        List<string> list = [];
-        if (!string.IsNullOrEmpty(data))
+        if (ApplicationStandard == ApplicationStandards.GS1)
         {
-            string[] spl = data.Split('(', StringSplitOptions.RemoveEmptyEntries);
-            foreach (string str in spl)
-                list.Add($"({str}");
+            if (tblString != null)
+                GS1Table = tblString.GetGS1Table(Devices.L95);
+            else
+            {
+                GS1Table = GS1Tables.Unknown;
+                return true;
+            }
+
+            var data = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.GS1Data, Device, Symbology);
+            var pass = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Structure, Device, Symbology);
+
+            List<string> list = [];
+            if (!string.IsNullOrEmpty(data))
+            {
+                var spl = data.Split('(', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var str in spl)
+                    list.Add($"({str}");
+            }
+            GS1Results = new GS1Decode(BarcodeVerification.lib.Common.Parameters.GS1Data, Device, Symbology, pass, DecodeText, data, list, "");
         }
-        GS1Results = new GS1Decode(BarcodeVerification.lib.Common.Parameters.GS1Data, Device, Symbology, pass, DecodeText, data, list, "");
         return true;
     }
 
     private bool SetXdimAndUnits(JObject report)
     {
-        string xdim = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.CellSize, Device, Symbology);
+        var xdim = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.CellSize, Device, Symbology);
         xdim ??= report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Xdim, Device, Symbology);
         if (xdim == null)
         {
             Logger.LogWarning($"Could not find: '{BarcodeVerification.lib.Common.Parameters.CellSize.GetPath(Devices.L95, Symbology)}' or '{BarcodeVerification.lib.Common.Parameters.Xdim.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
             return true;
         }
-        string[] split = xdim.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var split = xdim.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         if (split.Length == 1)
         {
             if (xdim.EndsWith("mm"))
@@ -193,13 +194,12 @@ public class SectorReport : ISectorReport
                 Logger.LogError($"Could not determine units from: '{xdim}' {Device}");
                 return false;
             }
-               
         }
-        else if(split.Length == 2)
+        else if (split.Length == 2)
         {
             XDimension = split[0].ParseDouble();
-        if (split[1].Equals("mils"))
-            Units = AvailableUnits.Mils;
+            if (split[1].Equals("mils"))
+                Units = AvailableUnits.Mils;
         }
         else
         {
@@ -211,11 +211,11 @@ public class SectorReport : ISectorReport
 
     private bool SetApeture(JObject report)
     {
-        string aperture = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Aperture, Device, Symbology);
+        var aperture = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Aperture, Device, Symbology);
         if (aperture != null)
         {
             //GetParameter returns: Reference number 12 (12 mil)
-            string[] split = aperture.Split('(', StringSplitOptions.RemoveEmptyEntries);
+            var split = aperture.Split('(', StringSplitOptions.RemoveEmptyEntries);
             if (split.Length != 2)
             {
                 Logger.LogError($"Could not parse: '{aperture}' to get Aperture. {Device}");
@@ -233,8 +233,8 @@ public class SectorReport : ISectorReport
 
     private OverallGrade GetOverallGrade(string original)
     {
-        string data = original.Replace("DPM", "");
-        string[] spl = data.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        var data = original.Replace("DPM", "");
+        var spl = data.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
         Grade grade = new(BarcodeVerification.lib.Common.Parameters.OverallGrade, Device, spl[0]);
         return new OverallGrade(Device, grade, original, spl[1], spl[2]);
@@ -245,7 +245,7 @@ public class SectorReport : ISectorReport
         if (string.IsNullOrWhiteSpace(data))
             return null;
 
-        string[] spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        var spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
         if (spl2.Length != 2)
             return spl2.Length == 1 ? new GradeValue(parameter, Device, Symbology, spl2[0], string.Empty) : null;

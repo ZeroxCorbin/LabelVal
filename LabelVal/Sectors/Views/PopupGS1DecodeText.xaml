@@ -33,10 +33,16 @@
                 </ItemsControl>
 
                 <TextBlock
-                    Margin="3,0"
-                    Background="{DynamicResource MahApps.Brushes.Accent3}"
-                    Text="{Binding Report.GS1Results.Input, Converter={StaticResource gs1FormattedOutput}}"
-                    TextWrapping="Wrap" />
+            Margin="3,0"
+            Background="{DynamicResource MahApps.Brushes.Accent3}"
+            TextWrapping="Wrap">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource gs1FormattedOutput}">
+                            <Binding Path="GS1Results.Input" />
+                            <Binding Path="Symbology" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
             </DockPanel>
         </Border>
 

@@ -10,7 +10,7 @@
 
 
     <DataTemplate x:Key="imageDetailsTemplate" DataType="{x:Type image:ImageEntry}">
-        <DockPanel VerticalAlignment="Top">
+        <DockPanel VerticalAlignment="Top" >
 
             <!--  Image Details  -->
             <md:Card
@@ -19,7 +19,7 @@
                 DockPanel.Dock="Top"
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                <DockPanel>
+                <StackPanel>
 
                     <DockPanel Margin="3,3,3,0" DockPanel.Dock="Top">
                         <TextBox
@@ -169,7 +169,7 @@
 
                     </DockPanel>
 
-                </DockPanel>
+                </StackPanel>
 
             </md:Card>
 
