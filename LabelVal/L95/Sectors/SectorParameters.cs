@@ -2,11 +2,8 @@
 using BarcodeVerification.lib.Extensions;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using CommunityToolkit.Mvvm.ComponentModel;
-using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
-using Lvs95xx.lib.Core.Controllers;
 using Newtonsoft.Json.Linq;
-using SharpDX.Direct2D1;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.L95.Sectors;
@@ -26,7 +23,6 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
     public ObservableCollection<IParameterValue> ApplicationParameters { get; } = [];
     public ObservableCollection<IParameterValue> SymbologyParameters { get; } = [];
 
-
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
@@ -43,12 +39,11 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         Sector = sector;
 
         //Get the parameters list based on the region type.
-        var parameters = Sector.Report.Symbology.GetParameters(Sector.Report.Device, Sector.Report.GradingStandard, Sector.Report.ApplicationStandard).ToList();
+        List<Parameters> parameters = Sector.Report.Symbology.GetParameters(Sector.Report.Device, Sector.Report.GradingStandard, Sector.Report.ApplicationStandard).ToList();
 
-
-        var symPars = Sector.Report.Symbology.GetParameters(Sector.Report.Device);
-        var gradingPars = Sector.Report.GradingStandard.GetParameters(Sector.Report.Specification);
-        var applicationPars = Sector.Report.ApplicationStandard.GetParameters();
+        Parameters[] symPars = Sector.Report.Symbology.GetParameters(Sector.Report.Device);
+        Parameters[] gradingPars = Sector.Report.GradingStandard.GetParameters(Sector.Report.Specification);
+        Parameters[] applicationPars = Sector.Report.ApplicationStandard.GetParameters();
 
         //Add the symbology parameters
         var tempSymPars = new List<IParameterValue>();
@@ -101,9 +96,9 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         foreach (IParameterValue p in tempApplicationPars)
             ApplicationParameters.Add(p);
 
-        JObject report = (JObject)Sector.Report.Original;
-        JObject template = (JObject)Sector.Template.Original;
-                var pars = new List<IParameterValue>();
+        var report = Sector.Report.Original;
+        var template = Sector.Template.Original;
+        var pars = new List<IParameterValue>();
         //Interate through the parameters
         foreach (Parameters parameter in parameters)
         {
@@ -117,12 +112,13 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
                 Logger.LogError(ex, $"Error processing parameter: {parameter}");
             }
         }
-                pars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
+        pars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
 
-                foreach (IParameterValue p in pars)
-                    Parameters.Add(p);
+        foreach (IParameterValue p in pars)
+            Parameters.Add(p);
+
         //Check for alarms
-        var alarms = report.GetParameters<string>("Data[ParameterName:Warning].ParameterValue");
+        IList<string> alarms = report.GetParameters<string>("Data[ParameterName:Warning].ParameterValue");
         if (alarms != null && alarms.Count > 0)
         {
             foreach (var alarm in alarms)
@@ -182,7 +178,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         if (string.IsNullOrWhiteSpace(data))
             return null;
 
-        string[] spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        var spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
         return spl2.Length == 2
             ? new GradeValue(parameter, Sector.Report.Device, Sector.Report.Symbology, spl2[0], spl2[1])
@@ -195,8 +191,8 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
 
     private OverallGrade GetOverallGrade(string original)
     {
-        string data = original.Replace("DPM", "");
-        string[] spl = data.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        var data = original.Replace("DPM", "");
+        var spl = data.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
         Grade grade = new(BarcodeVerification.lib.Common.Parameters.OverallGrade, Sector.Device, spl[0]);
         return new OverallGrade(Sector.Device, grade, original, spl[1], spl[2]);

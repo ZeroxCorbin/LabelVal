@@ -364,10 +364,10 @@
                                 <Style.Triggers>
 
 
-                                    <DataTrigger Binding="{Binding Items[0].SelectedGradingStandard}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15416}">
+                                    <DataTrigger Binding="{Binding Items[0].SelectedGradingStandard}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15415}">
                                         <Setter Property="Source" Value="/Assets/Images/barcode-2d.png" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Items[0].SelectedGradingStandard}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15415}">
+                                    <DataTrigger Binding="{Binding Items[0].SelectedGradingStandard}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15416}">
                                         <Setter Property="Source" Value="/Assets/Images/barcode-1d1.png" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Items[0].SelectedGradingStandard}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_TR_29158}">
