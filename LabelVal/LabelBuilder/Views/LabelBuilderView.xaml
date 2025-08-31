@@ -99,6 +99,14 @@
                     VerticalAlignment="Stretch"
                     DataContext="{Binding BarcodeBuilderViewModel.BarcodeBuilderImagesViewModel}" />
             </ScrollViewer>
+
+            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+                <barcodeViews:EnumBrowserView
+                    Margin="3,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    DataContext="{Binding BarcodeBuilderViewModel.EnumBrowserViewModel}" />
+            </ScrollViewer>
         </DockPanel>
 
     </Grid>

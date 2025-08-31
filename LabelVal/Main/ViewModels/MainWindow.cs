@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BarcodeBuilder.lib.Wpf.ViewModels;
+using BarcodeVerification.lib.Common;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Sectors.Classes;
@@ -47,6 +49,11 @@ public partial class MainWindow : ObservableRecipient
 
     public Results.ViewModels.ImageResultsDatabases ImageResultsDatabases { get; }
 
+    public EnumBrowserViewModel EnumBrowserViewModel { get; }
+
+    [ObservableProperty] private List<Parameters> selectedParameters = App.Settings.GetValue(nameof(SelectedParameters), new List<Parameters>(), true);
+    partial void OnSelectedParametersChanged(List<Parameters> value) => App.Settings.SetValue(nameof(SelectedParameters), value);
+
     public List<string> Languages { get; } = ["English", "Español"];
     [ObservableProperty] private string selectedLanguage = App.Settings.GetValue(nameof(SelectedLanguage), "English", true);
     partial void OnSelectedLanguageChanged(string value)
@@ -68,6 +75,9 @@ public partial class MainWindow : ObservableRecipient
         PrinterDetails = new Printer.ViewModels.PrinterDetails();
         ScannerDetails = new V5.ViewModels.ScannerDetails();
 
+        EnumBrowserViewModel = new EnumBrowserViewModel();
+        EnumBrowserViewModel.SelectedParametersChanged += EnumBrowserViewModel_SelectedParametersChanged;
+
         Printer = new Printer.ViewModels.Printer();
         V275Manager = new V275.ViewModels.V275Manager();
         ScannerManager = new V5.ViewModels.ScannerManager();
@@ -83,7 +93,7 @@ public partial class MainWindow : ObservableRecipient
 
         MenuItems =
         [
-            new HamburgerMenuItem { Label = "ImageRolls", Content = ImageRolls }, 
+            new HamburgerMenuItem { Label = "ImageRolls", Content = ImageRolls },
             new HamburgerMenuItem { Label = "Results", Content = ImageResultsDatabases },
             new HamburgerMenuItem { Label = "Printer", Content = Printer, IsNotSelectable = true },
             new HamburgerMenuItem { Label = "Run", Content = RunManager },
@@ -96,6 +106,9 @@ public partial class MainWindow : ObservableRecipient
 
         SelectedMenuItem = MenuItems[0];
     }
+
+    private void EnumBrowserViewModel_SelectedParametersChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => SelectedParameters = (List<Parameters>)sender;
+
     private static string GetAssemblyVersion() => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString()
         ?? string.Empty;
 }

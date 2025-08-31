@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BarcodeVerification.lib.Common;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json.Converters;
 using SQLite;
 using System.Text.Json.Serialization;
@@ -40,7 +41,7 @@ public enum SectorOutputIncludeParameters
 {
     Relevant,
     All,
-    //Selected
+    Selected
 }
 
 public partial class SectorOutputSettings : ObservableObject
@@ -66,4 +67,5 @@ public partial class SectorOutputSettings : ObservableObject
 
     [ObservableProperty] private SectorOutputIncludeParameters includeParameters = App.Settings.GetValue(ValueName(nameof(IncludeParameters)), SectorOutputIncludeParameters.Relevant, true);
     partial void OnIncludeParametersChanged(SectorOutputIncludeParameters value) => App.Settings.SetValue(ValueName(nameof(IncludeParameters)), value);
+
 }

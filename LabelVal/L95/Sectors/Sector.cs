@@ -8,10 +8,11 @@ using LabelVal.Sectors.Interfaces;
 
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
+using System;
 
 namespace LabelVal.L95.Sectors;
 
-public partial class Sector : ObservableObject, ISector
+public partial class Sector : ObservableObject, ISector, IDisposable
 {
     public Devices Device { get; } = Devices.L95;
     public string Version { get; }
@@ -39,7 +40,7 @@ public partial class Sector : ObservableObject, ISector
                     found = true;
                     break;
                 }
-                else if(gradingStandard == GradingStandards.None)
+                else if (gradingStandard == GradingStandards.None)
                 {
                     found = true;
                     break;
@@ -85,10 +86,14 @@ public partial class Sector : ObservableObject, ISector
     }
 
 
+    private List<Parameters> SelectedParameters => App.Settings.GetValue(nameof(SelectedParameters), new List<Parameters>(), true);
+
+    private bool disposedValue;
+
     public Sector(JObject template, JObject report, GradingStandards[] gradingStandards, ApplicationStandards appStandard, GS1Tables table, string version)
     {
         Version = version;
-        
+
         DesiredApplicationStandard = appStandard;
         if (gradingStandards != null && gradingStandards.Length > 0)
         {
@@ -117,15 +122,38 @@ public partial class Sector : ObservableObject, ISector
 
     private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if( e.PropertyName == nameof(ShowApplicationParameters))
+        if (e.PropertyName == nameof(ShowApplicationParameters))
             OnPropertyChanged(nameof(ShowApplicationParameters));
         if (e.PropertyName == nameof(ShowGradingParameters))
             OnPropertyChanged(nameof(ShowGradingParameters));
         if (e.PropertyName == nameof(ShowSymbologyParameters))
             OnPropertyChanged(nameof(ShowSymbologyParameters));
+
+        if (e.PropertyName == nameof(SelectedParameters))
+            OnPropertyChanged(nameof(SelectedParameters));
     }
 
     [RelayCommand]
     private void CopyToClipBoard(int rollID) => this.GetSectorReport(rollID.ToString(), true);
 
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                // Unsubscribe from the static event here
+                App.Settings.PropertyChanged -= Settings_PropertyChanged;
+            }
+
+            disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 }
