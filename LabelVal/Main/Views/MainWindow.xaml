@@ -54,7 +54,6 @@
 
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
-            >
             <Button
                 x:Name="btnColorBlind"
                 BorderThickness="0"
@@ -116,33 +115,34 @@
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl>
             <mah:Flyout x:Name="ApplicationSettings" Position="Left">
-                <StackPanel>
 
-                    <StackPanel Margin="10">
-                        <TextBlock Style="{StaticResource MaterialDesignTitleLargeTextBlock}" Text="Sector Output Settings" />
+                <ScrollViewer>
 
-                        <sectorOutput:SectorOutputSettings Margin="3" DataContext="{Binding SectorOutputSettings}" />
-                    </StackPanel>
+                    <StackPanel>
 
-                    <ScrollViewer MaxHeight="600">
                         <StackPanel Margin="10">
-                            <TextBlock Style="{StaticResource MaterialDesignTitleLargeTextBlock}" Text="Focused Parameters" />
+                            <TextBlock Style="{StaticResource MaterialDesignTitleLargeTextBlock}" Text="Sector Output Settings" />
 
-                            <bar:EnumBrowserView Margin="3" DataContext="{Binding EnumBrowserViewModel}" />
+                            <sectorOutput:SectorOutputSettings Margin="3" DataContext="{Binding SectorOutputSettings}" />
                         </StackPanel>
-                    </ScrollViewer>
 
+                            <StackPanel Margin="10">
+                                <TextBlock Style="{StaticResource MaterialDesignTitleLargeTextBlock}" Text="Focused Parameters" />
 
-                    <StackPanel Margin="10">
-                        <TextBlock Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Compare Settings" />
-                        <run:CompareSettingsView Margin="3" />
+                                <bar:EnumBrowserView Margin="3" DataContext="{Binding EnumBrowserViewModel}" MaxHeight="480" />
+                            </StackPanel>
+             
+
+                        <StackPanel Margin="10">
+                            <TextBlock Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Compare Settings" />
+                            <run:CompareSettingsView Margin="3" />
+                        </StackPanel>
+
+                        <StackPanel Margin="3">
+                            <local:AppSettingsControlView DataContext="{Binding AppSettings}" />
+                        </StackPanel>
                     </StackPanel>
-
-                    <StackPanel Margin="3">
-                        <local:AppSettingsControlView DataContext="{Binding AppSettings}" />
-                    </StackPanel>
-                </StackPanel>
-
+                </ScrollViewer>
             </mah:Flyout>
 
         </mah:FlyoutsControl>

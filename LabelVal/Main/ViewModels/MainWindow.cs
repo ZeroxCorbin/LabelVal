@@ -62,6 +62,8 @@ public partial class MainWindow : ObservableRecipient
         App.Settings.SetValue(nameof(SelectedLanguage), value);
     }
 
+    private List<Parameters> _selectedParameters => App.Settings.GetValue("SelectedParameters", new List<Parameters>(), true);
+
     public SectorOutputSettings SectorOutputSettings { get; } = new SectorOutputSettings();
 
     public MainWindow()
@@ -75,7 +77,7 @@ public partial class MainWindow : ObservableRecipient
         PrinterDetails = new Printer.ViewModels.PrinterDetails();
         ScannerDetails = new V5.ViewModels.ScannerDetails();
 
-        EnumBrowserViewModel = new EnumBrowserViewModel();
+        EnumBrowserViewModel = new EnumBrowserViewModel(_selectedParameters);
         EnumBrowserViewModel.SelectedParametersChanged += EnumBrowserViewModel_SelectedParametersChanged;
 
         Printer = new Printer.ViewModels.Printer();

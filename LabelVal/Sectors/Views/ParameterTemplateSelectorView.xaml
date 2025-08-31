@@ -1,0 +1,330 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
+    xmlns:ViewModels="clr-namespace:LabelVal.Sectors.Interfaces"
+    xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
+    xmlns:converters="clr-namespace:LabelVal.Converters"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:LabelVal.Sectors.Views"
+    xmlns:local_converters="clr-namespace:LabelVal.Sectors.Converters"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes">
+
+    <BooleanToVisibilityConverter x:Key="booltovis" />
+    <converters:StringCamelUnspaced2StringPascalSpaced x:Key="stringToUpper" />
+    <V275Converters:V275_OCMatchModeToString x:Key="MatchModeToString" />
+    <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput" />
+
+    <local_converters:EnumValueToDescription_ShortenString x:Key="EnumValueToDescription_ShortenString" />
+    <local_converters:BoolToPassFailString x:Key="BoolToPassFailString" />
+    <local_converters:ParameterEnumToParameterDescription x:Key="ParameterEnumToParameterDescription" />
+    <local_converters:ParameterSuffixToUnitsMultiConverter x:Key="ParameterSuffixToUnitsMultiConverter" />
+
+    <local_converters:ParameterTemplateSelector x:Key="ParameterTemplateSelector">
+
+        <local_converters:ParameterTemplateSelector.Missing>
+            <DataTemplate>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="3,0"
+                        VerticalAlignment="Center"
+                        Text="---" />
+                </Grid>
+            </DataTemplate>
+        </local_converters:ParameterTemplateSelector.Missing>
+
+        <local_converters:ParameterTemplateSelector.ValueDoubleTemplate>
+            <DataTemplate>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
+                        ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
+                    <DockPanel
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Value, StringFormat={}{0:N1}}" />
+                        <TextBlock VerticalAlignment="Bottom" Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                    <Binding Mode="OneTime" Path="Suffix" />
+                                    <Binding
+                                        Mode="OneTime"
+                                        Path="DataContext.Report.Units"
+                                        RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </DockPanel>
+                </Grid>
+            </DataTemplate>
+        </local_converters:ParameterTemplateSelector.ValueDoubleTemplate>
+
+        <local_converters:ParameterTemplateSelector.ValueStringTemplate>
+            <DataTemplate>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
+                        TextWrapping="Wrap"
+                        ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
+                    <TextBlock
+                        Grid.Column="1"
+                        MinWidth="26"
+                        Margin="3,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Text="{Binding Path=Value, Mode=OneTime}"
+                        TextWrapping="Wrap" />
+                </Grid>
+            </DataTemplate>
+        </local_converters:ParameterTemplateSelector.ValueStringTemplate>
+
+        <local_converters:ParameterTemplateSelector.PassFailTemplate>
+            <DataTemplate>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
+                        TextWrapping="Wrap"
+                        ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
+                    <DockPanel
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center">
+
+
+                        <TextBlock
+                            Width="25"
+                            Margin="3,0"
+                            Text="{Binding Path=Value, Converter={StaticResource BoolToPassFailString}, Mode=OneTime}" />
+                        <Border
+                            Width="10"
+                            Height="10"
+                            BorderThickness="0"
+                            CornerRadius="5">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=Value, Mode=OneTime}" Value="False">
+                                            <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+                    </DockPanel>
+                </Grid>
+            </DataTemplate>
+        </local_converters:ParameterTemplateSelector.PassFailTemplate>
+
+        <local_converters:ParameterTemplateSelector.ValuePassFailTemplate>
+            <DataTemplate>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
+                        TextWrapping="Wrap"
+                        ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
+                    <DockPanel
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center">
+
+                        <TextBlock HorizontalAlignment="Right" Text="{Binding Path=Value, StringFormat={}{0:N1}, Mode=OneTime}" />
+                        <TextBlock
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                    <Binding Mode="OneTime" Path="Suffix" />
+                                    <Binding
+                                        Mode="OneTime"
+                                        Path="DataContext.Report.Units"
+                                        RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+
+                        <TextBlock
+                            Width="25"
+                            Margin="3,0"
+                            Text="{Binding PassFail.Value, Converter={StaticResource BoolToPassFailString}}" />
+
+                        <Border
+                            Width="10"
+                            Height="10"
+                            BorderThickness="0"
+                            CornerRadius="5">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=PassFail.Value, Mode=OneTime}" Value="False">
+                                            <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+                    </DockPanel>
+                </Grid>
+            </DataTemplate>
+        </local_converters:ParameterTemplateSelector.ValuePassFailTemplate>
+
+        <local_converters:ParameterTemplateSelector.GradeTemplate>
+            <DataTemplate>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
+                        TextWrapping="Wrap"
+                        ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
+
+                    <DockPanel
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center">
+
+                        <TextBlock Margin="3,0" Text="{Binding Path=Value, StringFormat=N1, Mode=OneTime}" />
+
+                        <TextBlock Margin="3,0" Text="{Binding Path=Letter, Mode=OneTime}" />
+                        <Border
+                            Width="10"
+                            Height="10"
+                            BorderThickness="0"
+                            CornerRadius="5">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Letter, Mode=OneTime}" Value="B">
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Letter, Mode=OneTime}" Value="C">
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Letter, Mode=OneTime}" Value="D">
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Letter, Mode=OneTime}" Value="F">
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+                    </DockPanel>
+
+                </Grid>
+            </DataTemplate>
+        </local_converters:ParameterTemplateSelector.GradeTemplate>
+
+        <local_converters:ParameterTemplateSelector.GradeValueTemplate>
+            <DataTemplate>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
+                        TextWrapping="Wrap"
+                        ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
+
+                    <DockPanel
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center">
+
+                        <TextBlock HorizontalAlignment="Right" Text="{Binding Path=Value, StringFormat={}{0:N1}, Mode=OneTime}" />
+
+                        <TextBlock
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                    <Binding Mode="OneTime" Path="Suffix" />
+                                    <Binding
+                                        Mode="OneTime"
+                                        Path="DataContext.Report.Units"
+                                        RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+
+                        <TextBlock Margin="3,0" Text="{Binding Grade.Value, StringFormat=N1}" />
+
+
+                        <TextBlock Margin="3,0" Text="{Binding Path=Grade.Letter, Mode=OneTime}" />
+
+                        <Border
+                            Width="10"
+                            Height="10"
+                            BorderThickness="0"
+                            CornerRadius="5">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Grade.Letter, Mode=OneTime}" Value="B">
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Grade.Letter, Mode=OneTime}" Value="C">
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Grade.Letter, Mode=OneTime}" Value="D">
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Grade.Letter, Mode=OneTime}" Value="F">
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+                    </DockPanel>
+
+                </Grid>
+            </DataTemplate>
+        </local_converters:ParameterTemplateSelector.GradeValueTemplate>
+    </local_converters:ParameterTemplateSelector>
+</ResourceDictionary>

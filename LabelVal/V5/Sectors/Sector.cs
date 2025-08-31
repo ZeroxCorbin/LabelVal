@@ -1,6 +1,7 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.Extensions;
 using BarcodeVerification.lib.GS1;
+using BarcodeVerification.lib.ISO.ParameterTypes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.Sectors.Extensions;
@@ -10,7 +11,7 @@ using System.Collections.ObjectModel;
 
 namespace LabelVal.V5.Sectors;
 
-public partial class Sector : ObservableObject, ISector
+public partial class Sector : ObservableObject, ISector, IDisposable
 {
     public Devices Device { get; } = Devices.V5;
     public string Version { get; }
@@ -19,19 +20,20 @@ public partial class Sector : ObservableObject, ISector
     public ISectorReport Report { get; }
 
     public ISectorParameters SectorDetails { get; }
+    public ObservableCollection<IParameterValue> FocusedParameters { get; } = [];
     public bool IsWarning { get; }
     public bool IsError { get; }
 
     public ApplicationStandards DesiredApplicationStandard { get; }
-    public ObservableCollection<GradingStandards> DesiredGradingStandards { get; } = new ObservableCollection<GradingStandards>();
+    public ObservableCollection<GradingStandards> DesiredGradingStandards { get; } = [];
     public GS1Tables DesiredGS1Table { get; }
 
     public bool IsWrongStandard
     {
         get
         {
-            bool found = false;
-            foreach (var gradingStandard in DesiredGradingStandards)
+            var found = false;
+            foreach (GradingStandards gradingStandard in DesiredGradingStandards)
             {
                 if (gradingStandard == Report.GradingStandard)
                 {
@@ -83,6 +85,10 @@ public partial class Sector : ObservableObject, ISector
         }
     }
 
+    private List<Parameters> _selectedParameters => App.Settings.GetValue("SelectedParameters", new List<Parameters>(), true);
+
+    private bool disposedValue;
+
     public Sector(JObject report, JObject template, GradingStandards[] gradingStandards, ApplicationStandards appStandard, GS1Tables table, string version)
     {
         Version = version;
@@ -90,14 +96,14 @@ public partial class Sector : ObservableObject, ISector
         DesiredApplicationStandard = appStandard;
         if (gradingStandards != null && gradingStandards.Length > 0)
         {
-            foreach (var standard in gradingStandards)
+            foreach (GradingStandards standard in gradingStandards)
             {
                 DesiredGradingStandards.Add(standard);
             }
         }
         DesiredGS1Table = table;
 
-        string toolUid = report.GetParameter<string>("toolUid");
+        var toolUid = report.GetParameter<string>("toolUid");
         if (string.IsNullOrWhiteSpace(toolUid))
         {
             toolUid = $"SymbologyTool_{report.GetParameter<int>("toolSlot")}";
@@ -116,6 +122,8 @@ public partial class Sector : ObservableObject, ISector
                 IsError = true;
         }
 
+        UpdateFocusedParameters();
+
         App.Settings.PropertyChanged += Settings_PropertyChanged;
     }
 
@@ -127,8 +135,62 @@ public partial class Sector : ObservableObject, ISector
             OnPropertyChanged(nameof(ShowGradingParameters));
         if (e.PropertyName == nameof(ShowSymbologyParameters))
             OnPropertyChanged(nameof(ShowSymbologyParameters));
+
+        if (e.PropertyName == "SelectedParameters")
+            _ = App.Current.Dispatcher.BeginInvoke(() => UpdateFocusedParameters());
+
+    }
+
+    private void UpdateFocusedParameters()
+    {
+        var lst = _selectedParameters.ToList();
+        //for any selected parameters, show them in the focused parameters list. remove any that are not selected. Do not clear the list.
+        foreach (Parameters parameter in lst)
+        {
+            if (!FocusedParameters.Any(p => p.Parameter == parameter))
+            {
+                IParameterValue found = SectorDetails.Parameters.FirstOrDefault(p => p.Parameter == parameter);
+                if (found != null)
+                {
+                    FocusedParameters.Add(found);
+                }
+                else
+                {
+                    ParamterHandling.AddParameter(parameter, Report.Symbology, FocusedParameters, Report.Original, Template.Original);
+                }
+            }
+        }
+        for (var i = FocusedParameters.Count - 1; i >= 0; i--)
+        {
+            IParameterValue focusedParam = FocusedParameters[i];
+            if (!lst.Contains(focusedParam.Parameter))
+            {
+                FocusedParameters.RemoveAt(i);
+            }
+        }
     }
 
     [RelayCommand]
     private void CopyToClipBoard(int rollID) => this.GetSectorReport(rollID.ToString(), true);
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                // Unsubscribe from the static event here
+                App.Settings.PropertyChanged -= Settings_PropertyChanged;
+            }
+
+            disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 }

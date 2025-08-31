@@ -18,12 +18,15 @@
     mc:Ignorable="d">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ParameterTemplateSelectorView.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <converters:StringCamelUnspaced2StringPascalSpaced x:Key="stringToUpper" />
-        <!--<v275Converters:V275_OCMatchModeToString x:Key="matchModeToString" />-->
+            <converters:ShortenString x:Key="ShortenString" />
+            <Image x:Key="imgGS1" Source="/Assets/Images/GS1.png" />
+        </ResourceDictionary>
 
-        <converters:ShortenString x:Key="ShortenString" />
-        <Image x:Key="imgGS1" Source="/Assets/Images/GS1.png" />
 
     </UserControl.Resources>
 
@@ -34,9 +37,9 @@
         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
         Foreground="{DynamicResource MahApps.Brushes.Text}">
 
-        <DockPanel Margin="3">
+        <StackPanel Margin="3">
 
-            <DockPanel DockPanel.Dock="Top">
+            <DockPanel>
 
                 <!--  Name, Wrong Standard, Overall Grade String  -->
                 <Grid Margin="3" DockPanel.Dock="Top">
@@ -163,7 +166,7 @@
 
             </DockPanel>
 
-            <Grid DockPanel.Dock="Top">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
@@ -374,6 +377,12 @@
 
             </Grid>
 
+            <ItemsControl
+                Padding="6,0"
+                Background="{DynamicResource MahApps.Brushes.Control.Background}"
+                ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
+                ItemsSource="{Binding FocusedParameters}" />
+
             <!--  Alarms  -->
             <Border
                 Margin="0,3"
@@ -461,6 +470,6 @@
                 </ItemsControl>
             </Border>-->
 
-        </DockPanel>
+        </StackPanel>
     </md:Card>
 </UserControl>

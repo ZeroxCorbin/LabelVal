@@ -1,6 +1,8 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.GS1;
 using BarcodeVerification.lib.ISO;
+using BarcodeVerification.lib.ISO.ParameterTypes;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
@@ -16,6 +18,9 @@ public partial interface ISector
     ISectorReport Report { get; }
 
     ISectorParameters SectorDetails { get; }
+
+    ObservableCollection<IParameterValue> FocusedParameters { get; }
+
     bool IsWarning { get; }
     bool IsError { get; }
 
