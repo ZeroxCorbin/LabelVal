@@ -137,7 +137,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     partial void OnIsL95SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.L95); }
     /// <see cref="IsL95Faulted"/>
     [ObservableProperty] private bool isL95Faulted;
-    public LabelHandlers L95Handler => SelectedL95?.Controller != null && SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running
+    public LabelHandlers L95Handler => SelectedL95?.Controller != null && SelectedL95?.Controller.IsConnected == true && SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running
                 ? SelectedL95.Controller.IsSimulator
                     ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
                     : _shiftPressed ? LabelHandlers.CameraDetect : LabelHandlers.CameraTrigger

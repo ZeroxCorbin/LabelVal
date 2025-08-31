@@ -574,9 +574,9 @@
                         <Grid>
 
                             <ListBox
-                                PreviewMouseWheel="StoredSectors_PreviewMouseWheel"
                                 Padding="0,1,0,0"
                                 ItemsSource="{Binding StoredSectors}"
+                                PreviewMouseWheel="StoredSectors_PreviewMouseWheel"
                                 Tag="v275Stored">
 
                                 <ListBox.Style>
@@ -888,8 +888,8 @@
 
                             <ListBox
                                 Padding="0,1,0,0"
-                                PreviewMouseWheel="CurrentSectors_PreviewMouseWheel"
                                 ItemsSource="{Binding CurrentSectors}"
+                                PreviewMouseWheel="CurrentSectors_PreviewMouseWheel"
                                 SelectedItem="{Binding CurrentSelectedSector}"
                                 Tag="v275Current">
                                 <ListBox.Style>

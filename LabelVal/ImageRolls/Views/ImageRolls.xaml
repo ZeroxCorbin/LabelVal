@@ -569,7 +569,6 @@
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
                         </DockPanel>
 
-
                         <Border DockPanel.Dock="Top" Style="{StaticResource imageBarHor}" />
 
                         <mah:DropDownButton
@@ -612,10 +611,11 @@
                             <Border Style="{StaticResource imageBarHor}" />
                         </DockPanel>
 
-                        <DockPanel>
+                        <DockPanel Height="44">
 
                             <Button
                                 Width="48"
+                                VerticalAlignment="Top"
                                 Command="{Binding AddCommand}"
                                 ToolTip="Add a new Image Roll to the current database.">
 
@@ -632,6 +632,8 @@
 
                                 <StackPanel>
                                     <TextBlock
+                                        Margin="0,0,0,3"
+                                        HorizontalAlignment="Center"
                                         Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                         Text="New"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -639,6 +641,7 @@
                                     <iconPacks:PackIconMaterial
                                         Width="24"
                                         Height="24"
+                                        HorizontalAlignment="Center"
                                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                         Kind="Plus" />
                                 </StackPanel>
@@ -646,6 +649,7 @@
 
                             <Button
                                 Width="48"
+                                VerticalAlignment="Top"
                                 Command="{Binding EditCommand}"
                                 ToolTip="Edit the selected Image Roll.">
 
@@ -665,6 +669,8 @@
 
                                 <StackPanel>
                                     <TextBlock
+                                        Margin="0,0,0,3"
+                                        HorizontalAlignment="Center"
                                         Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                         Text="Edit"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -672,6 +678,7 @@
                                     <iconPacks:PackIconMaterial
                                         Width="24"
                                         Height="24"
+                                        HorizontalAlignment="Center"
                                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                         Kind="SquareEditOutline" />
                                 </StackPanel>
@@ -680,6 +687,7 @@
 
                             <Button
                                 Width="48"
+                                VerticalAlignment="Top"
                                 Command="{Binding SaveCommand}"
                                 ToolTip="Save Image Roll">
                                 <Button.Style>
@@ -693,15 +701,25 @@
                                     </Style>
                                 </Button.Style>
 
-                                <iconPacks:PackIconMaterial
-                                    Width="24"
-                                    Height="24"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    Kind="ContentSave" />
+                                <StackPanel>
+                                    <TextBlock
+                                        Margin="0,0,0,3"
+                                        HorizontalAlignment="Center"
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Text="Save"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <iconPacks:PackIconMaterial
+                                        Width="24"
+                                        Height="24"
+                                        HorizontalAlignment="Center"
+                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                        Kind="ContentSave" />
+                                </StackPanel>
                             </Button>
 
                             <Button
                                 Width="48"
+                                VerticalAlignment="Top"
                                 Command="{Binding CancelCommand}"
                                 ToolTip="Cancel">
                                 <Button.Style>
@@ -715,15 +733,25 @@
                                     </Style>
                                 </Button.Style>
 
-                                <iconPacks:PackIconMaterial
-                                    Width="24"
-                                    Height="24"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    Kind="Cancel" />
+                                <StackPanel>
+                                    <TextBlock
+                                        Margin="0,0,0,3"
+                                        HorizontalAlignment="Center"
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Text="Cancel"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <iconPacks:PackIconMaterial
+                                        Width="24"
+                                        Height="24"
+                                        HorizontalAlignment="Center"
+                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                        Kind="Cancel" />
+                                </StackPanel>
                             </Button>
 
                             <Button
                                 Width="48"
+                                VerticalAlignment="Top"
                                 Command="{Binding DeleteCommand}"
                                 ToolTip="Delete">
                                 <Button.Style>
@@ -737,11 +765,20 @@
                                     </Style>
                                 </Button.Style>
 
-                                <iconPacks:PackIconMaterial
-                                    Width="24"
-                                    Height="24"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    Kind="Delete" />
+                                <StackPanel>
+                                    <TextBlock
+                                        Margin="0,0,0,3"
+                                        HorizontalAlignment="Center"
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Text="Delete"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <iconPacks:PackIconMaterial
+                                        Width="24"
+                                        Height="24"
+                                        HorizontalAlignment="Center"
+                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                        Kind="Delete" />
+                                </StackPanel>
                             </Button>
                         </DockPanel>
 
