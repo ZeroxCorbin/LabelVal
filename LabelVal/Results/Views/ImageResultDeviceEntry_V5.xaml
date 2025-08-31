@@ -541,7 +541,8 @@
                 <ScrollViewer
                     x:Name="ScrollStoredSectors"
                     Margin="3"
-                    mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                    mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=ScrollStoredSectors, Converter={StaticResource ScrollBarNotVisibleToBool}}"
+                    Focusable="False"
                     ScrollChanged="ScrollStoredSectors_ScrollChanged"
                     VerticalScrollBarVisibility="Auto">
                     <Grid>
@@ -549,6 +550,7 @@
                         <ListBox
                             Padding="0,1,0,0"
                             ItemsSource="{Binding Source={StaticResource StoredSectorsViewSource}}"
+                            PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                             Tag="v5Stored">
 
                             <ListBox.Style>
@@ -842,8 +844,9 @@
                 <ScrollViewer
                     x:Name="ScrollCurrentSectors"
                     Margin="3"
-                    mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                    ScrollChanged="ScrollCurrentSectors_ScrollChanged"
+                    mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=ScrollCurrentSectors, Converter={StaticResource ScrollBarNotVisibleToBool}}"
+                    Focusable="False"
+                    ScrollChanged="ScrollStoredSectors_ScrollChanged"
                     VerticalScrollBarVisibility="Auto">
 
                     <DockPanel>
@@ -851,6 +854,7 @@
                         <ListBox
                             Padding="0,1,0,0"
                             ItemsSource="{Binding Source={StaticResource CurrentSectorsViewSource}}"
+                            PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                             SelectedItem="{Binding CurrentSelectedSector}"
                             Tag="v5Current">
 
@@ -993,7 +997,8 @@
 
                 <ScrollViewer
                     Margin="3"
-                    mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                    Focusable="False"
+                    ScrollChanged="ScrollStoredSectors_ScrollChanged"
                     VerticalScrollBarVisibility="Auto">
 
                     <ItemsControl Background="{DynamicResource MahApps.Brushes.ThemeBackground}" ItemsSource="{Binding DiffSectors}">

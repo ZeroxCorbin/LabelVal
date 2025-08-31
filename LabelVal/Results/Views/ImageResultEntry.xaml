@@ -1171,27 +1171,18 @@
 
         </md:Card>
 
-        <DockPanel DockPanel.Dock="Top">
 
-            <ScrollViewer
-                mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                DockPanel.Dock="Top"
-                HorizontalScrollBarVisibility="Auto"
-                Style="{StaticResource MahApps.Styles.ScrollViewer}"
-                VerticalScrollBarVisibility="Disabled">
-                <DockPanel>
+        <DockPanel>
 
-                    <local:ImageResultEntry_Images Margin="3,0,0,0" DataContext="{Binding}" />
+            <local:ImageResultEntry_Images Margin="3,0,0,0" DataContext="{Binding}" />
 
-                    <ItemsControl ItemTemplateSelector="{StaticResource ImageResultDeviceEntryTemplateSelector}" ItemsSource="{Binding ImageResultDeviceEntries}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <DockPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </DockPanel>
-            </ScrollViewer>
+            <ItemsControl ItemTemplateSelector="{StaticResource ImageResultDeviceEntryTemplateSelector}" ItemsSource="{Binding ImageResultDeviceEntries}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <DockPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
         </DockPanel>
 
     </DockPanel>

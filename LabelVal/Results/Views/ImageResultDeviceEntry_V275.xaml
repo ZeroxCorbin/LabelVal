@@ -567,14 +567,17 @@
                     <ScrollViewer
                         x:Name="ScrollStoredSectors"
                         Margin="3"
-                        md:ScrollViewerAssist.BubbleVerticalScroll="True"
                         Focusable="False"
+                        mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=ScrollStoredSectors, Converter={StaticResource ScrollBarNotVisibleToBool}}"
                         ScrollChanged="ScrollStoredSectors_ScrollChanged"
                         VerticalScrollBarVisibility="Auto">
 
                         <Grid>
 
                             <ListBox
+                                ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                ScrollViewer.CanContentScroll="False"
+                                PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                                 Padding="0,1,0,0"
                                 ItemsSource="{Binding StoredSectors}"
                                 Tag="v275Stored">
@@ -879,7 +882,7 @@
                     <ScrollViewer
                         x:Name="ScrollCurrentSectors"
                         Margin="3"
-                        md:ScrollViewerAssist.BubbleVerticalScroll="True"
+                        mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=ScrollCurrentSectors, Converter={StaticResource ScrollBarNotVisibleToBool}}"
                         Focusable="False"
                         ScrollChanged="ScrollCurrentSectors_ScrollChanged"
                         VerticalScrollBarVisibility="Auto">
@@ -888,6 +891,7 @@
 
                             <ListBox
                                 Padding="0,1,0,0"
+                                PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                                 ItemsSource="{Binding CurrentSectors}"
                                 SelectedItem="{Binding CurrentSelectedSector}"
                                 Tag="v275Current">

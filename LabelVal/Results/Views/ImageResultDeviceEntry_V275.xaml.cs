@@ -126,6 +126,8 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
             ScrollStoredSectors.ScrollToVerticalOffset(e.VerticalOffset);
     }
 
+    private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e) => e.Handled = false;
+
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {
         DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);

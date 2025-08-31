@@ -4,11 +4,8 @@ using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Views;
 using MahApps.Metro.Controls.Dialogs;
-using System.Collections;
-using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -130,6 +127,8 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
         if (e.VerticalChange != 0)
             ScrollStoredSectors.ScrollToVerticalOffset(e.VerticalOffset);
     }
+
+    private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e) => e.Handled = false;
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {

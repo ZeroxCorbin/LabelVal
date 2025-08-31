@@ -528,7 +528,7 @@
                 <ScrollViewer
                     x:Name="ScrollStoredSectors"
                     Margin="3"
-                    mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                    mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=ScrollStoredSectors, Converter={StaticResource ScrollBarNotVisibleToBool}}"
                     ScrollChanged="ScrollStoredSectors_ScrollChanged"
                     VerticalScrollBarVisibility="Auto">
 
@@ -538,6 +538,7 @@
                             Padding="0,1,0,0"
                             DockPanel.Dock="Top"
                             ItemsSource="{Binding Source={StaticResource StoredSectorsViewSource}}"
+                            PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                             Tag="l95Stored">
 
                             <ListBox.Style>
@@ -834,7 +835,7 @@
                 <ScrollViewer
                     x:Name="ScrollCurrentSectors"
                     Margin="3"
-                    mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                    mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=ScrollCurrentSectors, Converter={StaticResource ScrollBarNotVisibleToBool}}"
                     ScrollChanged="ScrollCurrentSectors_ScrollChanged"
                     VerticalScrollBarVisibility="Auto">
                     <Grid>
@@ -842,6 +843,7 @@
                         <ListBox
                             Padding="0,1,0,0"
                             ItemsSource="{Binding Source={StaticResource CurrentSectorsViewSource}}"
+                            PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                             SelectedItem="{Binding CurrentSelectedSector}"
                             Tag="l95Current">
 

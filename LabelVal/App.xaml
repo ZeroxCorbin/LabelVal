@@ -44,7 +44,9 @@
             <converters:NumberGreaterThanZero x:Key="NumberGreaterThanZero" />
             <converters:NumberZeroOrNull x:Key="NumberZeroOrNull" />
             <converters:NullOrCountZeroToVisibility x:Key="NullOrCountZeroToVisibility" />
-
+            <converters:ScrollBarVisibilityToBool x:Key="ScrollBarVisibilityToBool" />
+            <converters:ScrollBarNotVisibleToBool x:Key="ScrollBarNotVisibleToBool" />
+            
             <sys:Boolean x:Key="FalseValue">False</sys:Boolean>
             <sys:Boolean x:Key="TrueValue">True</sys:Boolean>
 
