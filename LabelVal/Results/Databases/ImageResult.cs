@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using LabelVal.ImageRolls.ViewModels;
+using LabelVal.ImageRolls.Databases;
 using LabelVal.Results.ViewModels;
-using Lvs95xx.lib.Core.Controllers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SQLite;
@@ -41,6 +40,6 @@ public partial class Result : ObservableObject
 
     [ObservableProperty] private string version;
 
-    [SQLite.Ignore] public ImageEntry Source { get => !string.IsNullOrEmpty(SourceImage) ? JsonConvert.DeserializeObject<ImageEntry>(SourceImage) : null; set { SourceImage = JsonConvert.SerializeObject(value); SourceImageUID = value.UID; }  }
-    [SQLite.Ignore] public ImageEntry Stored { get => !string.IsNullOrEmpty(StoredImage) ? JsonConvert.DeserializeObject<ImageEntry>(StoredImage) : null; set { StoredImage = JsonConvert.SerializeObject(value); } }
+    [SQLite.Ignore] public ImageEntry Source { get => !string.IsNullOrEmpty(SourceImage) ? JsonConvert.DeserializeObject<ImageEntry>(SourceImage) : null; set { SourceImage = JsonConvert.SerializeObject(value); SourceImageUID = value.UID; } }
+    [SQLite.Ignore] public ImageEntry Stored { get => !string.IsNullOrEmpty(StoredImage) ? JsonConvert.DeserializeObject<ImageEntry>(StoredImage) : null; set => StoredImage = JsonConvert.SerializeObject(value); }
 }

@@ -1,8 +1,6 @@
 ﻿using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.ViewModels;
 using SQLite;
-using System;
-using System.Collections.Generic;
 
 namespace LabelVal.ImageRolls.Databases;
 public class ImageRollsDatabase
@@ -19,8 +17,8 @@ public class ImageRollsDatabase
         {
             Connection ??= new SQLiteConnection(File.Path);
 
-            Connection.CreateTable<ImageRoll>();
-            Connection.CreateTable<ImageEntry>();
+            _ = Connection.CreateTable<ImageRoll>();
+            _ = Connection.CreateTable<ImageEntry>();
         }
         catch (Exception e)
         {
@@ -37,7 +35,6 @@ public class ImageRollsDatabase
             return Connection.Table<ImageRoll>().Where(v => v.UID == uid).Count() > 0;
         }
         catch { return false; }
-
     }
     public ImageRoll SelectImageRoll(string uid) => Connection.Table<ImageRoll>().Where(v => v.UID == uid).FirstOrDefault();
     public List<ImageRoll> SelectAllImageRolls() => Connection.Query<ImageRoll>("select * from ImageRoll");
@@ -54,7 +51,7 @@ public class ImageRollsDatabase
                 return Connection.Table<ImageEntry>().Where(v => v.RollUID == rollUID).ToList();
         }
         catch { }
-        return new List<ImageEntry>();
+        return [];
     }
     public List<ImageEntry> SelectAllImages() => Connection.Query<ImageEntry>("select * from ImageEntry");
     public bool DeleteImage(string rollUID, string imageUID) => Connection.Execute("DELETE FROM ImageEntry WHERE UID = ? AND RollUID = ?", imageUID, rollUID) > 0;

@@ -31,9 +31,9 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
     [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedCurrentSector = null;
 
-    [ObservableProperty] private ImageRolls.ViewModels.ImageEntry sourceImage;
-    [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v275CurrentImage;
-    [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v275StoredImage;
+    [ObservableProperty] private ImageRolls.Databases.ImageEntry sourceImage;
+    [ObservableProperty] private ImageRolls.Databases.ImageEntry v275CurrentImage;
+    [ObservableProperty] private ImageRolls.Databases.ImageEntry v275StoredImage;
 
     [ObservableProperty] private System.Windows.Media.DrawingImage v275CurrentImageOverlay;
     [ObservableProperty] private System.Windows.Media.DrawingImage v275StoredImageOverlay;
@@ -44,9 +44,9 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
     [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedCurrentSector = null;
 
-    [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v5SourceImage;
-    [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v5CurrentImage;
-    [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v5StoredImage;
+    [ObservableProperty] private ImageRolls.Databases.ImageEntry v5SourceImage;
+    [ObservableProperty] private ImageRolls.Databases.ImageEntry v5CurrentImage;
+    [ObservableProperty] private ImageRolls.Databases.ImageEntry v5StoredImage;
 
     [ObservableProperty] private System.Windows.Media.DrawingImage v5CurrentImageOverlay;
     [ObservableProperty] private System.Windows.Media.DrawingImage v5StoredImageOverlay;

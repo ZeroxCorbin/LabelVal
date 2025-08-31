@@ -2,6 +2,7 @@
 using BarcodeVerification.lib.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
@@ -55,7 +56,7 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
     }
     public bool IsNotWorking => !IsWorking;
     private const int _isWorkingTimerInterval = 30000;
-    private Timer _IsWorkingTimer = new Timer(_isWorkingTimerInterval);
+    private Timer _IsWorkingTimer = new(_isWorkingTimerInterval);
 
     [ObservableProperty] private bool isFaulted = false;
     partial void OnIsFaultedChanged(bool value)
@@ -93,7 +94,7 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
                     ? LabelHandlers.CameraRestore
                     : LabelHandlers.CameraDetect
                 : LabelHandlers.CameraTrigger
-        :LabelHandlers.Offline;
+        : LabelHandlers.Offline;
 
     public void HandlerUpdate() => OnPropertyChanged(nameof(Handler));
 

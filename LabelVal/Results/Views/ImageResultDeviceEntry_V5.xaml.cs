@@ -1,5 +1,5 @@
 ﻿using LabelVal.Dialogs;
-using LabelVal.ImageRolls.ViewModels;
+using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Views;
@@ -102,10 +102,9 @@ public partial class ImageResultDeviceEntry_V5 : UserControl
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
 
+            _viewModel.ImageResultsManager.FocusedTemplate = _viewModel.CurrentTemplate;
+            _viewModel.ImageResultsManager.FocusedReport = _viewModel.CurrentReport;
 
-                _viewModel.ImageResultsManager.FocusedTemplate = _viewModel.CurrentTemplate;
-                _viewModel.ImageResultsManager.FocusedReport = _viewModel.CurrentReport;
-            
         }
         else
         {

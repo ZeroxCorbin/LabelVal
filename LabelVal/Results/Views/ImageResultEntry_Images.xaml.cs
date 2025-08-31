@@ -1,5 +1,5 @@
 ﻿using LabelVal.Dialogs;
-using LabelVal.ImageRolls.ViewModels;
+using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageViewer3D.Views;
 using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
@@ -42,7 +42,6 @@ public partial class ImageResultEntry_Images : UserControl
 
         _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
 
-
     }
 
     private void Show3DImage(byte[] image)
@@ -62,6 +61,5 @@ public partial class ImageResultEntry_Images : UserControl
     }
 
     private void btnShowPrinterAreaOverSourceToggle(object sender, RoutedEventArgs e) => ((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource = !((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource;
-
 
 }

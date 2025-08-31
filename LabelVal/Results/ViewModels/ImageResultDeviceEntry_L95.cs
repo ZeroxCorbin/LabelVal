@@ -4,11 +4,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.L95.Sectors;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
-using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
@@ -61,7 +61,7 @@ public partial class ImageResultDeviceEntry_L95
     }
     public bool IsNotWorking => !IsWorking;
     private const int _isWorkingTimerInterval = 30000;
-    private Timer _IsWorkingTimer = new Timer(_isWorkingTimerInterval);
+    private Timer _IsWorkingTimer = new(_isWorkingTimerInterval);
 
     [ObservableProperty] private bool isFaulted = false;
     partial void OnIsFaultedChanged(bool value)
@@ -231,7 +231,7 @@ public partial class ImageResultDeviceEntry_L95
             if (await ImageResultEntry.OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
 
-        var res = GetCurrentReport();
+        Result res = GetCurrentReport();
 
         if (ImageResultEntry.SelectedDatabase.InsertOrReplace_Result(res) == null)
             Logger.LogError($"Error while storing results to: {ImageResultEntry.SelectedDatabase.File.Name}");
@@ -387,7 +387,7 @@ public partial class ImageResultDeviceEntry_L95
             System.Drawing.Point center = new(message.Template.GetParameter<int>("Report.X1") + (message.Template.GetParameter<int>("Report.SizeX") / 2), message.Template.GetParameter<int>("Report.Y1") + (message.Template.GetParameter<int>("Report.SizeY") / 2));
 
             string name = null;
-            if((name = ImageResultEntry.GetName(center)) == null)
+            if ((name = ImageResultEntry.GetName(center)) == null)
                 name ??= $"Verify_{CurrentSectors.Count + 1}";
 
             _ = message.Template.SetParameter<string>("Name", name);

@@ -1,5 +1,5 @@
 ﻿using BarcodeVerification.lib.Common;
-using LabelVal.ImageRolls.ViewModels;
+using LabelVal.ImageRolls.Databases;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
@@ -55,8 +55,8 @@ public interface IImageResultDeviceEntry
     ImageEntry CurrentImage { get; }
     DrawingImage CurrentImageOverlay { get; }
 
-    public JObject CurrentTemplate { get; }
-    public JObject CurrentReport { get; }
+    JObject CurrentTemplate { get; }
+    JObject CurrentReport { get; }
 
     ObservableCollection<ISector> CurrentSectors { get; }
     ISector FocusedCurrentSector { get; set; }

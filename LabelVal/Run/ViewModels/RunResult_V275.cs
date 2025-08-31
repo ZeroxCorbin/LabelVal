@@ -144,7 +144,7 @@ public partial class RunResult
         //Check for missing
         foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
         {
-            bool found = false;
+            var found = false;
             foreach (Sectors.Interfaces.ISector cSec in V275CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
@@ -168,7 +168,7 @@ public partial class RunResult
         if (V275StoredSectors.Count > 0)
             foreach (Sectors.Interfaces.ISector sec in V275CurrentSectors)
             {
-                bool found = false;
+                var found = false;
                 foreach (Sectors.Interfaces.ISector cSec in V275StoredSectors)
                     if (sec.Template.Name == cSec.Template.Name)
                     {
@@ -194,7 +194,7 @@ public partial class RunResult
 
     }
 
-    private DrawingImage V275CreateSectorsImageOverlay(JObject template, bool isDetailed, JObject report, ImageRolls.ViewModels.ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
+    private DrawingImage V275CreateSectorsImageOverlay(JObject template, bool isDetailed, JObject report, ImageRolls.Databases.ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
     {
         DrawingGroup drwGroup = new();
 
@@ -229,8 +229,8 @@ public partial class RunResult
 
                     drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(jSec["username"].ToString(), new Typeface("Arial"), 30.0, new Point(jSec["left"].Value<int>() - 8, jSec["top"].Value<int>() - 8))));
 
-                    double y = rSec["top"].Value<double>() + (rSec["height"].Value<double>() / 2);
-                    double x = rSec["left"].Value<double>() + (rSec["width"].Value<double>() / 2);
+                    var y = rSec["top"].Value<double>() + (rSec["height"].Value<double>() / 2);
+                    var x = rSec["left"].Value<double>() + (rSec["width"].Value<double>() / 2);
                     secCenter.Children.Add(new LineGeometry(new Point(x + 10, y), new Point(x + -10, y)));
                     secCenter.Children.Add(new LineGeometry(new Point(x, y + 10), new Point(x, y + -10)));
 
@@ -278,38 +278,38 @@ public partial class RunResult
                             GeometryGroup moduleGrid = new();
                             DrawingGroup textGrp = new();
 
-                            int qzX = (sec["symbology"].ToString() == "dataMatrix") ? 1 : res.ExtendedData.QuietZone;
-                            int qzY = res.ExtendedData.QuietZone;
+                            var qzX = (sec["symbology"].ToString() == "dataMatrix") ? 1 : res.ExtendedData.QuietZone;
+                            var qzY = res.ExtendedData.QuietZone;
 
-                            double dX = (sec["symbology"].ToString() == "dataMatrix") ? 0 : (res.ExtendedData.DeltaX / 2);
-                            double dY = (sec["symbology"].ToString() == "dataMatrix") ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
+                            var dX = (sec["symbology"].ToString() == "dataMatrix") ? 0 : (res.ExtendedData.DeltaX / 2);
+                            var dY = (sec["symbology"].ToString() == "dataMatrix") ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
 
-                            int startX = 0;
-                            int startY = 0;
+                            var startX = 0;
+                            var startY = 0;
 
-                            int cnt = 0;
+                            var cnt = 0;
 
-                            for (int row = -qzX; row < res.ExtendedData.NumRows + qzX; row++)
+                            for (var row = -qzX; row < res.ExtendedData.NumRows + qzX; row++)
                             {
-                                for (int col = -qzY; col < res.ExtendedData.NumColumns + qzY; col++)
+                                for (var col = -qzY; col < res.ExtendedData.NumColumns + qzY; col++)
                                 {
                                     RectangleGeometry area1 = new(new Rect(startX + (res.ExtendedData.DeltaX * (col + qzX)), startY + (res.ExtendedData.DeltaY * (row + qzY)), res.ExtendedData.DeltaX, res.ExtendedData.DeltaY));
                                     moduleGrid.Children.Add(area1);
 
-                                    string text = res.ExtendedData.ModuleModulation[cnt].ToString();
+                                    var text = res.ExtendedData.ModuleModulation[cnt].ToString();
                                     Typeface typeface = new("Arial");
                                     if (typeface.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface))
                                     {
-                                        ushort[] _glyphIndexes = new ushort[text.Length];
-                                        double[] _advanceWidths = new double[text.Length];
+                                        var _glyphIndexes = new ushort[text.Length];
+                                        var _advanceWidths = new double[text.Length];
 
                                         double textWidth = 0;
-                                        for (int ix = 0; ix < text.Length; ix++)
+                                        for (var ix = 0; ix < text.Length; ix++)
                                         {
-                                            ushort glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
+                                            var glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
                                             _glyphIndexes[ix] = glyphIndex;
 
-                                            double width = _glyphTypeface.AdvanceWidths[glyphIndex] * 2;
+                                            var width = _glyphTypeface.AdvanceWidths[glyphIndex] * 2;
                                             _advanceWidths[ix] = width;
 
                                             textWidth += width;
@@ -329,16 +329,16 @@ public partial class RunResult
                                     Typeface typeface1 = new("Arial");
                                     if (typeface1.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface1))
                                     {
-                                        ushort[] _glyphIndexes = new ushort[text.Length];
-                                        double[] _advanceWidths = new double[text.Length];
+                                        var _glyphIndexes = new ushort[text.Length];
+                                        var _advanceWidths = new double[text.Length];
 
                                         double textWidth = 0;
-                                        for (int ix = 0; ix < text.Length; ix++)
+                                        for (var ix = 0; ix < text.Length; ix++)
                                         {
-                                            ushort glyphIndex = _glyphTypeface1.CharacterToGlyphMap[text[ix]];
+                                            var glyphIndex = _glyphTypeface1.CharacterToGlyphMap[text[ix]];
                                             _glyphIndexes[ix] = glyphIndex;
 
-                                            double width = _glyphTypeface1.AdvanceWidths[glyphIndex] * 2;
+                                            var width = _glyphTypeface1.AdvanceWidths[glyphIndex] * 2;
                                             _advanceWidths[ix] = width;
 
                                             textWidth += width;
@@ -371,7 +371,7 @@ public partial class RunResult
 
                             if (sec["orientation"].Value<double>() == 90)
                             {
-                                double x = sec["symbology"].ToString() == "dataMatrix"
+                                var x = sec["symbology"].ToString() == "dataMatrix"
                                     ? sec["width"].Value<double>() - res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - 1
                                     : sec["width"].Value<double>() - res.ExtendedData.Ynw - dY - ((res.ExtendedData.NumColumns + qzY) * res.ExtendedData.DeltaY);
                                 transGroup.Children.Add(new TranslateTransform(

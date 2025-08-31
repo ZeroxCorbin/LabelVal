@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SQLite;
 using System.Drawing.Printing;
@@ -8,7 +7,7 @@ using System.Security.Cryptography;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace LabelVal.ImageRolls.ViewModels;
+namespace LabelVal.ImageRolls.Databases;
 
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageEntry : ObservableObject
@@ -73,8 +72,8 @@ public partial class ImageEntry : ObservableObject
         }
     }
 
-    [ObservableProperty] double imageDpiX;
-    [ObservableProperty] double imageDpiY;
+    [ObservableProperty] private double imageDpiX;
+    [ObservableProperty] private double imageDpiY;
     [JsonProperty] public double ImageWidth => Math.Round(Image.PixelWidth / Image.DpiX, 2);
     [JsonProperty] public double ImageHeight => Math.Round(Image.PixelHeight / Image.DpiY, 2);
     [JsonProperty] public long ImageTotalPixels => Image.PixelWidth * Image.PixelHeight;
@@ -132,7 +131,7 @@ public partial class ImageEntry : ObservableObject
 
         Comment = comment;
 
-        
+
     }
 
     public ImageEntry Clone() => new(RollUID, ImageBytes, comment: Comment);

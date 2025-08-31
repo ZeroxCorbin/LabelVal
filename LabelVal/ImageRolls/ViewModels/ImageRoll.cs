@@ -5,16 +5,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.ImageRolls.Databases;
 using LabelVal.Main.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing.Printing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace LabelVal.ImageRolls.ViewModels;
@@ -225,10 +223,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         ResetImageOrderAndSort();
     }
 
-    private void OnImageEntrySaveRequested(ImageEntry imageEntry)
-    {
-        SaveImage(imageEntry);
-    }
+    private void OnImageEntrySaveRequested(ImageEntry imageEntry) => SaveImage(imageEntry);
 
     private void ResetImageOrderAndSort()
     {
@@ -356,8 +351,6 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
                     InsertImagesAtOrder(newImages, ImageEntries.IndexOf(relativeTo) + 2);
                     break;
             }
-
-
         }
 
         OnPropertyChanged(nameof(ImageEntries));
@@ -377,7 +370,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         }
 
         // Insert each new image at the adjusted target order
-        for (int i = 0; i < newImages.Count; i++)
+        for (var i = 0; i < newImages.Count; i++)
         {
             ImageEntry newImage = newImages[i];
             newImage.Order = targetOrder + i;
@@ -398,7 +391,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     public void MoveImageUp(ImageEntry imageToMove)
     {
         if (imageToMove == null || ImageEntries.Count < 2) return;
-        int oldOrder = imageToMove.Order;
+        var oldOrder = imageToMove.Order;
         if (oldOrder > 1)
         {
             MoveImage(imageToMove, oldOrder - 1);
@@ -408,7 +401,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     public void MoveImageDown(ImageEntry imageToMove)
     {
         if (imageToMove == null || ImageEntries.Count < 2) return;
-        int oldOrder = imageToMove.Order;
+        var oldOrder = imageToMove.Order;
         if (oldOrder < ImageEntries.Count)
         {
             MoveImage(imageToMove, oldOrder + 1);
@@ -425,18 +418,18 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     {
         if (imageToMove.Order == newOrder) return;
 
-        int oldOrder = imageToMove.Order;
+        var oldOrder = imageToMove.Order;
 
         if (oldOrder < newOrder) // Moving down
         {
-            foreach (var img in ImageEntries.Where(i => i.Order > oldOrder && i.Order <= newOrder))
+            foreach (ImageEntry img in ImageEntries.Where(i => i.Order > oldOrder && i.Order <= newOrder))
             {
                 img.Order--;
             }
         }
         else // Moving up
         {
-            foreach (var img in ImageEntries.Where(i => i.Order >= newOrder && i.Order < oldOrder))
+            foreach (ImageEntry img in ImageEntries.Where(i => i.Order >= newOrder && i.Order < oldOrder))
             {
                 img.Order++;
             }

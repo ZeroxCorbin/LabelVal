@@ -2,18 +2,16 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.ImageRolls.ViewModels;
+using LabelVal.ImageRolls.Databases;
 using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
-using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -66,7 +64,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     /// </summary>
     [ObservableProperty] private bool showSymbologyParameters = App.Settings.GetValue(nameof(ShowSymbologyParameters), true, true);
     partial void OnShowSymbologyParametersChanged(bool value) => App.Settings.SetValue(nameof(ShowSymbologyParameters), value);
-
 
     /// <summary>
     /// Show the image details for the Source and Device image entries.
@@ -256,7 +253,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         foreach (IImageResultDeviceEntry dev in ImageResultDeviceEntries)
         {
             //Check the Report center points
-            foreach (var sec in dev.StoredSectors)
+            foreach (ISector sec in dev.StoredSectors)
             {
                 if (sec.Report.CenterPoint.Contains(center))
                 {
@@ -266,7 +263,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             }
             if (!string.IsNullOrEmpty(name)) break;
 
-            foreach (var sec in dev.CurrentSectors)
+            foreach (ISector sec in dev.CurrentSectors)
             {
                 if (sec.Report.CenterPoint.Contains(center))
                 {
@@ -277,7 +274,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             if (!string.IsNullOrEmpty(name)) break;
 
             //Check the Template center points
-            foreach (var sec in dev.StoredSectors)
+            foreach (ISector sec in dev.StoredSectors)
             {
                 if (sec.Template.CenterPoint.Contains(center))
                 {
@@ -287,7 +284,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             }
             if (!string.IsNullOrEmpty(name)) break;
 
-            foreach (var sec in dev.CurrentSectors)
+            foreach (ISector sec in dev.CurrentSectors)
             {
                 if (sec.Template.CenterPoint.Contains(center))
                 {
@@ -318,7 +315,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             }
             dev.HandlerUpdate();
         }
-
     }
 
     [RelayCommand] private void Delete() => DeleteImage?.Invoke(this);

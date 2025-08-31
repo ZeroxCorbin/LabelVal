@@ -1,20 +1,10 @@
 ﻿using LabelVal.Dialogs;
-using LabelVal.ImageRolls.ViewModels;
+using LabelVal.ImageRolls.Databases;
 using MahApps.Metro.Controls.Dialogs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LabelVal.Run.Views;
 /// <summary>
@@ -22,15 +12,12 @@ namespace LabelVal.Run.Views;
 /// </summary>
 public partial class RunResult_Images : UserControl
 {
-    public RunResult_Images()
-    {
-        InitializeComponent();
-    }
+    public RunResult_Images() => InitializeComponent();
 
-    private void btnShowDetailsToggle(object sender, RoutedEventArgs e)=>
+    private void btnShowDetailsToggle(object sender, RoutedEventArgs e) =>
         ((ViewModels.RunResult)DataContext).ShowDetails = !((ViewModels.RunResult)DataContext).ShowDetails;
 
-    private void btnShowPrinterAreaOverSourceToggle(object sender, RoutedEventArgs e)=>
+    private void btnShowPrinterAreaOverSourceToggle(object sender, RoutedEventArgs e) =>
         ((ViewModels.RunResult)DataContext).ShowPrinterAreaOverSource = !((ViewModels.RunResult)DataContext).ShowPrinterAreaOverSource;
     private void SourceImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
@@ -40,14 +27,14 @@ public partial class RunResult_Images : UserControl
     }
     private void V275CurrentImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
-       if (e.LeftButton == MouseButtonState.Pressed)
+        if (e.LeftButton == MouseButtonState.Pressed)
             _ = ShowImage(((ViewModels.RunResult)DataContext).V275CurrentImage, ((ViewModels.RunResult)DataContext).V275CurrentImageOverlay);
 
     }
 
     private void V275StoredImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
-       if (e.LeftButton == MouseButtonState.Pressed)
+        if (e.LeftButton == MouseButtonState.Pressed)
             _ = ShowImage(((ViewModels.RunResult)DataContext).V275StoredImage, ((ViewModels.RunResult)DataContext).V275StoredImageOverlay);
     }
 
@@ -64,10 +51,6 @@ public partial class RunResult_Images : UserControl
             _ = ShowImage(((ViewModels.RunResult)DataContext).V5StoredImage, ((ViewModels.RunResult)DataContext).V5StoredImageOverlay);
 
     }
-
-
-
-
 
     private bool ShowImage(ImageEntry image, DrawingImage overlay)
     {

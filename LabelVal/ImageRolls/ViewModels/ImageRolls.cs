@@ -2,6 +2,7 @@
 using BarcodeVerification.lib.GS1;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LabelVal.ImageRolls.Databases;
 using LabelVal.Main.ViewModels;
 using LabelVal.Results.ViewModels;
 using MahApps.Metro.Controls.Dialogs;

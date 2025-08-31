@@ -2,6 +2,7 @@
 using BarcodeVerification.lib.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
@@ -50,7 +51,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
     [ObservableProperty] private bool isWorking = false;
     partial void OnIsWorkingChanged(bool value)
     {
-        if(value)
+        if (value)
             _IsWorkingTimer.Start();
         else
             _IsWorkingTimer.Stop();
@@ -60,8 +61,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
     }
     public bool IsNotWorking => !IsWorking;
     private const int _isWorkingTimerInterval = 30000;
-    private Timer _IsWorkingTimer = new Timer(_isWorkingTimerInterval);
-
+    private Timer _IsWorkingTimer = new(_isWorkingTimerInterval);
 
     [ObservableProperty] private bool isFaulted = false;
     partial void OnIsFaultedChanged(bool value)
@@ -219,7 +219,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
 
     [RelayCommand]
     public void Process()
-    {    
+    {
         IsWorking = true;
         IsFaulted = false;
 
@@ -233,7 +233,6 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
         _ = ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.IsSimulator
             ? ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.ProcessLabel_Simulator(lab)
             : ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.ProcessLabel_Printer(lab, ImageResultEntry.PrintCount, ImageResultEntry.SelectedPrinter.PrinterName);
-
 
     }
     private void ProcessRepeat(V275_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat.FullReport);
