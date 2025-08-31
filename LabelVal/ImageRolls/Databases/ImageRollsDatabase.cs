@@ -5,7 +5,6 @@ using SQLite;
 namespace LabelVal.ImageRolls.Databases;
 public class ImageRollsDatabase
 {
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     public FileFolderEntry File { get; private set; }
     private SQLiteConnection Connection { get; set; } = null;
@@ -22,7 +21,7 @@ public class ImageRollsDatabase
         }
         catch (Exception e)
         {
-            Logger.Error(e);
+            Logger.LogError(e);
         }
     }
     public void Close() => Connection?.Close();

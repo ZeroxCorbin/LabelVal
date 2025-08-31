@@ -13,8 +13,6 @@ namespace LabelVal.ORM_Test
 {
     public class ORMTestingDatabase : IDisposable
     {
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
         public class Row : Report
         {
             public Row(SQLiteDataReader rdr)
@@ -40,7 +38,7 @@ namespace LabelVal.ORM_Test
         {
             if (!System.IO.File.Exists(FilePath))
             {
-                Logger.Info("Creating Database: {file}", FilePath);
+                Logger.LogInfo("Creating Database: {file}", FilePath);
                 SQLiteConnection.CreateFile(FilePath);
             }
         }
@@ -52,7 +50,7 @@ namespace LabelVal.ORM_Test
 
             if (Connection.State == System.Data.ConnectionState.Closed)
             {
-                Logger.Info("Opening Database: {file}", FilePath);
+                Logger.LogInfo("Opening Database: {file}", FilePath);
                 Connection.Open();
             }
 
@@ -64,7 +62,7 @@ namespace LabelVal.ORM_Test
 
         public void Close()
         {
-            Logger.Info("Closing Database: {file}", FilePath);
+            Logger.LogInfo("Closing Database: {file}", FilePath);
 
             if (Connection == null)
                 return;
@@ -174,7 +172,7 @@ namespace LabelVal.ORM_Test
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(ex);
+                    Logger.LogError(ex);
                 }
 
 
@@ -209,7 +207,7 @@ namespace LabelVal.ORM_Test
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(ex);
+                    Logger.LogError(ex);
                 }
 
 

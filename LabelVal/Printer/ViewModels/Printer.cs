@@ -8,7 +8,7 @@ using System.Linq;
 namespace LabelVal.Printer.ViewModels;
 public partial class Printer : ObservableRecipient
 {
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+    
 
     public ObservableCollection<string> Printers { get; } = [];
 
@@ -45,22 +45,22 @@ public partial class Printer : ObservableRecipient
     {
         Printers.Clear();
 
-        Logger.Info("Loading printers.");
+        Logger.LogInfo("Loading printers.");
 
         foreach (string p in PrinterSettings.InstalledPrinters)
             Printers.Add(p);
 
-        Logger.Info("Processed {count} printers.", Printers.Count);
+        Logger.LogInfo($"Processed {Printers.Count} printers.");
 
         if (Printers.Contains(App.Settings.GetValue<string>(nameof(SelectedPrinterName))))
             SelectedPrinterName = App.Settings.GetValue<string>(nameof(SelectedPrinterName));
         else
         {
             if (Printers.Count == 0)
-                Logger.Warn("No printers found.");
+                Logger.LogWarning("No printers found.");
             else
             {
-                Logger.Warn("Selected printer not found. Defaulting to first printer.");
+                Logger.LogWarning("Selected printer not found. Defaulting to first printer.");
                 SelectedPrinterName = Printers.First();
             }
 

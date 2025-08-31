@@ -8,10 +8,7 @@ using System.Collections.Generic;
 namespace LabelVal.Results.Databases;
 
 public class ImageResultsDatabase : ObservableObject, IDisposable
-{
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
-    public FileFolderEntry File { get; private set; }
+{    public FileFolderEntry File { get; private set; }
     private SQLiteConnection Connection { get; set; }
 
     public ImageResultsDatabase() { }
@@ -35,7 +32,7 @@ public class ImageResultsDatabase : ObservableObject, IDisposable
         }
         catch (Exception e)
         {
-            Logger.Error(e);
+            Logger.LogError(e);
         }
     }
     public void Close() { Connection?.Close(); }

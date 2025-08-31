@@ -15,8 +15,6 @@ namespace LabelVal.ORM_Test
 {
     internal class NHibernateHelper
     {
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
         private ISessionFactory _sessionFactory;
 
         private ISessionFactory SessionFactory
@@ -51,7 +49,7 @@ namespace LabelVal.ORM_Test
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e);
+                    Logger.LogError(e);
                 }
             }
 
@@ -81,7 +79,7 @@ namespace LabelVal.ORM_Test
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e);
+                    Logger.LogError(e);
                 }
             }
 
@@ -112,7 +110,7 @@ namespace LabelVal.ORM_Test
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e);
+                    Logger.LogError(e);
                 }
             }
 
@@ -141,7 +139,7 @@ namespace LabelVal.ORM_Test
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e);
+                    Logger.LogError(e);
                 }
             }
 
@@ -170,7 +168,7 @@ namespace LabelVal.ORM_Test
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e);
+                    Logger.LogError(e);
                 }
             }
 
