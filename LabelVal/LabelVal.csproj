@@ -25,13 +25,24 @@
   
 	<ItemGroup>
 	  <Compile Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <Compile Remove="ImageViewer3D\Models\**" />
+	  <Compile Remove="ImageViewer3D\Processing\**" />
 	  <EmbeddedResource Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <EmbeddedResource Remove="ImageViewer3D\Models\**" />
+	  <EmbeddedResource Remove="ImageViewer3D\Processing\**" />
 	  <None Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <None Remove="ImageViewer3D\Models\**" />
+	  <None Remove="ImageViewer3D\Processing\**" />
 	  <Page Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <Page Remove="ImageViewer3D\Models\**" />
+	  <Page Remove="ImageViewer3D\Processing\**" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="ImageRolls\Databases\StandardsDatabase.cs" />
-		<Compile Remove="ImageViewer3D\Processing\SobelEdgeDetection.cs" />
+		<Compile Remove="ImageViewer3D\ViewModels\ImageOverlayTesting.cs" />
+		<Compile Remove="ImageViewer3D\ViewModels\ImageViewer3D_IndividualMeshs.cs" />
+		<Compile Remove="ImageViewer3D\ViewModels\ImageViewer3D_Instancing.cs" />
+		<Compile Remove="ImageViewer3D\Views\CutPlaneBoxIndicator.cs" />
 		<Compile Remove="L95\ViewModels\SerialPort.cs" />
 		<Compile Remove="L95\Views\LVS95xx_SerialPortView.xaml.cs" />
 		<Compile Remove="Main\Views\StatusMessageViewer.xaml.cs" />
@@ -1431,7 +1442,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Assets\Image Rolls\GS1 TABLE 1\300\" />
-		<Folder Include="ImageViewer3D\Processing\" />
 		<Folder Include="Results\Controls\ViewModels\" />
 		<Folder Include="Results\Controls\Views\" />
 		<Folder Include="Sectors\Messages\" />

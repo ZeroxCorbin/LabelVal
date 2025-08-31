@@ -82,7 +82,7 @@
                 Plane3="{Binding PlaneZx}"
                 Transform="{Binding MeshTransform}" />
 
-            <local:CrossSectionPlaneManipulator3D
+            <!--<local:CrossSectionPlaneManipulator3D
                 ConstrainAxis="{Binding ConstraintPlaneXy_AxisZ, Mode=OneWay}"
                 ConstrainDimensions="{Binding ConstrainDimension, Mode=OneWay}"
                 CornerMaterial="{Binding PlaneMaterialXy}"
@@ -107,7 +107,7 @@
                 CutPlane="{Binding PlaneZx, Mode=TwoWay}"
                 EdgeMaterial="{Binding PlaneMaterialZx}"
                 IsEnabled="{Binding EnablePlaneZx}"
-                IsRendering="{Binding EnablePlaneZx}" />
+                IsRendering="{Binding EnablePlaneZx}" />-->
 
             <!--<hx:MeshGeometryModel3D RenderWireframe="{Binding ShowWireframe}" WireframeColor="Black" Geometry="{Binding MeshGeometry}" Material="{Binding MeshMaterial}" Transform="{Binding MeshTransform}"/>-->
             <hx:LineGeometryModel3D
