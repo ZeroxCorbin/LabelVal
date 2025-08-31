@@ -550,7 +550,7 @@
                         <ListBox
                             Padding="0,1,0,0"
                             ItemsSource="{Binding Source={StaticResource StoredSectorsViewSource}}"
-                            PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                            PreviewMouseWheel="StoredSectors_PreviewMouseWheel"
                             Tag="v5Stored">
 
                             <ListBox.Style>
@@ -854,7 +854,7 @@
                         <ListBox
                             Padding="0,1,0,0"
                             ItemsSource="{Binding Source={StaticResource CurrentSectorsViewSource}}"
-                            PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                            PreviewMouseWheel="CurrentSectors_PreviewMouseWheel"
                             SelectedItem="{Binding CurrentSelectedSector}"
                             Tag="v5Current">
 

@@ -126,7 +126,26 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
             ScrollStoredSectors.ScrollToVerticalOffset(e.VerticalOffset);
     }
 
-    private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e) => e.Handled = false;
+    private void StoredSectors_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        if (e.Handled)
+        {
+            return;
+        }
+
+        e.Handled = ScrollStoredSectors.ComputedVerticalScrollBarVisibility == Visibility.Visible;
+        ScrollStoredSectors.ScrollToVerticalOffset(ScrollStoredSectors.VerticalOffset - e.Delta);
+    }
+    private void CurrentSectors_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        if (e.Handled)
+        {
+            return;
+        }
+
+        e.Handled = ScrollCurrentSectors.ComputedVerticalScrollBarVisibility == Visibility.Visible;
+        ScrollCurrentSectors.ScrollToVerticalOffset(ScrollCurrentSectors.VerticalOffset - e.Delta);
+    }
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {
@@ -296,4 +315,5 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
     {
 
     }
+
 }

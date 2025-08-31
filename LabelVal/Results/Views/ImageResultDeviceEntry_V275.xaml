@@ -567,7 +567,6 @@
                     <ScrollViewer
                         x:Name="ScrollStoredSectors"
                         Margin="3"
-                        Focusable="False"
                         mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=ScrollStoredSectors, Converter={StaticResource ScrollBarNotVisibleToBool}}"
                         ScrollChanged="ScrollStoredSectors_ScrollChanged"
                         VerticalScrollBarVisibility="Auto">
@@ -575,9 +574,7 @@
                         <Grid>
 
                             <ListBox
-                                ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                ScrollViewer.CanContentScroll="False"
-                                PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                                PreviewMouseWheel="StoredSectors_PreviewMouseWheel"
                                 Padding="0,1,0,0"
                                 ItemsSource="{Binding StoredSectors}"
                                 Tag="v275Stored">
@@ -891,7 +888,7 @@
 
                             <ListBox
                                 Padding="0,1,0,0"
-                                PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                                PreviewMouseWheel="CurrentSectors_PreviewMouseWheel"
                                 ItemsSource="{Binding CurrentSectors}"
                                 SelectedItem="{Binding CurrentSelectedSector}"
                                 Tag="v275Current">
