@@ -155,7 +155,7 @@ public partial class ImageResultsManager : ObservableRecipient,
         _globalHook.KeyUp += _globalHook_KeyUp; ;
 
         IsActive = true;
-        RecieveAll();
+        ReceiveAll();
     }
     ~ImageResultsManager()
     {
@@ -181,7 +181,7 @@ public partial class ImageResultsManager : ObservableRecipient,
         }
     }
 
-    private void RecieveAll()
+    private void ReceiveAll()
     {
         //var ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<Node>());
         //if(ret1.HasReceivedResponse)
@@ -687,10 +687,10 @@ public partial class ImageResultsManager : ObservableRecipient,
         return null;
     }
 
-    #region Recieve Messages
+    #region Receive Messages
 
     /// <summary>
-    /// Recieve the selected ImageRoll.
+    /// Receive the selected ImageRoll.
     /// Attach to the PropertyChanged event of the new ImageRoll.
     /// </summary>
     /// <param name="message"></param>
@@ -724,7 +724,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
 
     /// <summary>
-    /// Recieve the selected Node.
+    /// Receive the selected Node.
     /// Attach to the PropertyChanged event of the new Node.Controller.
     /// </summary>
     /// <param name="message"></param>

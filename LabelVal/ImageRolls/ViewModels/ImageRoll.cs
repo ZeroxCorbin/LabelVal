@@ -79,7 +79,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// </summary>
     public string Path { get; set; }
     /// <summary>
-    /// Indictaes if this is a fixed image roll. True if the <see cref="Path"/> is not null or empty."/>
+    /// Indicates if this is a fixed image roll. True if the <see cref="Path"/> is not null or empty."/>
     /// </summary>
     [SQLite.Ignore] public ImageRollTypes RollType => !string.IsNullOrEmpty(Path) ? ImageRollTypes.Directory : ImageRollTypes.Database;
 
@@ -129,7 +129,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     {
         App.Settings.PropertyChanged += Settings_PropertyChanged;
         IsActive = true;
-        RecieveAll();
+        ReceiveAll();
     }
 
     private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -143,12 +143,12 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     //    IsActive = inactive;
 
     //    if(IsActive)
-    //        RecieveAll();
+    //        ReceiveAll();
     //}
     //public ImageRollEntry(string name, string path, Databases.ImageRollsDatabase imageRollsDatabase)
     //{
     //    IsActive = true;
-    //    RecieveAll();
+    //    ReceiveAll();
 
     //    ImageRollsDatabase = imageRollsDatabase;
 
@@ -156,7 +156,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     //    Path = path;
     //}
 
-    private void RecieveAll()
+    private void ReceiveAll()
     {
         var ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
         if (ret1.HasReceivedResponse)
@@ -263,11 +263,11 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
             var ire = new ImageEntry(UID, path);
             ire.SaveRequested += OnImageEntrySaveRequested;
 
-            var imageentry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
-            if (imageentry != null)
+            var imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
+            if (imageEntry != null)
             {
                 Logger.LogWarning($"Image already exists in roll: {Path}");
-                return (imageentry, false);
+                return (imageEntry, false);
             }
 
             return (ire, true);
@@ -286,11 +286,11 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
             var ire = new ImageEntry(UID, rawImage, TargetDPI);
             ire.SaveRequested += OnImageEntrySaveRequested;
 
-            var imageentry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
-            if (imageentry != null)
+            var imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
+            if (imageEntry != null)
             {
                 Logger.LogWarning($"Image already exists in roll: {Path}");
-                return (imageentry, false);
+                return (imageEntry, false);
             }
 
             return (ire, true);

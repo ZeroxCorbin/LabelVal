@@ -91,7 +91,7 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
     [ObservableProperty] private DrawingImage printerAreaOverlay;
     partial void OnShowPrinterAreaOverSourceChanged(bool value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
 
-    public RunResult() { IsActive = true; RecieveAll(); }
+    public RunResult() { IsActive = true; ReceiveAll(); }
 
     public RunResult(ResultEntry current, ResultEntry stored, RunEntry runEntry)
     {
@@ -104,10 +104,10 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
         V275GetSectorDiff();
 
         IsActive = true;
-        RecieveAll();
+        ReceiveAll();
     }
 
-    private void RecieveAll()
+    private void ReceiveAll()
     {
         RequestMessage<PrinterSettings> mes2 = new();
         WeakReferenceMessenger.Default.Send(mes2);
@@ -246,7 +246,7 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
         return geometryImage;
     }
 
-    #region Recieve Messages    
+    #region Receive Messages    
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
     #endregion
 

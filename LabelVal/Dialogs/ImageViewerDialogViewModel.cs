@@ -11,15 +11,15 @@ namespace LabelVal.Dialogs;
 public partial class ImageViewerDialogViewModel : ObservableObject
 {
     /// <see cref="Width"/>
-    [ObservableProperty] private double width;
+    [ObservableProperty] private double _width;
     /// <see cref="Height"/>
-    [ObservableProperty] private double height;
+    [ObservableProperty] private double _height;
 
-    [ObservableProperty] private BitmapImage image;
+    [ObservableProperty] private BitmapImage _image;
     public List<DrawingImage> Overlays { get; set; } = new();
 
-    [ObservableProperty] private bool allowPan;
-    [ObservableProperty] private bool allowZoom;
+    [ObservableProperty] private bool _allowPan;
+    [ObservableProperty] private bool _allowZoom;
 
     public void LoadImage(byte[] image, List<DrawingImage> overlays)
     {

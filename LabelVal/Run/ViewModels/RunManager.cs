@@ -34,11 +34,11 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
     {
         ImageResults = imageResults;
 
-        RecieveAll();
+        ReceiveAll();
         IsActive = true;
     }
 
-    private void RecieveAll()
+    private void ReceiveAll()
     {
         var ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<Node>());
         if (ret1.HasReceivedResponse)
@@ -85,7 +85,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
         QuickRunController.RunController.Reset();
     }
 
-    #region Recieve Messages
+    #region Receive Messages
     public void Receive(PropertyChangedMessage<Node> message) => SelectedV275Node = message.NewValue;
     public void Receive(PropertyChangedMessage<ImageRoll> message) => SelectedImageRoll = message.NewValue;
     public void Receive(PropertyChangedMessage<Scanner> message) => SelectedV5 = message.NewValue;

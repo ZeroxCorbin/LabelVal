@@ -38,7 +38,7 @@ public partial class RunResults : ObservableRecipient, IRecipient<PropertyChange
 
     }
 
-    #region Recieve Messages
+    #region Receive Messages
     public void Receive(PropertyChangedMessage<RunEntry> message) => SelectedRunEntry = message.NewValue;
     #endregion
 

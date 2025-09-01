@@ -129,7 +129,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         ];
 
         IsActive = true;
-        RecieveAll();
+        ReceiveAll();
 
         App.Settings.PropertyChanged += (s, e) =>
         {
@@ -154,7 +154,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         };
     }
 
-    private void RecieveAll()
+    private void ReceiveAll()
     {
         RequestMessage<PrinterSettings> mes2 = new();
         _ = WeakReferenceMessenger.Default.Send(mes2);
@@ -370,7 +370,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         //Sort the list from top to bottom, left to right given x,y coordinates
         list.OrderBy(x => x.Report.Top).ThenBy(x => x.Report.Left).ToList();
 
-    #region Recieve Messages
+    #region Receive Messages
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
     #endregion

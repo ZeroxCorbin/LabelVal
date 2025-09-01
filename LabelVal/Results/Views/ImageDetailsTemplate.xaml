@@ -156,7 +156,7 @@
                                 HorizontalAlignment="Center"
                                 Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                 Text="Format" />
-                            <TextBlock HorizontalAlignment="Center" Text="{Binding ImagePixeFormat, Mode=OneWay}" />
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding ImagePixelFormat, Mode=OneWay}" />
                         </StackPanel>
 
                         <StackPanel Margin="3">

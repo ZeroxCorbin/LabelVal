@@ -170,7 +170,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         return res.ToString();
     }
 
-    #region Recieve Messages
+    #region Receive Messages
     //There is no point in reuesting the SeletedImageRoll at init, the user has not selected anything yet.
     public void Receive(PropertyChangedMessage<ImageRoll> message) => SelectedImageRoll = message.NewValue;
     #endregion

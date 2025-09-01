@@ -31,26 +31,26 @@ public partial class ImageRolls : UserControl
 
             };
 
-        tabCtlUserIR.Loaded += (s, e) =>
+        TabCtlUserIr.Loaded += (s, e) =>
         {
             if (_viewModel.SelectedUserImageRoll != null)
             {
-                var item = tabCtlUserIR.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedUserImageRoll));
+                var item = TabCtlUserIr.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedUserImageRoll));
                 if (item != null)
                 {
-                    tabCtlUserIR.SelectedItem = item;
+                    TabCtlUserIr.SelectedItem = item;
                 }
             }
         };
 
-        tabCtlFixedIR.Loaded += (s, e) =>
+        TabCtlFixedIr.Loaded += (s, e) =>
         {
             if (_viewModel.SelectedFixedImageRoll != null)
             {
-                var item = tabCtlFixedIR.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedFixedImageRoll));
+                var item = TabCtlFixedIr.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedFixedImageRoll));
                 if (item != null)
                 {
-                    tabCtlFixedIR.SelectedItem = item;
+                    TabCtlFixedIr.SelectedItem = item;
                 }
             }
         };

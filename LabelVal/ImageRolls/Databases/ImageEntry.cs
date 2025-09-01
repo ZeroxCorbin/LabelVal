@@ -78,7 +78,7 @@ public partial class ImageEntry : ObservableObject
     [JsonProperty] public double ImageHeight => Math.Round(Image.PixelHeight / Image.DpiY, 2);
     [JsonProperty] public long ImageTotalPixels => Image.PixelWidth * Image.PixelHeight;
     [JsonProperty] public int ImageBitDepth => Image.Format.BitsPerPixel;
-    [JsonProperty] public PixelFormat ImagePixeFormat => Image.Format;
+    [JsonProperty] public PixelFormat ImagePixelFormat => Image.Format;
 
     [ObservableProperty][property: SQLite.Ignore] private double v52ImageTotalPixelDeviation;
 
