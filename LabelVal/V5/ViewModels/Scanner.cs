@@ -41,7 +41,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     private int repeatedTriggerDelay = 50;
 
     [ObservableProperty][property: JsonProperty] private double quickSet_ImagePercent = 0.33d;
-    partial void OnQuickSet_ImagePercentChanged(double value) => _ = App.Current.Dispatcher.BeginInvoke(() =>
+    partial void OnQuickSet_ImagePercentChanged(double value) => _ = Application.Current.Dispatcher.BeginInvoke(() =>
     {
         if (Controller.IsSimulator)
             ImageFocusRegionOverlay = null;
@@ -64,7 +64,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     public static List<CameraDetails> AvailableCameras => CameraModels.Available;
 
     [ObservableProperty] private CameraDetails selectedCamera;
-    partial void OnSelectedCameraChanged(CameraDetails value) => _ = App.Current.Dispatcher.BeginInvoke(() =>
+    partial void OnSelectedCameraChanged(CameraDetails value) => _ = Application.Current.Dispatcher.BeginInvoke(() =>
     {
         if (Controller.IsSimulator)
             ImageFocusRegionOverlay = null;
@@ -79,11 +79,11 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             if (SelectedCamera == null)
                 return null;
 
-            double width = SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent;
-            double height = SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent;
+            var width = SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent;
+            var height = SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent;
 
-            double x = (SelectedCamera.Sensor.PixelColumns - width) / 2;
-            double y = (SelectedCamera.Sensor.PixelRows - height) / 2;
+            var x = (SelectedCamera.Sensor.PixelColumns - width) / 2;
+            var y = (SelectedCamera.Sensor.PixelRows - height) / 2;
 
             return JObject.FromObject(new QuickSet_Photometry((float)x, (float)y, (float)width, (float)height));
         }
@@ -95,10 +95,10 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             if (SelectedCamera == null)
                 return null;
 
-            double width = SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent;
-            double height = SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent;
-            double x = (SelectedCamera.Sensor.PixelColumns - width) / 2;
-            double y = (SelectedCamera.Sensor.PixelRows - height) / 2;
+            var width = SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent;
+            var height = SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent;
+            var x = (SelectedCamera.Sensor.PixelColumns - width) / 2;
+            var y = (SelectedCamera.Sensor.PixelRows - height) / 2;
 
             return JObject.FromObject(new QuickSet_Focus((float)x, (float)y, (float)width, (float)height));
         }
@@ -131,7 +131,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        _ = App.Current.Dispatcher.BeginInvoke(() => ChangeJob(value));
+        _ = Application.Current.Dispatcher.BeginInvoke(() => ChangeJob(value));
     }
 
     private bool userChange;
@@ -179,7 +179,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         //Change the directory in the FileAcquisitionSource
 
-        JObject source = Controller.Config.GetParameter<JObject>("response.data.job.channelMap.acquisition.AcquisitionChannel.source");
+        var source = Controller.Config.GetParameter<JObject>("response.data.job.channelMap.acquisition.AcquisitionChannel.source");
         //Config.Source src = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
 
         if (source == null)
@@ -192,7 +192,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         {
             _ = source.SetParameter("FileAcquisitionSource.directory", directory);
 
-            JObject? send = Controller.Config.GetParameter<JObject>("response.data");
+            var send = Controller.Config.GetParameter<JObject>("response.data");
             if (send == null)
             {
                 Logger.LogError("Could not get the data object from the configuration.");
@@ -231,23 +231,23 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         if (Controller.IsConfigValid)
         {
-            V5_REST_Lib.Results meta = await Controller.Commands.GetMeta();
+            var meta = await Controller.Commands.GetMeta();
             if (meta.OK)
             {
-                JObject metaConfig = (JObject)meta.Object;
+                var metaConfig = (JObject)meta.Object;
 
                 // Assuming metaConfig.response.data.FileAcquisitionSource.directory.sources is an array of strings
-                JArray sources = metaConfig.GetParameter<JArray>("response.data.FileAcquisitionSource.directory.sources");
+                var sources = metaConfig.GetParameter<JArray>("response.data.FileAcquisitionSource.directory.sources");
 
-                await App.Current.Dispatcher.BeginInvoke(() =>
+                await Application.Current.Dispatcher.BeginInvoke(() =>
                 {
                     // Add new directories from sources to Directories if they're not already present
-                    foreach (JToken source in sources)
+                    foreach (var source in sources)
                         if (!Directories.Contains(source.ToString()))
                             Directories.Add(source.ToString());
 
                     // Remove directories from Directories if they're not present in sources
-                    for (int i = Directories.Count - 1; i >= 0; i--)
+                    for (var i = Directories.Count - 1; i >= 0; i--)
                         if (!sources.Values().Contains(Directories[i]))
                             Directories.RemoveAt(i);
                 });
@@ -308,14 +308,14 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                     //    if (data1.HasValues)
                     //        Capture = data1[0]?["Capture"];
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         Results.Clear();
 
-                        JToken data1 = json["event"]?["data"]?["decodeData"];
+                        var data1 = json["event"]?["data"]?["decodeData"];
                         if (data1 != null)
                             if (data1.HasValues)
-                                foreach (JToken b in data1)
+                                foreach (var b in data1)
                                     Results.Add(b);
                     });
                 }
@@ -323,19 +323,19 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 {
                     CycleID = json["event"]?["data"]?["cycleConfig"]?["cycleId"].ToString();
 
-                    JToken data1 = json["event"]?["data"]?["cycleConfig"]?["job"]?["captureList"];
+                    var data1 = json["event"]?["data"]?["cycleConfig"]?["job"]?["captureList"];
                     if (data1 != null)
                         if (data1.HasValues)
                             Capture = data1[0]?["Capture"];
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         Results.Clear();
 
                         data1 = json["event"]?["data"]?["cycleConfig"]?["qualifiedResults"];
                         if (data1 != null)
                             if (data1.HasValues)
-                                foreach (JToken b in data1)
+                                foreach (var b in data1)
                                     Results.Add(b);
                     });
                 }
@@ -371,9 +371,9 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private void ScannerController_JobSlotsUpdate()
     {
-        if (!App.Current.Dispatcher.CheckAccess())
+        if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = App.Current.Dispatcher.BeginInvoke(ScannerController_JobSlotsUpdate);
+            _ = Application.Current.Dispatcher.BeginInvoke(ScannerController_JobSlotsUpdate);
             return;
         }
 
@@ -383,7 +383,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 if (!JobSlots.Any((e) => e.GetParameter<string>("jobName") == job.GetParameter<string>("jobName") && e.GetParameter<string>("slotIndex") == job.GetParameter<string>("slotIndex")))
                     JobSlots.Add(job);
 
-            foreach (JObject job in JobSlots.ToArray())
+            foreach (var job in JobSlots.ToArray())
                 if (!Controller.JobSlots.GetParameter<JArray>("response.data").Any((e) => e["jobName"].ToString() == job["jobName"].ToString() && e["jobName"].ToString() == job["jobName"].ToString()))
                     _ = JobSlots.Remove(job);
         }
@@ -428,7 +428,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         GeometryGroup secAreas = new();
 
-        int div = FullResImages ? 1 : 2;
+        var div = FullResImages ? 1 : 2;
 
         secAreas.Children.Add(new RectangleGeometry(
             new Rect(
@@ -456,7 +456,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         DrawingGroup drwGroup = new();
 
-        int div = FullResImages ? 1 : 2;
+        var div = FullResImages ? 1 : 2;
 
         //Draw the image outline the same size as the stored image
         GeometryDrawing border = new()
@@ -471,43 +471,43 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         if (results["event"]?["name"].ToString() == "cycle-report-alt")
         {
-            foreach (JToken sec in results["event"]?["data"]?["decodeData"])
+            foreach (var sec in results["event"]?["data"]?["decodeData"])
             {
                 if (sec["boundingBox"] == null)
                     continue;
 
                 GeometryGroup secAreas = new();
 
-                double brushWidth = 4.0 / div;
-                double halfBrushWidth = brushWidth / 2.0 / div;
+                var brushWidth = 4.0 / div;
+                var halfBrushWidth = brushWidth / 2.0 / div;
 
-                for (int i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                 {
-                    int nextIndex = (i + 1) % 4;
+                    var nextIndex = (i + 1) % 4;
 
-                    double dx = (sec["boundingBox"][nextIndex]["x"].Value<double>() - sec["boundingBox"][i]["x"].Value<double>()) / div;
-                    double dy = (sec["boundingBox"][nextIndex]["y"].Value<double>() - sec["boundingBox"][i]["y"].Value<double>()) / div;
+                    var dx = (sec["boundingBox"][nextIndex]["x"].Value<double>() - sec["boundingBox"][i]["x"].Value<double>()) / div;
+                    var dy = (sec["boundingBox"][nextIndex]["y"].Value<double>() - sec["boundingBox"][i]["y"].Value<double>()) / div;
 
                     // Calculate the length of the line segment
-                    double length = Math.Sqrt((dx * dx) + (dy * dy));
+                    var length = Math.Sqrt((dx * dx) + (dy * dy));
 
                     // Normalize the direction to get a unit vector
-                    double ux = dx / length;
-                    double uy = dy / length;
+                    var ux = dx / length;
+                    var uy = dy / length;
 
                     // Calculate the normal vector (perpendicular to the direction)
-                    double nx = -uy;
-                    double ny = ux;
+                    var nx = -uy;
+                    var ny = ux;
 
                     // Calculate the adjustment vector
-                    double ax = nx * halfBrushWidth;
-                    double ay = ny * halfBrushWidth;
+                    var ax = nx * halfBrushWidth;
+                    var ay = ny * halfBrushWidth;
 
                     // Adjust the points
-                    double startX = (sec["boundingBox"][i]["x"].Value<double>() - ax) / div;
-                    double startY = (sec["boundingBox"][i]["y"].Value<double>() - ay) / div;
-                    double endX = (sec["boundingBox"][nextIndex]["x"].Value<double>() - ax) / div;
-                    double endY = (sec["boundingBox"][nextIndex]["y"].Value<double>() - ay) / div;
+                    var startX = (sec["boundingBox"][i]["x"].Value<double>() - ax) / div;
+                    var startY = (sec["boundingBox"][i]["y"].Value<double>() - ay) / div;
+                    var endX = (sec["boundingBox"][nextIndex]["x"].Value<double>() - ax) / div;
+                    var endY = (sec["boundingBox"][nextIndex]["y"].Value<double>() - ay) / div;
 
                     // Add the line to the geometry group
                     secAreas.Children.Add(new LineGeometry(new Point(startX, startY), new Point(endX, endY)));
@@ -524,7 +524,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         else if (results["event"]?["name"].ToString() == "cycle-report")
         {
 
-            foreach (JToken sec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
+            foreach (var sec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
             {
                 if (sec["boundingBox"] == null)
                     continue;
@@ -537,8 +537,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0 / div, new Point((sec["boundingBox"][2]["x"].Value<double>() - 8) / div, (sec["boundingBox"][2]["y"].Value<double>() - 8) / div))));
             }
 
-            foreach (JToken sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
-                foreach (JToken r in sec["SymbologyTool"]["regionList"])
+            foreach (var sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
+                foreach (var r in sec["SymbologyTool"]["regionList"])
                     bndAreas.Children.Add(new RectangleGeometry(
                         new Rect(
                             r["Region"]["shape"]["RectShape"]["x"].Value<double>() / div,
@@ -569,18 +569,18 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     public static GlyphRun CreateGlyphRun(string text, Typeface typeface, double emSize, Point baselineOrigin)
     {
 
-        if (!typeface.TryGetGlyphTypeface(out GlyphTypeface glyphTypeface))
+        if (!typeface.TryGetGlyphTypeface(out var glyphTypeface))
         {
             throw new ArgumentException(string.Format(
                 "{0}: no GlyphTypeface found", typeface.FontFamily));
         }
 
-        ushort[] glyphIndices = new ushort[text.Length];
-        double[] advanceWidths = new double[text.Length];
+        var glyphIndices = new ushort[text.Length];
+        var advanceWidths = new double[text.Length];
 
-        for (int i = 0; i < text.Length; i++)
+        for (var i = 0; i < text.Length; i++)
         {
-            ushort glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
+            var glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
             glyphIndices[i] = glyphIndex;
             advanceWidths[i] = glyphTypeface.AdvanceWidths[glyphIndex] * emSize;
         }
@@ -649,8 +649,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         if (RepeatTrigger)
         {
             _tokenSrc = new CancellationTokenSource();
-            CancellationToken cnlToken = _tokenSrc.Token;
-            return App.Current.Dispatcher.Invoke(async () =>
+            var cnlToken = _tokenSrc.Token;
+            return Application.Current.Dispatcher.Invoke(async () =>
             {
                 try
                 {
@@ -692,7 +692,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         Clear();
 
-        V5_REST_Lib.Results res = await Controller.Commands.GetSysInfo();
+        var res = await Controller.Commands.GetSysInfo();
         if (res.OK)
         {
             ExplicitMessages = res.Json;
@@ -702,7 +702,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     private async Task Config()
     {
         Clear();
-        V5_REST_Lib.Results res = await Controller.Commands.GetConfig();
+        var res = await Controller.Commands.GetConfig();
         if (res.OK)
         {
             ExplicitMessages = res.Json;

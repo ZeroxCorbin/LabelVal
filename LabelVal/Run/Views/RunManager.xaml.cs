@@ -24,5 +24,5 @@ public partial class RunManager : UserControl
         InitializeComponent();
     }
 
-    private void btnCollapseContent(object sender, RoutedEventArgs e) => ((Main.Views.MainWindow)App.Current.MainWindow).ClearSelectedMenuItem();
+    private void btnCollapseContent(object sender, RoutedEventArgs e) => ((Main.Views.MainWindow)Application.Current.MainWindow).ClearSelectedMenuItem();
 }

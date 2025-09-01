@@ -105,7 +105,7 @@ public class ImageResultsDatabase : ObservableObject, IDisposable
         using System.Data.SQLite.SQLiteCommand command = new("SELECT name FROM sqlite_master WHERE type='table';", con);
 
         var tables = new List<string>();
-        using (System.Data.SQLite.SQLiteDataReader rdr = command.ExecuteReader())
+        using (var rdr = command.ExecuteReader())
             while (rdr.Read())
                 tables.Add(rdr.GetString(0));
 

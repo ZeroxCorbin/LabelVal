@@ -37,7 +37,7 @@ public class SectorTemplate : ISectorTemplate
         Name = name;
         Username = name;
 
-        int toolSlot = report.GetParameter<int>("toolSlot") - 1;
+        var toolSlot = report.GetParameter<int>("toolSlot") - 1;
         var regionList = template.GetParameter<JArray>($"response.data.job.toolList[{toolSlot}].SymbologyTool.regionList");
         if (regionList == null || regionList.Count == 0)
             return;

@@ -8,21 +8,21 @@ public static class ImageQuantUtilities
 {
     public static byte[] RawBitmapToQuantImageBytes(byte[] image)
     {
-        Bitmap bmp = CreateBitmap(image);
+        var bmp = CreateBitmap(image);
         if (bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
             return image;
 
-        Image quantizedImage = new WuQuantizer().QuantizeImage(bmp);
+        var quantizedImage = new WuQuantizer().QuantizeImage(bmp);
         return ImageToPNGBytes(quantizedImage); ;
     }
 
     public static System.Windows.Media.Imaging.BitmapImage RawBitmapToQuantBitmapImage(byte[] image)
     {
-        Bitmap bmp = CreateBitmap(image);
+        var bmp = CreateBitmap(image);
         if (bmp == null)
             return new System.Windows.Media.Imaging.BitmapImage();
 
-        Image quantizedImage = new WuQuantizer().QuantizeImage(bmp);
+        var quantizedImage = new WuQuantizer().QuantizeImage(bmp);
         return CreateBitmapImage(ImageToBytes(quantizedImage));
     }
 

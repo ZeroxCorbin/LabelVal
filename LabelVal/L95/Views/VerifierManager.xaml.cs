@@ -10,5 +10,5 @@ public partial class VerifierManager : UserControl
 {
     public VerifierManager() => InitializeComponent();
 
-    private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)App.Current.MainWindow).ClearSelectedMenuItem();
+    private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)Application.Current.MainWindow).ClearSelectedMenuItem();
 }

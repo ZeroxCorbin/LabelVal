@@ -23,7 +23,7 @@ public partial class ImageRolls : UserControl
 
                 _viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-                ImageRoll ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRolls.SelectedImageRoll));
+                var ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRolls.SelectedImageRoll));
 
                 _viewModel.SelectedFixedImageRoll = ir != null ? _viewModel.FixedImageRolls.FirstOrDefault((e) => e.UID == ir.UID) : null;
                 _viewModel.SelectedUserImageRoll = ir != null ? _viewModel.UserImageRolls.FirstOrDefault((e) => e.UID == ir.UID) : null;
@@ -35,7 +35,7 @@ public partial class ImageRolls : UserControl
         {
             if (_viewModel.SelectedUserImageRoll != null)
             {
-                CollectionViewGroup item = tabCtlUserIR.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedUserImageRoll));
+                var item = tabCtlUserIR.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedUserImageRoll));
                 if (item != null)
                 {
                     tabCtlUserIR.SelectedItem = item;
@@ -47,7 +47,7 @@ public partial class ImageRolls : UserControl
         {
             if (_viewModel.SelectedFixedImageRoll != null)
             {
-                CollectionViewGroup item = tabCtlFixedIR.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedFixedImageRoll));
+                var item = tabCtlFixedIR.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedFixedImageRoll));
                 if (item != null)
                 {
                     tabCtlFixedIR.SelectedItem = item;
@@ -101,12 +101,12 @@ public partial class ImageRolls : UserControl
         try
         {
             userChanging = true;
-            foreach (ListView l in userLists)
+            foreach (var l in userLists)
             {
                 if (l != lst)
                     l.SelectedItem = null;
             }
-            foreach (ListView l in fixedLists)
+            foreach (var l in fixedLists)
             {
                 if (l != lst)
                     l.SelectedItem = null;
@@ -137,12 +137,12 @@ public partial class ImageRolls : UserControl
         try
         {
             fixedChanging = true;
-            foreach (ListView l in userLists)
+            foreach (var l in userLists)
             {
                 if (l != lst)
                     l.SelectedItem = null;
             }
-            foreach (ListView l in fixedLists)
+            foreach (var l in fixedLists)
             {
                 if (l != lst)
                     l.SelectedItem = null;

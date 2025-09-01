@@ -18,7 +18,7 @@ namespace LabelVal.Converters
             if (value == null || !(value is string macAddress) || macAddress.Length != 17)
                 return null;
 
-            string[] split = macAddress.Split(':');
+            var split = macAddress.Split(':');
             if (split.Length != 6)
                 return null;
 

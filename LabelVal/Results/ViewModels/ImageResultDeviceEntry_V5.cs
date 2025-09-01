@@ -12,7 +12,9 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows;
 using System.Windows.Media;
+using LabelVal.Sectors.Interfaces;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultDeviceEntry
@@ -100,21 +102,15 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
 
     public void GetStored()
     {
-        if (!App.Current.Dispatcher.CheckAccess())
+        if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = App.Current.Dispatcher.BeginInvoke(() => GetStored());
-            return;
-        }
-
-        if (ImageResultEntry.SelectedDatabase == null)
-        {
-            Logger.LogError("No image results database selected.");
+            _ = Application.Current.Dispatcher.BeginInvoke(GetStored);
             return;
         }
 
         StoredSectors.Clear();
 
-        Result row = ImageResultEntry.SelectedDatabase.Select_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
+        var row = ImageResultEntry.SelectedDatabase.Select_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
 
         if (row == null)
         {
@@ -131,15 +127,12 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(row.ReportString))
         {
-            foreach (JToken toolResult in row.Report.GetParameter<JArray>("event.data.toolResults"))
+            foreach (var toolResult in row.Report.GetParameter<JArray>("event.data.toolResults"))
             {
 
                 try
                 {
-                    foreach (JToken result in ((JObject)toolResult).GetParameter<JArray>("results"))
-                    {
-                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, row.Template, [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, row.Template.GetParameter<string>("response.message")));
-                    }
+                    tempSectors.AddRange(((JObject)toolResult).GetParameter<JArray>("results").Select(result => new V5.Sectors.Sector((JObject)result, row.Template, [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, row.Template.GetParameter<string>("response.message"))).Cast<ISector>());
                 }
                 catch (System.Exception ex)
                 {
@@ -154,7 +147,7 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
         {
             _ = ImageResultEntry.SortList3(tempSectors);
 
-            foreach (Sectors.Interfaces.ISector sec in tempSectors)
+            foreach (var sec in tempSectors)
                 StoredSectors.Add(sec);
         }
 
@@ -222,9 +215,9 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
     private void ProcessRepeat(V5_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat?.FullReport);
     public void ProcessFullReport(V5_REST_Lib.Controllers.FullReport report)
     {
-        if (!App.Current.Dispatcher.CheckAccess())
+        if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = App.Current.Dispatcher.BeginInvoke(() => ProcessFullReport(report));
+            _ = Application.Current.Dispatcher.BeginInvoke(() => ProcessFullReport(report));
             return;
         }
 
@@ -255,10 +248,10 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
 
             List<Sectors.Interfaces.ISector> tempSectors = [];
             //Tray and match a toolResult to a toolList
-            foreach (JToken toolResult in CurrentReport.GetParameter<JArray>("event.data.toolResults"))
+            foreach (var toolResult in CurrentReport.GetParameter<JArray>("event.data.toolResults"))
             {
 
-                foreach (JToken result in ((JObject)toolResult).GetParameter<JArray>("results"))
+                foreach (var result in ((JObject)toolResult).GetParameter<JArray>("results"))
                 {
                     try
                     {
@@ -277,7 +270,7 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
             {
                 tempSectors = ImageResultEntry.SortList3(tempSectors);
 
-                foreach (Sectors.Interfaces.ISector sec in tempSectors)
+                foreach (var sec in tempSectors)
                     CurrentSectors.Add(sec);
             }
 
@@ -296,16 +289,16 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
         finally
         {
             IsWorking = false;
-            App.Current.Dispatcher.Invoke(ImageResultEntry.BringIntoViewHandler);
+            Application.Current.Dispatcher.Invoke(ImageResultEntry.BringIntoViewHandler);
         }
     }
 
     [RelayCommand]
     public void ClearCurrent()
     {
-        if (!App.Current.Dispatcher.CheckAccess())
+        if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = App.Current.Dispatcher.BeginInvoke(() => ClearCurrent());
+            _ = Application.Current.Dispatcher.BeginInvoke(ClearCurrent);
             return;
         }
 
@@ -336,9 +329,9 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
         List<SectorDifferences> diff = [];
 
         //Compare; Do not check for missing here. To keep found at top of list.
-        foreach (Sectors.Interfaces.ISector sec in StoredSectors)
+        foreach (var sec in StoredSectors)
         {
-            foreach (Sectors.Interfaces.ISector cSec in CurrentSectors)
+            foreach (var cSec in CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     if (sec.Report.Symbology == cSec.Report.Symbology)
@@ -361,10 +354,10 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
         }
 
         //Check for missing
-        foreach (Sectors.Interfaces.ISector sec in StoredSectors)
+        foreach (var sec in StoredSectors)
         {
             var found = false;
-            foreach (Sectors.Interfaces.ISector cSec in CurrentSectors)
+            foreach (var cSec in CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     found = true;
@@ -385,10 +378,10 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
 
         //check for missing
         if (StoredSectors.Count > 0)
-            foreach (Sectors.Interfaces.ISector sec in CurrentSectors)
+            foreach (var sec in CurrentSectors)
             {
                 var found = false;
-                foreach (Sectors.Interfaces.ISector cSec in StoredSectors)
+                foreach (var cSec in StoredSectors)
                     if (sec.Template.Name == cSec.Template.Name)
                     {
                         found = true;
@@ -407,7 +400,7 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
                 }
             }
 
-        foreach (SectorDifferences d in diff)
+        foreach (var d in diff)
             if (d.IsSectorMissing)
                 DiffSectors.Add(d);
     }
@@ -416,7 +409,7 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
     private Task<bool> Read() => ReadTask();
     public async Task<bool> ReadTask()
     {
-        V5_REST_Lib.Controllers.FullReport result = await ImageResultEntry.ImageResultsManager.SelectedV5.Controller.Trigger_Wait_Return(true);
+        var result = await ImageResultEntry.ImageResultsManager.SelectedV5.Controller.Trigger_Wait_Return(true);
         ProcessFullReport(result);
         //V275V5_REST_Lib.FullReport report;
         //if ((report = await ImageResults.SelectedV275Node.Controller.GetFullReport(repeat, true)) == null)

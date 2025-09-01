@@ -23,9 +23,9 @@ public partial class RunResult
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(StoredImageResultGroup.V275Result.ReportString) && !string.IsNullOrEmpty(StoredImageResultGroup.V275Result.TemplateString))
         {
-            foreach (JToken jSec in StoredImageResultGroup.V275Result.Template["sectors"])
+            foreach (var jSec in StoredImageResultGroup.V275Result.Template["sectors"])
             {
-                foreach (JToken rSec in StoredImageResultGroup.V275Result.Report["inspectLabel"]["inspectSector"])
+                foreach (var rSec in StoredImageResultGroup.V275Result.Report["inspectLabel"]["inspectSector"])
                 {
                     if (jSec["name"].ToString() == rSec["name"].ToString())
                     {
@@ -42,7 +42,7 @@ public partial class RunResult
         {
             SortList(tempSectors);
 
-            foreach (Sectors.Interfaces.ISector sec in tempSectors)
+            foreach (var sec in tempSectors)
                 V275StoredSectors.Add(sec);
 
             V275StoredImageOverlay = V275CreateSectorsImageOverlay(StoredImageResultGroup.V275Result.Template, false, StoredImageResultGroup.V275Result.Report, V275StoredImage, V275StoredSectors);
@@ -60,9 +60,9 @@ public partial class RunResult
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.ReportString) && !string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.TemplateString))
         {
-            foreach (JToken jSec in CurrentImageResultGroup.V275Result.Template["sectors"])
+            foreach (var jSec in CurrentImageResultGroup.V275Result.Template["sectors"])
             {
-                foreach (JToken rSec in CurrentImageResultGroup.V275Result.Report["inspectLabel"]["inspectSector"])
+                foreach (var rSec in CurrentImageResultGroup.V275Result.Report["inspectLabel"]["inspectSector"])
                 {
                     if (jSec["name"].ToString() == rSec["name"].ToString())
                     {
@@ -77,7 +77,7 @@ public partial class RunResult
         {
             SortList(tempSectors);
 
-            foreach (Sectors.Interfaces.ISector sec in tempSectors)
+            foreach (var sec in tempSectors)
                 V275CurrentSectors.Add(sec);
 
             V275CurrentImageOverlay = V275CreateSectorsImageOverlay(CurrentImageResultGroup.V275Result.Template, false, CurrentImageResultGroup.V275Result.Report, V275CurrentImage, V275CurrentSectors);
@@ -118,9 +118,9 @@ public partial class RunResult
         List<SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
-        foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
+        foreach (var sec in V275StoredSectors)
         {
-            foreach (Sectors.Interfaces.ISector cSec in V275CurrentSectors)
+            foreach (var cSec in V275CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     if (sec.Report.Symbology == cSec.Report.Symbology)
@@ -142,10 +142,10 @@ public partial class RunResult
         }
 
         //Check for missing
-        foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
+        foreach (var sec in V275StoredSectors)
         {
             var found = false;
-            foreach (Sectors.Interfaces.ISector cSec in V275CurrentSectors)
+            foreach (var cSec in V275CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     found = true;
@@ -166,10 +166,10 @@ public partial class RunResult
 
         //check for missing
         if (V275StoredSectors.Count > 0)
-            foreach (Sectors.Interfaces.ISector sec in V275CurrentSectors)
+            foreach (var sec in V275CurrentSectors)
             {
                 var found = false;
-                foreach (Sectors.Interfaces.ISector cSec in V275StoredSectors)
+                foreach (var cSec in V275StoredSectors)
                     if (sec.Template.Name == cSec.Template.Name)
                     {
                         found = true;
@@ -189,7 +189,7 @@ public partial class RunResult
             }
 
         //ToDo: Sort the diff list
-        foreach (SectorDifferences d in diff)
+        foreach (var d in diff)
             V275DiffSectors.Add(d);
 
     }
@@ -208,7 +208,7 @@ public partial class RunResult
 
         GeometryGroup secCenter = new();
 
-        foreach (JToken jSec in template["sectors"])
+        foreach (var jSec in template["sectors"])
         {
             foreach (JObject rSec in report["inspectLabel"]["inspectSector"])
             {
@@ -217,8 +217,8 @@ public partial class RunResult
                     if (rSec["type"].ToString() is "blemish" or "ocr" or "ocv")
                         continue;
 
-                    JObject fSec = JsonConvert.DeserializeObject<JObject>(rSec["data"].ToString());
-                    JObject result = JsonConvert.DeserializeObject<JObject>(fSec["overallGrade"].ToString());
+                    var fSec = JsonConvert.DeserializeObject<JObject>(rSec["data"].ToString());
+                    var result = JsonConvert.DeserializeObject<JObject>(fSec["overallGrade"].ToString());
 
                     GeometryDrawing sector = new()
                     {
@@ -258,9 +258,9 @@ public partial class RunResult
     {
         DrawingGroup drwGroup = new();
 
-        foreach (JToken sec in template["sectors"])
+        foreach (var sec in template["sectors"])
         {
-            Sectors.Interfaces.ISector sect = parsedSectors.FirstOrDefault(e => e.Template.Name.Equals(sec["name"].ToString()));
+            var sect = parsedSectors.FirstOrDefault(e => e.Template.Name.Equals(sec["name"].ToString()));
 
             if (sect != null)
             {
@@ -269,7 +269,7 @@ public partial class RunResult
 
                 if (sec["symbology"].ToString() is "qr" or "dataMatrix")
                 {
-                    Sectors.Interfaces.ISectorReport res = sect.Report;
+                    var res = sect.Report;
 
                     if (res.ExtendedData != null)
                     {
@@ -298,7 +298,7 @@ public partial class RunResult
 
                                     var text = res.ExtendedData.ModuleModulation[cnt].ToString();
                                     Typeface typeface = new("Arial");
-                                    if (typeface.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface))
+                                    if (typeface.TryGetGlyphTypeface(out var _glyphTypeface))
                                     {
                                         var _glyphIndexes = new ushort[text.Length];
                                         var _advanceWidths = new double[text.Length];
@@ -327,7 +327,7 @@ public partial class RunResult
 
                                     text = res.ExtendedData.ModuleReflectance[cnt++].ToString();
                                     Typeface typeface1 = new("Arial");
-                                    if (typeface1.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface1))
+                                    if (typeface1.TryGetGlyphTypeface(out var _glyphTypeface1))
                                     {
                                         var _glyphIndexes = new ushort[text.Length];
                                         var _advanceWidths = new double[text.Length];

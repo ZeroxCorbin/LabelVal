@@ -60,9 +60,9 @@ public class TabControlEx : TabControl
             case NotifyCollectionChangedAction.Add:
             case NotifyCollectionChangedAction.Remove:
                 if (e.OldItems != null)
-                    foreach (object item in e.OldItems)
+                    foreach (var item in e.OldItems)
                     {
-                        ContentPresenter cp = FindChildContentPresenter(item);
+                        var cp = FindChildContentPresenter(item);
                         if (cp != null)
                             ItemsHolderPanel.Children.Remove(cp);
                     }
@@ -94,7 +94,7 @@ public class TabControlEx : TabControl
             return;
 
         // Generate a ContentPresenter if necessary
-        TabItem item = GetSelectedTabItem();
+        var item = GetSelectedTabItem();
         if (item != null)
             CreateChildContentPresenter(item);
 
@@ -108,7 +108,7 @@ public class TabControlEx : TabControl
         if (item == null)
             return null;
 
-        ContentPresenter cp = FindChildContentPresenter(item);
+        var cp = FindChildContentPresenter(item);
 
         if (cp != null)
             return cp;
@@ -147,11 +147,11 @@ public class TabControlEx : TabControl
 
     protected TabItem GetSelectedTabItem()
     {
-        object selectedItem = SelectedItem;
+        var selectedItem = SelectedItem;
         if (selectedItem == null)
             return null;
 
-        TabItem item = selectedItem as TabItem;
+        var item = selectedItem as TabItem;
         item ??= (ItemContainerGenerator.ContainerFromIndex(SelectedIndex) as TabItem);
 
         return item;

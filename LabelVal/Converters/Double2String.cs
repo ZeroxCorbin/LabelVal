@@ -15,7 +15,7 @@ namespace LabelVal.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return value is not string str ? value : double.TryParse(str, out double result) ? result : value;
+            return value is not string str ? value : double.TryParse(str, out var result) ? result : value;
         }
     }
 }

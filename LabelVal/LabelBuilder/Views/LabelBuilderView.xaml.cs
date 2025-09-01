@@ -11,5 +11,5 @@ public partial class LabelBuilderView : UserControl
 {
     public LabelBuilderView() => InitializeComponent();
 
-    private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)App.Current.MainWindow).ClearSelectedMenuItem();
+    private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)Application.Current.MainWindow).ClearSelectedMenuItem();
 }

@@ -9,6 +9,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
@@ -113,7 +114,7 @@ public interface IImageResultDeviceEntry
         var warnSecThicknessHalf = warnSecThickness / 2;
 
         GeometryGroup secCenter = new();
-        foreach (Sectors.Interfaces.ISector newSec in sectors)
+        foreach (var newSec in sectors)
         {
             //if (newSec.Report.RegionType is AvailableRegionTypes.OCR or AvailableRegionTypes.OCV or AvailableRegionTypes.Blemish)
             //    continue;
@@ -187,7 +188,7 @@ public interface IImageResultDeviceEntry
         if (text == null)
             return null;
 
-        if (!typeface.TryGetGlyphTypeface(out GlyphTypeface glyphTypeface))
+        if (!typeface.TryGetGlyphTypeface(out var glyphTypeface))
         {
             throw new ArgumentException(string.Format(
                 "{0}: no GlyphTypeface found", typeface.FontFamily));
@@ -223,7 +224,7 @@ public interface IImageResultDeviceEntry
     {
         DrawingGroup drwGroup = new();
 
-        foreach (Sectors.Interfaces.ISector sect in sectors)
+        foreach (var sect in sectors)
         {
 
             if (sect == null)
@@ -231,7 +232,7 @@ public interface IImageResultDeviceEntry
 
             if (sect.Report.Symbology is Symbologies.QRCode or Symbologies.DataMatrix)
             {
-                Sectors.Interfaces.ISectorReport res = sect.Report;
+                var res = sect.Report;
 
                 if (res.ExtendedData == null)
                     continue;
@@ -261,7 +262,7 @@ public interface IImageResultDeviceEntry
 
                         var text = res.ExtendedData.ModuleModulation[cnt].ToString();
                         Typeface typeface = new("Arial");
-                        if (typeface.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface))
+                        if (typeface.TryGetGlyphTypeface(out var _glyphTypeface))
                         {
                             var _glyphIndexes = new ushort[text.Length];
                             var _advanceWidths = new double[text.Length];
@@ -303,7 +304,7 @@ public interface IImageResultDeviceEntry
 
                         text = res.ExtendedData.ModuleReflectance[cnt++].ToString();
                         Typeface typeface1 = new("Arial");
-                        if (typeface1.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface1))
+                        if (typeface1.TryGetGlyphTypeface(out var _glyphTypeface1))
                         {
                             var _glyphIndexes = new ushort[text.Length];
                             var _advanceWidths = new double[text.Length];
@@ -407,12 +408,12 @@ public interface IImageResultDeviceEntry
 
     private static SolidColorBrush GetGradeBrush(string grade, byte trans) => grade switch
     {
-        "A" => ChangeTransparency((SolidColorBrush)App.Current.Resources["CB_Green"], trans),
-        "B" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeB_Brush"], trans),
-        "C" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeC_Brush"], trans),
-        "D" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeD_Brush"], trans),
-        "F" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeF_Brush"], trans),
-        _ => ChangeTransparency((SolidColorBrush)App.Current.Resources["CB_Green"], trans),
+        "A" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["CB_Green"], trans),
+        "B" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeB_Brush"], trans),
+        "C" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeC_Brush"], trans),
+        "D" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeD_Brush"], trans),
+        "F" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeF_Brush"], trans),
+        _ => ChangeTransparency((SolidColorBrush)Application.Current.Resources["CB_Green"], trans),
     };
     private static SolidColorBrush ChangeTransparency(SolidColorBrush original, byte trans) => new(Color.FromArgb(trans, original.Color.R, original.Color.G, original.Color.B));
 }

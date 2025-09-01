@@ -8,7 +8,7 @@ public class EnumValueToDescription_ShortenString : IValueConverter
     {
         try
         {
-            object ret = value == null
+            var ret = value == null
                 ? null
                 : value is Enum
                     ? $"{(value.GetType()?.GetField(value.ToString() is string s ? s : string.Empty)?.GetCustomAttributes(typeof(System.ObsoleteAttribute), false).FirstOrDefault() is System.ObsoleteAttribute obsolete ? "*" : "")}{(value.GetType()?.GetField(value.ToString() is string s1 ? s1 : string.Empty)?.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).FirstOrDefault() as System.ComponentModel.DescriptionAttribute)?.Description}"
@@ -19,7 +19,7 @@ public class EnumValueToDescription_ShortenString : IValueConverter
 
             if (ret is string s2)
             {
-                int len = s2.Length;
+                var len = s2.Length;
                 if (len <= MaxLength)
                 {
                     return s2;

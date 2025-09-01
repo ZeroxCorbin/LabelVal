@@ -76,7 +76,7 @@ public partial class KeyEventQueue : UserControl
         if (_isMonitoring)
         {
            // int key = KeyInterop.VirtualKeyFromKey(e.Key);
-            byte[] state = new byte[256];
+            var state = new byte[256];
             GetKeyboardState(state);
             _eventQ.Enqueue(new KeyAndState(e.Key, state));
         }
@@ -100,7 +100,7 @@ public partial class KeyEventQueue : UserControl
                                // thread the dequeueing, because the sequence of inputs is not preserved 
                                // unless a small delay between them is introduced. Normally the effect this
                                // produces should be very acceptable for an UI.
-        byte[] state = new byte[256];
+        var state = new byte[256];
         GetKeyboardState(state);
         state[0x11] = 128;
         SetKeyboardState(state);

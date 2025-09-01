@@ -119,11 +119,11 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
     {
         //SendTo95xxApplication();
 
-        string path = GetSaveFilePath();
+        var path = GetSaveFilePath();
         if (string.IsNullOrEmpty(path)) return;
         try
         {
-            byte[] bmp = type == "v275Stored"
+            var bmp = type == "v275Stored"
                     ? V275StoredImage.ImageBytes
                     : type == "v275Current"
                     ? V275CurrentImage.ImageBytes
@@ -155,12 +155,12 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
                 "{0}: no GlyphTypeface found", typeface.FontFamily));
         }
 
-        ushort[] glyphIndices = new ushort[text.Length];
-        double[] advanceWidths = new double[text.Length];
+        var glyphIndices = new ushort[text.Length];
+        var advanceWidths = new double[text.Length];
 
-        for (int i = 0; i < text.Length; i++)
+        for (var i = 0; i < text.Length; i++)
         {
-            ushort glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
+            var glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
             glyphIndices[i] = glyphIndex;
             advanceWidths[i] = glyphTypeface.AdvanceWidths[glyphIndex] * emSize;
         }
@@ -172,23 +172,23 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
     }
     private static SolidColorBrush GetGradeBrush(string grade) => grade switch
     {
-        "A" => (SolidColorBrush)App.Current.Resources["CB_Green"],
-        "B" => (SolidColorBrush)App.Current.Resources["ISO_GradeB_Brush"],
-        "C" => (SolidColorBrush)App.Current.Resources["ISO_GradeC_Brush"],
-        "D" => (SolidColorBrush)App.Current.Resources["ISO_GradeD_Brush"],
-        "F" => (SolidColorBrush)App.Current.Resources["ISO_GradeF_Brush"],
+        "A" => (SolidColorBrush)Application.Current.Resources["CB_Green"],
+        "B" => (SolidColorBrush)Application.Current.Resources["ISO_GradeB_Brush"],
+        "C" => (SolidColorBrush)Application.Current.Resources["ISO_GradeC_Brush"],
+        "D" => (SolidColorBrush)Application.Current.Resources["ISO_GradeD_Brush"],
+        "F" => (SolidColorBrush)Application.Current.Resources["ISO_GradeF_Brush"],
         _ => Brushes.Black,
     };
     public static void SortList(List<Sectors.Interfaces.ISector> list) => list.Sort((item1, item2) =>
     {
-        double distance1 = Math.Sqrt(Math.Pow(item1.Report.CenterPoint.X, 2) + Math.Pow(item1.Report.CenterPoint.Y, 2));
-        double distance2 = Math.Sqrt(Math.Pow(item2.Report.CenterPoint.X, 2) + Math.Pow(item2.Report.CenterPoint.Y, 2));
-        int distanceComparison = distance1.CompareTo(distance2);
+        var distance1 = Math.Sqrt(Math.Pow(item1.Report.CenterPoint.X, 2) + Math.Pow(item1.Report.CenterPoint.Y, 2));
+        var distance2 = Math.Sqrt(Math.Pow(item2.Report.CenterPoint.X, 2) + Math.Pow(item2.Report.CenterPoint.Y, 2));
+        var distanceComparison = distance1.CompareTo(distance2);
 
         if (distanceComparison == 0)
         {
             // If distances are equal, sort by X coordinate, then by Y if necessary
-            int xComparison = item1.Report.CenterPoint.X.CompareTo(item2.Report.CenterPoint.X);
+            var xComparison = item1.Report.CenterPoint.X.CompareTo(item2.Report.CenterPoint.X);
             if (xComparison == 0)
             {
                 // If X coordinates are equal, sort by Y coordinate
@@ -228,7 +228,7 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
             yRatio = 1;
         }
 
-        double lineWidth = 10 * xRatio;
+        var lineWidth = 10 * xRatio;
 
         GeometryDrawing printer = new()
         {

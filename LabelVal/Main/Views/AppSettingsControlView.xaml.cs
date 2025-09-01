@@ -13,7 +13,7 @@ public partial class AppSettingsControlView : UserControl
     {
         InitializeComponent();
 
-        DataContext = App.Current.MainWindow.DataContext;
+        DataContext = Application.Current.MainWindow.DataContext;
     }
 
     //private void btnSelectDirectory_Click(object sender, RoutedEventArgs e)
@@ -31,7 +31,7 @@ public partial class AppSettingsControlView : UserControl
     {
         NHibernateSettingsView tmp = new()
         {
-            Owner = App.Current.MainWindow
+            Owner = Application.Current.MainWindow
         };
         tmp.Show();
     }

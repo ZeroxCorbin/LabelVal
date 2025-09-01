@@ -30,11 +30,11 @@ public partial class ImageViewerDialogView : MahApps.Metro.Controls.Dialogs.Cust
 
     private void CustomDialog_Loaded(object sender, RoutedEventArgs e)
     {
-        grdOverlays.Height = this.Height - 50;
+        GrdOverlays.Height = this.Height - 50;
         ZoomBorder.Width = this.Width - 25;
 
-        int high = ((ImageViewerDialogViewModel)DataContext).Image.PixelWidth;
-        foreach (DrawingImage overlay in ((ImageViewerDialogViewModel)DataContext).Overlays)
+        var high = ((ImageViewerDialogViewModel)DataContext).Image.PixelWidth;
+        foreach (var overlay in ((ImageViewerDialogViewModel)DataContext).Overlays)
             high = Math.Max(high, (int)overlay.Width);
 
         _img = new Image
@@ -45,14 +45,14 @@ public partial class ImageViewerDialogView : MahApps.Metro.Controls.Dialogs.Cust
         };
         RenderOptions.SetBitmapScalingMode(_img, BitmapScalingMode.NearestNeighbor);
 
-        grdOverlays.Children.Add(_img);
+        GrdOverlays.Children.Add(_img);
 
         AddOverlaysToGrid();
     }
 
     private void AddOverlaysToGrid()
     {
-        foreach (DrawingImage overlay in ((ImageViewerDialogViewModel)DataContext).Overlays)
+        foreach (var overlay in ((ImageViewerDialogViewModel)DataContext).Overlays)
         {
             Image img = new()
             {
@@ -64,7 +64,7 @@ public partial class ImageViewerDialogView : MahApps.Metro.Controls.Dialogs.Cust
             };
             RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
 
-            grdOverlays.Children.Add(img);
+            GrdOverlays.Children.Add(img);
         }
     }
 }

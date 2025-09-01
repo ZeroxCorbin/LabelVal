@@ -46,7 +46,7 @@ public partial class ImageResultEntry : UserControl
         else
         {
             // Fallback to the default behavior if the ScrollViewer is not found for some reason.
-            App.Current.Dispatcher.Invoke(new Action(BringIntoView));
+            Application.Current.Dispatcher.Invoke(new Action(BringIntoView));
         }
     }
 
@@ -61,7 +61,7 @@ public partial class ImageResultEntry : UserControl
     private void btnMoveImage_Click(object sender, RoutedEventArgs e)
     {
         popMove.IsOpen = false;
-        ViewModels.ImageResultEntry viewModel = (ViewModels.ImageResultEntry)DataContext;
+        var viewModel = (ViewModels.ImageResultEntry)DataContext;
         if (((Button)sender).Tag is string s)
             switch (s)
             {

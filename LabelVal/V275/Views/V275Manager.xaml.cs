@@ -14,7 +14,7 @@ namespace LabelVal.V275.Views
             InitializeComponent();
         }
 
-        private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)App.Current.MainWindow).ClearSelectedMenuItem();
+        private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)Application.Current.MainWindow).ClearSelectedMenuItem();
 
         private void btnShowDetails_Click(object sender, RoutedEventArgs e)
         {

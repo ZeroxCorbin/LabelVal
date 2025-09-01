@@ -33,7 +33,7 @@ namespace LabelVal.Utilities
 
         public static bool LoadFileDialog(LoadFileDialogSettings settings)
         {
-            Microsoft.Win32.OpenFileDialog diag = new Microsoft.Win32.OpenFileDialog()
+            var diag = new Microsoft.Win32.OpenFileDialog()
             {
                 Filter = settings.FilterString,
                 Title = settings.Title,
@@ -143,7 +143,7 @@ namespace LabelVal.Utilities
 
         public static string SaveFileDialog(string fileName = "", string filter = "All Files|*.*", string title = "Save a file.")
         {
-            SaveFileDialogSettings settings = new SaveFileDialogSettings
+            var settings = new SaveFileDialogSettings
             {
                 FilterString = filter,
                 Title = title,

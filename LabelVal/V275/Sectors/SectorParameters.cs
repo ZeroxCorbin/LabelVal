@@ -44,15 +44,15 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
             return;
         }
 
-        List<Parameters> parameters = Sector.Report.Symbology.GetParameters(Sector.Report.Device, Sector.Report.GradingStandard, Sector.Report.ApplicationStandard).ToList();
+        var parameters = Sector.Report.Symbology.GetParameters(Sector.Report.Device, Sector.Report.GradingStandard, Sector.Report.ApplicationStandard).ToList();
 
-        Parameters[] symPars = Sector.Report.Symbology.GetParameters(Sector.Report.Device);
-        Parameters[] gradingPars = Sector.Report.GradingStandard.GetParameters(Sector.Report.Specification);
-        Parameters[] applicationPars = Sector.Report.ApplicationStandard.GetParameters();
+        var symPars = Sector.Report.Symbology.GetParameters(Sector.Report.Device);
+        var gradingPars = Sector.Report.GradingStandard.GetParameters(Sector.Report.Specification);
+        var applicationPars = Sector.Report.ApplicationStandard.GetParameters();
 
         //Add the symbology parameters
         var tempSymPars = new List<IParameterValue>();
-        foreach (Parameters parameter in symPars)
+        foreach (var parameter in symPars)
         {
             try
             {
@@ -64,12 +64,12 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
             }
         }
         tempSymPars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
-        foreach (IParameterValue p in tempSymPars)
+        foreach (var p in tempSymPars)
             SymbologyParameters.Add(p);
 
         //Add the grading parameters
         var tempGradingPars = new List<IParameterValue>();
-        foreach (Parameters parameter in gradingPars)
+        foreach (var parameter in gradingPars)
         {
             try
             {
@@ -81,12 +81,12 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
             }
         }
         tempGradingPars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
-        foreach (IParameterValue p in tempGradingPars)
+        foreach (var p in tempGradingPars)
             GradingParameters.Add(p);
 
         //Add the application parameters
         var tempApplicationPars = new List<IParameterValue>();
-        foreach (Parameters parameter in applicationPars)
+        foreach (var parameter in applicationPars)
         {
             try
             {
@@ -98,14 +98,14 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
             }
         }
         tempApplicationPars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
-        foreach (IParameterValue p in tempApplicationPars)
+        foreach (var p in tempApplicationPars)
             ApplicationParameters.Add(p);
 
-        JObject report = Sector.Report.Original;
-        JObject template = Sector.Template.Original;
+        var report = Sector.Report.Original;
+        var template = Sector.Template.Original;
         var pars = new List<IParameterValue>();
         //Interate through the parameters
-        foreach (Parameters parameter in parameters)
+        foreach (var parameter in parameters)
         {
             try
             {
@@ -119,7 +119,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         }
         pars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
 
-        foreach (IParameterValue p in pars)
+        foreach (var p in pars)
             Parameters.Add(p);
 
         //Check for alarms

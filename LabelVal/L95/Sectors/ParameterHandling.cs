@@ -14,11 +14,11 @@ namespace LabelVal.L95.Sectors
     {
         public static void AddParameter(Devices device, Parameters parameter, Symbologies symbology, ICollection<IParameterValue> target, JObject report)
         {
-            Type type = parameter.GetDataType(device, symbology);
+            var type = parameter.GetDataType(device, symbology);
 
             if (type == typeof(GradeValue) || type == typeof(Grade))
             {
-                IParameterValue gradeValue = GetGradeValueOrGrade(device, parameter, symbology, report.GetParameter<string>(parameter.GetPath(device, symbology)));
+                var gradeValue = GetGradeValueOrGrade(device, parameter, symbology, report.GetParameter<string>(parameter.GetPath(device, symbology)));
 
                 if (gradeValue != null)
                 {
@@ -28,7 +28,7 @@ namespace LabelVal.L95.Sectors
             }
             else if (type == typeof(ValueDouble))
             {
-                ValueDouble valueDouble = GetValueDouble(device, parameter, symbology, report.GetParameter<string>(parameter.GetPath(device, symbology)));
+                var valueDouble = GetValueDouble(device, parameter, symbology, report.GetParameter<string>(parameter.GetPath(device, symbology)));
                 if (valueDouble != null)
                 {
                     target.Add(valueDouble);
@@ -37,7 +37,7 @@ namespace LabelVal.L95.Sectors
             }
             else if (type == typeof(ValueString))
             {
-                ValueString valueString = GetValueString(device, parameter, symbology, report.GetParameter<string>(parameter.GetPath(device, symbology)));
+                var valueString = GetValueString(device, parameter, symbology, report.GetParameter<string>(parameter.GetPath(device, symbology)));
                 if (valueString != null)
                 {
                     target.Add(valueString); return;
@@ -45,7 +45,7 @@ namespace LabelVal.L95.Sectors
             }
             else if (type == typeof(PassFail))
             {
-                PassFail passFail = GetPassFail(device, parameter, symbology, report.GetParameter<string>(parameter.GetPath(device, symbology)));
+                var passFail = GetPassFail(device, parameter, symbology, report.GetParameter<string>(parameter.GetPath(device, symbology)));
                 if (passFail != null) { target.Add(passFail); return; }
             }
             else if (type == typeof(Custom))

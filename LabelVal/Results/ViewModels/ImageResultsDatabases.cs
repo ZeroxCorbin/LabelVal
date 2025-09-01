@@ -41,32 +41,32 @@ public partial class ImageResultsDatabases : ObservableRecipient
 
     private FileFolderEntry EnumerateFolders(FileFolderEntry root)
     {
-        HashSet<string> currentDirectories = Directory.EnumerateDirectories(root.Path).ToHashSet();
-        HashSet<string> currentFiles = Directory.EnumerateFiles(root.Path, "*.sqlite").ToHashSet();
+        var currentDirectories = Directory.EnumerateDirectories(root.Path).ToHashSet();
+        var currentFiles = Directory.EnumerateFiles(root.Path, "*.sqlite").ToHashSet();
 
         // Remove directories that no longer exist
-        for (int i = root.Children.Count - 1; i >= 0; i--)
+        for (var i = root.Children.Count - 1; i >= 0; i--)
         {
-            FileFolderEntry child = root.Children[i];
+            var child = root.Children[i];
             if (child.IsDirectory && !currentDirectories.Contains(child.Path))
                 root.Children.RemoveAt(i);
         }
 
         // Remove files that no longer exist
-        for (int i = root.Children.Count - 1; i >= 0; i--)
+        for (var i = root.Children.Count - 1; i >= 0; i--)
         {
-            FileFolderEntry child = root.Children[i];
+            var child = root.Children[i];
             if (!child.IsDirectory && !currentFiles.Contains(child.Path))
                 root.Children.RemoveAt(i);
         }
 
         // Add new directories
-        foreach (string dir in currentDirectories)
+        foreach (var dir in currentDirectories)
             if (!root.Children.Any(child => child.Path == dir))
                 root.Children.Add(EnumerateFolders(GetFileFolderEntry(dir)));
 
         // Add new files
-        foreach (string file in currentFiles)
+        foreach (var file in currentFiles)
             if (!root.Children.Any(child => child.Path == file))
                 root.Children.Add(GetFileFolderEntry(file));
 
@@ -96,14 +96,14 @@ public partial class ImageResultsDatabases : ObservableRecipient
             }
         };
 
-        foreach (FileFolderEntry child in root.Children)
+        foreach (var child in root.Children)
             UpdateFileFolderEvents(child);
     }
     private List<FileFolderEntry> CollectSelectedFiles(FileFolderEntry root)
     {
         List<FileFolderEntry> selectedFiles = [];
 
-        foreach (FileFolderEntry child in root.Children)
+        foreach (var child in root.Children)
         {
             if (child.IsDirectory)
             {
@@ -136,12 +136,12 @@ public partial class ImageResultsDatabases : ObservableRecipient
     }
     private void UpdateDatabases(FileFolderEntry root)
     {
-        HashSet<string> selectedFiles = CollectSelectedFiles(root).Select(file => file.Path).ToHashSet();
+        var selectedFiles = CollectSelectedFiles(root).Select(file => file.Path).ToHashSet();
 
         // Remove databases that no longer exist
-        for (int i = Databases.Count - 1; i >= 0; i--)
+        for (var i = Databases.Count - 1; i >= 0; i--)
         {
-            Databases.ImageResultsDatabase db = Databases[i];
+            var db = Databases[i];
             if (!selectedFiles.Contains(db.File.Path))
             {
                 Databases[i].Close();
@@ -150,7 +150,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
         }
 
         // Add new databases
-        foreach (string file in selectedFiles)
+        foreach (var file in selectedFiles)
         {
             if (!Databases.Any(db => db.File.Path == file))
             {
@@ -162,7 +162,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
 
     private void SelectImageResultsDatabase()
     {
-        FileFolderEntry val = App.Settings.GetValue<FileFolderEntry>("SelectedImageResultDatabaseFFE");
+        var val = App.Settings.GetValue<FileFolderEntry>("SelectedImageResultDatabaseFFE");
 
         if (val == null)
         {
@@ -171,7 +171,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
             return;
         }
 
-        IEnumerable<Databases.ImageResultsDatabase> res = Databases.Where((a) => a.File.Path == val.Path);
+        var res = Databases.Where((a) => a.File.Path == val.Path);
         if (res.Any())
             SelectedDatabase = res.FirstOrDefault();
         else if (Databases.Count > 0)
@@ -181,7 +181,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
     [RelayCommand]
     private async Task CreateImageResultsDatabase()
     {
-        string res = await GetStringDialog("New Standards Database", "What is the name of the new database?");
+        var res = await GetStringDialog("New Standards Database", "What is the name of the new database?");
         if (res == null) return;
 
         if (string.IsNullOrEmpty(res) || res.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0)

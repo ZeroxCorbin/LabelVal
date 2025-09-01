@@ -17,7 +17,7 @@ public partial class RunDatabases : ObservableRecipient
     {
         //Load RunDatabases from .sqlite files from the App.RunsRoot directory
         RunDatabasesList.Clear();
-        foreach (string file in System.IO.Directory.GetFiles(App.RunsRoot, "*.sqlite"))
+        foreach (var file in System.IO.Directory.GetFiles(App.RunsRoot, "*.sqlite"))
             RunDatabasesList.Add(new ResultsDatabase(file));
     }
 
@@ -25,8 +25,8 @@ public partial class RunDatabases : ObservableRecipient
     {
         //get RunEntry from databases in RunDatabasesListe and put them in an RunEntriesList
         RunEntriesList.Clear();
-        foreach (ResultsDatabase runDatabase in RunDatabasesList)
-            foreach (RunEntry runEntry in runDatabase.SelectAllRunEntries())
+        foreach (var runDatabase in RunDatabasesList)
+            foreach (var runEntry in runDatabase.SelectAllRunEntries())
             {
                 runEntry.ResultsDatabase = runDatabase;
                 RunEntriesList.Add(runEntry);

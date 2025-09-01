@@ -55,7 +55,7 @@ namespace LabelVal.ORM_Test
 
             if (App.Settings.GetValue("ORMTest_SelectedSQLConfiguration", "").Equals("MySQLConfiguration"))
             {
-                MySQLConfiguration connection = MySQLConfiguration.Standard
+                var connection = MySQLConfiguration.Standard
                     .ConnectionString(c => c
                         .Server(App.Settings.GetValue($"ORMTest_ConnectionString_Server{App.Settings.GetValue("ORMTest_SelectedSQLConfiguration", "")}", ""))
                         .Database(App.Settings.GetValue($"ORMTest_ConnectionString_Database{App.Settings.GetValue("ORMTest_SelectedSQLConfiguration", "")}", ""))
@@ -86,7 +86,7 @@ namespace LabelVal.ORM_Test
 
             if (App.Settings.GetValue("ORMTest_SelectedSQLConfiguration", "").Equals("PostgreSQLConfiguration"))
             {
-                PostgreSQLConfiguration connection = PostgreSQLConfiguration.Standard
+                var connection = PostgreSQLConfiguration.Standard
                     .ConnectionString(c => c
                         .Host(App.Settings.GetValue($"ORMTest_ConnectionString_Server{App.Settings.GetValue("ORMTest_SelectedSQLConfiguration", "")}", ""))
                         .Database(App.Settings.GetValue($"ORMTest_ConnectionString_Database{App.Settings.GetValue("ORMTest_SelectedSQLConfiguration", "")}", ""))
@@ -116,7 +116,7 @@ namespace LabelVal.ORM_Test
 
             if (App.Settings.GetValue("ORMTest_SelectedSQLConfiguration", "").Equals("MsSqlConfiguration"))
             {
-                MsSqlConfiguration connection = MsSqlConfiguration.MsSql7
+                var connection = MsSqlConfiguration.MsSql7
                     .ConnectionString(c => c
                         .Server(App.Settings.GetValue($"ORMTest_ConnectionString_Server{App.Settings.GetValue("ORMTest_SelectedSQLConfiguration", "")}", ""))
                         .Database(App.Settings.GetValue($"ORMTest_ConnectionString_Database{App.Settings.GetValue("ORMTest_SelectedSQLConfiguration", "")}", ""))
@@ -145,7 +145,7 @@ namespace LabelVal.ORM_Test
 
             if (App.Settings.GetValue("ORMTest_SelectedSQLConfiguration", "").Equals("OracleManagedDataClientConfiguration"))
             {
-                OracleManagedDataClientConfiguration connection = OracleManagedDataClientConfiguration.Oracle10
+                var connection = OracleManagedDataClientConfiguration.Oracle10
                     .ConnectionString(c => c
                         .Server(App.Settings.GetValue($"ORMTest_ConnectionString_Server{App.Settings.GetValue("ORMTest_SelectedSQLConfiguration", "")}", ""))
                         .Instance(App.Settings.GetValue($"ORMTest_ConnectionString_Database{App.Settings.GetValue("ORMTest_SelectedSQLConfiguration", "")}", ""))

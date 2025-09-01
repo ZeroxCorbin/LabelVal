@@ -219,7 +219,7 @@ public partial class App : Application
     //             foreach (string comment in comments[parts[0]].ToArray())
     //             {
     //                var str1 = comment.Trim();
-                    
+
     //                 // Compare the strings
     //                 bool areEqual = str1.Equals(str2, StringComparison.Ordinal);
     //                 if (areEqual)
@@ -253,9 +253,9 @@ public partial class App : Application
     public App()
     {
         //ExtractRunDetails();
-       //SetupExceptionHandling();
+        //SetupExceptionHandling();
 
-        Version version = Assembly.GetExecutingAssembly().GetName().Version;
+        var version = Assembly.GetExecutingAssembly().GetName().Version;
         if (version != null)
             Version = version.ToString();
 
@@ -301,27 +301,36 @@ public partial class App : Application
         }
     }
 
-    protected override void OnStartup(StartupEventArgs e)
+    protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
 
-        //ConvertToIndexedPNG();
+        // Defer non-critical UI updates until the application is idle.
+        // This allows the main window to render sooner.
+        _ = Dispatcher.InvokeAsync(async () =>
+        {
+            await Task.Run(() =>
+            {
+                Logger.LogInfo("Starting: Getting colorblind setting.");
+                var isColorBlind = Settings.GetValue("App.IsColorBlind", false);
+                Dispatcher.Invoke(() => ChangeColorBlindTheme(isColorBlind));
 
-        Logger.LogInfo($"Starting: Getting colorblind setting.");
-        ChangeColorBlindTheme(Settings.GetValue("App.IsColorBlind", false));
+                Logger.LogInfo("Starting: Getting color theme.");
+                var themeName = Settings.GetValue("App.Theme", "Dark.Steel", true);
+                Dispatcher.Invoke(() =>
+                {
+                    if (themeName.Contains("#"))
+                        ControlzEx.Theming.ThemeManager.Current.SyncTheme(ControlzEx.Theming.ThemeSyncMode.SyncAll);
+                    else
+                        _ = ControlzEx.Theming.ThemeManager.Current.ChangeTheme(this, themeName);
 
-        Logger.LogInfo($"Starting: Getting color theme.");
-        string res = Settings.GetValue("App.Theme", "Dark.Steel", true);
-        if (res.Contains("#"))
-            ControlzEx.Theming.ThemeManager.Current.SyncTheme(ControlzEx.Theming.ThemeSyncMode.SyncAll);
-        else
-            _ = ControlzEx.Theming.ThemeManager.Current.ChangeTheme(this, res);
+                    UpdateMaterialDesignTheme();
+                    ControlzEx.Theming.ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
+                });
+            });
 
-        UpdateMaterialDesignTheme();
-
-        ControlzEx.Theming.ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
-
-        Logger.LogInfo($"Starting: Complete");
+            Logger.LogInfo("Starting: Complete");
+        }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
     }
     protected override void OnExit(ExitEventArgs e)
     {
@@ -347,7 +356,7 @@ public partial class App : Application
     {
         PaletteHelper hel = new();
         Theme theme = new();
-        ControlzEx.Theming.Theme the = ControlzEx.Theming.ThemeManager.Current.DetectTheme();
+        var the = ControlzEx.Theming.ThemeManager.Current.DetectTheme();
 
         theme.SetPrimaryColor(the.PrimaryAccentColor);
         if (the.BaseColorScheme == ControlzEx.Theming.ThemeManager.BaseColorDark)
@@ -397,15 +406,15 @@ public partial class App : Application
         if (!baseDir.Exists)
             return;
 
-        foreach (DirectoryInfo dir in baseDir.EnumerateDirectories())
+        foreach (var dir in baseDir.EnumerateDirectories())
         {
             if (dir.FullName.Contains("UserData"))
                 continue;
 
             RecursiveDelete(dir);
         }
-        FileInfo[] files = baseDir.GetFiles();
-        foreach (FileInfo file in files)
+        var files = baseDir.GetFiles();
+        foreach (var file in files)
         {
             file.IsReadOnly = false;
             file.Delete();
@@ -417,7 +426,7 @@ public partial class App : Application
     {
         // load your photo
         using FileStream fs = new(path, FileMode.Open);
-        Bitmap photo = (Bitmap)Image.FromStream(fs);
+        var photo = (Bitmap)Image.FromStream(fs);
         fs.Close();
         Bitmap newmap = new(photo.Width, photo.Height);
         newmap.SetResolution(photo.HorizontalResolution, photo.VerticalResolution);
@@ -432,7 +441,7 @@ public partial class App : Application
         if (photo.Height is > 1200 or < 1000)
             return;
 
-        using Graphics graphics = Graphics.FromImage(newmap);
+        using var graphics = Graphics.FromImage(newmap);
         graphics.DrawImage(photo, 0, 0, photo.Width, photo.Height);
         //graphics.FillRectangle(Brushes.White, 0, 1900, 210, photo.Height - 1900);
         //graphics.FillRectangle(Brushes.Black, 30, 1950, 90, 90);
@@ -446,8 +455,8 @@ public partial class App : Application
 
     private void FixRotation()
     {
-        foreach (string dir in Directory.EnumerateDirectories(AssetsImageRollsRoot))
-            foreach (string imgFile in Directory.EnumerateFiles($"{dir}\\600"))
+        foreach (var dir in Directory.EnumerateDirectories(AssetsImageRollsRoot))
+            foreach (var imgFile in Directory.EnumerateFiles($"{dir}\\600"))
                 if (imgFile.Contains("PRINT QUALITY"))
                     RotateImage(imgFile);
     }
@@ -456,7 +465,7 @@ public partial class App : Application
     {
         // load your photo
         using FileStream fs = new(path, FileMode.Open);
-        Image photo = Image.FromStream(fs);
+        var photo = Image.FromStream(fs);
         fs.Close();
 
         photo.RotateFlip(RotateFlipType.Rotate180FlipNone);
@@ -528,7 +537,7 @@ public partial class App : Application
                     if (sectors == null)
                         continue;
 
-                    bool found = false;
+                    var found = false;
                     foreach (var sec in sectors)
                     {
                         var alarms = sec["data"]?["alarms"];
@@ -556,10 +565,10 @@ public partial class App : Application
                                     found = true;
                                     break;
                                 }
-                               
+
                             }
                         }
-                        if(found)
+                        if (found)
                             break;
                     }
                 }
@@ -570,5 +579,5 @@ public partial class App : Application
         File.WriteAllText("result.json", Newtonsoft.Json.JsonConvert.SerializeObject(final));
     }
 
-   
+
 }

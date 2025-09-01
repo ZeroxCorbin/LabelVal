@@ -11,8 +11,8 @@ public partial class Printer : UserControl
 
     private void btnShowPrinterDetails_Click(object sender, RoutedEventArgs e)
     {
-        MaterialDesignThemes.Wpf.DrawerHost view = ((Main.Views.MainWindow)App.Current.MainWindow).PrinterDetails;
-        Main.ViewModels.MainWindow vm = ((Main.Views.MainWindow)App.Current.MainWindow).DataContext as Main.ViewModels.MainWindow;
+        var view = ((Main.Views.MainWindow)Application.Current.MainWindow).PrinterDetails;
+        var vm = ((Main.Views.MainWindow)Application.Current.MainWindow).DataContext as Main.ViewModels.MainWindow;
         if (view.LeftDrawerContent == null)
         {
             PrinterDetails details = new()

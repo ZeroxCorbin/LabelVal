@@ -12,7 +12,7 @@ internal class FloatStringTrimConverter : IValueConverter
         //if (parameter != null)
         //    decimals = (int)parameter;
 
-        float.TryParse(value.ToString(), out float floatValue) ? floatValue : value;
+        float.TryParse(value.ToString(), out var floatValue) ? floatValue : value;
 
     public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) => value;
 }

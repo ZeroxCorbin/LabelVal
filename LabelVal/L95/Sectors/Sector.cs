@@ -7,6 +7,7 @@ using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace LabelVal.L95.Sectors;
 
@@ -34,7 +35,7 @@ public partial class Sector : ObservableObject, ISector, IDisposable
         get
         {
             var found = false;
-            foreach (GradingStandards gradingStandard in DesiredGradingStandards)
+            foreach (var gradingStandard in DesiredGradingStandards)
             {
                 if (gradingStandard == Report.GradingStandard)
                 {
@@ -97,7 +98,7 @@ public partial class Sector : ObservableObject, ISector, IDisposable
         DesiredApplicationStandard = appStandard;
         if (gradingStandards != null && gradingStandards.Length > 0)
         {
-            foreach (GradingStandards standard in gradingStandards)
+            foreach (var standard in gradingStandards)
             {
                 DesiredGradingStandards.Add(standard);
             }
@@ -108,7 +109,7 @@ public partial class Sector : ObservableObject, ISector, IDisposable
         Report = new SectorReport(report, Template);
         SectorDetails = new SectorParameters(this);
 
-        foreach (Alarm alm in SectorDetails.Alarms)
+        foreach (var alm in SectorDetails.Alarms)
         {
             if (alm.Category == AvaailableAlarmCategories.Warning)
                 IsWarning = true;
@@ -135,7 +136,7 @@ public partial class Sector : ObservableObject, ISector, IDisposable
             OnPropertyChanged(nameof(ShowSymbologyParameters));
 
         if (e.PropertyName == "SelectedParameters")
-            _ = App.Current.Dispatcher.BeginInvoke(() => UpdateFocusedParameters());
+            _ = Application.Current.Dispatcher.BeginInvoke(() => UpdateFocusedParameters());
 
     }
 
@@ -143,11 +144,11 @@ public partial class Sector : ObservableObject, ISector, IDisposable
     {
         var lst = _selectedParameters.ToList();
         //for any selected parameters, show them in the focused parameters list. remove any that are not selected. Do not clear the list.
-        foreach (Parameters parameter in lst)
+        foreach (var parameter in lst)
         {
             if (!FocusedParameters.Any(p => p.Parameter == parameter))
             {
-                IParameterValue found = SectorDetails.Parameters.FirstOrDefault(p => p.Parameter == parameter);
+                var found = SectorDetails.Parameters.FirstOrDefault(p => p.Parameter == parameter);
                 if (found != null)
                 {
                     FocusedParameters.Add(found);
@@ -160,7 +161,7 @@ public partial class Sector : ObservableObject, ISector, IDisposable
         }
         for (var i = FocusedParameters.Count - 1; i >= 0; i--)
         {
-            IParameterValue focusedParam = FocusedParameters[i];
+            var focusedParam = FocusedParameters[i];
             if (!lst.Contains(focusedParam.Parameter))
             {
                 FocusedParameters.RemoveAt(i);

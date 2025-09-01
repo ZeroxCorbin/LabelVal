@@ -16,7 +16,7 @@ public static class VisualTreeHelp
         {
             if (GetVisualChild<T>(root) is not T res)
             {
-                Visual v = (Visual)VisualTreeHelper.GetParent(root);
+                var v = (Visual)VisualTreeHelper.GetParent(root);
                 if (v is not T parent)
                     parent = GetVisual<T>(v);
 
@@ -29,12 +29,12 @@ public static class VisualTreeHelp
 
     public static T GetVisualChild<T>(DependencyObject parent) where T : Visual
     {
-        T child = default(T);
+        var child = default(T);
 
-        int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
-        for (int i = 0; i < numVisuals; i++)
+        var numVisuals = VisualTreeHelper.GetChildrenCount(parent);
+        for (var i = 0; i < numVisuals; i++)
         {
-            Visual v = (Visual)VisualTreeHelper.GetChild(parent, i);
+            var v = (Visual)VisualTreeHelper.GetChild(parent, i);
             child = v as T;
             child ??= GetVisualChild<T>(v);
             if (child != null)
@@ -51,8 +51,8 @@ public static class VisualTreeHelp
         if (child == null)
             return null;
 
-        Visual v = (Visual)VisualTreeHelper.GetParent(child);
-        T parent = v as T;
+        var v = (Visual)VisualTreeHelper.GetParent(child);
+        var parent = v as T;
         if (parent == null || level > 0)
         {
             if (parent != null)
@@ -82,7 +82,7 @@ public static class VisualTreeHelp
         if (current.GetType() == typeof(T))
             children.Add((T)current);
 
-        for (int i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(current); i++)
+        for (var i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(current); i++)
             GetVisualChildren(System.Windows.Media.VisualTreeHelper.GetChild(current, i), children);
     }
 
@@ -105,7 +105,7 @@ public static class VisualTreeHelp
         if (level > 0)
         {
             var cnt = System.Windows.Media.VisualTreeHelper.GetChildrenCount(current);
-            for (int i = 0; i < cnt; i++)
+            for (var i = 0; i < cnt; i++)
                 GetVisualChildren(System.Windows.Media.VisualTreeHelper.GetChild(current, i), children, level - 1);
         }
     }

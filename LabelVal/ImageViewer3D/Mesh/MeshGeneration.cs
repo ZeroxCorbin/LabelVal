@@ -28,18 +28,18 @@ namespace LabelVal.ImageViewer3D.Mesh
         {
             var points = new List<Vertex>();
             // The offset to the start of the pixel data is at byte 10 to 13
-            int pixelDataOffset = BitConverter.ToInt32(image, 10);
+            var pixelDataOffset = BitConverter.ToInt32(image, 10);
             // The width of the image is at byte 18 to 21
-            int width = BitConverter.ToInt32(image, 18);
+            var width = BitConverter.ToInt32(image, 18);
             // The height of the image is at byte 22 to 25
-            int height = BitConverter.ToInt32(image, 22);
+            var height = BitConverter.ToInt32(image, 22);
 
             // Calculate the row size with padding
-            int rowSize = (width + 3) & ~3; // Align to 4-byte boundary
+            var rowSize = (width + 3) & ~3; // Align to 4-byte boundary
 
-            for (int y = 0; y < height; y++)
+            for (var y = 0; y < height; y++)
             {
-                for (int x = 0; x < width; x++)
+                for (var x = 0; x < width; x++)
                 {
                     double z = whiteFront ? image[pixelDataOffset + y * rowSize + x] : -image[pixelDataOffset + y * rowSize + x]; // Use pixel value as Z position
                     points.Add(new Vertex(x, y, z)); // Keep the Y-coordinate unchanged
@@ -62,14 +62,14 @@ namespace LabelVal.ImageViewer3D.Mesh
             });
 
             // Generate indices for triangles
-            for (int y = 0; y < height - 1; y++)
+            for (var y = 0; y < height - 1; y++)
             {
-                for (int x = 0; x < width - 1; x++)
+                for (var x = 0; x < width - 1; x++)
                 {
-                    int topLeft = y * width + x;
-                    int topRight = topLeft + 1;
-                    int bottomLeft = topLeft + width;
-                    int bottomRight = bottomLeft + 1;
+                    var topLeft = y * width + x;
+                    var topRight = topLeft + 1;
+                    var bottomLeft = topLeft + width;
+                    var bottomRight = bottomLeft + 1;
 
                     // First triangle
                     indices.Add(topLeft);

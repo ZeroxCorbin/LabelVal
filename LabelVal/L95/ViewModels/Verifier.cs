@@ -41,11 +41,11 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
     }
     private void RequestMessages()
     {
-        RequestMessage<PasswordOfTheDayMessage> ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PasswordOfTheDayMessage>());
+        var ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PasswordOfTheDayMessage>());
         if (ret2.HasReceivedResponse)
             PasswordOfTheDay = ret2.Response.Value;
 
-        RequestMessage<RegistryMessage> ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<RegistryMessage>());
+        var ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<RegistryMessage>());
         if (ret3.HasReceivedResponse)
             DatabasePath = ExtractDatabasePath(ret3.Response.RegistryValue);
     }
@@ -64,20 +64,20 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
     [RelayCommand]
     private void RefreshComList()
     {
-        string[] names = System.IO.Ports.SerialPort.GetPortNames();
-        foreach (string name in names)
+        var names = System.IO.Ports.SerialPort.GetPortNames();
+        foreach (var name in names)
         {
             if (!AvailablePorts.Contains(name))
                 AvailablePorts.Add(name);
         }
-        System.Collections.Generic.List<string> toRemove = AvailablePorts.Where(name => !names.Contains(name)).ToList();
-        foreach (string name in toRemove)
+        var toRemove = AvailablePorts.Where(name => !names.Contains(name)).ToList();
+        foreach (var name in toRemove)
             _ = AvailablePorts.Remove(name);
     }
 
     private void PostLogin()
     {
-        string cur = Controller.Database.GetSetting("Report", "ReportImageReduction");
+        var cur = Controller.Database.GetSetting("Report", "ReportImageReduction");
         _ = Controller.Database.GetSetting("GS1", "Table");
         //Update database setting to allow storing full resolution images to the report.
         if (cur != "1")

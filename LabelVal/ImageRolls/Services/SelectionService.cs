@@ -20,7 +20,7 @@ namespace LabelVal.ImageRolls.Services
         {
             foreach (var listViewRef in _listViews)
             {
-                if (listViewRef.TryGetTarget(out ListView listView) && listView != source)
+                if (listViewRef.TryGetTarget(out var listView) && listView != source)
                 {
                     listView.SelectedItem = null;
                 }

@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows;
 using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
@@ -111,14 +112,14 @@ public partial class ImageResultDeviceEntry_L95
     public void Receive(PropertyChangedMessage<FullReport> message)
     {
         if (IsSelected || IsWorking)
-            _ = App.Current.Dispatcher.BeginInvoke(() => ProcessFullReport(message.NewValue, false));
+            _ = Application.Current.Dispatcher.BeginInvoke(() => ProcessFullReport(message.NewValue, false));
     }
 
     public void GetStored()
     {
-        if (!App.Current.Dispatcher.CheckAccess())
+        if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = App.Current.Dispatcher.BeginInvoke(() => GetStored());
+            _ = Application.Current.Dispatcher.BeginInvoke(() => GetStored());
             return;
         }
 
@@ -132,7 +133,7 @@ public partial class ImageResultDeviceEntry_L95
 
         try
         {
-            Result row = ImageResultEntry.SelectedDatabase.Select_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
+            var row = ImageResultEntry.SelectedDatabase.Select_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
 
             if (row == null)
             {
@@ -141,14 +142,14 @@ public partial class ImageResultDeviceEntry_L95
             }
 
             List<Sectors.Interfaces.ISector> tempSectors = [];
-            foreach (JToken rSec in row.Report.GetParameter<JArray>("AllReports"))
+            foreach (var rSec in row.Report.GetParameter<JArray>("AllReports"))
                 tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
 
             if (tempSectors.Count > 0)
             {
                 tempSectors = ImageResultEntry.SortList3(tempSectors);
 
-                foreach (ISector sec in tempSectors)
+                foreach (var sec in tempSectors)
                     StoredSectors.Add(sec);
             }
 
@@ -178,7 +179,7 @@ public partial class ImageResultDeviceEntry_L95
             return;
         }
 
-        Sectors.Interfaces.ISector old = StoredSectors.FirstOrDefault(x => x.Template.Name == CurrentSelectedSector.Template.Name);
+        var old = StoredSectors.FirstOrDefault(x => x.Template.Name == CurrentSelectedSector.Template.Name);
         if (old != null)
         {
             if (await ImageResultEntry.OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
@@ -187,7 +188,7 @@ public partial class ImageResultDeviceEntry_L95
 
         //Save the list to the database.
         List<FullReport> temp = [];
-        foreach (Sectors.Interfaces.ISector sector in StoredSectors)
+        foreach (var sector in StoredSectors)
             temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
 
         temp.Add(new FullReport(((L95.Sectors.Sector)CurrentSelectedSector).Template.Original, ((L95.Sectors.Sector)CurrentSelectedSector).Report.Original));
@@ -231,7 +232,7 @@ public partial class ImageResultDeviceEntry_L95
             if (await ImageResultEntry.OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
 
-        Result res = GetCurrentReport();
+        var res = GetCurrentReport();
 
         if (ImageResultEntry.SelectedDatabase.InsertOrReplace_Result(res) == null)
             Logger.LogError($"Error while storing results to: {ImageResultEntry.SelectedDatabase.File.Name}");
@@ -319,7 +320,7 @@ public partial class ImageResultDeviceEntry_L95
     {
         //Save the list to the database.
         List<FullReport> temp = [];
-        foreach (Sectors.Interfaces.ISector sector in CurrentSectors)
+        foreach (var sector in CurrentSectors)
             temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
 
         JObject report = new()
@@ -369,9 +370,9 @@ public partial class ImageResultDeviceEntry_L95
     }
     public void ProcessFullReport(FullReport message, bool replaceSectors)
     {
-        if (!App.Current.Dispatcher.CheckAccess())
+        if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = App.Current.Dispatcher.BeginInvoke(() => ProcessFullReport(message, replaceSectors));
+            _ = Application.Current.Dispatcher.BeginInvoke(() => ProcessFullReport(message, replaceSectors));
             return;
         }
 
@@ -422,16 +423,16 @@ public partial class ImageResultDeviceEntry_L95
         finally
         {
             IsWorking = false;
-            App.Current.Dispatcher.Invoke(ImageResultEntry.BringIntoViewHandler);
+            Application.Current.Dispatcher.Invoke(ImageResultEntry.BringIntoViewHandler);
         }
     }
 
     [RelayCommand]
     public void ClearSingle()
     {
-        if (!App.Current.Dispatcher.CheckAccess())
+        if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = App.Current.Dispatcher.BeginInvoke(() => ClearCurrent());
+            _ = Application.Current.Dispatcher.BeginInvoke(() => ClearCurrent());
             return;
         }
 
@@ -459,9 +460,9 @@ public partial class ImageResultDeviceEntry_L95
     [RelayCommand]
     public void ClearCurrent()
     {
-        if (!App.Current.Dispatcher.CheckAccess())
+        if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = App.Current.Dispatcher.BeginInvoke(() => ClearCurrent());
+            _ = Application.Current.Dispatcher.BeginInvoke(() => ClearCurrent());
             return;
         }
 
@@ -497,7 +498,7 @@ public partial class ImageResultDeviceEntry_L95
                 {
                     if (sec.Report.Symbology == cSec.Report.Symbology)
                     {
-                        SectorDifferences res = sec.SectorDetails.Compare(cSec.SectorDetails);
+                        var res = sec.SectorDetails.Compare(cSec.SectorDetails);
                         if (res == null)
                             continue;
                         diff.Add(res);
@@ -563,7 +564,7 @@ public partial class ImageResultDeviceEntry_L95
                 }
             }
 
-        foreach (SectorDifferences d in diff)
+        foreach (var d in diff)
 
             DiffSectors.Add(d);
     }
@@ -584,7 +585,7 @@ public partial class ImageResultDeviceEntry_L95
     {
         for (var i = 0; i < list.Count; i++)
         {
-            ISector item = list[i];
+            var item = list[i];
             var currentIndex = observableCollection.IndexOf(item);
             if (currentIndex != i)
             {

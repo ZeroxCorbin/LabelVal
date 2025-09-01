@@ -12,7 +12,7 @@ namespace LabelVal.Converters
             if (value is null or not string)
                 return value;
 
-            string tmp = Regex.Replace(Regex.Replace(value.ToString(), @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"), @"(\p{Ll})(\P{Ll})", "$1 $2");
+            var tmp = Regex.Replace(Regex.Replace(value.ToString(), @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"), @"(\p{Ll})(\P{Ll})", "$1 $2");
 
             if (string.IsNullOrEmpty(tmp))
                 return value;

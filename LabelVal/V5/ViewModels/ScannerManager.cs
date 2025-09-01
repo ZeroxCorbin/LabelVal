@@ -15,9 +15,9 @@ public partial class ScannerManager : ObservableRecipient
 
     public ScannerManager()
     {
-        Scanner sel = App.Settings.GetValue<Scanner>($"V5_{nameof(SelectedDevice)}");
+        var sel = App.Settings.GetValue<Scanner>($"V5_{nameof(SelectedDevice)}");
 
-        foreach (Scanner dev in Devices)
+        foreach (var dev in Devices)
         {
             dev.Manager = this;
 

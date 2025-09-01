@@ -29,8 +29,8 @@ public static class MonitorUtilities
 
     public static uint UpdateDPI(DPITypes dpiType)
     {
-        System.Windows.Window win = App.Current.MainWindow;
-        GetDpi(dpiType, out uint dpiX, out _, new System.Drawing.Point((int)win.Left, (int)win.Top));
+        var win = Application.Current.MainWindow;
+        GetDpi(dpiType, out var dpiX, out _, new System.Drawing.Point((int)win.Left, (int)win.Top));
         return DPI = dpiX;
     }
 
@@ -43,7 +43,7 @@ public static class MonitorUtilities
     public static void GetDpi(DPITypes dpiType, out uint dpiX, out uint dpiY, System.Drawing.Point point)
     {
         //var point = new System.Drawing.Point(1, 1);
-        nint hmonitor = MonitorFromPoint(point, _MONITOR_DEFAULTTONEAREST);
+        var hmonitor = MonitorFromPoint(point, _MONITOR_DEFAULTTONEAREST);
 
         switch (GetDpiForMonitor(hmonitor, dpiType, out dpiX, out dpiY).ToInt32())
         {
@@ -59,16 +59,16 @@ public static class MonitorUtilities
     {
         // Assuming the DPI is obtained for the primary monitor where the main window is located.
         // You might want to adjust the logic to target a specific monitor if necessary.
-        System.Windows.Window win = App.Current.MainWindow;
-        System.Drawing.Point windowPosition = new System.Drawing.Point((int)win.Left, (int)win.Top);
+        var win = Application.Current.MainWindow;
+        var windowPosition = new System.Drawing.Point((int)win.Left, (int)win.Top);
 
-        GetDpi(dpiType, out uint dpiX, out _, windowPosition);
+        GetDpi(dpiType, out var dpiX, out _, windowPosition);
 
         // Standard DPI value for Windows is 96.
         const double standardDpi = 96.0;
 
         // Calculate PixelsPerDip by dividing the horizontal DPI by the standard DPI.
-        double pixelsPerDip = dpiX / standardDpi;
+        var pixelsPerDip = dpiX / standardDpi;
 
         return pixelsPerDip;
     }
@@ -81,16 +81,16 @@ public static class MonitorUtilities
 
         // Get the window's position on the screen.
         // Note: This considers the window's top-left corner for determining its monitor.
-        System.Drawing.Point windowPosition = new System.Drawing.Point((int)window.Left, (int)window.Top);
+        var windowPosition = new System.Drawing.Point((int)window.Left, (int)window.Top);
 
         // Call GetDpi using the window's position to get the DPI for the monitor it's displayed on.
-        GetDpi(dpiType, out uint dpiX, out _, windowPosition);
+        GetDpi(dpiType, out var dpiX, out _, windowPosition);
 
         // Standard DPI value for Windows is 96.
         const double standardDpi = 96.0;
 
         // Calculate PixelsPerDip by dividing the horizontal DPI by the standard DPI.
-        double pixelsPerDip = dpiX / standardDpi;
+        var pixelsPerDip = dpiX / standardDpi;
 
         return pixelsPerDip;
     }
@@ -146,5 +146,5 @@ public static class MonitorUtilities
     public static DpiScale GetDpi(Window window) => 
         window == null ? throw new ArgumentNullException(nameof(window), "Window cannot be null.") : VisualTreeHelper.GetDpi(window);
     public static DpiScale GetDpi() =>
-    App.Current.MainWindow == null ? throw new ArgumentNullException(nameof(App.Current.MainWindow), "Window cannot be null.") : VisualTreeHelper.GetDpi(App.Current.MainWindow);
+    Application.Current.MainWindow == null ? throw new ArgumentNullException(nameof(Application.Current.MainWindow), "Window cannot be null.") : VisualTreeHelper.GetDpi(Application.Current.MainWindow);
 }

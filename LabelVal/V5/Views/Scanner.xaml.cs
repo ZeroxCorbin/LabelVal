@@ -46,7 +46,7 @@ public partial class Scanner : UserControl
         dc.LoadImage(image, [overlay, overlay1]);
         if (dc.Image == null) return false;
 
-        Main.Views.MainWindow yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
 
         dc.Width = yourParentWindow.ActualWidth - 100;
         dc.Height = yourParentWindow.ActualHeight - 100;
@@ -64,7 +64,7 @@ public partial class Scanner : UserControl
         dc.LoadImage(image, [overlay, overlay1]);
         if (dc.Image == null) return false;
 
-        Main.Views.MainWindow yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
 
         dc.Width = yourParentWindow.ActualWidth - 100;
         dc.Height = yourParentWindow.ActualHeight - 100;
@@ -101,7 +101,7 @@ public partial class Scanner : UserControl
 
     private void btnOpenInBrowser_Click(object sender, RoutedEventArgs e)
     {
-        string addr = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)
+        var addr = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)
             ? $"http://{((ViewModels.Scanner)DataContext).Controller.Host}:9898"
             : $"http://{((ViewModels.Scanner)DataContext).Controller.Host}:{((ViewModels.Scanner)DataContext).Controller.Port}";
 

@@ -112,7 +112,7 @@ public partial class RunResult_V275 : UserControl
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {
-        Sector sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
+        var sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
 
         if (sect != null)
         {
@@ -129,7 +129,7 @@ public partial class RunResult_V275 : UserControl
     }
     private void btnCopyImage_Click(object sender, RoutedEventArgs e)
     {
-        Sector sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
+        var sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
 
         if (sect != null)
             CopyToClipboard(sect);
@@ -140,7 +140,7 @@ public partial class RunResult_V275 : UserControl
         PngBitmapEncoder encoder = new();
         EncodeVisual(visual, encoder);
 
-        using System.IO.FileStream stream = System.IO.File.Create(fileName);
+        using var stream = System.IO.File.Create(fileName);
         encoder.Save(stream);
     }
     public void CopyToClipboard(FrameworkElement visual)
@@ -162,7 +162,7 @@ public partial class RunResult_V275 : UserControl
     {
         RenderTargetBitmap bitmap = new((int)visual.ActualWidth, (int)visual.ActualHeight, 96, 96, PixelFormats.Pbgra32);
         bitmap.Render(visual);
-        BitmapFrame frame = BitmapFrame.Create(bitmap);
+        var frame = BitmapFrame.Create(bitmap);
         encoder.Frames.Add(frame);
     }
 

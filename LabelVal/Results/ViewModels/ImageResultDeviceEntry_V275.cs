@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows;
 using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
@@ -110,9 +111,9 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
 
     public void GetStored()
     {
-        if (!App.Current.Dispatcher.CheckAccess())
+        if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = App.Current.Dispatcher.BeginInvoke(() => GetStored());
+            _ = Application.Current.Dispatcher.BeginInvoke(() => GetStored());
             return;
         }
 
@@ -126,7 +127,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
 
         try
         {
-            Databases.Result row = ImageResultEntry.SelectedDatabase.Select_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
+            var row = ImageResultEntry.SelectedDatabase.Select_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
 
             if (row == null)
             {
@@ -138,7 +139,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
 
             if (!string.IsNullOrEmpty(row.ReportString) && !string.IsNullOrEmpty(row.TemplateString))
             {
-                foreach (JToken jSec in row.Template["sectors"])
+                foreach (var jSec in row.Template["sectors"])
                 {
                     try
                     {
@@ -166,7 +167,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
             {
                 tempSectors = ImageResultEntry.SortList3(tempSectors);
 
-                foreach (Sectors.Interfaces.ISector sec in tempSectors)
+                foreach (var sec in tempSectors)
                     StoredSectors.Add(sec);
             }
 
@@ -238,9 +239,9 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
     private void ProcessRepeat(V275_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat.FullReport);
     public void ProcessFullReport(V275_REST_Lib.Controllers.FullReport report)
     {
-        if (!App.Current.Dispatcher.CheckAccess())
+        if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = App.Current.Dispatcher.BeginInvoke(() => ProcessFullReport(report));
+            _ = Application.Current.Dispatcher.BeginInvoke(() => ProcessFullReport(report));
             return;
         }
 
@@ -271,9 +272,9 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
             CurrentSectors.Clear();
 
             List<Sectors.Interfaces.ISector> tempSectors = [];
-            foreach (JToken templateSec in CurrentTemplate["sectors"])
+            foreach (var templateSec in CurrentTemplate["sectors"])
             {
-                foreach (JToken currentSect in CurrentReport["inspectLabel"]["inspectSector"])
+                foreach (var currentSect in CurrentReport["inspectLabel"]["inspectSector"])
                 {
                     try
                     {
@@ -295,7 +296,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
             {
                 tempSectors = ImageResultEntry.SortList3(tempSectors);
 
-                foreach (Sectors.Interfaces.ISector sec in tempSectors)
+                foreach (var sec in tempSectors)
                     CurrentSectors.Add(sec);
             }
 
@@ -315,16 +316,16 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
         finally
         {
             IsWorking = false;
-            App.Current.Dispatcher.Invoke(ImageResultEntry.BringIntoViewHandler);
+            Application.Current.Dispatcher.Invoke(ImageResultEntry.BringIntoViewHandler);
         }
     }
 
     [RelayCommand]
     public void ClearCurrent()
     {
-        if (!App.Current.Dispatcher.CheckAccess())
+        if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = App.Current.Dispatcher.BeginInvoke(() => ClearCurrent());
+            _ = Application.Current.Dispatcher.BeginInvoke(() => ClearCurrent());
             return;
         }
 
@@ -355,14 +356,14 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
         List<SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
-        foreach (Sectors.Interfaces.ISector sec in StoredSectors)
+        foreach (var sec in StoredSectors)
         {
-            foreach (Sectors.Interfaces.ISector cSec in CurrentSectors)
+            foreach (var cSec in CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     if (sec.Report.Symbology == cSec.Report.Symbology)
                     {
-                        SectorDifferences res = sec.SectorDetails.Compare(cSec.SectorDetails);
+                        var res = sec.SectorDetails.Compare(cSec.SectorDetails);
                         if (res != null)
                             diff.Add(res);
                     }
@@ -380,10 +381,10 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
         }
 
         //Check for missing
-        foreach (Sectors.Interfaces.ISector sec in StoredSectors)
+        foreach (var sec in StoredSectors)
         {
             var found = false;
-            foreach (Sectors.Interfaces.ISector cSec in CurrentSectors)
+            foreach (var cSec in CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     found = true;
@@ -404,10 +405,10 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
 
         //check for missing
         if (StoredSectors.Count > 0)
-            foreach (Sectors.Interfaces.ISector sec in CurrentSectors)
+            foreach (var sec in CurrentSectors)
             {
                 var found = false;
-                foreach (Sectors.Interfaces.ISector cSec in StoredSectors)
+                foreach (var cSec in StoredSectors)
                     if (sec.Template.Name == cSec.Template.Name)
                     {
                         found = true;
@@ -427,7 +428,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
             }
 
         //ToDo: Sort the diff list
-        foreach (SectorDifferences d in diff)
+        foreach (var d in diff)
             if (d.IsSectorMissing)
                 DiffSectors.Add(d);
 
@@ -455,7 +456,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
         finally
         {
             IsWorking = false;
-            App.Current.Dispatcher.Invoke(ImageResultEntry.BringIntoViewHandler);
+            Application.Current.Dispatcher.Invoke(ImageResultEntry.BringIntoViewHandler);
         }
         return true;
     }
@@ -472,7 +473,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
             return !await ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.DetectSectors() ? -1 : 2;
         }
 
-        foreach (Sectors.Interfaces.ISector sec in StoredSectors)
+        foreach (var sec in StoredSectors)
         {
             if (!await ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.AddSector(sec.Template.Name, JsonConvert.SerializeObject(((V275.Sectors.SectorTemplate)sec.Template).Original)))
                 return -1;
@@ -480,7 +481,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
             if (sec.Template?.BlemishMask?.Layers != null)
             {
 
-                foreach (V275_REST_Lib.Models.Job.Layer layer in sec.Template.BlemishMask.Layers)
+                foreach (var layer in sec.Template.BlemishMask.Layers)
                 {
                     if (!await ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
                     {

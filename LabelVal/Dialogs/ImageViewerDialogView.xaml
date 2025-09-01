@@ -1,12 +1,11 @@
-﻿<Dialog:CustomDialog
+﻿<dialog:CustomDialog
     x:Class="LabelVal.Dialogs.ImageViewerDialogView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-    xmlns:ViewModelsDiag="clr-namespace:LabelVal.Dialogs"
     xmlns:converters="clr-namespace:LabelVal.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:diag="clr-namespace:LabelVal.Dialogs"
+    xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:LabelVal.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,19 +13,18 @@
     xmlns:paz="clr-namespace:Wpf.Controls.PanAndZoom;assembly=Wpf.Controls.PanAndZoom"
     Width="{Binding Width}"
     Height="{Binding Height}"
-    Dialog:DialogParticipation.Register="{Binding}"
-    d:DataContext="{d:DesignInstance Type=ViewModelsDiag:ImageViewerDialogViewModel}"
+    d:DataContext="{d:DesignInstance Type=diag:ImageViewerDialogViewModel}"
     d:DesignHeight="800"
     d:DesignWidth="800"
+    dialog:DialogParticipation.Register="{Binding}"
     Loaded="CustomDialog_Loaded"
     PreviewKeyDown="CustomDialog_PreviewKeyDown"
-    Style="{StaticResource {x:Type Dialog:BaseMetroDialog}}"
     mc:Ignorable="d">
-    <Dialog:CustomDialog.Resources>
-        <converters:Double2String x:Key="double2String" />
-    </Dialog:CustomDialog.Resources>
+    <dialog:CustomDialog.Resources>
+        <converters:Double2String x:Key="Double2String" />
+    </dialog:CustomDialog.Resources>
 
-    <Dialog:CustomDialog.DialogTop>
+    <dialog:CustomDialog.DialogTop>
 
         <Grid HorizontalAlignment="Center" VerticalAlignment="Top">
             <Grid.RowDefinitions>
@@ -49,7 +47,8 @@
             </DockPanel>
 
             <md:Card
-                x:Name="crdSource"
+                x:Name="CrdSource"
+                Grid.Row="0"
                 HorizontalAlignment="Center"
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
@@ -79,14 +78,14 @@
                                 md:TextFieldAssist.SuffixText="DPI"
                                 BorderThickness="0"
                                 IsHitTestVisible="False"
-                                Text="{Binding Image.DpiX, StringFormat=N, Converter={StaticResource double2String}, Mode=OneWay}" />
+                                Text="{Binding Image.DpiX, StringFormat=N, Converter={StaticResource Double2String}, Mode=OneWay}" />
 
                             <TextBox
                                 Margin="5,0"
                                 md:TextFieldAssist.SuffixText="DPI"
                                 BorderThickness="0"
                                 IsHitTestVisible="False"
-                                Text="{Binding Image.DpiY, StringFormat=N, Converter={StaticResource double2String}, Mode=OneWay}" />
+                                Text="{Binding Image.DpiY, StringFormat=N, Converter={StaticResource Double2String}, Mode=OneWay}" />
 
                         </DockPanel>
 
@@ -106,14 +105,14 @@
                 Name="ZoomBorder"
                 Grid.Row="1"
                 ClipToBounds="True">
-                <Grid x:Name="grdOverlays" HorizontalAlignment="Center" />
+                <Grid x:Name="GrdOverlays" HorizontalAlignment="Center" />
             </paz:ZoomBorder>
 
         </Grid>
 
 
 
-    </Dialog:CustomDialog.DialogTop>
+    </dialog:CustomDialog.DialogTop>
 
 
-</Dialog:CustomDialog>
+</dialog:CustomDialog>

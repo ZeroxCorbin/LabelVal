@@ -11,11 +11,11 @@ public static class ParamterHandling
 {
     public static void AddParameter(Parameters parameter, Symbologies symbology, ObservableCollection<IParameterValue> target, JObject report, JObject template)
     {
-        Type type = parameter.GetDataType(Devices.V5, symbology);
+        var type = parameter.GetDataType(Devices.V5, symbology);
 
         if (type == typeof(GradeValue) || type == typeof(Grade))
         {
-            IParameterValue gradeValue = GetGradeValue(parameter, symbology, report.GetParameter<JObject>(parameter.GetPath(Devices.V5, symbology)));
+            var gradeValue = GetGradeValue(parameter, symbology, report.GetParameter<JObject>(parameter.GetPath(Devices.V5, symbology)));
 
             if (gradeValue != null)
             {
@@ -25,7 +25,7 @@ public static class ParamterHandling
         }
         else if (type == typeof(ValueDouble))
         {
-            ValueDouble valueDouble = GetValueDouble(parameter, symbology, report.GetParameter<string>(parameter.GetPath(Devices.V5, symbology)));
+            var valueDouble = GetValueDouble(parameter, symbology, report.GetParameter<string>(parameter.GetPath(Devices.V5, symbology)));
             if (valueDouble != null)
             {
                 target.Add(valueDouble);
@@ -34,17 +34,17 @@ public static class ParamterHandling
         }
         else if (type == typeof(ValueString))
         {
-            ValueString valueString = GetValueString(parameter, symbology, report.GetParameter<string>(parameter.GetPath(Devices.V5, symbology)));
+            var valueString = GetValueString(parameter, symbology, report.GetParameter<string>(parameter.GetPath(Devices.V5, symbology)));
             if (valueString != null) { target.Add(valueString); return; }
         }
         else if (type == typeof(PassFail))
         {
-            PassFail passFail = GetPassFail(parameter, symbology, report.GetParameter<string>(parameter.GetPath(Devices.V5, symbology)));
+            var passFail = GetPassFail(parameter, symbology, report.GetParameter<string>(parameter.GetPath(Devices.V5, symbology)));
             if (passFail != null) { target.Add(passFail); return; }
         }
         else if (type == typeof(ValuePassFail))
         {
-            ValuePassFail valuePassFail = GetValuePassFail(parameter, symbology, report.GetParameter<JObject>(parameter.GetPath(Devices.V5, symbology)));
+            var valuePassFail = GetValuePassFail(parameter, symbology, report.GetParameter<JObject>(parameter.GetPath(Devices.V5, symbology)));
             if (valuePassFail != null) { target.Add(valuePassFail); return; }
         }
         else if (type == typeof(Custom))

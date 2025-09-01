@@ -158,11 +158,11 @@ namespace LabelVal.ORM_Test
             //if (!TableExists(tableName))
             //    return json;
 
-            using (SQLiteCommand command = new SQLiteCommand(statement, Connection))
+            using (var command = new SQLiteCommand(statement, Connection))
 
                 try
                 {
-                    using (SQLiteDataReader rdr = command.ExecuteReader())
+                    using (var rdr = command.ExecuteReader())
                         if(rdr.HasRows)
                         {
                             json = sqlDatoToJson(rdr);
@@ -192,11 +192,11 @@ namespace LabelVal.ORM_Test
             //if (!TableExists(tableName))
             //    return json;
 
-            using (SQLiteCommand command = new SQLiteCommand(statement, Connection))
+            using (var command = new SQLiteCommand(statement, Connection))
 
                 try
                 {
-                    using (SQLiteDataReader rdr = command.ExecuteReader())
+                    using (var rdr = command.ExecuteReader())
                         if (rdr.HasRows)
                         {
                             
@@ -222,18 +222,18 @@ namespace LabelVal.ORM_Test
         {
             var dataTable = new DataTable();
             dataTable.Load(dataReader);
-            string JSONString = string.Empty;
+            var JSONString = string.Empty;
             JSONString = JsonConvert.SerializeObject(dataTable);
             return JSONString;
         }
 
         public bool TableExists(string tableName)
         {
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT name FROM sqlite_master WHERE type='table' AND name='{tableName}';", Connection))
+            using (var command = new SQLiteCommand($"SELECT name FROM sqlite_master WHERE type='table' AND name='{tableName}';", Connection))
             {
                 try
                 {
-                    using (SQLiteDataReader rdr = command.ExecuteReader())
+                    using (var rdr = command.ExecuteReader())
                     {
                         if (rdr.HasRows)
                             return true;
@@ -254,12 +254,12 @@ namespace LabelVal.ORM_Test
         }
         public List<string> GetAllTables()
         {
-            List<string> lst = new List<string>();
+            var lst = new List<string>();
 
             if (!Open()) return lst;
 
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT name FROM sqlite_schema WHERE type='table';", Connection))
-            using (SQLiteDataReader rdr = command.ExecuteReader())
+            using (var command = new SQLiteCommand($"SELECT name FROM sqlite_schema WHERE type='table';", Connection))
+            using (var rdr = command.ExecuteReader())
                 while (rdr.Read())
                     lst.Add(rdr.GetString(0));
 
@@ -271,10 +271,10 @@ namespace LabelVal.ORM_Test
 
         public int GetAllRowsCount(string tableName)
         {
-            int count = 0;
+            var count = 0;
             if (!Open()) return count;
 
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT COUNT(*) FROM '{tableName}'", Connection))
+            using (var command = new SQLiteCommand($"SELECT COUNT(*) FROM '{tableName}'", Connection))
                 count = Convert.ToInt32(command.ExecuteScalar());
 
             if (!IsConnectionPersistent)
@@ -284,12 +284,12 @@ namespace LabelVal.ORM_Test
         }
         public List<Row> GetAllRows(string tableName)
         {
-            List<Row> lst = new List<Row>();
+            var lst = new List<Row>();
 
             if (!Open()) return lst;
 
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM '{tableName}'", Connection))
-            using (SQLiteDataReader rdr = command.ExecuteReader())
+            using (var command = new SQLiteCommand($"SELECT * FROM '{tableName}'", Connection))
+            using (var rdr = command.ExecuteReader())
                 while (rdr.Read())
                     lst.Add(new Row(rdr));
 

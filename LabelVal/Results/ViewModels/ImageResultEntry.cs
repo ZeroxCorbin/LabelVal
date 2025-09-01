@@ -37,14 +37,14 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
     /// <see cref="ImagesMaxHeight"/>>
-    [ObservableProperty] private int imagesMaxHeight = App.Settings.GetValue<int>(nameof(ImagesMaxHeight));
+    [ObservableProperty] private int _imagesMaxHeight = App.Settings.GetValue<int>(nameof(ImagesMaxHeight));
     /// <see cref="DualSectorColumns"/>>
     [ObservableProperty] private bool dualSectorColumns = App.Settings.GetValue<bool>(nameof(DualSectorColumns));
     /// <see cref="ShowExtendedData"/>>
     [ObservableProperty] private bool showExtendedData = App.Settings.GetValue<bool>(nameof(ShowExtendedData));
     partial void OnShowExtendedDataChanged(bool value)
     {
-        foreach (IImageResultDeviceEntry device in ImageResultDeviceEntries)
+        foreach (var device in ImageResultDeviceEntries)
             device.RefreshOverlays();
     }
 
@@ -80,7 +80,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     [ObservableProperty] private ImageResultsDatabase selectedDatabase;
     partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value)
     {
-        foreach (IImageResultDeviceEntry device in ImageResultDeviceEntries)
+        foreach (var device in ImageResultDeviceEntries)
             device.GetStored();
     }
 
@@ -174,24 +174,22 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
 
         try
         {
+            if (bmp == null) return;
+            using var img = new ImageMagick.MagickImage(bmp);
+            File.WriteAllBytes(path,
+                Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase)
+                    ? img.ToByteArray(ImageMagick.MagickFormat.Png)
+                    : img.ToByteArray(ImageMagick.MagickFormat.Bmp3));
 
-            if (bmp != null)
-            {
-                using var img = new ImageMagick.MagickImage(bmp);
-                if (Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase))
-                    File.WriteAllBytes(path, img.ToByteArray(ImageMagick.MagickFormat.Png));
-                else
-                    File.WriteAllBytes(path, img.ToByteArray(ImageMagick.MagickFormat.Bmp3));
-
-                Clipboard.SetText(path);
-            }
+            Clipboard.SetText(path);
         }
-        catch { }
+        catch (Exception ex)
+        { Logger.LogError(ex);}
     }
     [RelayCommand]
     private void Store(ImageResultEntryDevices device)
     {
-        IImageResultDeviceEntry dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+        var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
         if (dev == null)
         {
             Logger.LogError($"Device not found: {device}");
@@ -203,7 +201,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     [RelayCommand]
     private void Process(ImageResultEntryDevices device)
     {
-        IImageResultDeviceEntry dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+        var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
         if (dev == null)
         {
             Logger.LogError($"Device not found: {device}");
@@ -218,7 +216,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
             _ = SelectedDatabase.Delete_Result(device, ImageRollUID, SourceImageUID, ImageRollUID);
-            IImageResultDeviceEntry dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+            var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
             if (dev == null)
             {
                 Logger.LogError($"Device not found: {device}");
@@ -237,7 +235,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     [RelayCommand]
     private void ClearCurrent(ImageResultEntryDevices device)
     {
-        IImageResultDeviceEntry dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+        var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
         if (dev == null)
         {
             Logger.LogError($"Device not found: {device}");
@@ -251,10 +249,10 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     public string? GetName(System.Drawing.Point center)
     {
         string name = null;
-        foreach (IImageResultDeviceEntry dev in ImageResultDeviceEntries)
+        foreach (var dev in ImageResultDeviceEntries)
         {
             //Check the Report center points
-            foreach (ISector sec in dev.StoredSectors)
+            foreach (var sec in dev.StoredSectors)
             {
                 if (sec.Report.CenterPoint.Contains(center))
                 {
@@ -264,7 +262,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             }
             if (!string.IsNullOrEmpty(name)) break;
 
-            foreach (ISector sec in dev.CurrentSectors)
+            foreach (var sec in dev.CurrentSectors)
             {
                 if (sec.Report.CenterPoint.Contains(center))
                 {
@@ -275,7 +273,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             if (!string.IsNullOrEmpty(name)) break;
 
             //Check the Template center points
-            foreach (ISector sec in dev.StoredSectors)
+            foreach (var sec in dev.StoredSectors)
             {
                 if (sec.Template.CenterPoint.Contains(center))
                 {
@@ -285,7 +283,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             }
             if (!string.IsNullOrEmpty(name)) break;
 
-            foreach (ISector sec in dev.CurrentSectors)
+            foreach (var sec in dev.CurrentSectors)
             {
                 if (sec.Template.CenterPoint.Contains(center))
                 {
@@ -303,12 +301,12 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     {
         if (device == ImageResultEntryDevices.All)
         {
-            foreach (IImageResultDeviceEntry dev in ImageResultDeviceEntries)
+            foreach (var dev in ImageResultDeviceEntries)
                 dev.HandlerUpdate();
         }
         else
         {
-            IImageResultDeviceEntry dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+            var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
             if (dev == null)
             {
                 Logger.LogError($"Device not found: {device}");

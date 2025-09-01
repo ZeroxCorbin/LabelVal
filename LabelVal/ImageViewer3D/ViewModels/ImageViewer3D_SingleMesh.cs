@@ -168,8 +168,8 @@ public partial class ImageViewer3D_SingleMesh : BaseViewModel
         var lineBuilder = new LineBuilder();
         for (var i = 0; i < meshGeometry.Positions.Count; i++)
         {
-            Vector3 position = meshGeometry.Positions[i];
-            Vector3 normal = meshGeometry.Normals[i];
+            var position = meshGeometry.Positions[i];
+            var normal = meshGeometry.Normals[i];
             lineBuilder.AddLine(position, position + (normal * 0.5f)); // Scale for visibility
         }
 

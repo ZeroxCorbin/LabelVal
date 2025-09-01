@@ -7,6 +7,7 @@ using LabelVal.ImageRolls.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using System.Windows;
 using V275_REST_Lib;
 using V275_REST_Lib.Models;
 
@@ -30,7 +31,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
             return;
         }
 
-        _ = App.Current.Dispatcher.BeginInvoke(() => Controller.ChangeJob(value.name));
+        _ = Application.Current.Dispatcher.BeginInvoke(() => Controller.ChangeJob(value.name));
     }
 
     [ObservableProperty] private ImageRoll selectedImageRoll;

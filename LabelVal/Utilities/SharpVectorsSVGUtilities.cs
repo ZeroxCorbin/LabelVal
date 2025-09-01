@@ -17,7 +17,7 @@ public static class SharpVectorsSVGUtilities
     }
     public static DrawingImage CreateDrawingImage(string svgFile, bool freeze = true)
     {
-        DrawingGroup drawingGroup = CreateDrawingGroup(svgFile);
+        var drawingGroup = CreateDrawingGroup(svgFile);
         return CreateDrawingImage(drawingGroup, freeze);
     }
     public static System.Drawing.Bitmap CreateBitmap(string svgFile, int width, int height, double dpiX, double dpiY, WpfDrawingSettings settings = null)
@@ -39,7 +39,7 @@ public static class SharpVectorsSVGUtilities
     }
     public static DrawingImage CreateDrawingImage(Uri svgFile, bool freeze = true)
     {
-        DrawingGroup drawingGroup = CreateDrawingGroup(svgFile);
+        var drawingGroup = CreateDrawingGroup(svgFile);
         return CreateDrawingImage(drawingGroup, freeze);
     }
     public static System.Drawing.Bitmap CreateBitmap(Uri svgFile, int width, int height, double dpiX, double dpiY, WpfDrawingSettings settings = null)
@@ -60,7 +60,7 @@ public static class SharpVectorsSVGUtilities
     }
     public static DrawingImage CreateDrawingImage(Stream svgStream, bool freeze = true)
     {
-        DrawingGroup drawingGroup = CreateDrawingGroup(svgStream);
+        var drawingGroup = CreateDrawingGroup(svgStream);
         return CreateDrawingImage(drawingGroup, freeze);
     }
     public static System.Drawing.Bitmap CreateBitmap(Stream svgStream, int width, int height, double dpiX, double dpiY, WpfDrawingSettings settings = null)
@@ -81,7 +81,7 @@ public static class SharpVectorsSVGUtilities
     }
     public static DrawingImage CreateDrawingImage(TextReader textReader, bool freeze = true)
     {
-        DrawingGroup drawingGroup = CreateDrawingGroup(textReader);
+        var drawingGroup = CreateDrawingGroup(textReader);
         return CreateDrawingImage(drawingGroup, freeze);
     }
     public static System.Drawing.Bitmap CreateBitmap(TextReader textReader, int width, int height, double dpiX, double dpiY, WpfDrawingSettings settings = null)

@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace LabelVal.Results.Views;
 /// <summary>
@@ -14,7 +15,7 @@ public partial class ImageResultsDatabases : UserControl
             ir.IsLocked = !ir.IsLocked;
     }
 
-    private void btnCollapseContent(object sender, System.Windows.RoutedEventArgs e) => ((Main.Views.MainWindow)App.Current.MainWindow).ClearSelectedMenuItem();
+    private void btnCollapseContent(object sender, System.Windows.RoutedEventArgs e) => ((Main.Views.MainWindow)Application.Current.MainWindow).ClearSelectedMenuItem();
 
     private void btnOpenImageResultLocation(object sender, System.Windows.RoutedEventArgs e)
     {

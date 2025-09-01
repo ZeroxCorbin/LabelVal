@@ -53,9 +53,9 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         }
 
         //Get the parameters list based on the region type.
-        Parameters[] parameters = Sector.Report.Symbology.GetParameters(Sector.Report.Device, Sector.Report.GradingStandard, Sector.Report.ApplicationStandard);
+        var parameters = Sector.Report.Symbology.GetParameters(Sector.Report.Device, Sector.Report.GradingStandard, Sector.Report.ApplicationStandard);
 
-        foreach (Parameters parameter in parameters)
+        foreach (var parameter in parameters)
         {
             try
             {

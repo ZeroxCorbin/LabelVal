@@ -27,9 +27,9 @@ public class SectorDifferences
         };
 
 
-        foreach (IParameterValue pre in previous.Parameters)
+        foreach (var pre in previous.Parameters)
         {
-            IParameterValue cur = current.Parameters.FirstOrDefault(x => x.Parameter == pre.Parameter);
+            var cur = current.Parameters.FirstOrDefault(x => x.Parameter == pre.Parameter);
             if (cur != null)
             {
                 if (new SectorElement(pre, cur, current.Sector.Report.Symbology).Difference)

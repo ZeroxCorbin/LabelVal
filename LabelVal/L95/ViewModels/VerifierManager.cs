@@ -15,7 +15,7 @@ public partial class VerifierManager : ObservableRecipient
 
     public VerifierManager()
     {
-        Verifier sel = App.Settings.GetValue<Verifier>($"L95_Verifier");
+        var sel = App.Settings.GetValue<Verifier>($"L95_Verifier");
         if (sel == null)
         {
             sel = new Verifier();

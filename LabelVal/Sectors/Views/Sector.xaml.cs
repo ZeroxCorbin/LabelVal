@@ -129,7 +129,7 @@ public partial class Sector : UserControl
                         device.FocusedStoredSector.IsFocused = false;
                     device.FocusedStoredSector = (ISector)this.DataContext;
                     device.FocusedStoredSector.IsFocused = true;
-                    App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshStoredOverlay());
+                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshStoredOverlay());
                 }
                 break;
             case "v275Current":
@@ -140,7 +140,7 @@ public partial class Sector : UserControl
                         device.FocusedCurrentSector.IsFocused = false;
                     device.FocusedCurrentSector = (ISector)this.DataContext;
                     device.FocusedCurrentSector.IsFocused = true;
-                    App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshCurrentOverlay());
+                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshCurrentOverlay());
                 }
                 break;
             case "v5Stored":
@@ -151,7 +151,7 @@ public partial class Sector : UserControl
                         device.FocusedStoredSector.IsFocused = false;
                     device.FocusedStoredSector = (ISector)this.DataContext;
                     device.FocusedStoredSector.IsFocused = true;
-                    App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshStoredOverlay());
+                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshStoredOverlay());
                 }
                 break;
             case "v5Current":
@@ -162,7 +162,7 @@ public partial class Sector : UserControl
                         device.FocusedCurrentSector.IsFocused = false;
                     device.FocusedCurrentSector = (ISector)this.DataContext;
                     device.FocusedCurrentSector.IsFocused = true;
-                    App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshCurrentOverlay());
+                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshCurrentOverlay());
                 }
                 break;
             case "l95Stored":
@@ -173,7 +173,7 @@ public partial class Sector : UserControl
                         device.FocusedStoredSector.IsFocused = false;
                     device.FocusedStoredSector = (ISector)this.DataContext;
                     device.FocusedStoredSector.IsFocused = true;
-                    App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshStoredOverlay());
+                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshStoredOverlay());
                 }
                 break;
             case "l95Current":
@@ -184,7 +184,7 @@ public partial class Sector : UserControl
                         device.FocusedCurrentSector.IsFocused = false;
                     device.FocusedCurrentSector = (ISector)this.DataContext;
                     device.FocusedCurrentSector.IsFocused = true;
-                    App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshCurrentOverlay());
+                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshCurrentOverlay());
                 }
                 break;
         }

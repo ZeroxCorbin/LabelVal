@@ -25,10 +25,10 @@ public partial class NodeManager : UserControl
     {
         if (e.Key != System.Windows.Input.Key.Enter) return;
 
-        TextBox tBox = (TextBox)sender;
-        DependencyProperty prop = TextBox.TextProperty;
+        var tBox = (TextBox)sender;
+        var prop = TextBox.TextProperty;
 
-        BindingExpression binding = BindingOperations.GetBindingExpression(tBox, prop);
+        var binding = BindingOperations.GetBindingExpression(tBox, prop);
         if (binding != null)
         {
             binding.UpdateSource();
@@ -39,8 +39,8 @@ public partial class NodeManager : UserControl
 
     public void btnShowDetails_Click(object sender, RoutedEventArgs e)
     {
-        var view = ((Main.Views.MainWindow)App.Current.MainWindow).NodeDetails;
-        var vm = ((Main.Views.MainWindow)App.Current.MainWindow).DataContext as Main.ViewModels.MainWindow;
+        var view = ((Main.Views.MainWindow)Application.Current.MainWindow).NodeDetails;
+        var vm = ((Main.Views.MainWindow)Application.Current.MainWindow).DataContext as Main.ViewModels.MainWindow;
         if (view.LeftDrawerContent == null)
         {
             var details = new Views.NodeDetails();
@@ -63,7 +63,7 @@ public partial class NodeManager : UserControl
         _ = Process.Start(ps);
     }
 
-    private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)App.Current.MainWindow).ClearSelectedMenuItem();
+    private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)Application.Current.MainWindow).ClearSelectedMenuItem();
 
     private void drwSettings_DrawerClosing(object sender, MaterialDesignThemes.Wpf.DrawerClosingEventArgs e)
     {

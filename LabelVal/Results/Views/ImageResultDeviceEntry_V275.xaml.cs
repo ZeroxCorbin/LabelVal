@@ -28,7 +28,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            foreach (ViewModels.IImageResultDeviceEntry device in _viewModel.ImageResultEntry.ImageResultDeviceEntries)
+            foreach (var device in _viewModel.ImageResultEntry.ImageResultDeviceEntries)
             {
                 if (device.FocusedCurrentSector != null)
                     device.FocusedCurrentSector.IsFocused = false;
@@ -38,8 +38,8 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
                     device.FocusedStoredSector.IsFocused = false;
                 device.FocusedStoredSector = null;
 
-                _ = App.Current.Dispatcher.BeginInvoke(device.RefreshCurrentOverlay);
-                _ = App.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
+                _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshCurrentOverlay);
+                _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
             }
         }
         else
@@ -47,17 +47,17 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
             switch ((string)((Button)sender).Tag)
             {
                 case "Stored":
-                    foreach (ViewModels.IImageResultDeviceEntry device in _viewModel.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    foreach (var device in _viewModel.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == _viewModel.Device))
                     {
                         if (device.FocusedStoredSector != null)
                             device.FocusedStoredSector.IsFocused = false;
                         device.FocusedStoredSector = null;
 
-                        _ = App.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
+                        _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
                     }
                     break;
                 case "Current":
-                    foreach (ViewModels.IImageResultDeviceEntry device in _viewModel.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    foreach (var device in _viewModel.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == _viewModel.Device))
                     {
                         if (device.FocusedCurrentSector != null)
                             device.FocusedCurrentSector.IsFocused = false;
@@ -67,8 +67,8 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
                             device.FocusedStoredSector.IsFocused = false;
                         device.FocusedStoredSector = null;
 
-                        _ = App.Current.Dispatcher.BeginInvoke(device.RefreshCurrentOverlay);
-                        _ = App.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
+                        _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshCurrentOverlay);
+                        _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
                     }
                     break;
             }
@@ -149,8 +149,8 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {
-        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
+        var parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
+        var sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
 
         if (sectorDetails != null)
         {
@@ -167,8 +167,8 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
     }
     private void btnCopyImage_Click(object sender, RoutedEventArgs e)
     {
-        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
+        var parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
+        var sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
 
         if (sectorDetails != null)
             CopyToClipboard(sectorDetails);
@@ -178,7 +178,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
         PngBitmapEncoder encoder = new();
         EncodeVisual(visual, encoder);
 
-        using System.IO.FileStream stream = System.IO.File.Create(fileName);
+        using var stream = System.IO.File.Create(fileName);
         encoder.Save(stream);
     }
     public void CopyToClipboard(FrameworkElement visual)
@@ -244,7 +244,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
                 sector.IsMouseOver = true;
 
             if (DataContext is ViewModels.IImageResultDeviceEntry ire)
-                _ = App.Current.Dispatcher.BeginInvoke(() => ire.RefreshCurrentOverlay());
+                _ = Application.Current.Dispatcher.BeginInvoke(() => ire.RefreshCurrentOverlay());
         }
     }
     private void currentSectorMouseLeave(object sender, MouseEventArgs e)
@@ -254,7 +254,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
                 sector.IsMouseOver = false;
 
-            _ = App.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshCurrentOverlay());
+            _ = Application.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshCurrentOverlay());
         }
     }
     private void storedSectorMouseEnter(object sender, MouseEventArgs e)
@@ -264,7 +264,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
                 sector.IsMouseOver = true;
 
-            _ = App.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshStoredOverlay());
+            _ = Application.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshStoredOverlay());
         }
     }
     private void storedSectorMouseLeave(object sender, MouseEventArgs e)
@@ -274,7 +274,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
                 sector.IsMouseOver = false;
 
-            _ = App.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshStoredOverlay());
+            _ = Application.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshStoredOverlay());
         }
     }
 

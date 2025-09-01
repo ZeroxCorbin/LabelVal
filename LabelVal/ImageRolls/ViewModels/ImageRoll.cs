@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Drawing.Printing;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
@@ -157,7 +158,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
     private void RecieveAll()
     {
-        RequestMessage<PrinterSettings> ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
+        var ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
         if (ret1.HasReceivedResponse)
             SelectedPrinter = ret1.Response;
     }
@@ -182,13 +183,13 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         var sorted = images.OrderBy(x => x).ToList();
         foreach (var f in sorted)
         {
-            (ImageEntry entry, var isNew) = GetImageEntry(f);
+            (var entry, var isNew) = GetImageEntry(f);
             if (entry == null)
                 continue;
 
             if (isNew)
             {
-                Task tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(ImageAddPositions.Bottom, entry)).Task;
+                var tsk = Application.Current.Dispatcher.BeginInvoke(() => AddImage(ImageAddPositions.Bottom, entry)).Task;
                 taskList.Add(tsk);
             }
         }
@@ -208,13 +209,13 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
         Logger.LogInfo($"Loading label images from database: {Name}");
 
-        List<ImageEntry> images = ImageRollsDatabase.SelectAllImages(UID);
+        var images = ImageRollsDatabase.SelectAllImages(UID);
         List<Task> taskList = [];
 
-        foreach (ImageEntry f in images)
+        foreach (var f in images)
         {
             f.SaveRequested += OnImageEntrySaveRequested;
-            Task tsk = App.Current.Dispatcher.BeginInvoke(() => ImageEntries.Add(f)).Task;
+            var tsk = Application.Current.Dispatcher.BeginInvoke(() => ImageEntries.Add(f)).Task;
             taskList.Add(tsk);
         }
 
@@ -262,7 +263,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
             var ire = new ImageEntry(UID, path);
             ire.SaveRequested += OnImageEntrySaveRequested;
 
-            ImageEntry imageentry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
+            var imageentry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
             if (imageentry != null)
             {
                 Logger.LogWarning($"Image already exists in roll: {Path}");
@@ -285,7 +286,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
             var ire = new ImageEntry(UID, rawImage, TargetDPI);
             ire.SaveRequested += OnImageEntrySaveRequested;
 
-            ImageEntry imageentry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
+            var imageentry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
             if (imageentry != null)
             {
                 Logger.LogWarning($"Image already exists in roll: {Path}");
@@ -363,7 +364,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
         var ordered = ImageEntries.OrderBy(x => x.Order).ToList();
         // Adjust the order of existing items to make space for the new item
-        foreach (ImageEntry currentImage in ordered)
+        foreach (var currentImage in ordered)
         {
             if (currentImage.Order >= targetOrder)
                 currentImage.Order += newImages.Count;
@@ -372,7 +373,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         // Insert each new image at the adjusted target order
         for (var i = 0; i < newImages.Count; i++)
         {
-            ImageEntry newImage = newImages[i];
+            var newImage = newImages[i];
             newImage.Order = targetOrder + i;
             ImageEntries.Add(newImage);
             SaveImage(newImage);
@@ -422,14 +423,14 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
         if (oldOrder < newOrder) // Moving down
         {
-            foreach (ImageEntry img in ImageEntries.Where(i => i.Order > oldOrder && i.Order <= newOrder))
+            foreach (var img in ImageEntries.Where(i => i.Order > oldOrder && i.Order <= newOrder))
             {
                 img.Order--;
             }
         }
         else // Moving up
         {
-            foreach (ImageEntry img in ImageEntries.Where(i => i.Order >= newOrder && i.Order < oldOrder))
+            foreach (var img in ImageEntries.Where(i => i.Order >= newOrder && i.Order < oldOrder))
             {
                 img.Order++;
             }

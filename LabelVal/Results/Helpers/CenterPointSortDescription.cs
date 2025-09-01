@@ -27,7 +27,7 @@ namespace LabelVal.Results.Helpers
             if (x is Point point1 && y is Point point2)
             {
                 // Sort by X coordinate first, then by Y coordinate
-                int result = point1.X.CompareTo(point2.X);
+                var result = point1.X.CompareTo(point2.X);
                 return result != 0 ? result : point1.Y.CompareTo(point2.Y);
             }
             throw new ArgumentException("Objects are not of type Point.");

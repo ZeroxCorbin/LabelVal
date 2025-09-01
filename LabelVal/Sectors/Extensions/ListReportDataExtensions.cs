@@ -46,7 +46,7 @@ public static class ListReportDataExtensions
            
 
         if (!noPArams)
-            foreach (BarcodeVerification.lib.ISO.ParameterTypes.IParameterValue grade in sector.SectorDetails.Parameters)
+            foreach (var grade in sector.SectorDetails.Parameters)
             {
                 _ = writer.AppendLine(grade.ToDelimitedString(delimiter)).Replace("<units>", sector.Report.Units.GetDescription());
             }
@@ -75,9 +75,9 @@ public static class ListReportDataExtensions
         }
         else if (SectorOutputSettings.CurrentIncludeParameters == SectorOutputIncludeParameters.Relevant)
         {
-            foreach (ISector sector in sectors)
+            foreach (var sector in sectors)
             {
-                foreach (BarcodeVerification.lib.ISO.ParameterTypes.IParameterValue parameter in sector.SectorDetails.Parameters)
+                foreach (var parameter in sector.SectorDetails.Parameters)
                 {
                     if (!parameters.Contains(parameter.Parameter))
                         parameters.Add(parameter.Parameter);
@@ -87,11 +87,11 @@ public static class ListReportDataExtensions
 
         Dictionary<Parameters, List<string>> parameterCsvs = [];
 
-        foreach (Parameters parameter in parameters)
+        foreach (var parameter in parameters)
         {
-            foreach (ISector sector in sectors)
+            foreach (var sector in sectors)
             {
-                BarcodeVerification.lib.ISO.ParameterTypes.IParameterValue param = sector.SectorDetails.Parameters.FirstOrDefault(p => p.Parameter == parameter);
+                var param = sector.SectorDetails.Parameters.FirstOrDefault(p => p.Parameter == parameter);
                 if (param != null)
                 {
                     if (!parameterCsvs.ContainsKey(parameter))
@@ -109,29 +109,29 @@ public static class ListReportDataExtensions
 
         Dictionary<ISector, List<string>> sectorHeaderLines = [];
 
-        foreach (ISector sector in sectors)
+        foreach (var sector in sectors)
         {
             if (!sectorHeaderLines.ContainsKey(sector))
                 sectorHeaderLines.Add(sector, []);
 
-            string csv = ListReportDataExtensions.GetSectorReport(sector, rollID, false, true);
-            string[] lines = csv.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-            foreach (string line in lines)
+            var csv = ListReportDataExtensions.GetSectorReport(sector, rollID, false, true);
+            var lines = csv.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            foreach (var line in lines)
             {
                 sectorHeaderLines[sector].Add(line.Trim() + delimiter);
             }
         }
 
-        int linecnt = 0;
-        foreach (KeyValuePair<ISector, List<string>> keyValuePair in sectorHeaderLines)
+        var linecnt = 0;
+        foreach (var keyValuePair in sectorHeaderLines)
         {
             if (keyValuePair.Value.Count > linecnt)
                 linecnt = keyValuePair.Value.Count;
         }
 
-        for (int i = 0; i < linecnt; i++)
+        for (var i = 0; i < linecnt; i++)
         {
-            foreach (KeyValuePair<ISector, List<string>> keyValuePair in sectorHeaderLines)
+            foreach (var keyValuePair in sectorHeaderLines)
             {
                 _ = keyValuePair.Value.Count > i ? sb.Append(keyValuePair.Value[i]) : sb.Append($"{GetDelimiter(5)}");
             }
@@ -139,9 +139,9 @@ public static class ListReportDataExtensions
                 _ = sb.AppendLine();
         }
 
-        foreach (KeyValuePair<Parameters, List<string>> keyValuePair in parameterCsvs)
+        foreach (var keyValuePair in parameterCsvs)
         {
-            foreach (string csv in keyValuePair.Value)
+            foreach (var csv in keyValuePair.Value)
             {
                 _ = sb.Append(csv).Replace("<units>", sectors[0].Report.Units.GetDescription());
             }

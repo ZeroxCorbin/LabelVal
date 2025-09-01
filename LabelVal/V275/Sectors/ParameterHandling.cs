@@ -9,11 +9,11 @@ public static class ParameterHandling
 {
     public static void AddParameter(Parameters parameter, Symbologies symbology, ICollection<IParameterValue> target, JObject report, JObject template)
     {
-        Type type = parameter.GetDataType(Devices.V275, symbology);
+        var type = parameter.GetDataType(Devices.V275, symbology);
 
         if (type == typeof(GradeValue) || type == typeof(Grade))
         {
-            IParameterValue gradeValue = GetGradeValueOrGrade(parameter, symbology, report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
+            var gradeValue = GetGradeValueOrGrade(parameter, symbology, report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
 
             if (gradeValue != null)
             {
@@ -23,7 +23,7 @@ public static class ParameterHandling
         }
         else if (type == typeof(ValueDouble))
         {
-            ValueDouble valueDouble = GetValueDouble(parameter, symbology, report.GetParameter<string>(parameter.GetPath(Devices.V275, symbology)));
+            var valueDouble = GetValueDouble(parameter, symbology, report.GetParameter<string>(parameter.GetPath(Devices.V275, symbology)));
             if (valueDouble != null)
             {
                 target.Add(valueDouble);
@@ -32,19 +32,19 @@ public static class ParameterHandling
         }
         else if (type == typeof(ValueString))
         {
-            ValueString valueString = parameter is BarcodeVerification.lib.Common.Parameters.GS1Table
+            var valueString = parameter is BarcodeVerification.lib.Common.Parameters.GS1Table
                 ? GetValueString(parameter, template.GetParameter<string>(parameter.GetPath(Devices.V275, symbology)))
                 : GetValueString(parameter, report.GetParameter<string>(parameter.GetPath(Devices.V275, symbology)));
             if (valueString != null) { target.Add(valueString); return; }
         }
         else if (type == typeof(PassFail))
         {
-            PassFail passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetPath(Devices.V275, symbology)));
+            var passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetPath(Devices.V275, symbology)));
             if (passFail != null) { target.Add(passFail); return; }
         }
         else if (type == typeof(ValuePassFail))
         {
-            ValuePassFail valuePassFail = GetValuePassFail(parameter, symbology, report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
+            var valuePassFail = GetValuePassFail(parameter, symbology, report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
             if (valuePassFail != null) { target.Add(valuePassFail); return; }
         }
         else if (type == typeof(Custom))
@@ -80,7 +80,7 @@ public static class ParameterHandling
         if (gradeValue is null)
             return null;
         var value = gradeValue["value"].ToString();
-        Grade grade = GetGrade(parameter, (JObject)gradeValue["grade"]);
+        var grade = GetGrade(parameter, (JObject)gradeValue["grade"]);
         return grade == null
             ? new Grade(parameter, Devices.V275, value)
             : new GradeValue(parameter, Devices.V275, symbology, grade, value);

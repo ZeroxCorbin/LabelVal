@@ -13,8 +13,8 @@ public partial class ScannerManager : UserControl
 
     private void btnShowDetails_Click(object sender, RoutedEventArgs e)
     {
-        var view = ((Main.Views.MainWindow)App.Current.MainWindow).ScannerDetails;
-        var vm = ((Main.Views.MainWindow)App.Current.MainWindow).DataContext as Main.ViewModels.MainWindow;
+        var view = ((Main.Views.MainWindow)Application.Current.MainWindow).ScannerDetails;
+        var vm = ((Main.Views.MainWindow)Application.Current.MainWindow).DataContext as Main.ViewModels.MainWindow;
         if (view.LeftDrawerContent == null)
         {
             ScannerDetails details = new()
@@ -26,5 +26,5 @@ public partial class ScannerManager : UserControl
         view.IsLeftDrawerOpen = !view.IsLeftDrawerOpen;
     }
 
-    private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)App.Current.MainWindow).ClearSelectedMenuItem();
+    private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)Application.Current.MainWindow).ClearSelectedMenuItem();
 }

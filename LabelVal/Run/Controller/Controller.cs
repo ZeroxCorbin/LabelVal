@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace LabelVal.Run.Controller;
 
@@ -171,22 +172,22 @@ public partial class Controller : ObservableObject
 
             Logger.LogInfo($"Run: Loop Count {LoopCount}");
 
-            int wasLoop = 0;
-            for (int i = 0; i < LoopCount; i++)
+            var wasLoop = 0;
+            for (var i = 0; i < LoopCount; i++)
             {
 
                 if (UpdateUI)
                 {
                     if (HasV275)
-                        foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
+                        foreach (var ire in ImageResultEntries)
                             ire.ClearCurrentCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V275);
 
                     if (HasV5)
-                        foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
+                        foreach (var ire in ImageResultEntries)
                             ire.ClearCurrentCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V5);
 
                     if (HasL95)
-                        foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
+                        foreach (var ire in ImageResultEntries)
                             ire.ClearCurrentCommand.Execute(Results.ViewModels.ImageResultEntryDevices.L95);
                 }
 
@@ -235,7 +236,7 @@ public partial class Controller : ObservableObject
 
                     Result v275Res = null;
                     if (UseV275)
-                        if ((v275Res = await App.Current.Dispatcher.Invoke(() => ProcessV275(ire))) == null)
+                        if ((v275Res = await Application.Current.Dispatcher.Invoke(() => ProcessV275(ire))) == null)
                             return UpdateRunState(RunStates.Error); ;
 
                     Result v5Res = null;
@@ -363,7 +364,7 @@ public partial class Controller : ObservableObject
 
         await Task.Run(() =>
         {
-            DateTime start = DateTime.Now;
+            var start = DateTime.Now;
             while (ire.IsWorking)
             {
                 if (RequestedState != RunStates.Running)
@@ -446,7 +447,7 @@ public partial class Controller : ObservableObject
             }
         }
 
-        V5_REST_Lib.Controllers.FullReport res = await V5.Trigger_Wait_Return(true);
+        var res = await V5.Trigger_Wait_Return(true);
 
         if (!res.OK)
         {
@@ -460,7 +461,7 @@ public partial class Controller : ObservableObject
         v5.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageResultEntry.ImageRollUID, res.Image, 0));
 
         if (UpdateUI)
-            _ = App.Current.Dispatcher.BeginInvoke(() => ((ImageResultDeviceEntry_V5)ire).ProcessFullReport(res));
+            _ = Application.Current.Dispatcher.BeginInvoke(() => ((ImageResultDeviceEntry_V5)ire).ProcessFullReport(res));
 
         return v5;
     }
@@ -489,7 +490,7 @@ public partial class Controller : ObservableObject
         if (ire.ImageResultsManager.SelectedImageRoll.SelectedGS1Table != GS1Tables.Unknown)
             lab.Config.Table = ((GS1Tables)ire.ImageResultsManager.SelectedImageRoll.SelectedGS1Table).GetTableName();
 
-        Lvs95xx.lib.Core.Controllers.FullReport res = await L95.ProcessLabelAsync(lab);
+        var res = await L95.ProcessLabelAsync(lab);
         if (res == null)
         {
             Logger.LogError("Run: Lvs95xx, No results returned.");
@@ -501,16 +502,16 @@ public partial class Controller : ObservableObject
         l95.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageResultEntry.ImageRollUID, res.Template.GetParameter<byte[]>("Report.Thumbnail"), 0));
 
         if (UpdateUI)
-            _ = App.Current.Dispatcher.BeginInvoke(() => ((ImageResultDeviceEntry_L95) ire).ProcessFullReport(res, true));
+            _ = Application.Current.Dispatcher.BeginInvoke(() => ((ImageResultDeviceEntry_L95) ire).ProcessFullReport(res, true));
 
         return l95;
     }
 
     private static bool HasSequencing(Results.ViewModels.IImageResultDeviceEntry label)
     {
-        V275_REST_Lib.Models.Job template = JsonConvert.DeserializeObject<V275_REST_Lib.Models.Job>(label.Result.TemplateString);
+        var template = JsonConvert.DeserializeObject<V275_REST_Lib.Models.Job>(label.Result.TemplateString);
 
-        foreach (V275_REST_Lib.Models.Job.Sector sect in template.sectors)
+        foreach (var sect in template.sectors)
         {
             if (sect.matchSettings != null)
                 if (sect.matchSettings.matchMode is >= 3 and <= 6)

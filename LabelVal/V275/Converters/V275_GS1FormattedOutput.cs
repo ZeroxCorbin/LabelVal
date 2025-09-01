@@ -54,7 +54,7 @@ internal class V275_GS1FormattedOutput : IMultiValueConverter
                 if (E is not GS1EncoderParameterException and not GS1EncoderScanDataException)
                     throw;
 
-                string markup = App.GS1Encoder.ErrMarkup;
+                var markup = App.GS1Encoder.ErrMarkup;
                 if (!markup.Equals(""))
                 {
                     Regex regex = new(Regex.Escape("|"));
@@ -67,8 +67,8 @@ internal class V275_GS1FormattedOutput : IMultiValueConverter
             }
 
             System.Text.StringBuilder sb = new();
-            int i = 0;
-            foreach (string s in App.GS1Encoder.HRI)
+            var i = 0;
+            foreach (var s in App.GS1Encoder.HRI)
             {
                 if (i++ != 0)
                     _ = sb.Append("\n");

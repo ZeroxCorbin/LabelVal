@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using V275_REST_Lib.Models;
 
 namespace LabelVal.V275.ViewModels;
@@ -35,7 +36,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     partial void OnSystemPortChanged(uint value)
     {
         if (!LibStaticUtilities_IPHostPort.Ports.IsPortValid(value))
-            _ = App.Current.Dispatcher.BeginInvoke(() => SystemPort = GetPortNumber());
+            _ = Application.Current.Dispatcher.BeginInvoke(() => SystemPort = GetPortNumber());
         else
         {
             foreach (var nd in Nodes)
@@ -48,7 +49,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         set
         {
             if (value == null || !LibStaticUtilities_IPHostPort.Ports.IsPortValid(value))
-                _ = App.Current.Dispatcher.BeginInvoke(() => { SystemPort = GetPortNumber(); OnPropertyChanged(nameof(SystemPortString)); });
+                _ = Application.Current.Dispatcher.BeginInvoke(() => { SystemPort = GetPortNumber(); OnPropertyChanged(nameof(SystemPortString)); });
             else
                 SystemPort = uint.Parse(value);
         }
@@ -72,7 +73,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     partial void OnSimulatorImageDirectoryChanged(string value)
     {
         if (string.IsNullOrEmpty(value))
-            _ = App.Current.Dispatcher.BeginInvoke(() => SimulatorImageDirectory = GetSimulationDirectory());
+            _ = Application.Current.Dispatcher.BeginInvoke(() => SimulatorImageDirectory = GetSimulationDirectory());
         else
         {
             foreach (var nd in Nodes)
@@ -98,9 +99,9 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     [RelayCommand]
     private async Task GetDevices()
     {
-        if(!App.Current.Dispatcher.CheckAccess())
+        if(!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = App.Current.Dispatcher.BeginInvoke(() => GetDevices());
+            _ = Application.Current.Dispatcher.BeginInvoke(() => GetDevices());
             return;
         }
 
@@ -111,7 +112,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         if ((await system.Controller.Commands.GetDevices()).Object is Devices dev)
         {
             List<Node> lst = [];
-            foreach (Devices.Node node in dev.nodes)
+            foreach (var node in dev.nodes)
             {
                 if (lst.Any(n => n.Controller.Node.cameraMAC == node.cameraMAC))
                 {
@@ -126,7 +127,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
                 lst.Add(newNode);
             }
 
-            List<Node> srt = lst.OrderBy(n => n.Controller.NodeNumber).ToList();
+            var srt = lst.OrderBy(n => n.Controller.NodeNumber).ToList();
 
             Nodes.Clear();
             if (srt.Count == 0)
@@ -135,7 +136,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
                 return;
             }
 
-            foreach (Node node in srt)
+            foreach (var node in srt)
                 Nodes.Add(node);
 
         }
@@ -144,8 +145,8 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             Nodes.Clear();
         }
 
-        Node sel = App.Settings.GetValue<Node>($"V275_{nameof(Manager.SelectedDevice)}");
-        foreach (Node node in Nodes)
+        var sel = App.Settings.GetValue<Node>($"V275_{nameof(Manager.SelectedDevice)}");
+        foreach (var node in Nodes)
         {
             if (sel != null && node.Controller.Host == sel.Controller.Host && node.Controller.SystemPort == sel.Controller.SystemPort && node.Controller.NodeNumber == sel.Controller.NodeNumber)
                 Manager.SelectedDevice = node;
@@ -153,13 +154,13 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     }
     private static uint GetPortNumber()
     {
-        object res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "SystemServerPort", 8080);
+        var res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "SystemServerPort", 8080);
 
         return res == null ? 8080 : Convert.ToUInt32(res);
     }
     private static string GetSimulationDirectory()
     {
-        object res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "DataDirectory", "");
+        var res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "DataDirectory", "");
 
         if (string.IsNullOrEmpty((string)res))
             return @"C:\Program Files\V275\data\images\simulation";

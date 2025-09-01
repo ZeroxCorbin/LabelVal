@@ -111,7 +111,7 @@ public partial class ImageRolls : ObservableRecipient
         // Remove directories that no longer exist
         for (var i = root.Children.Count - 1; i >= 0; i--)
         {
-            FileFolderEntry child = root.Children[i];
+            var child = root.Children[i];
             if (child.IsDirectory && !currentDirectories.Contains(child.Path))
                 root.Children.RemoveAt(i);
         }
@@ -119,7 +119,7 @@ public partial class ImageRolls : ObservableRecipient
         // Remove files that no longer exist
         for (var i = root.Children.Count - 1; i >= 0; i--)
         {
-            FileFolderEntry child = root.Children[i];
+            var child = root.Children[i];
             if (!child.IsDirectory && !currentFiles.Contains(child.Path))
                 root.Children.RemoveAt(i);
         }
@@ -164,14 +164,14 @@ public partial class ImageRolls : ObservableRecipient
             }
         };
 
-        foreach (FileFolderEntry child in root.Children)
+        foreach (var child in root.Children)
             UpdateFileFolderEvents(child);
     }
 
     private List<FileFolderEntry> GetSelectedFiles(FileFolderEntry root)
     {
         List<FileFolderEntry> selectedFiles = [];
-        foreach (FileFolderEntry child in root.Children)
+        foreach (var child in root.Children)
         {
             if (child.IsDirectory)
                 selectedFiles.AddRange(GetSelectedFiles(child));
@@ -183,7 +183,7 @@ public partial class ImageRolls : ObservableRecipient
     private List<FileFolderEntry> GetAllFiles(FileFolderEntry root)
     {
         List<FileFolderEntry> files = [];
-        foreach (FileFolderEntry child in root.Children)
+        foreach (var child in root.Children)
         {
             if (child.IsDirectory)
                 files.AddRange(GetSelectedFiles(child));
@@ -214,7 +214,7 @@ public partial class ImageRolls : ObservableRecipient
         // Remove databases that no longer exist
         for (var i = UserDatabases.Count - 1; i >= 0; i--)
         {
-            Databases.ImageRollsDatabase db = UserDatabases[i];
+            var db = UserDatabases[i];
             if (!selectedFiles.Contains(db.File.Path))
             {
                 UserDatabases[i].Close();
@@ -237,7 +237,7 @@ public partial class ImageRolls : ObservableRecipient
 
     private void SetSelectedUserDatabase()
     {
-        Databases.ImageRollsDatabase def = UserDatabases.FirstOrDefault((e) => e.File.Path == App.UserImageRollDefaultFile);
+        var def = UserDatabases.FirstOrDefault((e) => e.File.Path == App.UserImageRollDefaultFile);
 
         if (def == null)
         {
@@ -258,7 +258,7 @@ public partial class ImageRolls : ObservableRecipient
         var currentRolls = new HashSet<string>(UserImageRolls.Select(roll => roll.UID));
         var newRolls = new List<ImageRoll>();
 
-        foreach (Databases.ImageRollsDatabase db in UserDatabases)
+        foreach (var db in UserDatabases)
         {
             if (!db.File.IsSelected)
                 continue;
@@ -267,7 +267,7 @@ public partial class ImageRolls : ObservableRecipient
 
             try
             {
-                foreach (ImageRoll roll in db.SelectAllImageRolls())
+                foreach (var roll in db.SelectAllImageRolls())
                 {
                     Logger.LogDebug($"Found: {roll.Name}");
                     roll.ImageRollsDatabase = db;
@@ -311,7 +311,7 @@ public partial class ImageRolls : ObservableRecipient
 
                 try
                 {
-                    ImageRoll imgr = JsonConvert.DeserializeObject<ImageRoll>(File.ReadAllText(files.First()));
+                    var imgr = JsonConvert.DeserializeObject<ImageRoll>(File.ReadAllText(files.First()));
                     imgr.Path = subdir;
                     FixedImageRolls.Add(imgr);
                 }
@@ -364,7 +364,7 @@ public partial class ImageRolls : ObservableRecipient
         {
             Logger.LogInfo($"Saved image roll: {NewImageRoll.Name}");
 
-            ImageRoll update = UserImageRolls.FirstOrDefault((e) => e.UID == NewImageRoll.UID);
+            var update = UserImageRolls.FirstOrDefault((e) => e.UID == NewImageRoll.UID);
             if (update != null)
             {
                 SelectedImageRoll.SelectedApplicationStandard = NewImageRoll.SelectedApplicationStandard;
@@ -379,7 +379,7 @@ public partial class ImageRolls : ObservableRecipient
                 LoadUserImageRollsList();
             }
 
-            FileFolderEntry file = GetFileFolderEntry(App.UserImageRollDefaultFile);
+            var file = GetFileFolderEntry(App.UserImageRollDefaultFile);
             if (file != null)
                 file.IsSelected = true;
 
@@ -400,7 +400,7 @@ public partial class ImageRolls : ObservableRecipient
         if (await OkCancelDialog("Delete Image Roll?", $"Are you sure you want to delete image roll {SelectedUserImageRoll.Name} and images and results?") != MessageDialogResult.Affirmative)
             return;
 
-        foreach (ImageEntry img in SelectedUserImageRoll.ImageEntries)
+        foreach (var img in SelectedUserImageRoll.ImageEntries)
         {
 
             if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImage(SelectedUserImageRoll.UID, img.UID))
