@@ -87,8 +87,11 @@ public partial class ImageRolls : ObservableRecipient
 
     [ObservableProperty] private bool refreshView;
 
-    [ObservableProperty] private bool rightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
-    partial void OnRightAlignOverflowChanged(bool value) => App.Settings.SetValue(nameof(RightAlignOverflow), value);
+    public bool RightAlignOverflow
+    {
+        get => App.Settings.GetValue(nameof(RightAlignOverflow), false);
+        set => App.Settings.SetValue(nameof(RightAlignOverflow), value);
+    }
 
     public ImageRolls()
     {
@@ -100,7 +103,15 @@ public partial class ImageRolls : ObservableRecipient
         UpdateFileFolderEvents(FileRoot);
         UpdateImageRollsDatabasesList();
 
+        App.Settings.PropertyChanged += Settings_PropertyChanged;
+
         IsActive = true;
+    }
+
+    private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(RightAlignOverflow))
+            OnPropertyChanged(nameof(RightAlignOverflow));
     }
 
     private FileFolderEntry EnumerateFolders(FileFolderEntry root)

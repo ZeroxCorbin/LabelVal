@@ -203,7 +203,7 @@
                                                         <MultiDataTrigger>
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True" />
-                                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=scrName}" Value="Visible" />
+                                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=srcName1}" Value="Visible" />
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
                                                                 <Setter Property="Visibility" Value="Visible" />
@@ -216,7 +216,7 @@
                                         </md:SmartHint>
 
                                         <ScrollViewer
-                                            x:Name="scrName"
+                                            x:Name="srcName1"
                                             Grid.Column="1"
                                             md:ScrollViewerAssist.BubbleVerticalScroll="True"
                                             md:ScrollViewerAssist.IsAutoHideEnabled="True"
@@ -245,7 +245,7 @@
                                                         <Setter Property="FlowDirection" Value="LeftToRight" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True">
-                                                                <Setter Property="FlowDirection" Value="LeftToRight" />
+                                                                <Setter Property="FlowDirection" Value="RightToLeft" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -265,7 +265,7 @@
                                                         <MultiDataTrigger>
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="False" />
-                                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=scrName}" Value="Visible" />
+                                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=srcName1}" Value="Visible" />
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
                                                                 <Setter Property="Visibility" Value="Visible" />

@@ -123,7 +123,7 @@
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding RightAlignOverflow}" Value="True" />
-                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=scrName}" Value="Visible" />
+                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=srcName4}" Value="Visible" />
                                             </MultiDataTrigger.Conditions>
                                             <MultiDataTrigger.Setters>
                                                 <Setter Property="Visibility" Value="Visible" />
@@ -136,7 +136,7 @@
                         </md:SmartHint>
 
                         <ScrollViewer
-                            x:Name="scrName"
+                            x:Name="srcName4"
                             Grid.Column="1"
                             Padding="3,0"
                             VerticalAlignment="Center"
@@ -189,7 +189,7 @@
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding RightAlignOverflow}" Value="False" />
-                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=scrName}" Value="Visible" />
+                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=srcName4}" Value="Visible" />
                                             </MultiDataTrigger.Conditions>
                                             <MultiDataTrigger.Setters>
                                                 <Setter Property="Visibility" Value="Visible" />

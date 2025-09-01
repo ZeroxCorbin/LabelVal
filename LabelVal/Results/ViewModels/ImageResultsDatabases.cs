@@ -6,6 +6,7 @@ using MahApps.Metro.Controls.Dialogs;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
+using NHibernate.Linq.Functions;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultsDatabases : ObservableRecipient
@@ -18,8 +19,12 @@ public partial class ImageResultsDatabases : ObservableRecipient
     [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageResultsDatabase selectedDatabase;
     partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => App.Settings.SetValue("SelectedImageResultDatabaseFFE", value?.File);
 
-    [ObservableProperty] private bool rightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
-    partial void OnRightAlignOverflowChanged(bool value) => App.Settings.SetValue(nameof(RightAlignOverflow), value);
+    public bool RightAlignOverflow
+    {
+        get => App.Settings.GetValue(nameof(RightAlignOverflow), false);
+        set => App.Settings.SetValue(nameof(RightAlignOverflow), value);
+    }
+
 
     public ImageResultsDatabases()
     {
@@ -37,6 +42,14 @@ public partial class ImageResultsDatabases : ObservableRecipient
             {
                 message.Reply(SelectedDatabase);
             });
+
+        App.Settings.PropertyChanged += Settings_PropertyChanged;
+    }
+
+    private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if(e.PropertyName == nameof(RightAlignOverflow))
+            OnPropertyChanged(nameof(RightAlignOverflow));
     }
 
     private FileFolderEntry EnumerateFolders(FileFolderEntry root)

@@ -123,7 +123,11 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
     [ObservableProperty][property: SQLite.Ignore] private PrinterSettings selectedPrinter;
 
-    [ObservableProperty] private bool rightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
+    public bool RightAlignOverflow
+    {
+        get => App.Settings.GetValue(nameof(RightAlignOverflow), false);
+        set => App.Settings.SetValue(nameof(RightAlignOverflow), value);
+    }
 
     public ImageRoll()
     {
@@ -135,7 +139,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(RightAlignOverflow))
-            RightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
+            OnPropertyChanged(nameof(RightAlignOverflow));
     }
 
     //public ImageRollEntry(bool inactive)

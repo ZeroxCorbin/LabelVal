@@ -21,8 +21,11 @@ public partial class ImageRollsDatabases : ObservableRecipient
     [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageRollsDatabase selectedDatabase;
     partial void OnSelectedDatabaseChanged(Databases.ImageRollsDatabase value) => App.Settings.SetValue("SelectedImageRollDatabaseFFE", value?.File);
 
-    [ObservableProperty] private bool rightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
-    partial void OnRightAlignOverflowChanged(bool value) => App.Settings.SetValue(nameof(RightAlignOverflow), value);
+    public bool RightAlignOverflow
+    {
+        get => App.Settings.GetValue(nameof(RightAlignOverflow), false);
+        set => App.Settings.SetValue(nameof(RightAlignOverflow), value);
+    }
 
     public ImageRollsDatabases()
     {
@@ -40,6 +43,14 @@ public partial class ImageRollsDatabases : ObservableRecipient
             {
                 message.Reply(SelectedDatabase);
             });
+
+        App.Settings.PropertyChanged += Settings_PropertyChanged;
+    }
+
+    private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(RightAlignOverflow))
+            OnPropertyChanged(nameof(RightAlignOverflow));
     }
 
     private FileFolderEntry EnumerateFolders(FileFolderEntry root)

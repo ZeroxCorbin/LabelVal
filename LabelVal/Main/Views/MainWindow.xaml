@@ -177,7 +177,7 @@
                             HamburgerButtonTemplate="{StaticResource ImageRollEntryEditTemplate}"
                             IsPaneOpen="{Binding AppSettings.ShowMainMenu}"
                             ItemClick="hamMenu_ItemClick"
-                            ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"
+                            ItemTemplateSelector="{StaticResource MenuItemTemplateSelector}"
                             ItemsSource="{Binding MenuItems}"
                             LayoutUpdated="hamMenu_LayoutUpdated"
                             SelectedItem="{Binding SelectedMenuItem}">
@@ -217,7 +217,7 @@
 
                             <mah:HamburgerMenu.ContentTemplate>
                                 <DataTemplate>
-                                    <ContentControl Content="{Binding DataContext.SelectedMenuItem.Content, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" ContentTemplateSelector="{StaticResource contentItemTemplateSelector}">
+                                    <ContentControl Content="{Binding DataContext.SelectedMenuItem.Content, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" ContentTemplateSelector="{StaticResource ContentItemTemplateSelector}">
                                         <!--<ContentControl.Style>
                                             <Style TargetType="ContentControl">
                                                 <Style.Triggers>
