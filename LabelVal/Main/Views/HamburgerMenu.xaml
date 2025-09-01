@@ -141,7 +141,7 @@
                         Grid.Row="1"
                         Grid.Column="0"
                         Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
-                        Text="{Binding ImageCount}"/>
+                        Text="{Binding ImageCount}" />
 
                     <Grid
                         Grid.Row="0"

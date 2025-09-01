@@ -61,7 +61,7 @@ public enum ImageAddPositions
 public delegate void ImageMovedEventHandler(object sender, ImageEntry imageEntry);
 
 [JsonObject(MemberSerialization.OptIn)]
-public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
+public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>, IDisposable
 {
     public event ImageMovedEventHandler ImageMoved;
 
@@ -465,4 +465,9 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     }
     public ImageRoll CopyLite() => JsonConvert.DeserializeObject<ImageRoll>(JsonConvert.SerializeObject(this));
 
+    public void Dispose()
+    {
+        App.Settings.PropertyChanged -= Settings_PropertyChanged;
+        GC.SuppressFinalize(this);
+    }
 }

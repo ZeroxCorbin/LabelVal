@@ -8,9 +8,10 @@ using MahApps.Metro.Controls.Dialogs;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
+using System;
 
 namespace LabelVal.ImageRolls.ViewModels;
-public partial class ImageRollsDatabases : ObservableRecipient
+public partial class ImageRollsDatabases : ObservableRecipient, IDisposable
 {
 
     [ObservableProperty] private FileFolderEntry fileRoot = App.Settings.GetValue<FileFolderEntry>("ImageRollsDatabases_FileRoot", new FileFolderEntry(App.UserImageRollsRoot), true);
@@ -239,4 +240,10 @@ public partial class ImageRollsDatabases : ObservableRecipient
     public async Task<string> GetStringDialog(string title, string message) => await DialogCoordinator.ShowInputAsync(this, title, message);
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
     #endregion
+
+    public void Dispose()
+    {
+        App.Settings.PropertyChanged -= Settings_PropertyChanged;
+        GC.SuppressFinalize(this);
+    }
 }

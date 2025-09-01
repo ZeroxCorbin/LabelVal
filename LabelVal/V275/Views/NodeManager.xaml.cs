@@ -18,6 +18,16 @@ public partial class NodeManager : UserControl
             new System.Windows.Input.KeyEventHandler(TextBox_KeyUp));
 
         InitializeComponent();
+        
+        Unloaded += NodeManager_Unloaded;
+    }
+
+    private void NodeManager_Unloaded(object sender, RoutedEventArgs e)
+    {
+        EventManager.RegisterClassHandler(typeof(TextBox),
+            TextBox.KeyUpEvent,
+            new System.Windows.Input.KeyEventHandler(TextBox_KeyUp),
+            true); // Pass true to unregister the handler
     }
 
     //Trigger binding update when enter key is pressed

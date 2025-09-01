@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace LabelVal.ImageRolls.ViewModels;
-public partial class ImageRolls : ObservableRecipient
+public partial class ImageRolls : ObservableRecipient , IDisposable
 {
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
@@ -441,4 +441,9 @@ public partial class ImageRolls : ObservableRecipient
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
 
+    public void Dispose()
+    {
+        App.Settings.PropertyChanged -= Settings_PropertyChanged;
+        GC.SuppressFinalize(this);
+    }
 }
