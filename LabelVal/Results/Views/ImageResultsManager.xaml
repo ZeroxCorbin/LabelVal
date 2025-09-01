@@ -1489,19 +1489,58 @@
 
                 </md:DrawerHost.RightDrawerContent>
 
-                <ScrollViewer
+                <DockPanel>
+                    <ListBox
+                        MaxWidth="120"
+                        DockPanel.Dock="Right"
+                        ItemsSource="{Binding Source={StaticResource cvsImageResultsEntries}}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="1" />
+                                <Setter Property="Margin" Value="0" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Width="40"
+                                    Height="auto"
+                                    Padding="0"
+                                    Command="{Binding BringIntoViewHandlerCommand}"
+                                    Style="{StaticResource MahApps.Styles.Button.Chromeless}">
+                                    <StackPanel>
+                                        <Image Height="30" Source="{Binding SourceImage.ImageLow}" />
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            FontSize="8"
+                                            Text="{Binding SourceImage.Order}" />
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <ScrollViewer
                     Margin="0"
                     HorizontalScrollBarVisibility="Disabled"
                     Style="{StaticResource MahApps.Styles.ScrollViewer}">
 
-                    <ItemsControl ItemsSource="{Binding Source={StaticResource cvsImageResultsEntries}}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <local:ImageResultEntry />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding Source={StaticResource cvsImageResultsEntries}}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local:ImageResultEntry />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
             </md:DrawerHost>
 
         </DockPanel>

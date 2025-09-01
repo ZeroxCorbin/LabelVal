@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using LabelVal.Utilities;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,7 +30,25 @@ public partial class ImageResultEntry : UserControl
         viewModel = null;
     }
 
-    private void ViewModel_BringIntoView() => App.Current.Dispatcher.Invoke(new Action(BringIntoView));
+    private void ViewModel_BringIntoView()
+    {
+        // This ensures the item is scrolled to the top of the view.
+        var scrollViewer = Utilities.VisualTreeHelp.GetVisualParent<ScrollViewer>(this);
+        if (scrollViewer != null)
+        {
+            // Calculate the offset of the item relative to the ScrollViewer's content.
+            var transform = TransformToAncestor(scrollViewer);
+            var offset = transform.Transform(new Point(0, 0));
+
+            // Scroll to the calculated offset.
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + offset.Y);
+        }
+        else
+        {
+            // Fallback to the default behavior if the ScrollViewer is not found for some reason.
+            App.Current.Dispatcher.Invoke(new Action(BringIntoView));
+        }
+    }
 
     private void btnMove_Click(object sender, RoutedEventArgs e)
     {

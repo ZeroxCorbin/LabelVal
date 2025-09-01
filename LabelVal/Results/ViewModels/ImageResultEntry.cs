@@ -30,6 +30,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     public delegate void DeleteImageDelegate(ImageResultEntry imageResults);
     public event DeleteImageDelegate DeleteImage;
 
+    [RelayCommand]
     public void BringIntoViewHandler() => BringIntoView?.Invoke();
 
     //Could be handled with dependency injection.
