@@ -93,28 +93,32 @@ public partial class ImageResultsManager : UserControl
 
         try
         {
-            const double scrollTolerance = 1.0;
             var sortedEntries = itemsControl.Items.OfType<ViewModels.ImageResultEntry>().ToList();
+            if (!sortedEntries.Any()) return;
 
             var currentItem = _viewModel.TopmostItem ?? sortedEntries.FirstOrDefault();
-            if (currentItem == null)
-                return;
+            if (currentItem == null) return;
 
             var currentIndex = sortedEntries.IndexOf(currentItem);
+            if (currentIndex < 0)
+            {
+                var currentVisualItem = FindBestCandidate(scrollViewer, itemsControl);
+                currentIndex = currentVisualItem != null ? sortedEntries.IndexOf(currentVisualItem) : 0;
+                if (currentIndex < 0) currentIndex = 0;
+            }
+
             int nextIndex = currentIndex;
 
             if (scrollDown) // Scrolling down
             {
-                // Allow scrolling down if we are not at the bottom AND there is a next item.
-                if (scrollViewer.VerticalOffset < scrollViewer.ScrollableHeight - scrollTolerance && currentIndex < sortedEntries.Count - 1)
+                if (currentIndex < sortedEntries.Count - 1)
                 {
                     nextIndex = currentIndex + 1;
                 }
             }
             else // Scrolling up
             {
-                // Allow scrolling up if we are not at the top AND there is a previous item.
-                if (scrollViewer.VerticalOffset > scrollTolerance && currentIndex > 0)
+                if (currentIndex > 0)
                 {
                     nextIndex = currentIndex - 1;
                 }
@@ -123,8 +127,8 @@ public partial class ImageResultsManager : UserControl
             if (nextIndex != currentIndex)
             {
                 var nextItem = sortedEntries[nextIndex];
-                nextItem.BringIntoViewHandler();
                 _viewModel.TopmostItem = nextItem;
+                nextItem.BringIntoViewHandler();
                 ImageRollThumbnails.SelectedItem = nextItem;
                 ImageRollThumbnails.ScrollIntoView(nextItem);
             }
@@ -136,6 +140,43 @@ public partial class ImageResultsManager : UserControl
         }
     }
 
+    private ViewModels.ImageResultEntry FindBestCandidate(ScrollViewer scrollViewer, ItemsControl itemsControl)
+    {
+        const double scrollTolerance = 1.0;
+        ViewModels.ImageResultEntry bestCandidate = null;
+
+        var visibleItems = new List<(ViewModels.ImageResultEntry item, double top)>();
+        foreach (var item in itemsControl.Items)
+        {
+            if (item is not ViewModels.ImageResultEntry imageResultEntry) continue;
+            if (itemsControl.ItemContainerGenerator.ContainerFromItem(item) is not FrameworkElement container) continue;
+
+            var transform = container.TransformToAncestor(scrollViewer);
+            var itemTop = transform.Transform(new Point(0, 0)).Y;
+            var itemBottom = itemTop + container.ActualHeight;
+
+            if (itemBottom > 0 && itemTop < scrollViewer.ViewportHeight)
+            {
+                visibleItems.Add((imageResultEntry, itemTop));
+            }
+        }
+
+        if (!visibleItems.Any()) return null;
+
+        // If scrolled to the bottom, the best candidate is the last visible item.
+        if (scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - scrollTolerance)
+        {
+            bestCandidate = visibleItems.OrderBy(i => i.top).Last().item;
+        }
+        else
+        {
+            // Otherwise, find the item closest to the top of the viewport.
+            bestCandidate = visibleItems.OrderBy(i => Math.Abs(i.top)).First().item;
+        }
+
+        return bestCandidate;
+    }
+
     private void ImageResultsScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
         if (_isSnapping || _viewModel?.ImageResultsEntries.Any() != true)
@@ -145,35 +186,7 @@ public partial class ImageResultsManager : UserControl
         if (scrollViewer.Content is not ItemsControl itemsControl)
             return;
 
-        const double topAllowance = 1; // 10-pixel allowance
-        ViewModels.ImageResultEntry bestCandidate = null;
-        double minDistanceToTop = double.MaxValue;
-
-        foreach (var item in itemsControl.Items)
-        {
-            if (item is not ViewModels.ImageResultEntry imageResultEntry)
-                continue;
-
-            var container = itemsControl.ItemContainerGenerator.ContainerFromItem(item) as FrameworkElement;
-            if (container != null && container.IsVisible)
-            {
-                var transform = container.TransformToAncestor(scrollViewer);
-                var itemTop = transform.Transform(new Point(0, 0)).Y;
-                var itemBottom = itemTop + container.ActualHeight;
-
-                // Check if the item is at least partially visible in the viewport, including the allowance
-                if (itemBottom > -topAllowance && itemTop < scrollViewer.ViewportHeight)
-                {
-                    var distance = Math.Abs(itemTop);
-                    // Find the item closest to the top of the viewport (or just above it)
-                    if (distance < minDistanceToTop)
-                    {
-                        minDistanceToTop = distance;
-                        bestCandidate = imageResultEntry;
-                    }
-                }
-            }
-        }
+        var bestCandidate = FindBestCandidate(scrollViewer, itemsControl);
 
         if (bestCandidate != null && _viewModel.TopmostItem != bestCandidate)
         {
