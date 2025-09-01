@@ -85,6 +85,11 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     }
 
     /// <summary>
+    /// Indicates if this is the topmost visible item in the scroll viewer.
+    /// </summary>
+    [ObservableProperty] private bool isTopmost;
+
+    /// <summary>
     /// This manages the Image Roll and Devices.
     /// </summary>
     public ImageResultsManager ImageResultsManager { get; }

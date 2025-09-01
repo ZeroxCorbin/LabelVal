@@ -1490,49 +1490,89 @@
                 </md:DrawerHost.RightDrawerContent>
 
                 <DockPanel>
-                    <ListBox
-                        MaxWidth="120"
-                        DockPanel.Dock="Right"
-                        ItemsSource="{Binding Source={StaticResource cvsImageResultsEntries}}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="Padding" Value="1" />
-                                <Setter Property="Margin" Value="0" />
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Button
-                                    Width="40"
-                                    Height="auto"
-                                    Padding="0"
-                                    Command="{Binding BringIntoViewHandlerCommand}"
-                                    Style="{StaticResource MahApps.Styles.Button.Chromeless}">
-                                    <StackPanel>
-                                        <Image Height="30" Source="{Binding SourceImage.ImageLow}" />
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            FontSize="8"
-                                            Text="{Binding SourceImage.Order}" />
-                                    </StackPanel>
-                                </Button>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <md:Card
+                            Height="24"
+                            Margin="3,3,0,0"
+                            HorizontalAlignment="Stretch"
+                            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                            DockPanel.Dock="Top"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                            <TextBlock
+                                Margin="6,0,6,3"
+                                DockPanel.Dock="Top"
+                                Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                                Text="Navigate" />
+
+
+                        </md:Card>
+
+                        <ListBox
+                            x:Name="ImageRollThumbnails"
+                            Grid.Row="1"
+                            MaxWidth="120"
+                            DockPanel.Dock="Left"
+                            ItemsSource="{Binding Source={StaticResource cvsImageResultsEntries}}"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            SelectedItem="{Binding TopmostItem, Mode=OneWay}">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Padding" Value="1" />
+                                    <Setter Property="Margin" Value="0" />
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        Width="40"
+                                        Height="auto"
+                                        Padding="0"
+                                        Command="{Binding BringIntoViewHandlerCommand}"
+                                        Style="{StaticResource MahApps.Styles.Button.Chromeless}">
+                                        <Border x:Name="HighlightBorder" BorderThickness="2">
+                                            <StackPanel>
+                                                <Image Height="30" Source="{Binding SourceImage.ImageLow}" />
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    FontSize="8"
+                                                    Text="{Binding SourceImage.Order}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </Button>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsTopmost}" Value="True">
+                                            <Setter TargetName="HighlightBorder" Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+
 
                     <ScrollViewer
+                        x:Name="ImageResultsScrollViewer"
                         Margin="0"
                         HorizontalScrollBarVisibility="Disabled"
-                        Style="{StaticResource MahApps.Styles.ScrollViewer}">
+                        PreviewKeyDown="ImageResultsScrollViewer_PreviewKeyDown"
+                        PreviewMouseWheel="ImageResultsScrollViewer_PreviewMouseWheel"
+                        ScrollChanged="ImageResultsScrollViewer_ScrollChanged"
+                        Style="{StaticResource MahApps.Styles.ScrollViewer}"
+                        VerticalScrollBarVisibility="Auto">
 
-                        <ItemsControl ItemsSource="{Binding Source={StaticResource cvsImageResultsEntries}}">
+                        <ItemsControl x:Name="ImageResultsItemsControl" ItemsSource="{Binding Source={StaticResource cvsImageResultsEntries}}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <local:ImageResultEntry />

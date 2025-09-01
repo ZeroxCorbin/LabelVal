@@ -88,6 +88,20 @@ public partial class ImageResultsManager : ObservableRecipient,
     /// <see cref="SelectedDatabase"/>
     [ObservableProperty] private Databases.ImageResultsDatabase selectedDatabase;
 
+    [ObservableProperty]
+    private ImageResultEntry topmostItem;
+    partial void OnTopmostItemChanged(ImageResultEntry oldValue, ImageResultEntry newValue)
+    {
+        if (oldValue is not null)
+        {
+            oldValue.IsTopmost = false;
+        }
+        if (newValue is not null)
+        {
+            newValue.IsTopmost = true;
+        }
+    }
+
     public ObservableCollection<ImageResultEntry> ImageResultsEntries { get; } = [];
 
     /// <see cref="FocusedTemplate"/>

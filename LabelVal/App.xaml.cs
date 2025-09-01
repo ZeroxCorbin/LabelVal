@@ -305,15 +305,17 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
+                Logger.LogInfo("Starting: Getting colorblind setting.");
+                var isColorBlind = Settings.GetValue("App.IsColorBlind", false);
+                Dispatcher.Invoke(() => ChangeColorBlindTheme(isColorBlind));
+
         // Defer non-critical UI updates until the application is idle.
         // This allows the main window to render sooner.
         _ = Dispatcher.InvokeAsync(async () =>
         {
             await Task.Run(() =>
             {
-                Logger.LogInfo("Starting: Getting colorblind setting.");
-                var isColorBlind = Settings.GetValue("App.IsColorBlind", false);
-                Dispatcher.Invoke(() => ChangeColorBlindTheme(isColorBlind));
+
 
                 Logger.LogInfo("Starting: Getting color theme.");
                 var themeName = Settings.GetValue("App.Theme", "Dark.Steel", true);
