@@ -26,18 +26,18 @@
 
         <converters:BoolToVisibility x:Key="BoolToVisibility" />
 
-        <converters:IsNotNullVisibility x:Key="IsNotNullVisibility"/>
+        <converters:IsNotNullVisibility x:Key="IsNotNullVisibility" />
 
         <Style x:Key="CollapsedIconStyle" TargetType="iconPacks:PackIconMaterial">
             <Setter Property="VerticalAlignment" Value="Bottom" />
-            <Setter Property="Margin" Value="3,0, 3,2"/>
+            <Setter Property="Margin" Value="3,0,3,2" />
         </Style>
 
         <Style x:Key="IconButtonStyle" TargetType="ButtonBase">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="VerticalAlignment" Value="Bottom"/>
-            <Setter Property="Margin" Value="3,0, 3,2"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+            <Setter Property="Margin" Value="3,0,3,2" />
 
         </Style>
     </UserControl.Resources>
@@ -86,7 +86,10 @@
 
                 <StackPanel Margin="6,0">
                     <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconMaterial Kind="InformationOutline" Style="{StaticResource CollapsedIconStyle}" VerticalAlignment="Center"/>
+                        <iconPacks:PackIconMaterial
+                            VerticalAlignment="Center"
+                            Kind="InformationOutline"
+                            Style="{StaticResource CollapsedIconStyle}" />
                         <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Latest Info" />
                     </StackPanel>
                     <ScrollViewer MaxHeight="32" HorizontalAlignment="Stretch">
@@ -96,11 +99,15 @@
 
                 <StackPanel Margin="6,0">
                     <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconMaterial Kind="AlertOutline" Foreground="Yellow" Style="{StaticResource CollapsedIconStyle}" VerticalAlignment="Center"/>
+                        <iconPacks:PackIconMaterial
+                            VerticalAlignment="Center"
+                            Foreground="Yellow"
+                            Kind="AlertOutline"
+                            Style="{StaticResource CollapsedIconStyle}" />
                         <TextBlock
-                        Foreground="Yellow"
-                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                        Text="Latest Warning" />
+                            Foreground="Yellow"
+                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                            Text="Latest Warning" />
                     </StackPanel>
                     <ScrollViewer MaxHeight="32" HorizontalContentAlignment="Stretch">
                         <TextBlock Text="{Binding LatestWarning.Message, Mode=OneWay}" TextWrapping="Wrap" />
@@ -109,11 +116,15 @@
 
                 <StackPanel Margin="6,0">
                     <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconMaterial Kind="CloseCircleOutline" Foreground="DarkRed" Style="{StaticResource CollapsedIconStyle}" VerticalAlignment="Center"/>
+                        <iconPacks:PackIconMaterial
+                            VerticalAlignment="Center"
+                            Foreground="DarkRed"
+                            Kind="CloseCircleOutline"
+                            Style="{StaticResource CollapsedIconStyle}" />
                         <TextBlock
-                        Foreground="DarkRed"
-                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                        Text="Latest Error" />
+                            Foreground="DarkRed"
+                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                            Text="Latest Error" />
                     </StackPanel>
                     <ScrollViewer MaxHeight="32" HorizontalContentAlignment="Stretch">
 
@@ -123,7 +134,10 @@
 
                 <StackPanel Margin="6,0">
                     <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconMaterial Kind="BugOutline" Style="{StaticResource CollapsedIconStyle}" VerticalAlignment="Center"/>
+                        <iconPacks:PackIconMaterial
+                            VerticalAlignment="Center"
+                            Kind="BugOutline"
+                            Style="{StaticResource CollapsedIconStyle}" />
                         <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Latest Debug" />
                     </StackPanel>
                     <ScrollViewer MaxHeight="32" HorizontalContentAlignment="Stretch">
