@@ -93,7 +93,7 @@ public class SectorReport : ISectorReport
         //    }
         //    catch (System.Exception ex)
         //    {
-        //        Logger.LogError(ex, $"Error processing parameter: {parameter}");
+        //        Logger.Error(ex, $"Error processing parameter: {parameter}");
         //    }
         //}
 
@@ -106,7 +106,7 @@ public class SectorReport : ISectorReport
         var sym = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Symbology, Device, Symbologies.Unknown);
         if (sym == null)
         {
-            Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Symbology.GetPath(Device, Symbologies.Unknown)}' in ReportData. {Device}");
+            Logger.Error($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Symbology.GetPath(Device, Symbologies.Unknown)}' in ReportData. {Device}");
             return false;
         }
 
@@ -114,7 +114,7 @@ public class SectorReport : ISectorReport
 
         if (Symbology == Symbologies.Unknown)
         {
-            Logger.LogError($"Could not determine symbology from: '{sym}' {Device}");
+            Logger.Error($"Could not determine symbology from: '{sym}' {Device}");
             return false;
         }
 
@@ -128,7 +128,7 @@ public class SectorReport : ISectorReport
             OverallGrade = GetOverallGrade(overall);
         else
         {
-            Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.OverallGrade.GetPath(Device, Symbology)}' in ReportData. {Device}");
+            Logger.Error($"Could not find: '{BarcodeVerification.lib.Common.Parameters.OverallGrade.GetPath(Device, Symbology)}' in ReportData. {Device}");
             return false;
         }
         return true;
@@ -158,7 +158,7 @@ public class SectorReport : ISectorReport
     {
         if (ApplicationStandard != ApplicationStandards.GS1)
         {
-            Logger.LogInfo("GS1 is not enabled. Skipping GS1 Data.");
+            Logger.Info("GS1 is not enabled. Skipping GS1 Data.");
             return true;
         }
 
@@ -186,7 +186,7 @@ public class SectorReport : ISectorReport
         var unit = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Units, Device, Symbology);
         if (unit == null)
         {
-            Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Units.GetPath(Device, Symbology)}' in ReportData. {Device}");
+            Logger.Error($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Units.GetPath(Device, Symbology)}' in ReportData. {Device}");
             return false;
         }
 
@@ -273,7 +273,7 @@ public class SectorReport : ISectorReport
         }
 
         target.Add(new Missing(parameter));
-        Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetPath(Device, Symbology)}' missing or parse issue.");
+        Logger.Debug($"Paramter: '{parameter}' @ Path: '{parameter.GetPath(Device, Symbology)}' missing or parse issue.");
     }
 
 

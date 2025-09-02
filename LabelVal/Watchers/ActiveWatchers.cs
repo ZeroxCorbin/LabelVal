@@ -94,7 +94,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //{
     //    foreach (string hub in _hubs)
     //    {
-    //        Logger.LogDebug($"Starting watcher for hub: {hub}");
+    //        Logger.Debug($"Starting watcher for hub: {hub}");
 
     //        Win32_PnPEntityWatcher watcher = new();
     //        watcher.Start("DeviceID", hub, HubChangeCallback);
@@ -103,14 +103,14 @@ public partial class ActiveWatchers : ObservableRecipient
 
     //    foreach (string device in _devices)
     //    {
-    //        Logger.LogDebug($"Starting watcher for device: {device}");
+    //        Logger.Debug($"Starting watcher for device: {device}");
 
     //        Win32_PnPEntityWatcher watcher = new();
     //        watcher.Start("DeviceID", device, DeviceChangeCallback);
     //        _pnPEntityWatchers.Add(watcher);
     //    }
 
-    //    //Logger.LogDebug("Starting watcher for all devices");
+    //    //Logger.Debug("Starting watcher for all devices");
 
     //    //Win32_PnPEntityWatcher all = new();
     //    //all.Start("DeviceID", "VID_", AllDeviceChangeCallback, false);
@@ -161,7 +161,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //        _ = RootDevices.Remove(dev);
     //        _ = WeakReferenceMessenger.Default.Send(new UsbDeviceMessage(dev, false));
 
-    //        Logger.LogDebug($"Removed device: {dev.DeviceID}");
+    //        Logger.Debug($"Removed device: {dev.DeviceID}");
 
     //        dev.Dispose();
     //    }
@@ -172,7 +172,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //        RootDevices.Add(root);
     //        _ = WeakReferenceMessenger.Default.Send(new UsbDeviceMessage(root, true));
 
-    //        Logger.LogDebug($"Added device: {root.DeviceID}");
+    //        Logger.Debug($"Added device: {root.DeviceID}");
     //    }
     //}
 
@@ -185,7 +185,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //        _ = RootDevices.Remove(dev);
     //        _ = WeakReferenceMessenger.Default.Send(new UsbDeviceMessage(dev, false));
 
-    //        Logger.LogDebug($"Removed device: {dev.DeviceID}");
+    //        Logger.Debug($"Removed device: {dev.DeviceID}");
 
     //        dev.Dispose();
     //    }
@@ -195,7 +195,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //        RootDevices.Add(deviceRoot);
     //        _ = WeakReferenceMessenger.Default.Send(new UsbDeviceMessage(deviceRoot, true));
 
-    //        Logger.LogDebug($"Added device: {deviceRoot.DeviceID}");
+    //        Logger.Debug($"Added device: {deviceRoot.DeviceID}");
     //    }
     //}
 
@@ -208,7 +208,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //            _ = WeakReferenceMessenger.Default.Send(new VolumeMessage(true, volume));
     //            Volumes.Add(volume);
 
-    //            Logger.LogDebug($"Added volume: {volume}");
+    //            Logger.Debug($"Added volume: {volume}");
     //        }
     //    }
     //    else
@@ -218,7 +218,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //            _ = WeakReferenceMessenger.Default.Send(new VolumeMessage(false, volume));
     //            _ = Volumes.RemoveAll((v) => v == volume);
 
-    //            Logger.LogDebug($"Removed volume: {volume}");
+    //            Logger.Debug($"Removed volume: {volume}");
     //        }
     //    }
     //}
@@ -242,7 +242,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //            DeviceRoot? dev = RootDevices.FirstOrDefault(x => x.DeviceID == res.DeviceID);
     //            dev?.RefreshChildren();
 
-    //            Logger.LogDebug($"Refreshed hub: {dev?.DeviceID}");
+    //            Logger.Debug($"Refreshed hub: {dev?.DeviceID}");
     //        }
     //    }
     //    else

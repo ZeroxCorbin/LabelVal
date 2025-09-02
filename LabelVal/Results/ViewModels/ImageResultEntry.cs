@@ -189,7 +189,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             Clipboard.SetText(path);
         }
         catch (Exception ex)
-        { Logger.LogError(ex);}
+        { Logger.Error(ex);}
     }
     [RelayCommand]
     private void Store(ImageResultEntryDevices device)
@@ -197,7 +197,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
         if (dev == null)
         {
-            Logger.LogError($"Device not found: {device}");
+            Logger.Error($"Device not found: {device}");
             return;
         }
         _ = dev.Store();
@@ -209,7 +209,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
         if (dev == null)
         {
-            Logger.LogError($"Device not found: {device}");
+            Logger.Error($"Device not found: {device}");
             return;
         }
         dev.Process();
@@ -224,7 +224,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
             if (dev == null)
             {
-                Logger.LogError($"Device not found: {device}");
+                Logger.Error($"Device not found: {device}");
                 return;
             }
             dev.GetStored();
@@ -243,7 +243,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
         if (dev == null)
         {
-            Logger.LogError($"Device not found: {device}");
+            Logger.Error($"Device not found: {device}");
             return;
         }
         dev.ClearCurrent();
@@ -314,7 +314,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
             if (dev == null)
             {
-                Logger.LogError($"Device not found: {device}");
+                Logger.Error($"Device not found: {device}");
                 return;
             }
             dev.HandlerUpdate();

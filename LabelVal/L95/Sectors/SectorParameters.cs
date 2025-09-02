@@ -56,7 +56,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
             }
             catch (System.Exception ex)
             {
-                Logger.LogError(ex, $"Error processing symbology parameter: {parameter}");
+                Logger.Error(ex, $"Error processing symbology parameter: {parameter}");
             }
         }
         tempSymPars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
@@ -73,7 +73,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
             }
             catch (System.Exception ex)
             {
-                Logger.LogError(ex, $"Error processing grading parameter: {parameter}");
+                Logger.Error(ex, $"Error processing grading parameter: {parameter}");
             }
         }
         tempGradingPars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
@@ -90,7 +90,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
             }
             catch (System.Exception ex)
             {
-                Logger.LogError(ex, $"Error processing application parameter: {parameter}");
+                Logger.Error(ex, $"Error processing application parameter: {parameter}");
             }
         }
         tempApplicationPars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
@@ -110,7 +110,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
             }
             catch (System.Exception ex)
             {
-                Logger.LogError(ex, $"Error processing parameter: {parameter}");
+                Logger.Error(ex, $"Error processing parameter: {parameter}");
             }
         }
         pars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));

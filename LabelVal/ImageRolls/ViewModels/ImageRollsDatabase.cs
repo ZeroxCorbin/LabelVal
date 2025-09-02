@@ -135,7 +135,7 @@ public partial class ImageRollsDatabases : ObservableRecipient, IDisposable
 
     private void UpdateImageRollsDatabasesList()
     {
-        Logger.LogInfo($"Loading Image Rolls databases from file system. {App.UserImageRollsRoot}");
+        Logger.Info($"Loading Image Rolls databases from file system. {App.UserImageRollsRoot}");
 
         FileRoot = EnumerateFolders(FileRoot);
         UpdateDatabases(FileRoot);

@@ -81,7 +81,7 @@ public static class ParamterHandling
         }
 
         target.Add(new Missing(parameter));
-        Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetPath(Devices.V5, symbology)}' missing or parse issue.");
+        Logger.Debug($"Paramter: '{parameter}' @ Path: '{parameter.GetPath(Devices.V5, symbology)}' missing or parse issue.");
     }
 
     private static IParameterValue GetGradeValue(Parameters parameter, Symbologies symbology, JObject gradeValue)

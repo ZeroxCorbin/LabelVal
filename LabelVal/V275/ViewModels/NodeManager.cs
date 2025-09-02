@@ -105,7 +105,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             return;
         }
 
-        Logger.LogInfo("Loading V275 devices.");
+        Logger.Info("Loading V275 devices.");
 
         Node system = new(Host, SystemPort, 0, Username, Password, SimulatorImageDirectory, SelectedImageRoll);
 
@@ -116,11 +116,11 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             {
                 if (lst.Any(n => n.Controller.Node.cameraMAC == node.cameraMAC))
                 {
-                    Logger.LogWarning($"Duplicate device MAC: {node.cameraMAC}");
+                    Logger.Warning($"Duplicate device MAC: {node.cameraMAC}");
                     continue;
                 }
 
-                Logger.LogDebug($"Adding Device MAC: {node.cameraMAC}");
+                Logger.Debug($"Adding Device MAC: {node.cameraMAC}");
 
                 Node newNode = new(Host, SystemPort, (uint)node.enumeration, Username, Password, SimulatorImageDirectory, SelectedImageRoll) { Manager = this };
                 newNode.Controller.Initialize();
@@ -132,7 +132,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             Nodes.Clear();
             if (srt.Count == 0)
             {
-                Logger.LogWarning("No devices found.");
+                Logger.Warning("No devices found.");
                 return;
             }
 

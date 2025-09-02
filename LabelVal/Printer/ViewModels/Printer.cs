@@ -45,22 +45,22 @@ public partial class Printer : ObservableRecipient
     {
         Printers.Clear();
 
-        Logger.LogInfo("Loading printers.");
+        Logger.Info("Loading printers.");
 
         foreach (string p in PrinterSettings.InstalledPrinters)
             Printers.Add(p);
 
-        Logger.LogInfo($"Processed {Printers.Count} printers.");
+        Logger.Info($"Processed {Printers.Count} printers.");
 
         if (Printers.Contains(App.Settings.GetValue<string>(nameof(SelectedPrinterName))))
             SelectedPrinterName = App.Settings.GetValue<string>(nameof(SelectedPrinterName));
         else
         {
             if (Printers.Count == 0)
-                Logger.LogWarning("No printers found.");
+                Logger.Warning("No printers found.");
             else
             {
-                Logger.LogWarning("Selected printer not found. Defaulting to first printer.");
+                Logger.Warning("Selected printer not found. Defaulting to first printer.");
                 SelectedPrinterName = Printers.First();
             }
 

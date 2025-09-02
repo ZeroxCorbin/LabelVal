@@ -21,7 +21,7 @@ public class ImageRollsDatabase
         }
         catch (Exception e)
         {
-            Logger.LogError(e);
+            Logger.Error(e);
         }
     }
     public void Close() => Connection?.Close();

@@ -206,7 +206,7 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
 
     private void UpdateImageRollsDatabasesList()
     {
-        Logger.LogInfo($"Loading Image Rolls databases from file system. {App.UserImageRollsRoot}");
+        Logger.Info($"Loading Image Rolls databases from file system. {App.UserImageRollsRoot}");
 
         if (!File.Exists(App.UserImageRollDefaultFile))
         {
@@ -274,13 +274,13 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
             if (!db.File.IsSelected)
                 continue;
 
-            Logger.LogInfo($"Loading user image rolls from database. {db.File.Name}");
+            Logger.Info($"Loading user image rolls from database. {db.File.Name}");
 
             try
             {
                 foreach (var roll in db.SelectAllImageRolls())
                 {
-                    Logger.LogDebug($"Found: {roll.Name}");
+                    Logger.Debug($"Found: {roll.Name}");
                     roll.ImageRollsDatabase = db;
 
                     if (!currentRolls.Contains(roll.UID))
@@ -291,7 +291,7 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, $"Error when accessing {db.File.Path}");
+                Logger.Error(ex, $"Error when accessing {db.File.Path}");
             }
         }
 
@@ -300,19 +300,19 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
             if (!newRolls.Any(newRoll => newRoll.UID == UserImageRolls[i].UID))
                 UserImageRolls.RemoveAt(i);
 
-        Logger.LogInfo($"Processed {UserImageRolls.Count} user image rolls.");
+        Logger.Info($"Processed {UserImageRolls.Count} user image rolls.");
     }
 
     private void LoadFixedImageRollsList()
     {
-        Logger.LogInfo($"Loading image rolls from file system. {App.AssetsImageRollsRoot}");
+        Logger.Info($"Loading image rolls from file system. {App.AssetsImageRollsRoot}");
 
         FixedImageRolls.Clear();
 
         foreach (var dir in Directory.EnumerateDirectories(App.AssetsImageRollsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
         {
             var fnd = dir[(dir.LastIndexOf('\\') + 1)..];
-            Logger.LogDebug($"Found: {fnd}");
+            Logger.Debug($"Found: {fnd}");
 
             foreach (var subdir in Directory.EnumerateDirectories(dir))
             {
@@ -328,19 +328,19 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, $"Failed to load image roll from {files.First()}");
+                    Logger.Error(ex, $"Failed to load image roll from {files.First()}");
                     continue;
                 }
             }
         }
 
-        Logger.LogInfo($"Processed {FixedImageRolls.Count} fixed image rolls.");
+        Logger.Info($"Processed {FixedImageRolls.Count} fixed image rolls.");
     }
 
     [RelayCommand]
     private void Add()
     {
-        Logger.LogInfo("Adding image roll.");
+        Logger.Info("Adding image roll.");
 
         NewImageRoll = new ImageRoll() { ImageRollsDatabase = SelectedUserDatabase };
     }
@@ -348,7 +348,7 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
     [RelayCommand]
     private void Edit()
     {
-        Logger.LogInfo("Editing image roll.");
+        Logger.Info("Editing image roll.");
 
         NewImageRoll = SelectedUserImageRoll.CopyLite();
     }
@@ -361,19 +361,19 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
 
         if (string.IsNullOrEmpty(NewImageRoll.Name))
         {
-            Logger.LogWarning("Name is required for image rolls.");
+            Logger.Warning("Name is required for image rolls.");
             return;
         }
 
         if (NewImageRoll.SelectedApplicationStandard is ApplicationStandards.GS1 && NewImageRoll.SelectedGS1Table is GS1Tables.Unknown)
         {
-            Logger.LogWarning("GS1 Table is required for GS1 image rolls.");
+            Logger.Warning("GS1 Table is required for GS1 image rolls.");
             return;
         }
 
         if (SelectedUserDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)
         {
-            Logger.LogInfo($"Saved image roll: {NewImageRoll.Name}");
+            Logger.Info($"Saved image roll: {NewImageRoll.Name}");
 
             var update = UserImageRolls.FirstOrDefault((e) => e.UID == NewImageRoll.UID);
             if (update != null)
@@ -397,7 +397,7 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
             RefreshView = !RefreshView;
         }
         else
-            Logger.LogError($"Failed to save image roll: {NewImageRoll.Name}");
+            Logger.Error($"Failed to save image roll: {NewImageRoll.Name}");
 
         NewImageRoll = null;
     }
@@ -415,21 +415,21 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
         {
 
             if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImage(SelectedUserImageRoll.UID, img.UID))
-                Logger.LogInfo($"Deleted image: {img.UID}");
+                Logger.Info($"Deleted image: {img.UID}");
             else
-                Logger.LogError($"Failed to delete image: {img.UID}");
+                Logger.Error($"Failed to delete image: {img.UID}");
         }
 
         if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImageRoll(NewImageRoll.UID))
         {
-            Logger.LogInfo($"Deleted image roll: {NewImageRoll.UID}");
+            Logger.Info($"Deleted image roll: {NewImageRoll.UID}");
 
             LoadUserImageRollsList();
             NewImageRoll = null;
             SelectedUserImageRoll = null;
         }
         else
-            Logger.LogError($"Failed to delete image roll: {NewImageRoll.UID}");
+            Logger.Error($"Failed to delete image roll: {NewImageRoll.UID}");
     }
 
     [RelayCommand]

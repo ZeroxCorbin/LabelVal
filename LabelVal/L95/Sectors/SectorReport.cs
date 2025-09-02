@@ -57,7 +57,7 @@ public class SectorReport : ISectorReport
 
         if (report == null)
         {
-            Logger.LogError($"Report or ReportData is null. {Device}");
+            Logger.Error($"Report or ReportData is null. {Device}");
             return;
         }
 
@@ -86,7 +86,7 @@ public class SectorReport : ISectorReport
         //    }
         //    catch (System.Exception ex)
         //    {
-        //        Logger.LogError(ex, $"Error processing parameter: {parameter}");
+        //        Logger.Error(ex, $"Error processing parameter: {parameter}");
         //    }
         //}
     }
@@ -95,7 +95,7 @@ public class SectorReport : ISectorReport
         var sym = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Symbology, Device, Symbologies.Unknown);
         if (sym == null)
         {
-            Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Symbology.GetPath(Devices.L95, Symbologies.Unknown)}' in ReportData. {Device}");
+            Logger.Error($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Symbology.GetPath(Devices.L95, Symbologies.Unknown)}' in ReportData. {Device}");
             return false;
         }
 
@@ -107,7 +107,7 @@ public class SectorReport : ISectorReport
 
         if (Symbology == Symbologies.Unknown)
         {
-            Logger.LogError($"Could not determine symbology from: '{sym}' {Device}");
+            Logger.Error($"Could not determine symbology from: '{sym}' {Device}");
             return false;
         }
 
@@ -121,7 +121,7 @@ public class SectorReport : ISectorReport
             OverallGrade = GetOverallGrade(overall);
         else
         {
-            Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.OverallGrade.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
+            Logger.Error($"Could not find: '{BarcodeVerification.lib.Common.Parameters.OverallGrade.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
             return false;
         }
         return true;
@@ -134,14 +134,14 @@ public class SectorReport : ISectorReport
 
         if (stdString == null)
         {
-            Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.GradingStandard.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
+            Logger.Error($"Could not find: '{BarcodeVerification.lib.Common.Parameters.GradingStandard.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
             return false;
         }
         GradingStandard = "ISO".GetGradingStandard(Device, Specification);
 
         if (GradingStandard == GradingStandards.None)
         {
-            Logger.LogError($"Could not determine standard from: '{stdString}' {Device}");
+            Logger.Error($"Could not determine standard from: '{stdString}' {Device}");
             return false;
         }
 
@@ -178,7 +178,7 @@ public class SectorReport : ISectorReport
         xdim ??= report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Xdim, Device, Symbology);
         if (xdim == null)
         {
-            Logger.LogWarning($"Could not find: '{BarcodeVerification.lib.Common.Parameters.CellSize.GetPath(Devices.L95, Symbology)}' or '{BarcodeVerification.lib.Common.Parameters.Xdim.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
+            Logger.Warning($"Could not find: '{BarcodeVerification.lib.Common.Parameters.CellSize.GetPath(Devices.L95, Symbology)}' or '{BarcodeVerification.lib.Common.Parameters.Xdim.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
             return true;
         }
         var split = xdim.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -191,7 +191,7 @@ public class SectorReport : ISectorReport
             }
             else
             {
-                Logger.LogError($"Could not determine units from: '{xdim}' {Device}");
+                Logger.Error($"Could not determine units from: '{xdim}' {Device}");
                 return false;
             }
         }
@@ -203,7 +203,7 @@ public class SectorReport : ISectorReport
         }
         else
         {
-            Logger.LogError($"Could not determine units from: '{xdim}' {Device}");
+            Logger.Error($"Could not determine units from: '{xdim}' {Device}");
             return false;
         }
         return true;
@@ -218,14 +218,14 @@ public class SectorReport : ISectorReport
             var split = aperture.Split('(', StringSplitOptions.RemoveEmptyEntries);
             if (split.Length != 2)
             {
-                Logger.LogError($"Could not parse: '{aperture}' to get Aperture. {Device}");
+                Logger.Error($"Could not parse: '{aperture}' to get Aperture. {Device}");
                 return false;
             }
             Aperture = split[1].ParseDouble();
         }
         else
         {
-            Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Aperture.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
+            Logger.Error($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Aperture.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
             return false;
         }
         return true;

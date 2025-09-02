@@ -26,6 +26,6 @@ public partial class LoggingStatusBar : UserControl
 
     private void btnShowViewer_Click(object sender, RoutedEventArgs e)
     {
-        popupViewer.IsOpen = !popupViewer.IsOpen;
+        PopupViewer.IsOpen = !PopupViewer.IsOpen;
     }
 }

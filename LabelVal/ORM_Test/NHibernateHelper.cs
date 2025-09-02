@@ -49,7 +49,7 @@ namespace LabelVal.ORM_Test
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError(e);
+                    Logger.Error(e);
                 }
             }
 
@@ -79,7 +79,7 @@ namespace LabelVal.ORM_Test
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError(e);
+                    Logger.Error(e);
                 }
             }
 
@@ -110,7 +110,7 @@ namespace LabelVal.ORM_Test
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError(e);
+                    Logger.Error(e);
                 }
             }
 
@@ -139,7 +139,7 @@ namespace LabelVal.ORM_Test
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError(e);
+                    Logger.Error(e);
                 }
             }
 
@@ -168,7 +168,7 @@ namespace LabelVal.ORM_Test
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError(e);
+                    Logger.Error(e);
                 }
             }
 

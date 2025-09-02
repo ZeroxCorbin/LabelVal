@@ -65,12 +65,12 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
 
         if (QuickRunController.RunController.State == RunStates.Running)
         {
-            Logger.LogInfo($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount}");
+            Logger.Info($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount}");
             QuickRunController.RunController.Stop();
         }
         else
         {
-            Logger.LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount}");
+            Logger.Info($"Starting Run: {SelectedImageRoll.Name}; {LoopCount}");
             QuickRunController.Update(LoopCount, ImageResults.ImageResultsEntries, SelectedImageRoll, SelectedV275Node, SelectedV5, SelectedL95);
             QuickRunController.StartStopCommand.Execute(null);
         }

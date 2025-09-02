@@ -175,7 +175,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         if (ImageEntries.Count > 0)
             return;
 
-        Logger.LogInfo($"Loading label images from standards directory: {App.AssetsImageRollsRoot}\\{Name}\\");
+        Logger.Info($"Loading label images from standards directory: {App.AssetsImageRollsRoot}\\{Name}\\");
 
         List<string> images = [];
         foreach (var f in Directory.EnumerateFiles(Path))
@@ -204,14 +204,14 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     {
         if (ImageRollsDatabase == null)
         {
-            Logger.LogError("ImageRollsDatabase is null.");
+            Logger.Error("ImageRollsDatabase is null.");
             return;
         }
 
         if (ImageEntries.Count > 0)
             return;
 
-        Logger.LogInfo($"Loading label images from database: {Name}");
+        Logger.Info($"Loading label images from database: {Name}");
 
         var images = ImageRollsDatabase.SelectAllImages(UID);
         List<Task> taskList = [];
@@ -270,7 +270,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
             var imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
             if (imageEntry != null)
             {
-                Logger.LogWarning($"Image already exists in roll: {Path}");
+                Logger.Warning($"Image already exists in roll: {Path}");
                 return (imageEntry, false);
             }
 
@@ -278,7 +278,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, $"Failed to load image: {Path}");
+            Logger.Error(ex, $"Failed to load image: {Path}");
         }
 
         return (null, false);
@@ -293,7 +293,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
             var imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
             if (imageEntry != null)
             {
-                Logger.LogWarning($"Image already exists in roll: {Path}");
+                Logger.Warning($"Image already exists in roll: {Path}");
                 return (imageEntry, false);
             }
 
@@ -301,7 +301,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, $"Failed to load image: {Path}");
+            Logger.Error(ex, $"Failed to load image: {Path}");
         }
 
         return (null, false);
@@ -342,7 +342,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
                 case ImageAddPositions.Above:
                     if (relativeTo == null)
                     {
-                        Logger.LogWarning("No image result provided for insertion above.");
+                        Logger.Warning("No image result provided for insertion above.");
                         return;
                     }
                     InsertImagesAtOrder(newImages, ImageEntries.IndexOf(relativeTo) + 1);
@@ -350,7 +350,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
                 case ImageAddPositions.Below:
                     if (relativeTo == null)
                     {
-                        Logger.LogWarning("No image result provided for insertion below.");
+                        Logger.Warning("No image result provided for insertion below.");
                         return;
                     }
                     InsertImagesAtOrder(newImages, ImageEntries.IndexOf(relativeTo) + 2);
@@ -450,17 +450,17 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     public void DeleteImage(ImageEntry imageEntry)
     {
         if (!ImageRollsDatabase.DeleteImage(UID, imageEntry.UID))
-            Logger.LogError($"Failed to delete image for database: {imageEntry.UID}");
+            Logger.Error($"Failed to delete image for database: {imageEntry.UID}");
 
         if (ImageEntries.Remove(imageEntry))
         {
             imageEntry.SaveRequested -= OnImageEntrySaveRequested;
-            Logger.LogInfo($"Image deleted from roll: {imageEntry.UID}");
+            Logger.Info($"Image deleted from roll: {imageEntry.UID}");
 
             ResetImageOrderAndSort();
         }
         else
-            Logger.LogError($"Failed to delete image from roll: {imageEntry.UID}");
+            Logger.Error($"Failed to delete image from roll: {imageEntry.UID}");
 
     }
     public ImageRoll CopyLite() => JsonConvert.DeserializeObject<ImageRoll>(JsonConvert.SerializeObject(this));

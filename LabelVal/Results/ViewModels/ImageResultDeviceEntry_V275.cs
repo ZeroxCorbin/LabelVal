@@ -84,7 +84,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
 
     private void _IsWorkingTimer_Elapsed(object sender, ElapsedEventArgs e)
     {
-        Logger.LogError($"Working timer elapsed for {Device}.");
+        Logger.Error($"Working timer elapsed for {Device}.");
         IsWorking = false;
         IsFaulted = true;
     }
@@ -119,7 +119,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
 
         if (ImageResultEntry.SelectedDatabase == null)
         {
-            Logger.LogError("No image results database selected.");
+            Logger.Error("No image results database selected.");
             return;
         }
 
@@ -157,8 +157,8 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
                     }
                     catch (System.Exception ex)
                     {
-                        Logger.LogError(ex);
-                        Logger.LogError($"Error while loading stored results from: {ImageResultEntry.SelectedDatabase.File.Name}");
+                        Logger.Error(ex);
+                        Logger.Error($"Error while loading stored results from: {ImageResultEntry.SelectedDatabase.File.Name}");
                     }
                 }
             }
@@ -177,8 +177,8 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
         }
         catch (System.Exception ex)
         {
-            Logger.LogError(ex);
-            Logger.LogError($"Error while loading stored results from: {ImageResultEntry.SelectedDatabase.File.Name}");
+            Logger.Error(ex);
+            Logger.Error($"Error while loading stored results from: {ImageResultEntry.SelectedDatabase.File.Name}");
         }
     }
 
@@ -187,12 +187,12 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
     {
         if (CurrentSectors.Count == 0)
         {
-            Logger.LogError("No sectors to store.");
+            Logger.Error("No sectors to store.");
             return;
         }
         if (ImageResultEntry.SelectedDatabase == null)
         {
-            Logger.LogError("No image results database selected.");
+            Logger.Error("No image results database selected.");
             return;
         }
 
@@ -212,7 +212,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
         };
 
         if (ImageResultEntry.SelectedDatabase.InsertOrReplace_Result(res) == null)
-            Logger.LogError($"Error while storing results to: {ImageResultEntry.SelectedDatabase.File.Name}");
+            Logger.Error($"Error while storing results to: {ImageResultEntry.SelectedDatabase.File.Name}");
 
         GetStored();
         ClearCurrent();
@@ -249,7 +249,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
         {
             if (report == null)
             {
-                Logger.LogError("Full Report is null.");
+                Logger.Error("Full Report is null.");
                 IsFaulted = true;
                 return;
             }
@@ -286,8 +286,8 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
                     }
                     catch (System.Exception ex)
                     {
-                        Logger.LogError(ex);
-                        Logger.LogError("Error while processing the repeat report.");
+                        Logger.Error(ex);
+                        Logger.Error("Error while processing the repeat report.");
                     }
                 }
             }
@@ -308,8 +308,8 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
         }
         catch (System.Exception ex)
         {
-            Logger.LogError(ex);
-            Logger.LogError("Error while processing the repeat report.");
+            Logger.Error(ex);
+            Logger.Error("Error while processing the repeat report.");
 
             IsFaulted = true;
         }
@@ -446,7 +446,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
             V275_REST_Lib.Controllers.FullReport report;
             if ((report = await ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.GetFullReport(repeat, true)) == null)
             {
-                Logger.LogError("Unable to read the repeat report from the node.");
+                Logger.Error("Unable to read the repeat report from the node.");
                 ClearCurrent();
                 return false;
             }

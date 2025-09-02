@@ -63,7 +63,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
             }
             catch (System.Exception ex)
             {
-                Logger.LogError(ex, $"Error processing parameter: {parameter}");
+                Logger.Error(ex, $"Error processing parameter: {parameter}");
             }
         }
 

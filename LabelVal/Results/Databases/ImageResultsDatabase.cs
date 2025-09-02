@@ -32,7 +32,7 @@ public class ImageResultsDatabase : ObservableObject, IDisposable
         }
         catch (Exception e)
         {
-            Logger.LogError(e);
+            Logger.Error(e);
         }
     }
     public void Close() { Connection?.Close(); }

@@ -96,7 +96,7 @@ public class SectorReport : ISectorReport
         //    }
         //    catch (System.Exception ex)
         //    {
-        //        Logger.LogError(ex, $"Error processing parameter: {parameter}");
+        //        Logger.Error(ex, $"Error processing parameter: {parameter}");
         //    }
         //}
 
@@ -107,7 +107,7 @@ public class SectorReport : ISectorReport
         var bb = ConvertBoundingBox(report.GetParameter<JArray>("boundingBox"));
         if (bb == (0, 0, 0, 0))
         {
-            Logger.LogError("Could not find the bounding box.");
+            Logger.Error("Could not find the bounding box.");
             return false;
         }
 
@@ -125,7 +125,7 @@ public class SectorReport : ISectorReport
     {
         if (corners == null)
         {
-            Logger.LogError("Could not find the bounding box.");
+            Logger.Error("Could not find the bounding box.");
             return (0, 0, 0, 0);
         }
 
@@ -150,7 +150,7 @@ public class SectorReport : ISectorReport
         var sym = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Symbology, Device, Symbology);
         if (sym == null)
         {
-            Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Symbology.GetPath(Device, Symbologies.Unknown)}' in ReportData. {Device}");
+            Logger.Error($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Symbology.GetPath(Device, Symbologies.Unknown)}' in ReportData. {Device}");
             return false;
         }
 
@@ -162,7 +162,7 @@ public class SectorReport : ISectorReport
 
         if (Symbology == Symbologies.Unknown)
         {
-            Logger.LogError($"Could not determine symbology from: '{sym}' {Device}");
+            Logger.Error($"Could not determine symbology from: '{sym}' {Device}");
             return false;
         }
 
@@ -176,7 +176,7 @@ public class SectorReport : ISectorReport
             OverallGrade = GetOverallGrade(overall);
         else
         {
-            Logger.LogWarning($"Could not find: '{BarcodeVerification.lib.Common.Parameters.OverallGrade.GetPath(Device, Symbology)}' in ReportData. {Device}");
+            Logger.Warning($"Could not find: '{BarcodeVerification.lib.Common.Parameters.OverallGrade.GetPath(Device, Symbology)}' in ReportData. {Device}");
 
             //bool qualityEnabled = report.GetParameter<bool>(AvailableParameters.QuailityEnabled, Device, Symbology);
             //bool goodquality = report.GetParameter<bool>(AvailableParameters.GoodQuality, Device, Symbology);
@@ -237,7 +237,7 @@ public class SectorReport : ISectorReport
     {
         if (ApplicationStandard != ApplicationStandards.GS1)
         {
-            Logger.LogInfo("GS1 is not enabled. Skipping GS1 Data.");
+            Logger.Info("GS1 is not enabled. Skipping GS1 Data.");
             return true;
         }
 
@@ -266,7 +266,7 @@ public class SectorReport : ISectorReport
         if (ppi == null)
         {
             Ppi = double.NaN;
-            Logger.LogInfo($"Could not find: '{BarcodeVerification.lib.Common.Parameters.PPI.GetPath(Device, Symbology)}' in the Job. {Device}");
+            Logger.Info($"Could not find: '{BarcodeVerification.lib.Common.Parameters.PPI.GetPath(Device, Symbology)}' in the Job. {Device}");
         }
         else
             Ppi = ppi.ParseDouble();
@@ -274,7 +274,7 @@ public class SectorReport : ISectorReport
         var ppe = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.PPE, Device, Symbology);
         if (ppe == null)
         {
-            Logger.LogError($"Could not find: '{BarcodeVerification.lib.Common.Parameters.PPE.GetPath(Device, Symbology)}' in ReportData. {Device}");
+            Logger.Error($"Could not find: '{BarcodeVerification.lib.Common.Parameters.PPE.GetPath(Device, Symbology)}' in ReportData. {Device}");
             return false;
         }
 
@@ -287,7 +287,7 @@ public class SectorReport : ISectorReport
     {
         if (OverallGrade == null)
         {
-            Logger.LogError("OverallGrade is null. Cannot calculate Aperture.");
+            Logger.Error("OverallGrade is null. Cannot calculate Aperture.");
             return false;
         }
 
@@ -302,7 +302,7 @@ public class SectorReport : ISectorReport
 
         if (spl.Length < 2)
         {
-            Logger.LogError($"Could not parse: '{OverallGrade.Value}' to get Aperture. {Device}");
+            Logger.Error($"Could not parse: '{OverallGrade.Value}' to get Aperture. {Device}");
             return false;
         }
 
@@ -399,7 +399,7 @@ public class SectorReport : ISectorReport
         }
 
         target.Add(new Missing(parameter));
-        Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetPath(Device, Symbology)}' missing or parse issue.");
+        Logger.Debug($"Paramter: '{parameter}' @ Path: '{parameter.GetPath(Device, Symbology)}' missing or parse issue.");
     }
 
     private GradeValue GetGradeValue(Parameters parameter, JObject gradeValue)

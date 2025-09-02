@@ -133,7 +133,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
 
     private void UpdateImageResultsDatabasesList()
     {
-        Logger.LogInfo($"Loading Image Results databases from file system. {App.ImageResultsDatabaseRoot}");
+        Logger.Info($"Loading Image Results databases from file system. {App.ImageResultsDatabaseRoot}");
 
         FileRoot = EnumerateFolders(FileRoot);
         UpdateDatabases(FileRoot);

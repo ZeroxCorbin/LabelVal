@@ -86,7 +86,7 @@ public partial class Scanner : UserControl
             {
                 System.IO.File.WriteAllBytes(path, ((ViewModels.Scanner)DataContext).RawImage);
             }
-            catch (Exception ex) { Logger.LogError(ex); }
+            catch (Exception ex) { Logger.Error(ex); }
         }
     }
 

@@ -54,7 +54,7 @@ namespace LabelVal.L95.Sectors
             }
 
             target.Add(new Missing(parameter));
-            Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetPath(device, symbology)}' missing or parse issue.");
+            Logger.Debug($"Paramter: '{parameter}' @ Path: '{parameter.GetPath(device, symbology)}' missing or parse issue.");
         }
 
         private static IParameterValue GetGradeValueOrGrade(Devices device, Parameters parameter, Symbologies symbology, string data)

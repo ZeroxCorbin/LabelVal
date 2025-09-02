@@ -104,7 +104,7 @@ public partial class ImageResultDeviceEntry_L95
 
     private void _IsWorkingTimer_Elapsed(object sender, ElapsedEventArgs e)
     {
-        Logger.LogError($"Working timer elapsed for {Device}.");
+        Logger.Error($"Working timer elapsed for {Device}.");
         IsWorking = false;
         IsFaulted = true;
     }
@@ -125,7 +125,7 @@ public partial class ImageResultDeviceEntry_L95
 
         if (ImageResultEntry.SelectedDatabase == null)
         {
-            Logger.LogError("No image results database selected.");
+            Logger.Error("No image results database selected.");
             return;
         }
 
@@ -159,8 +159,8 @@ public partial class ImageResultDeviceEntry_L95
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex);
-            Logger.LogError($"Error while loading stored results from: {ImageResultEntry.SelectedDatabase.File.Name}");
+            Logger.Error(ex);
+            Logger.Error($"Error while loading stored results from: {ImageResultEntry.SelectedDatabase.File.Name}");
         }
     }
 
@@ -169,13 +169,13 @@ public partial class ImageResultDeviceEntry_L95
     {
         if (CurrentSectors.Count == 0)
         {
-            Logger.LogError("No sectors to store.");
+            Logger.Error("No sectors to store.");
             return;
         }
 
         if (ImageResultEntry.SelectedDatabase == null)
         {
-            Logger.LogError("No image results database selected.");
+            Logger.Error("No image results database selected.");
             return;
         }
 
@@ -218,13 +218,13 @@ public partial class ImageResultDeviceEntry_L95
     {
         if (CurrentSectors.Count == 0)
         {
-            Logger.LogError("No sectors to store.");
+            Logger.Error("No sectors to store.");
             return;
         }
 
         if (ImageResultEntry.SelectedDatabase == null)
         {
-            Logger.LogError("No image results database selected.");
+            Logger.Error("No image results database selected.");
             return;
         }
 
@@ -235,7 +235,7 @@ public partial class ImageResultDeviceEntry_L95
         var res = GetCurrentReport();
 
         if (ImageResultEntry.SelectedDatabase.InsertOrReplace_Result(res) == null)
-            Logger.LogError($"Error while storing results to: {ImageResultEntry.SelectedDatabase.File.Name}");
+            Logger.Error($"Error while storing results to: {ImageResultEntry.SelectedDatabase.File.Name}");
 
         GetStored();
         ClearCurrent();
@@ -245,7 +245,7 @@ public partial class ImageResultDeviceEntry_L95
 
         //    if (L95CurrentSectorSelected == null)
         //    {
-        //        Logger.LogError("No sector selected to store.");
+        //        Logger.Error("No sector selected to store.");
         //        return;
         //    }
         //    //Does the selected sector exist in the Stored sectors list?
@@ -284,7 +284,7 @@ public partial class ImageResultDeviceEntry_L95
 
         //    if (L95CurrentSectors.Count == 0)
         //    {
-        //        Logger.LogDebug($"There are no sectors to store for: {device}");
+        //        Logger.Debug($"There are no sectors to store for: {device}");
         //        return;
         //    }
         //    //Does the selected sector exist in the Stored sectors list?
@@ -417,7 +417,7 @@ public partial class ImageResultDeviceEntry_L95
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex);
+            Logger.Error(ex);
             IsFaulted = true;
         }
         finally
@@ -438,7 +438,7 @@ public partial class ImageResultDeviceEntry_L95
 
         if (CurrentSelectedSector == null)
         {
-            Logger.LogError("No sector selected to clear.");
+            Logger.Error("No sector selected to clear.");
             return;
         }
 

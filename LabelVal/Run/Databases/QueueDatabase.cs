@@ -11,7 +11,7 @@ internal class QueueDatabase : IDisposable
     public QueueDatabase(string dbFilePath) => Open(dbFilePath);
     public QueueDatabase Open(string dbFilePath)
     {
-        Logger.LogInfo($"Opening Database: {dbFilePath}");
+        Logger.Info($"Opening Database: {dbFilePath}");
 
         if (string.IsNullOrEmpty(dbFilePath))
             return null;
@@ -25,7 +25,7 @@ internal class QueueDatabase : IDisposable
         }
         catch (Exception e)
         {
-            Logger.LogError(e);
+            Logger.Error(e);
             return null;
         }
     }

@@ -7,13 +7,23 @@ using RingBuffer.lib;
 namespace LabelVal.Main.ViewModels;
 public partial class LoggingStatusBarVm : ObservableRecipient, IRecipient<Logging.lib.LoggerMessage>
 {
-    public RingBufferCollection<Logging.lib.LoggerMessage> LoggerMessages { get; } = new RingBufferCollection<Logging.lib.LoggerMessage>(30);
+    public RingBufferCollection<Logging.lib.LoggerMessage> LoggerMessages { get; } = new RingBufferCollection<Logging.lib.LoggerMessage>(256);
 
     [ObservableProperty] private LoggerMessage? latest;
     [ObservableProperty] private LoggerMessage? latestError;
     [ObservableProperty] private LoggerMessage? latestWarning;
     [ObservableProperty] private LoggerMessage? latestInfo;
     [ObservableProperty] private LoggerMessage? latestDebug;
+
+    public bool IsExpanded
+    {
+        get => App.Settings.GetValue("LoggingStatusBar.IsExpanded", false, true);
+        set
+        {
+            App.Settings.SetValue("LoggingStatusBar.IsExpanded", value);
+            OnPropertyChanged(nameof(IsExpanded));
+        }
+    }
 
     public LoggingStatusBarVm() => IsActive = true;
     public void Receive(LoggerMessage message)
@@ -48,6 +58,12 @@ public partial class LoggingStatusBarVm : ObservableRecipient, IRecipient<Loggin
             return;
         }
         LoggerMessages.Add(message);
+    }
+
+    [RelayCommand]
+    private void ToggleIsExpanded()
+    {
+        IsExpanded = !IsExpanded;
     }
 
     [RelayCommand]

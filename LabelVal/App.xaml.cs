@@ -296,7 +296,7 @@ public partial class App : Application
         Settings = new SimpleDatabase();
         if (!Settings.Open(Path.Combine(UserDataDirectory, SettingsDatabaseName)))
         {
-            Logger.LogError("The ApplicationSettings database is null. Shutdown!");
+            Logger.Error("The ApplicationSettings database is null. Shutdown!");
             Shutdown();
         }
     }
@@ -305,7 +305,7 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-                Logger.LogInfo("Starting: Getting colorblind setting.");
+                Logger.Info("Starting: Getting colorblind setting.");
                 var isColorBlind = Settings.GetValue("App.IsColorBlind", false);
                 Dispatcher.Invoke(() => ChangeColorBlindTheme(isColorBlind));
 
@@ -317,7 +317,7 @@ public partial class App : Application
             {
 
 
-                Logger.LogInfo("Starting: Getting color theme.");
+                Logger.Info("Starting: Getting color theme.");
                 var themeName = Settings.GetValue("App.Theme", "Dark.Steel", true);
                 Dispatcher.Invoke(() =>
                 {
@@ -331,7 +331,7 @@ public partial class App : Application
                 });
             });
 
-            Logger.LogInfo("Starting: Complete");
+            Logger.Info("Starting: Complete");
         }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
     }
     protected override void OnExit(ExitEventArgs e)
@@ -389,11 +389,11 @@ public partial class App : Application
     {
         try
         {
-            Logger.LogError(exception, source);
+            Logger.Error(exception, source);
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Nested Exception in LogUnhandledException");
+            Logger.Error(ex, "Nested Exception in LogUnhandledException");
         }
 
         if (shutdown)

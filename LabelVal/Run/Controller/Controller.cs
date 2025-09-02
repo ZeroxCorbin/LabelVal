@@ -76,25 +76,25 @@ public partial class Controller : ObservableObject
 
         if (!HasV275 && !HasV5 && !HasL95)
         {
-            Logger.LogError("Run: No device selected for run.");
+            Logger.Error("Run: No device selected for run.");
             return false;
         }
 
         if (HasV275 && !V275.Controller.IsLoggedIn_Control)
         {
-            Logger.LogError("Run: V275, Not logged in.");
+            Logger.Error("Run: V275, Not logged in.");
             return false;
         }
 
         if (HasV5 && !V5.IsConnected)
         {
-            Logger.LogError("Run: V5, Not connected.");
+            Logger.Error("Run: V5, Not connected.");
             return false;
         }
 
         if (HasL95 && !L95.IsConnected)
         {
-            Logger.LogError("Run: Lvs95xx, Not connected.");
+            Logger.Error("Run: Lvs95xx, Not connected.");
             return false;
         }
 
@@ -148,7 +148,7 @@ public partial class Controller : ObservableObject
 
             if (HasV275)
             {
-                Logger.LogInfo("Run: V275, Pre-Run");
+                Logger.Info("Run: V275, Pre-Run");
 
                 if (await PreRunV275() != RunStates.Running)
                     return State;
@@ -156,7 +156,7 @@ public partial class Controller : ObservableObject
 
             if (HasV5)
             {
-                Logger.LogInfo("Run: V5, Pre-Run");
+                Logger.Info("Run: V5, Pre-Run");
 
                 if (await PreRunV5() != RunStates.Running)
                     return State;
@@ -164,13 +164,13 @@ public partial class Controller : ObservableObject
 
             if (HasL95)
             {
-                Logger.LogInfo("Run: Lvs95xx, Pre-Run");
+                Logger.Info("Run: Lvs95xx, Pre-Run");
 
                 if (await PreRunL95() != RunStates.Running)
                     return State;
             }
 
-            Logger.LogInfo($"Run: Loop Count {LoopCount}");
+            Logger.Info($"Run: Loop Count {LoopCount}");
 
             var wasLoop = 0;
             for (var i = 0; i < LoopCount; i++)
@@ -195,15 +195,15 @@ public partial class Controller : ObservableObject
                 {
                     //UseV275 = HasV275 && ire.V275StoredSectors.Count > 0;
                     //if (HasV275 && ire.V275StoredSectors.Count == 0)
-                    //    Logger.LogInfo("Run: V275, No sectors to process.");
+                    //    Logger.Info("Run: V275, No sectors to process.");
 
                     //UseV5 = HasV5 && ire.V5StoredSectors.Count > 0;
                     //if (HasV5 && ire.V5StoredSectors.Count == 0)
-                    //    Logger.LogInfo("Run: V5, No sectors to process.");
+                    //    Logger.Info("Run: V5, No sectors to process.");
 
                     //UseL95 = HasL95 && ire.L95StoredSectors.Count > 0;
                     //if (HasL95 && ire.L95StoredSectors.Count == 0)
-                    //    Logger.LogInfo("Run: Lvs95xx, No sectors to process.");
+                    //    Logger.Info("Run: Lvs95xx, No sectors to process.");
 
                     if (!UseV275 && !UseV5 && !UseL95)
                         continue;
@@ -225,7 +225,7 @@ public partial class Controller : ObservableObject
                                 return State;
 
                         wasLoop = CurrentLoopCount;
-                        Logger.LogInfo($"Run: Starting Loop {CurrentLoopCount}");
+                        Logger.Info($"Run: Starting Loop {CurrentLoopCount}");
                     }
 
                     if (RequestedState != RunStates.Running)
@@ -304,7 +304,7 @@ public partial class Controller : ObservableObject
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex.Message);
+            Logger.Error(ex.Message);
             State = RunStates.Error;
             return State;
         }
@@ -314,7 +314,7 @@ public partial class Controller : ObservableObject
     {
         if (!await V275.Controller.SwitchToEdit())
         {
-            Logger.LogError("Run: V275, Failed to switch to edit mode.");
+            Logger.Error("Run: V275, Failed to switch to edit mode.");
             return UpdateRunState(RunStates.Error);
         }
 
@@ -329,7 +329,7 @@ public partial class Controller : ObservableObject
             //Switch to edit to allow the Match files and Sequencing to reset.
             if (!await V275.Controller.SwitchToEdit())
             {
-                Logger.LogError("Run: V275, Failed to switch to edit mode.");
+                Logger.Error("Run: V275, Failed to switch to edit mode.");
                 return UpdateRunState(RunStates.Error);
             }
         }
@@ -338,7 +338,7 @@ public partial class Controller : ObservableObject
         {
             if (!await V275.Controller.SwitchToRun())
             {
-                Logger.LogError("Run: V275, Failed to switch to run mode.");
+                Logger.Error("Run: V275, Failed to switch to run mode.");
                 return UpdateRunState(RunStates.Error);
             }
         }
@@ -374,13 +374,13 @@ public partial class Controller : ObservableObject
 
                 if (DateTime.Now - start > TimeSpan.FromMilliseconds(10000))
                 {
-                    Logger.LogError("Run: Timeout waiting for results.");
+                    Logger.Error("Run: Timeout waiting for results.");
                     _ = UpdateRunState(RunStates.Error);
                 }
 
                 if (ire.IsFaulted)
                 {
-                    Logger.LogError("Run: Error when interacting with V275.");
+                    Logger.Error("Run: Error when interacting with V275.");
                     _ = UpdateRunState(RunStates.Error);
                 }
 
@@ -394,7 +394,7 @@ public partial class Controller : ObservableObject
 
         if (ire.Result == null)
         {
-            Logger.LogError("Run: V275, No results returned.");
+            Logger.Error("Run: V275, No results returned.");
             _ = UpdateRunState(RunStates.Error);
             return null;
         }
@@ -410,7 +410,7 @@ public partial class Controller : ObservableObject
     {
         if (!await V5.SwitchToEdit())
         {
-            Logger.LogError("Run: V5, Failed to switch to edit mode.");
+            Logger.Error("Run: V5, Failed to switch to edit mode.");
             return UpdateRunState(RunStates.Error);
         }
         return State;
@@ -431,7 +431,7 @@ public partial class Controller : ObservableObject
             {
                 if (!await V5.ChangeImage(ire.StoredImage.ImageBytes, false))
                 {
-                    Logger.LogError("Could not change the image.");
+                    Logger.Error("Could not change the image.");
                     _ = UpdateRunState(RunStates.Error);
                     return null;
                 }
@@ -440,7 +440,7 @@ public partial class Controller : ObservableObject
             {
                 if (!await V5.ChangeImage(ire.ImageResultEntry.SourceImage.ImageBytes, false))
                 {
-                    Logger.LogError("Could not change the image.");
+                    Logger.Error("Could not change the image.");
                     _ = UpdateRunState(RunStates.Error);
                     return null;
                 }
@@ -451,7 +451,7 @@ public partial class Controller : ObservableObject
 
         if (!res.OK)
         {
-            Logger.LogError("Could not trigger the scanner.");
+            Logger.Error("Could not trigger the scanner.");
             _ = UpdateRunState(RunStates.Error);
             return null;
         }
@@ -493,7 +493,7 @@ public partial class Controller : ObservableObject
         var res = await L95.ProcessLabelAsync(lab);
         if (res == null)
         {
-            Logger.LogError("Run: Lvs95xx, No results returned.");
+            Logger.Error("Run: Lvs95xx, No results returned.");
             _ = UpdateRunState(RunStates.Error);
             return null;
         }
@@ -539,7 +539,7 @@ public partial class Controller : ObservableObject
             ResultsDatabase?.Close();
         }
 
-        Logger.LogInfo($"Run: State Changed to {state}");
+        Logger.Info($"Run: State Changed to {state}");
         State = state;
         return state;
     }

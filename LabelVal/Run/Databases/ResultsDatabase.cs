@@ -14,7 +14,7 @@ public partial class ResultsDatabase : IDisposable
     public ResultsDatabase(string dbFilePath) => Open(dbFilePath);
     public ResultsDatabase Open(string dbFilePath)
     {
-        Logger.LogInfo($"Opening Database: {dbFilePath}");
+        Logger.Info($"Opening Database: {dbFilePath}");
 
         if (string.IsNullOrEmpty(dbFilePath))
             return null;
@@ -29,7 +29,7 @@ public partial class ResultsDatabase : IDisposable
         }
         catch (Exception e)
         {
-            Logger.LogError(e);
+            Logger.Error(e);
             return null;
         }
     }

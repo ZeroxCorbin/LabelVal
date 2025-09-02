@@ -498,7 +498,7 @@ public partial class ImageResultsManager : ObservableRecipient,
             {
                 if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
                 {
-                    Logger.LogWarning("The database is locked. Cannot add image.");
+                    Logger.Warning("The database is locked. Cannot add image.");
                     return;
                 }
 
@@ -536,7 +536,7 @@ public partial class ImageResultsManager : ObservableRecipient,
             {
                 if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
                 {
-                    Logger.LogWarning("The database is locked. Cannot add image.");
+                    Logger.Warning("The database is locked. Cannot add image.");
                     return;
                 }
 
@@ -572,7 +572,7 @@ public partial class ImageResultsManager : ObservableRecipient,
             {
                 if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
                 {
-                    Logger.LogWarning("The database is locked. Cannot add image.");
+                    Logger.Warning("The database is locked. Cannot add image.");
                     return;
                 }
 
@@ -604,7 +604,7 @@ public partial class ImageResultsManager : ObservableRecipient,
         // Remove the image from the database
         if (SelectedImageRoll.IsLocked)
         {
-            Logger.LogWarning("The database is locked. Cannot delete image.");
+            Logger.Warning("The database is locked. Cannot delete image.");
             return;
         }
 

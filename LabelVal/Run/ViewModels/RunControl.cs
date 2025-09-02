@@ -42,7 +42,7 @@ public Verifier L95 { get; private set; }
     {
         if (RunController.State == RunStates.Running)
         {
-            Logger.LogDebug("Cannot update RunControl while running");
+            Logger.Debug("Cannot update RunControl while running");
             return;
         }
 
@@ -62,12 +62,12 @@ public Verifier L95 { get; private set; }
 
         if (RunController.State == RunStates.Running)
         {
-            Logger.LogInfo($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
+            Logger.Info($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
             RunController.Stop();
         }
         else
         {
-            Logger.LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
+            Logger.Info($"Starting Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
             RunController.StartAsync(ImageResultsEntries, SelectedImageRoll, V275, V5?.Controller, L95?.Controller, LoopCount);
         }
     }

@@ -167,13 +167,13 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     private async void SwitchAquisitionType(bool file)
     {
         if (!await Controller.SwitchAquisitionType(file, SelectedDirectory ?? Directories.First()))
-            Logger.LogError("Could not switch acquisition type.");
+            Logger.Error("Could not switch acquisition type.");
     }
     private async void ChangeDirectory(string directory)
     {
         if (!Controller.IsConfigValid)
         {
-            Logger.LogError("Could not get scanner configuration.");
+            Logger.Error("Could not get scanner configuration.");
             return;
         }
 
@@ -184,7 +184,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         if (source == null)
         {
-            Logger.LogError("Could not get the source object from the configuration.");
+            Logger.Error("Could not get the source object from the configuration.");
             return;
         }
 
@@ -195,7 +195,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             var send = Controller.Config.GetParameter<JObject>("response.data");
             if (send == null)
             {
-                Logger.LogError("Could not get the data object from the configuration.");
+                Logger.Error("Could not get the data object from the configuration.");
                 return;
             }
 
@@ -267,16 +267,16 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             JobName = Controller.Config.GetParameter<string>("response.data.job.name");
         }
         else
-            Logger.LogError("V5 Config update but Config is invalid.");
+            Logger.Error("V5 Config update but Config is invalid.");
 
         if (Controller.IsSysInfoValid)
         {
             SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.GetParameter<string>("response.data.hwal.lens.lensName").StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.GetParameter<string>("response.data.hwal.sensor.description").StartsWith(e.Sensor.PixelCount.ToString()));
             if (SelectedCamera == null)
-                Logger.LogError("Could not find a camera matching the current lens and sensor.");
+                Logger.Error("Could not find a camera matching the current lens and sensor.");
         }
         else
-            Logger.LogError("V5 Config update but SysInfo is invalid.");
+            Logger.Error("V5 Config update but SysInfo is invalid.");
     }
     private void ScannerController_SysInfoUpdate()
     {
@@ -284,10 +284,10 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         {
             SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.GetParameter<string>("response.data.hwal.lens.lensName").StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.GetParameter<string>("response.data.hwal.sensor.description").StartsWith(e.Sensor.PixelCount.ToString()));
             if (SelectedCamera == null)
-                Logger.LogError("Could not find a camera matching the current lens and sensor.");
+                Logger.Error("Could not find a camera matching the current lens and sensor.");
         }
         else
-            Logger.LogError("V5 Config update but SysInfo is invalid.");
+            Logger.Error("V5 Config update but SysInfo is invalid.");
     }
     private void ScannerController_ReportUpdate(JObject json)
     {
@@ -340,7 +340,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                     });
                 }
             }
-            catch (Exception ex) { Logger.LogError(ex); }
+            catch (Exception ex) { Logger.Error(ex); }
         }
     }
     private async void ScannerController_ImageUpdate(JObject json)
@@ -721,25 +721,25 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         if (SelectedImageRoll == null)
         {
-            Logger.LogWarning("No image roll selected.");
+            Logger.Warning("No image roll selected.");
             return;
         }
 
         if (SelectedImageRoll.RollType == ImageRollTypes.Directory)
         {
-            Logger.LogWarning("Cannot add to a directory based image roll.");
+            Logger.Warning("Cannot add to a directory based image roll.");
             return;
         }
 
         if (SelectedImageRoll.IsLocked)
         {
-            Logger.LogWarning("Cannot add to a locked image roll.");
+            Logger.Warning("Cannot add to a locked image roll.");
             return;
         }
 
         if (RawImage == null)
         {
-            Logger.LogWarning("No image to add.");
+            Logger.Warning("No image to add.");
             return;
         }
         var imagEntry = SelectedImageRoll.GetImageEntry(RawImage);
