@@ -45,27 +45,27 @@ public partial class ImageResultsManager : ObservableRecipient,
     private bool _shiftPressed = false;
 
     /// <see cref="ImagesMaxHeight"/>
-    [ObservableProperty] private int imagesMaxHeight = App.Settings.GetValue(nameof(ImagesMaxHeight), 200, true);
+    [ObservableProperty] private int _imagesMaxHeight = App.Settings.GetValue(nameof(ImagesMaxHeight), 200, true);
     partial void OnImagesMaxHeightChanged(int value) => App.Settings.SetValue(nameof(ImagesMaxHeight), value);
 
     /// <see cref="ImagesMaxWidth"/>
-    [ObservableProperty] private bool dualSectorColumns = App.Settings.GetValue(nameof(DualSectorColumns), false, true);
+    [ObservableProperty] private bool _dualSectorColumns = App.Settings.GetValue(nameof(DualSectorColumns), false, true);
     partial void OnDualSectorColumnsChanged(bool value) => App.Settings.SetValue(nameof(DualSectorColumns), value);
 
     /// <see cref="ShowExtendedData"/>
-    [ObservableProperty] private bool showExtendedData = App.Settings.GetValue(nameof(ShowExtendedData), false, true);
+    [ObservableProperty] private bool _showExtendedData = App.Settings.GetValue(nameof(ShowExtendedData), false, true);
     partial void OnShowExtendedDataChanged(bool value) => App.Settings.SetValue(nameof(ShowExtendedData), value);
 
     /// <see cref="HideErrorsWarnings"/>
-    [ObservableProperty] private bool hideErrorsWarnings = App.Settings.GetValue(nameof(HideErrorsWarnings), false, true);
+    [ObservableProperty] private bool _hideErrorsWarnings = App.Settings.GetValue(nameof(HideErrorsWarnings), false, true);
     partial void OnHideErrorsWarningsChanged(bool value) => App.Settings.SetValue(nameof(HideErrorsWarnings), value);
 
     /// <see cref="ImageAddPosition"/>
-    [ObservableProperty] private ImageAddPositions imageAddPosition = App.Settings.GetValue(nameof(ImageAddPosition), ImageAddPositions.Bottom, true);
+    [ObservableProperty] private ImageAddPositions _imageAddPosition = App.Settings.GetValue(nameof(ImageAddPosition), ImageAddPositions.Bottom, true);
     partial void OnImageAddPositionChanged(ImageAddPositions value) => App.Settings.SetValue(nameof(ImageAddPosition), value);
 
     /// <see cref="SelectedImageRoll"/>
-    [ObservableProperty] private ImageRoll selectedImageRoll;
+    [ObservableProperty] private ImageRoll _selectedImageRoll;
     partial void OnSelectedImageRollChanged(ImageRoll oldValue, ImageRoll newValue)
     {
         if (oldValue != null)
@@ -86,10 +86,10 @@ public partial class ImageResultsManager : ObservableRecipient,
     }
 
     /// <see cref="SelectedDatabase"/>
-    [ObservableProperty] private Databases.ImageResultsDatabase selectedDatabase;
+    [ObservableProperty] private Databases.ImageResultsDatabase _selectedDatabase;
 
     [ObservableProperty]
-    private ImageResultEntry topmostItem;
+    private ImageResultEntry _topmostItem;
     partial void OnTopmostItemChanged(ImageResultEntry oldValue, ImageResultEntry newValue)
     {
         if (oldValue is not null)
@@ -105,27 +105,27 @@ public partial class ImageResultsManager : ObservableRecipient,
     public ObservableCollection<ImageResultEntry> ImageResultsEntries { get; } = [];
 
     /// <see cref="FocusedTemplate"/>
-    [ObservableProperty] private JObject focusedTemplate;
+    [ObservableProperty] private JObject _focusedTemplate;
     /// <see cref="FocusedReport"/>
-    [ObservableProperty] private JObject focusedReport;
+    [ObservableProperty] private JObject _focusedReport;
 
     /// <see cref="SelectedV275Node"/>
-    [ObservableProperty] private Node selectedV275Node;
+    [ObservableProperty] private Node _selectedV275Node;
     /// <see cref="SelectedV5"/>
-    [ObservableProperty] private Scanner selectedV5;
+    [ObservableProperty] private Scanner _selectedV5;
     /// <see cref="SelectedL95"/>
-    [ObservableProperty] private Verifier selectedL95;
+    [ObservableProperty] private Verifier _selectedL95;
 
     /// <see cref="SelectedPrinter"/>
-    [ObservableProperty] private PrinterSettings selectedPrinter;
+    [ObservableProperty] private PrinterSettings _selectedPrinter;
 
     /// <see cref="IsV275Working"/>
-    [ObservableProperty] private bool isV275Working;
+    [ObservableProperty] private bool _isV275Working;
     /// <see cref="IsV275Selected"/>
-    [ObservableProperty] private bool isV275Selected;
+    [ObservableProperty] private bool _isV275Selected;
     partial void OnIsV275SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.V275); }
     /// <see cref="IsV5Faulted"/>
-    [ObservableProperty] private bool isV275Faulted;
+    [ObservableProperty] private bool _isV275Faulted;
     public LabelHandlers V275Handler => SelectedV275Node?.Controller != null && SelectedV275Node.Controller.IsLoggedIn_Control
                 ? SelectedV275Node.Controller.IsSimulator
                     ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
@@ -133,12 +133,12 @@ public partial class ImageResultsManager : ObservableRecipient,
                 : LabelHandlers.Offline;
 
     /// <see cref="IsV5Working"/>
-    [ObservableProperty] private bool isV5Working;
+    [ObservableProperty] private bool _isV5Working;
     /// <see cref="IsV5Selected"/>
-    [ObservableProperty] private bool isV5Selected;
+    [ObservableProperty] private bool _isV5Selected;
     partial void OnIsV5SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.V5); }
     /// <see cref="IsV5Faulted"/>
-    [ObservableProperty] private bool isV5Faulted;
+    [ObservableProperty] private bool _isV5Faulted;
     public LabelHandlers V5Handler => SelectedV5?.Controller != null && SelectedV5.Controller.IsConnected
                 ? SelectedV5.Controller.IsSimulator
                     ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
@@ -146,12 +146,12 @@ public partial class ImageResultsManager : ObservableRecipient,
                 : LabelHandlers.Offline;
 
     /// <see cref="IsL95Working"/>
-    [ObservableProperty] private bool isL95Working;
+    [ObservableProperty] private bool _isL95Working;
     /// <see cref="IsL95Selected"/>
-    [ObservableProperty] private bool isL95Selected;
+    [ObservableProperty] private bool _isL95Selected;
     partial void OnIsL95SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.L95); }
     /// <see cref="IsL95Faulted"/>
-    [ObservableProperty] private bool isL95Faulted;
+    [ObservableProperty] private bool _isL95Faulted;
     public LabelHandlers L95Handler => SelectedL95?.Controller != null && SelectedL95?.Controller.IsConnected == true && SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running
                 ? SelectedL95.Controller.IsSimulator
                     ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
@@ -223,13 +223,13 @@ public partial class ImageResultsManager : ObservableRecipient,
 
     }
 
-    private bool isLoadingImages = false;
+    private bool _isLoadingImages = false;
     public async Task LoadImageResultsEntries()
     {
         if (SelectedImageRoll == null)
             return;
 
-        isLoadingImages = true;
+        _isLoadingImages = true;
         try
         {
             await Application.Current.Dispatcher.InvokeAsync(() => ImageResultsEntries.Clear());
@@ -250,7 +250,7 @@ public partial class ImageResultsManager : ObservableRecipient,
         }
         finally
         {
-            isLoadingImages = false;
+            _isLoadingImages = false;
         }
 
         // After loading is complete, bring the relevant item into view.
@@ -349,7 +349,7 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         img.NewData = null;
 
-        if (!isLoadingImages)
+        if (!_isLoadingImages)
         {
             _ = Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {

@@ -248,6 +248,7 @@
                                 </results:ImageResultsManager.Style>
                             </results:ImageResultsManager>
 
+
                         </DockPanel>
                     </DockPanel>
                 </md:DrawerHost>

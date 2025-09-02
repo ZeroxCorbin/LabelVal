@@ -385,4 +385,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
     #endregion
 
+
+
 }
