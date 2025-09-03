@@ -348,6 +348,8 @@ public partial class ImageResultDeviceEntry_L95
     [RelayCommand]
     public void Process()
     {
+        IsSelected = true;
+
         Label lab = new()
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
