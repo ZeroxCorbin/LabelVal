@@ -7,81 +7,219 @@ using LabelVal.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
+
+/// <summary>
+/// Specifies the device associated with an image result entry.
+/// </summary>
 [SQLite.StoreAsText]
 [JsonConverter(typeof(StringEnumConverter))]
 public enum ImageResultEntryDevices
 {
+    /// <summary>
+    /// V275 device.
+    /// </summary>
     V275,
+    /// <summary>
+    /// V5 device.
+    /// </summary>
     V5,
+    /// <summary>
+    /// L95 device.
+    /// </summary>
     L95,
+    /// <summary>
+    /// All devices.
+    /// </summary>
     All
 }
 
+/// <summary>
+/// Specifies the type of image in an image result entry.
+/// </summary>
 [SQLite.StoreAsText]
 [JsonConverter(typeof(StringEnumConverter))]
 public enum ImageResultEntryImageTypes
 {
+    /// <summary>
+    /// The original source image.
+    /// </summary>
     Source,
+    /// <summary>
+    /// A stored image from the V275 device.
+    /// </summary>
     V275Stored,
+    /// <summary>
+    /// The current image from the V275 device.
+    /// </summary>
     V275Current,
+    /// <summary>
+    /// A print-related image from the V275 device.
+    /// </summary>
     V275Print,
+    /// <summary>
+    /// A stored image from the V5 device.
+    /// </summary>
     V5Stored,
+    /// <summary>
+    /// The current image from the V5 device.
+    /// </summary>
     V5Current,
+    /// <summary>
+    /// An image from the V5 device's sensor.
+    /// </summary>
     V5Sensor,
+    /// <summary>
+    /// A stored image from the L95 device.
+    /// </summary>
     L95Stored,
+    /// <summary>
+    /// The current image from the L95 device.
+    /// </summary>
     L95Current
 }
 
+/// <summary>
+/// Defines the contract for a device-specific entry in the image results.
+/// This interface manages the state and operations for images and sectors from a particular device.
+/// </summary>
 public interface IImageResultDeviceEntry
 {
+    /// <summary>
+    /// Gets the device type for this entry.
+    /// </summary>
     ImageResultEntryDevices Device { get; }
 
-    string Version { get; }
+    /// <summary>
+    /// Gets the manager for all image results.
+    /// </summary>
     ImageResultsManager ImageResultsManager { get; }
+    /// <summary>
+    /// Gets the parent image result entry.
+    /// </summary>
     ImageResultEntry ImageResultEntry { get; }
 
+    /// <summary>
+    /// Gets the result data associated with this entry.
+    /// </summary>
     Result Result { get; }
 
+    /// <summary>
+    /// Gets the stored image entry.
+    /// </summary>
     ImageEntry StoredImage { get; }
+    /// <summary>
+    /// Gets the overlay for the stored image, typically displaying sectors.
+    /// </summary>
     DrawingImage StoredImageOverlay { get; }
+    /// <summary>
+    /// Gets the collection of sectors for the stored image.
+    /// </summary>
     ObservableCollection<ISector> StoredSectors { get; }
+    /// <summary>
+    /// Gets or sets the currently focused sector in the stored image.
+    /// </summary>
     ISector FocusedStoredSector { get; set; }
 
+    /// <summary>
+    /// Gets the current image entry.
+    /// </summary>
     ImageEntry CurrentImage { get; }
+    /// <summary>
+    /// Gets the overlay for the current image.
+    /// </summary>
     DrawingImage CurrentImageOverlay { get; }
 
+    /// <summary>
+    /// Gets the JSON template for the current device configuration.
+    /// </summary>
     JObject CurrentTemplate { get; }
+    /// <summary>
+    /// Gets the JSON report for the current analysis.
+    /// </summary>
     JObject CurrentReport { get; }
 
+    /// <summary>
+    /// Gets the collection of sectors for the current image.
+    /// </summary>
     ObservableCollection<ISector> CurrentSectors { get; }
+    /// <summary>
+    /// Gets or sets the currently focused sector in the current image.
+    /// </summary>
     ISector FocusedCurrentSector { get; set; }
 
+    /// <summary>
+    /// Gets the label handler associated with this device.
+    /// </summary>
     LabelHandlers Handler { get; }
+    /// <summary>
+    /// Updates the handler, typically refreshing its state or data.
+    /// </summary>
     void HandlerUpdate();
 
+    /// <summary>
+    /// Gets or sets a value indicating whether this entry is selected.
+    /// </summary>
     bool IsSelected { get; set; }
+    /// <summary>
+    /// Gets or sets a value indicating whether this entry is performing a background operation.
+    /// </summary>
     bool IsWorking { get; set; }
+    /// <summary>
+    /// Gets or sets a value indicating whether an error has occurred.
+    /// </summary>
     bool IsFaulted { get; set; }
 
+    /// <summary>
+    /// Clears the data related to the current image and analysis.
+    /// </summary>
     void ClearCurrent();
 
+    /// <summary>
+    /// Retrieves the stored data for this entry.
+    /// </summary>
     void GetStored();
+    /// <summary>
+    /// Asynchronously stores the current data.
+    /// </summary>
     Task Store();
 
+    /// <summary>
+    /// Processes the current image, performing analysis and generating results.
+    /// </summary>
     void Process();
 
+    /// <summary>
+    /// Refreshes all overlays for both stored and current images.
+    /// </summary>
     void RefreshOverlays();
+    /// <summary>
+    /// Refreshes the overlay for the current image.
+    /// </summary>
     void RefreshCurrentOverlay();
+    /// <summary>
+    /// Refreshes the overlay for the stored image.
+    /// </summary>
     void RefreshStoredOverlay();
 
+    /// <summary>
+    /// Gets a collection of differences between stored and current sectors.
+    /// </summary>
     ObservableCollection<SectorDifferences> DiffSectors { get; }
 
+    /// <summary>
+    /// Creates a drawing overlay for an image to visualize sectors.
+    /// </summary>
+    /// <param name="image">The image on which the overlay is based.</param>
+    /// <param name="sectors">The collection of sectors to draw.</param>
+    /// <param name="showExtended">A flag to indicate whether to show extended details like module grids.</param>
+    /// <returns>A <see cref="DrawingImage"/> containing the sector visualizations, or <c>null</c> if no overlay can be created.</returns>
     internal static DrawingImage CreateSectorsImageOverlay(ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors, bool showExtended = false)
     {
         if (sectors == null || sectors.Count == 0)
@@ -183,15 +321,27 @@ public interface IImageResultDeviceEntry
 
         return geometryImage;
     }
+
+    /// <summary>
+    /// Creates a <see cref="GlyphRun"/> for rendering text.
+    /// </summary>
+    /// <param name="text">The text to render.</param>
+    /// <param name="typeface">The typeface to use.</param>
+    /// <param name="emSize">The font size in DIPs.</param>
+    /// <param name="baselineOrigin">The baseline origin point for the text.</param>
+    /// <returns>A <see cref="GlyphRun"/> object for the specified text.</returns>
     private static GlyphRun CreateGlyphRun(string text, Typeface typeface, double emSize, System.Windows.Point baselineOrigin)
     {
-        if (text == null)
+        if (string.IsNullOrEmpty(text))
             return null;
 
         if (!typeface.TryGetGlyphTypeface(out var glyphTypeface))
         {
-            throw new ArgumentException(string.Format(
-                "{0}: no GlyphTypeface found", typeface.FontFamily));
+            // Fallback to a system font if the specified typeface is not available.
+            if (!new Typeface(System.Windows.SystemFonts.MessageFontFamily, System.Windows.SystemFonts.MessageFontStyle, System.Windows.SystemFonts.MessageFontWeight, new System.Windows.FontStretch()).TryGetGlyphTypeface(out glyphTypeface))
+            {
+                throw new ArgumentException($"No GlyphTypeface found for {typeface.FontFamily} or fallback font.");
+            }
         }
 
         var glyphIndices = new ushort[text.Length];
@@ -220,25 +370,34 @@ public interface IImageResultDeviceEntry
             null,
             null);
     }
+
+    /// <summary>
+    /// Creates a drawing group that visualizes the module grid for 2D matrix codes.
+    /// </summary>
+    /// <param name="sectors">The collection of sectors to process.</param>
+    /// <returns>A <see cref="DrawingGroup"/> containing the module grid visualization.</returns>
     private static DrawingGroup GetModuleGrid(ObservableCollection<Sectors.Interfaces.ISector> sectors)
     {
         DrawingGroup drwGroup = new();
+        Typeface typeface = new("Arial");
+
+        if (!typeface.TryGetGlyphTypeface(out var glyphTypeface))
+        {
+            // If Arial is not available, we cannot proceed with text rendering.
+            // The grid will be drawn without text.
+            glyphTypeface = null;
+        }
+
 
         foreach (var sect in sectors)
         {
 
-            if (sect == null)
+            if (sect?.Report?.ExtendedData?.ModuleReflectance == null)
                 continue;
 
             if (sect.Report.Symbology is Symbologies.QRCode or Symbologies.DataMatrix)
             {
                 var res = sect.Report;
-
-                if (res.ExtendedData == null)
-                    continue;
-
-                if (res.ExtendedData.ModuleReflectance == null)
-                    continue;
 
                 GeometryGroup moduleGrid = new();
                 DrawingGroup textGrp = new();
@@ -260,101 +419,52 @@ public interface IImageResultDeviceEntry
                         RectangleGeometry area1 = new(new System.Windows.Rect(startX + (res.ExtendedData.DeltaX * (col + qzX)), startY + (res.ExtendedData.DeltaY * (row + qzY)), res.ExtendedData.DeltaX, res.ExtendedData.DeltaY));
                         moduleGrid.Children.Add(area1);
 
-                        var text = res.ExtendedData.ModuleModulation[cnt].ToString();
-                        Typeface typeface = new("Arial");
-                        if (typeface.TryGetGlyphTypeface(out var _glyphTypeface))
+                        if (glyphTypeface != null)
                         {
+                            var text = res.ExtendedData.ModuleModulation[cnt].ToString();
                             var _glyphIndexes = new ushort[text.Length];
                             var _advanceWidths = new double[text.Length];
 
-                            double textWidth = 0;
                             for (var ix = 0; ix < text.Length; ix++)
                             {
-                                var glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
+                                var glyphIndex = glyphTypeface.CharacterToGlyphMap[text[ix]];
                                 _glyphIndexes[ix] = glyphIndex;
-
-                                var width = _glyphTypeface.AdvanceWidths[glyphIndex] * 2;
-                                _advanceWidths[ix] = width;
-
-                                textWidth += width;
+                                _advanceWidths[ix] = glyphTypeface.AdvanceWidths[glyphIndex] * 2;
                             }
 
                             GlyphRun gr = new(
-                                _glyphTypeface,
-                                0,
-                                false,
-                                2,
-                                1.0f,
-                                _glyphIndexes,
+                                glyphTypeface, 0, false, 2, 1.0f, _glyphIndexes,
                                 new System.Windows.Point(
                                     startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
-                                    startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface.Height * (res.ExtendedData.DeltaY / 4))),
-                                _advanceWidths,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null);
+                                    startY + (res.ExtendedData.DeltaY * (row + qzY)) + (glyphTypeface.Height * (res.ExtendedData.DeltaY / 4))),
+                                _advanceWidths, null, null, null, null, null, null);
 
-                            GlyphRunDrawing grd = new(Brushes.Blue, gr);
+                            textGrp.Children.Add(new GlyphRunDrawing(Brushes.Blue, gr));
 
-                            textGrp.Children.Add(grd);
+                            text = res.ExtendedData.ModuleReflectance[cnt++].ToString();
+                            var _glyphIndexes1 = new ushort[text.Length];
+                            var _advanceWidths1 = new double[text.Length];
+
+                            for (var ix = 0; ix < text.Length; ix++)
+                            {
+                                var glyphIndex = glyphTypeface.CharacterToGlyphMap[text[ix]];
+                                _glyphIndexes1[ix] = glyphIndex;
+                                _advanceWidths1[ix] = glyphTypeface.AdvanceWidths[glyphIndex] * 2;
+                            }
+
+                            GlyphRun gr1 = new(
+                                glyphTypeface, 0, false, 2, 1.0f, _glyphIndexes1,
+                                new System.Windows.Point(
+                                    startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
+                                    startY + (res.ExtendedData.DeltaY * (row + qzY)) + (glyphTypeface.Height * (res.ExtendedData.DeltaY / 2))),
+                                _advanceWidths1, null, null, null, null, null, null);
+
+                            textGrp.Children.Add(new GlyphRunDrawing(Brushes.Blue, gr1));
                         }
-
-                        text = res.ExtendedData.ModuleReflectance[cnt++].ToString();
-                        Typeface typeface1 = new("Arial");
-                        if (typeface1.TryGetGlyphTypeface(out var _glyphTypeface1))
+                        else
                         {
-                            var _glyphIndexes = new ushort[text.Length];
-                            var _advanceWidths = new double[text.Length];
-
-                            double textWidth = 0;
-                            for (var ix = 0; ix < text.Length; ix++)
-                            {
-                                var glyphIndex = _glyphTypeface1.CharacterToGlyphMap[text[ix]];
-                                _glyphIndexes[ix] = glyphIndex;
-
-                                var width = _glyphTypeface1.AdvanceWidths[glyphIndex] * 2;
-                                _advanceWidths[ix] = width;
-
-                                textWidth += width;
-                            }
-
-                            GlyphRun gr = new(
-                                _glyphTypeface1,
-                                0,
-                                false,
-                                2,
-                                1.0f,
-                                _glyphIndexes,
-                                new System.Windows.Point(
-                                    startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
-                                    startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface1.Height * (res.ExtendedData.DeltaY / 2))),
-                                _advanceWidths,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null);
-
-                            GlyphRunDrawing grd = new(Brushes.Blue, gr);
-                            textGrp.Children.Add(grd);
+                            cnt++;
                         }
-
-                        //FormattedText formattedText = new FormattedText(
-                        //    res.ExtendedData.ModuleReflectance[row + col].ToString(),
-                        //    CultureInfo.GetCultureInfo("en-us"),
-                        //    FlowDirection.LeftToRight,
-                        //    new Typeface("Arial"),
-                        //    4,
-                        //    System.Windows.Media.Brushes.Black // This brush does not matter since we use the geometry of the text.
-                        //);
-
-                        //// Build the geometry object that represents the text.
-                        //Geometry textGeometry = formattedText.BuildGeometry(new System.Windows.Point(startX + (res.ExtendedData.DeltaX * row), startY + (res.ExtendedData.DeltaY * col)));
-                        //moduleGrid.Children.Add(textGeometry);
                     }
 
                 TransformGroup transGroup = new();
@@ -406,6 +516,12 @@ public interface IImageResultDeviceEntry
         return drwGroup;
     }
 
+    /// <summary>
+    /// Gets a brush for a given grade with a specified transparency.
+    /// </summary>
+    /// <param name="grade">The grade letter (e.g., "A", "B", "F").</param>
+    /// <param name="trans">The alpha channel value (0-255).</param>
+    /// <returns>A <see cref="SolidColorBrush"/> with the appropriate color and transparency.</returns>
     private static SolidColorBrush GetGradeBrush(string grade, byte trans) => grade switch
     {
         "A" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["CB_Green"], trans),
@@ -415,5 +531,12 @@ public interface IImageResultDeviceEntry
         "F" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeF_Brush"], trans),
         _ => ChangeTransparency((SolidColorBrush)Application.Current.Resources["CB_Green"], trans),
     };
+
+    /// <summary>
+    /// Creates a new brush from an existing one with a new transparency value.
+    /// </summary>
+    /// <param name="original">The original brush.</param>
+    /// <param name="trans">The new alpha channel value (0-255).</param>
+    /// <returns>A new <see cref="SolidColorBrush"/> with the modified transparency.</returns>
     private static SolidColorBrush ChangeTransparency(SolidColorBrush original, byte trans) => new(Color.FromArgb(trans, original.Color.R, original.Color.G, original.Color.B));
 }

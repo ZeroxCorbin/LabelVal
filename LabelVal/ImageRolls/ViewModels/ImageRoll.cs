@@ -18,95 +18,202 @@ using System.Windows;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
+#region Enums
+
+/// <summary>
+/// Specifies the source type of an image roll.
+/// </summary>
 [SQLite.StoreAsText]
 [JsonConverter(typeof(StringEnumConverter))]
 public enum ImageRollTypes
 {
+    /// <summary>
+    /// The image roll is stored in a database.
+    /// </summary>
     [Description("Database")]
     Database,
+    /// <summary>
+    /// The image roll is sourced from a file system directory.
+    /// </summary>
     [Description("Directory")]
     Directory,
 }
 
+/// <summary>
+/// Specifies the type of image within an image roll.
+/// </summary>
 [SQLite.StoreAsText]
 [JsonConverter(typeof(StringEnumConverter))]
 public enum ImageRollImageTypes
 {
+    /// <summary>
+    /// The image is from the original source.
+    /// </summary>
     [Description("Source")]
     Source,
+    /// <summary>
+    /// The image is stored within the application or database.
+    /// </summary>
     [Description("Stored")]
     Stored
 }
 
+/// <summary>
+/// Specifies how sectors are handled for images in the roll.
+/// </summary>
 [SQLite.StoreAsText]
 [JsonConverter(typeof(StringEnumConverter))]
 public enum ImageRollSectorTypes
 {
+    /// <summary>
+    /// Sectors are fixed and do not change.
+    /// </summary>
     [Description("Fixed")]
     Fixed,
+    /// <summary>
+    /// Sectors are dynamic and can be updated.
+    /// </summary>
     [Description("Dynamic")]
     Dynamic
 }
 
+/// <summary>
+/// Defines positions for adding new images relative to existing ones.
+/// </summary>
 [SQLite.StoreAsText]
 [JsonConverter(typeof(StringEnumConverter))]
 public enum ImageAddPositions
 {
+    /// <summary>
+    /// Add to the top of the list.
+    /// </summary>
     Top,
+    /// <summary>
+    /// Add above a selected item.
+    /// </summary>
     Above,
+    /// <summary>
+    /// Add below a selected item.
+    /// </summary>
     Below,
+    /// <summary>
+    /// Add to the bottom of the list.
+    /// </summary>
     Bottom
 }
 
+#endregion
+
+/// <summary>
+/// Represents the method that will handle the <see cref="ImageRoll.ImageMoved"/> event.
+/// </summary>
+/// <param name="sender">The source of the event.</param>
+/// <param name="imageEntry">The image entry that was moved.</param>
 public delegate void ImageMovedEventHandler(object sender, ImageEntry imageEntry);
 
+/// <summary>
+/// Represents a roll of images, which can be sourced from a database or a directory.
+/// This class manages the collection of images, their properties, and related operations.
+/// </summary>
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>, IDisposable
 {
+    #region Events
+
+    /// <summary>
+    /// Occurs when an image is moved within the roll.
+    /// </summary>
     public event ImageMovedEventHandler ImageMoved;
 
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Gets the global application settings instance.
+    /// </summary>
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
     /// <summary>
-    /// The unique identifier for the ImageRollEntry. This is also called the RollID.
+    /// The unique identifier for the ImageRoll. This is also called the RollID.
     /// </summary>
     [JsonProperty][SQLite.PrimaryKey] public string UID { get; set; } = Guid.NewGuid().ToString();
 
+    /// <summary>
+    /// Gets or sets the database associated with this image roll.
+    /// </summary>
     [SQLite.Ignore] public Databases.ImageRollsDatabase ImageRollsDatabase { get; set; }
 
     /// <summary>
-    /// If this is a fixed image roll then this is the path to the directory where the images are stored.
+    /// If this is a directory-based image roll, this is the path to the directory where the images are stored.
     /// </summary>
     public string Path { get; set; }
+
     /// <summary>
-    /// Indicates if this is a fixed image roll. True if the <see cref="Path"/> is not null or empty."/>
+    /// Gets the type of the image roll (Directory or Database).
     /// </summary>
     [SQLite.Ignore] public ImageRollTypes RollType => !string.IsNullOrEmpty(Path) ? ImageRollTypes.Directory : ImageRollTypes.Database;
 
+    /// <summary>
+    /// Gets or sets the type of images in the roll (e.g., source or stored).
+    /// </summary>
     [ObservableProperty][property: JsonProperty] private ImageRollImageTypes imageType = ImageRollImageTypes.Source;
-    //If SectorType is true the system will write the templates sectors before processing an image.
-    //Normally the template is left untouched. I.e. When using a sequential OCR tool.
+
+    /// <summary>
+    /// Gets or sets the sector handling type. If Dynamic, the system will write template sectors before processing an image.
+    /// </summary>
     [ObservableProperty][property: JsonProperty] private ImageRollSectorTypes sectorType = ImageRollSectorTypes.Dynamic;
 
+    /// <summary>
+    /// Gets or sets the name of the image roll.
+    /// </summary>
     [ObservableProperty][property: JsonProperty] private string name;
+
+    /// <summary>
+    /// Gets or sets the number of images in the roll.
+    /// </summary>
     [ObservableProperty][property: JsonProperty] private int imageCount;
 
+    /// <summary>
+    /// Gets or sets the selected grading standard for the roll.
+    /// </summary>
     [ObservableProperty][property: JsonProperty("GradingStandard")][property: SQLite.Column("GradingStandard")] private GradingStandards selectedGradingStandard;
     partial void OnSelectedGradingStandardChanged(GradingStandards value) { OnPropertyChanged(nameof(GradingStandardDescription)); OnPropertyChanged(nameof(StandardGroup)); }
+
+    /// <summary>
+    /// Gets the description of the selected grading standard.
+    /// </summary>
     public string GradingStandardDescription => SelectedGradingStandard.GetDescription();
 
+    /// <summary>
+    /// Gets or sets the selected application standard for the roll.
+    /// </summary>
     [ObservableProperty][property: JsonProperty("ApplicationStandard")][property: SQLite.Column("ApplicationStandard")] private ApplicationStandards selectedApplicationStandard;
     partial void OnSelectedApplicationStandardChanged(ApplicationStandards value) { OnPropertyChanged(nameof(ApplicationStandardDescription)); OnPropertyChanged(nameof(StandardGroup)); }
+
+    /// <summary>
+    /// Gets the description of the selected application standard.
+    /// </summary>
     public string ApplicationStandardDescription => SelectedApplicationStandard.GetDescription();
 
+    /// <summary>
+    /// Gets or sets the selected GS1 table for the roll.
+    /// </summary>
     [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private GS1Tables selectedGS1Table;
     partial void OnSelectedGS1TableChanged(GS1Tables value) => OnPropertyChanged(nameof(GS1TableNumber));
+
+    /// <summary>
+    /// Gets the numeric value of the selected GS1 table.
+    /// </summary>
     public double GS1TableNumber => SelectedGS1Table is GS1Tables.Unknown ? 0 : double.Parse(SelectedGS1Table.GetDescription());
 
+    /// <summary>
+    /// Gets a string representation of the standard group, combining application and grading standards.
+    /// </summary>
     public string StandardGroup => $"{SelectedApplicationStandard}-{SelectedGradingStandard}";
 
     /// <summary>
-    /// <see cref="TargetDPI"/>
+    /// Gets or sets the target DPI for images in the roll.
     /// </summary>
     [ObservableProperty][property: JsonProperty] private int targetDPI;
 
@@ -116,19 +223,31 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     [SQLite.Ignore] public ObservableCollection<ImageEntry> ImageEntries { get; set; } = [];
 
     /// <summary>
-    /// If the roll is locked, the images cannot be modified.
-    /// <see cref="IsLocked"/>"/>
+    /// Gets or sets a value indicating whether the roll is locked. If locked, images cannot be modified.
     /// </summary>
     [ObservableProperty][property: JsonProperty] private bool isLocked = false;
 
+    /// <summary>
+    /// Gets or sets the currently selected printer settings.
+    /// </summary>
     [ObservableProperty][property: SQLite.Ignore] private PrinterSettings selectedPrinter;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether to right-align overflow content.
+    /// </summary>
     public bool RightAlignOverflow
     {
         get => App.Settings.GetValue(nameof(RightAlignOverflow), false);
         set => App.Settings.SetValue(nameof(RightAlignOverflow), value);
     }
 
+    #endregion
+
+    #region Constructors
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ImageRoll"/> class.
+    /// </summary>
     public ImageRoll()
     {
         App.Settings.PropertyChanged += Settings_PropertyChanged;
@@ -136,40 +255,38 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         ReceiveAll();
     }
 
-    private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(RightAlignOverflow))
-            OnPropertyChanged(nameof(RightAlignOverflow));
-    }
+    #endregion
 
-    //public ImageRollEntry(bool inactive)
-    //{
-    //    IsActive = inactive;
+    #region Message Handling
 
-    //    if(IsActive)
-    //        ReceiveAll();
-    //}
-    //public ImageRollEntry(string name, string path, Databases.ImageRollsDatabase imageRollsDatabase)
-    //{
-    //    IsActive = true;
-    //    ReceiveAll();
-
-    //    ImageRollsDatabase = imageRollsDatabase;
-
-    //    Name = name;
-    //    Path = path;
-    //}
-
+    /// <summary>
+    /// Receives all necessary initial messages and data when the view model is activated.
+    /// </summary>
     private void ReceiveAll()
     {
         var ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
         if (ret1.HasReceivedResponse)
             SelectedPrinter = ret1.Response;
     }
+
+    /// <summary>
+    /// Receives property changed messages for PrinterSettings.
+    /// </summary>
+    /// <param name="message">The property changed message.</param>
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
 
+    #endregion
+
+    #region Image Loading
+
+    /// <summary>
+    /// Loads images into the roll based on its <see cref="RollType"/>.
+    /// </summary>
     public Task LoadImages() => RollType == ImageRollTypes.Directory ? LoadImagesFromDirectory() : LoadImagesFromDatabase();
 
+    /// <summary>
+    /// Loads images from a file system directory.
+    /// </summary>
     public async Task LoadImagesFromDirectory()
     {
         if (ImageEntries.Count > 0)
@@ -200,6 +317,10 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
         await Task.WhenAll([.. taskList]);
     }
+
+    /// <summary>
+    /// Loads images from the associated database.
+    /// </summary>
     public async Task LoadImagesFromDatabase()
     {
         if (ImageRollsDatabase == null)
@@ -228,107 +349,26 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         ResetImageOrderAndSort();
     }
 
-    private void OnImageEntrySaveRequested(ImageEntry imageEntry) => SaveImage(imageEntry);
+    #endregion
 
-    private void ResetImageOrderAndSort()
-    {
-        var images = ImageEntries.OrderBy(x => x.Order).ToList();
-        for (var i = 0; i < images.Count; i++)
-        {
-            if (images[i].Order != i + 1)
-            {
-                images[i].Order = i + 1;
-                // SaveImage is now called by the OnOrderChanged event in ImageEntry
-            }
-        }
+    #region Image Management
 
-        ImageCount = ImageEntries.Count;
-        SaveRoll();
-        // SortObservableCollectionByList(images, ImageEntries);
-    }
-
-    //public static void SortObservableCollectionByList(List<ImageEntry> list, ObservableCollection<ImageEntry> observableCollection)
-    //{
-    //    for (var i = 0; i < list.Count; i++)
-    //    {
-    //        ImageEntry item = list[i];
-    //        var currentIndex = observableCollection.IndexOf(item);
-    //        if (currentIndex != i)
-    //        {
-    //            observableCollection.Move(currentIndex, i);
-    //        }
-    //    }
-    //}
-
-    public (ImageEntry entry, bool isNew) GetImageEntry(string path)
-    {
-        try
-        {
-            var ire = new ImageEntry(UID, path);
-            ire.SaveRequested += OnImageEntrySaveRequested;
-
-            var imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
-            if (imageEntry != null)
-            {
-                Logger.Warning($"Image already exists in roll: {Path}");
-                return (imageEntry, false);
-            }
-
-            return (ire, true);
-        }
-        catch (Exception ex)
-        {
-            Logger.Error(ex, $"Failed to load image: {Path}");
-        }
-
-        return (null, false);
-    }
-    public (ImageEntry entry, bool isNew) GetImageEntry(byte[] rawImage)
-    {
-        try
-        {
-            var ire = new ImageEntry(UID, rawImage, TargetDPI);
-            ire.SaveRequested += OnImageEntrySaveRequested;
-
-            var imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
-            if (imageEntry != null)
-            {
-                Logger.Warning($"Image already exists in roll: {Path}");
-                return (imageEntry, false);
-            }
-
-            return (ire, true);
-        }
-        catch (Exception ex)
-        {
-            Logger.Error(ex, $"Failed to load image: {Path}");
-        }
-
-        return (null, false);
-    }
-
-    [RelayCommand]
-    private void SaveRoll()
-    {
-        if (RollType == ImageRollTypes.Directory)
-            return;
-
-        _ = ImageRollsDatabase.InsertOrReplaceImageRoll(this);
-    }
-
-    [RelayCommand]
-    public void SaveImage(ImageEntry image)
-    {
-        if (RollType == ImageRollTypes.Directory)
-            return;
-
-        _ = ImageRollsDatabase.InsertOrReplaceImage(image);
-    }
-
+    /// <summary>
+    /// Adds a single image to the roll at the specified position.
+    /// </summary>
+    /// <param name="position">The position where the image should be added.</param>
+    /// <param name="newImage">The new image to add.</param>
+    /// <param name="relativeTo">The image to which the position is relative (for Above/Below).</param>
     public void AddImage(ImageAddPositions position, ImageEntry newImage, ImageEntry relativeTo = null) => AddImages(position, [newImage], relativeTo);
+
+    /// <summary>
+    /// Adds a list of images to the roll at the specified position.
+    /// </summary>
+    /// <param name="position">The position where the images should be added.</param>
+    /// <param name="newImages">The list of new images to add.</param>
+    /// <param name="relativeTo">The image to which the position is relative (for Above/Below).</param>
     public void AddImages(ImageAddPositions position, List<ImageEntry> newImages, ImageEntry relativeTo = null)
     {
-        // Prompt the user to select an image or multiple images
         if (newImages != null && newImages.Count != 0)
         {
             switch (position)
@@ -361,6 +401,11 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         OnPropertyChanged(nameof(ImageEntries));
     }
 
+    /// <summary>
+    /// Inserts a list of images at a specific order index.
+    /// </summary>
+    /// <param name="newImages">The list of images to insert.</param>
+    /// <param name="targetOrder">The target order index.</param>
     public void InsertImagesAtOrder(List<ImageEntry> newImages, int targetOrder)
     {
         if (targetOrder < 1) targetOrder = 1;
@@ -387,12 +432,20 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         SaveRoll();
     }
 
+    /// <summary>
+    /// Moves an image to the top of the roll.
+    /// </summary>
+    /// <param name="imageToMove">The image to move.</param>
     public void MoveImageTop(ImageEntry imageToMove)
     {
         if (imageToMove == null || ImageEntries.Count < 2) return;
         MoveImage(imageToMove, 1);
     }
 
+    /// <summary>
+    /// Moves an image one position up in the roll.
+    /// </summary>
+    /// <param name="imageToMove">The image to move.</param>
     public void MoveImageUp(ImageEntry imageToMove)
     {
         if (imageToMove == null || ImageEntries.Count < 2) return;
@@ -403,6 +456,10 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         }
     }
 
+    /// <summary>
+    /// Moves an image one position down in the roll.
+    /// </summary>
+    /// <param name="imageToMove">The image to move.</param>
     public void MoveImageDown(ImageEntry imageToMove)
     {
         if (imageToMove == null || ImageEntries.Count < 2) return;
@@ -413,12 +470,172 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         }
     }
 
+    /// <summary>
+    /// Moves an image to the bottom of the roll.
+    /// </summary>
+    /// <param name="imageToMove">The image to move.</param>
     public void MoveImageBottom(ImageEntry imageToMove)
     {
         if (imageToMove == null || ImageEntries.Count < 2) return;
         MoveImage(imageToMove, ImageEntries.Count);
     }
 
+    /// <summary>
+    /// Deletes an image from the roll and the database.
+    /// </summary>
+    /// <param name="imageEntry">The image entry to delete.</param>
+    public void DeleteImage(ImageEntry imageEntry)
+    {
+        if (!ImageRollsDatabase.DeleteImage(UID, imageEntry.UID))
+            Logger.Error($"Failed to delete image for database: {imageEntry.UID}");
+
+        if (ImageEntries.Remove(imageEntry))
+        {
+            imageEntry.SaveRequested -= OnImageEntrySaveRequested;
+            Logger.Info($"Image deleted from roll: {imageEntry.UID}");
+
+            ResetImageOrderAndSort();
+        }
+        else
+            Logger.Error($"Failed to delete image from roll: {imageEntry.UID}");
+
+    }
+
+    /// <summary>
+    /// Creates a lightweight copy of the image roll using JSON serialization.
+    /// </summary>
+    /// <returns>A new <see cref="ImageRoll"/> instance with the same property values.</returns>
+    public ImageRoll CopyLite() => JsonConvert.DeserializeObject<ImageRoll>(JsonConvert.SerializeObject(this));
+
+    #endregion
+
+    #region Commands
+
+    /// <summary>
+    /// Saves the current state of the image roll to the database.
+    /// </summary>
+    [RelayCommand]
+    private void SaveRoll()
+    {
+        if (RollType == ImageRollTypes.Directory)
+            return;
+
+        _ = ImageRollsDatabase.InsertOrReplaceImageRoll(this);
+    }
+
+    /// <summary>
+    /// Saves a specific image entry to the database.
+    /// </summary>
+    /// <param name="image">The image entry to save.</param>
+    [RelayCommand]
+    public void SaveImage(ImageEntry image)
+    {
+        if (RollType == ImageRollTypes.Directory)
+            return;
+
+        _ = ImageRollsDatabase.InsertOrReplaceImage(image);
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    /// Handles changes to application settings.
+    /// </summary>
+    private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(RightAlignOverflow))
+            OnPropertyChanged(nameof(RightAlignOverflow));
+    }
+
+    /// <summary>
+    /// Handles the SaveRequested event from an ImageEntry.
+    /// </summary>
+    private void OnImageEntrySaveRequested(ImageEntry imageEntry) => SaveImage(imageEntry);
+
+    /// <summary>
+    /// Resets the order of all images in the roll and sorts the collection.
+    /// </summary>
+    private void ResetImageOrderAndSort()
+    {
+        var images = ImageEntries.OrderBy(x => x.Order).ToList();
+        for (var i = 0; i < images.Count; i++)
+        {
+            if (images[i].Order != i + 1)
+            {
+                images[i].Order = i + 1;
+                // SaveImage is now called by the OnOrderChanged event in ImageEntry
+            }
+        }
+
+        ImageCount = ImageEntries.Count;
+        SaveRoll();
+    }
+
+    /// <summary>
+    /// Gets an existing or new <see cref="ImageEntry"/> for a given file path.
+    /// </summary>
+    /// <param name="path">The file path of the image.</param>
+    /// <returns>A tuple containing the image entry and a boolean indicating if it's new.</returns>
+    public (ImageEntry entry, bool isNew) GetImageEntry(string path)
+    {
+        try
+        {
+            var ire = new ImageEntry(UID, path);
+            ire.SaveRequested += OnImageEntrySaveRequested;
+
+            var imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
+            if (imageEntry != null)
+            {
+                Logger.Warning($"Image already exists in roll: {Path}");
+                return (imageEntry, false);
+            }
+
+            return (ire, true);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, $"Failed to load image: {Path}");
+        }
+
+        return (null, false);
+    }
+
+    /// <summary>
+    /// Gets an existing or new <see cref="ImageEntry"/> for a given byte array of image data.
+    /// </summary>
+    /// <param name="rawImage">The raw byte data of the image.</param>
+    /// <returns>A tuple containing the image entry and a boolean indicating if it's new.</returns>
+    public (ImageEntry entry, bool isNew) GetImageEntry(byte[] rawImage)
+    {
+        try
+        {
+            var ire = new ImageEntry(UID, rawImage, TargetDPI);
+            ire.SaveRequested += OnImageEntrySaveRequested;
+
+            var imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
+            if (imageEntry != null)
+            {
+                Logger.Warning($"Image already exists in roll: {Path}");
+                return (imageEntry, false);
+            }
+
+            return (ire, true);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, $"Failed to load image: {Path}");
+        }
+
+        return (null, false);
+    }
+
+    /// <summary>
+    /// Moves an image to a new order position, adjusting other images accordingly.
+    /// </summary>
+    /// <param name="imageToMove">The image to move.</param>
+    /// <param name="newOrder">The new order position for the image.</param>
     private void MoveImage(ImageEntry imageToMove, int newOrder)
     {
         if (imageToMove.Order == newOrder) return;
@@ -442,32 +659,20 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
         imageToMove.Order = newOrder;
         ImageMoved?.Invoke(this, imageToMove);
-
-        // The UI should update automatically if ImageEntries is an ObservableCollection and it's bound with a sort description.
-        // If not, you may need to re-sort the view.
     }
 
-    public void DeleteImage(ImageEntry imageEntry)
-    {
-        if (!ImageRollsDatabase.DeleteImage(UID, imageEntry.UID))
-            Logger.Error($"Failed to delete image for database: {imageEntry.UID}");
+    #endregion
 
-        if (ImageEntries.Remove(imageEntry))
-        {
-            imageEntry.SaveRequested -= OnImageEntrySaveRequested;
-            Logger.Info($"Image deleted from roll: {imageEntry.UID}");
+    #region IDisposable Implementation
 
-            ResetImageOrderAndSort();
-        }
-        else
-            Logger.Error($"Failed to delete image from roll: {imageEntry.UID}");
-
-    }
-    public ImageRoll CopyLite() => JsonConvert.DeserializeObject<ImageRoll>(JsonConvert.SerializeObject(this));
-
+    /// <summary>
+    /// Releases the resources used by the <see cref="ImageRoll"/> object.
+    /// </summary>
     public void Dispose()
     {
         App.Settings.PropertyChanged -= Settings_PropertyChanged;
         GC.SuppressFinalize(this);
     }
+
+    #endregion
 }

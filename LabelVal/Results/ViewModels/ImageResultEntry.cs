@@ -10,6 +10,7 @@ using LabelVal.Sectors.Interfaces;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing.Printing;
 using System.IO;
 using System.Threading.Tasks;
@@ -20,19 +21,39 @@ namespace LabelVal.Results.ViewModels;
 
 /// <summary>
 /// This is a viewmodel to support both the Image Roll and the Results database information.
-/// 
 /// </summary>
 public partial class ImageResultEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
+    #region Delegates
+    /// <summary>
+    /// Delegate for the BringIntoView event.
+    /// </summary>
     public delegate void BringIntoViewDelegate();
-    public event BringIntoViewDelegate BringIntoView;
-
+    /// <summary>
+    /// Delegate for the DeleteImage event.
+    /// </summary>
+    /// <param name="imageResults">The image result entry to delete.</param>
     public delegate void DeleteImageDelegate(ImageResultEntry imageResults);
+    #endregion
+
+    #region Events
+    /// <summary>
+    /// Occurs when a request is made to bring this entry into view.
+    /// </summary>
+    public event BringIntoViewDelegate BringIntoView;
+    /// <summary>
+    /// Occurs when a request is made to delete this image entry.
+    /// </summary>
     public event DeleteImageDelegate DeleteImage;
+    #endregion
 
-    [RelayCommand]
-    public void BringIntoViewHandler() => BringIntoView?.Invoke();
+    #region Fields
+    private readonly PropertyChangedEventHandler _settingsPropertyChangedHandler;
+    #endregion
 
+    #region Properties
+
+    #region Global Settings
     //Could be handled with dependency injection.
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
@@ -49,28 +70,38 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     }
 
     /// <summary>
-    /// Show the Application parameters expander.
+    /// Gets or sets a value indicating whether to show the Application parameters expander.
     /// </summary>
     [ObservableProperty] private bool showApplicationParameters = App.Settings.GetValue(nameof(ShowApplicationParameters), true, true);
     partial void OnShowApplicationParametersChanged(bool value) => App.Settings.SetValue(nameof(ShowApplicationParameters), value);
 
     /// <summary>
-    /// Show the Grading parameters expander.
+    /// Gets or sets a value indicating whether to show the Grading parameters expander.
     /// </summary>
     [ObservableProperty] private bool showGradingParameters = App.Settings.GetValue(nameof(ShowGradingParameters), true, true);
     partial void OnShowGradingParametersChanged(bool value) => App.Settings.SetValue(nameof(ShowGradingParameters), value);
 
     /// <summary>
-    /// Show the Symbology parameters expander.
+    /// Gets or sets a value indicating whether to show the Symbology parameters expander.
     /// </summary>
     [ObservableProperty] private bool showSymbologyParameters = App.Settings.GetValue(nameof(ShowSymbologyParameters), true, true);
     partial void OnShowSymbologyParametersChanged(bool value) => App.Settings.SetValue(nameof(ShowSymbologyParameters), value);
 
+    #endregion
+
+    #region UI State Properties
     /// <summary>
-    /// Show the image details for the Source and Device image entries.
+    /// Gets or sets a value indicating whether to show the image details for the Source and Device image entries.
     /// </summary>
     [ObservableProperty] private bool showDetails;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether this is the topmost visible item in the scroll viewer.
+    /// </summary>
+    [ObservableProperty] private bool isTopmost;
+    #endregion
+
+    #region Data Properties
     /// <summary>
     /// This is the database where all of the Results are stored.
     /// It can be changed by sending a <see cref="PropertyChangedMessage{ImageResultsDatabase}"/>
@@ -85,30 +116,33 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     }
 
     /// <summary>
-    /// Indicates if this is the topmost visible item in the scroll viewer.
-    /// </summary>
-    [ObservableProperty] private bool isTopmost;
-
-    /// <summary>
-    /// This manages the Image Roll and Devices.
+    /// Gets the manager for Image Rolls and Devices.
     /// </summary>
     public ImageResultsManager ImageResultsManager { get; }
 
     /// <summary>
-    /// The currently selected Image Roll UID.
+    /// Gets the currently selected Image Roll UID.
     /// </summary>
     public string ImageRollUID => ImageResultsManager.SelectedImageRoll.UID;
 
     /// <summary>
-    /// The Source image for this entry
-    /// This is the same Source image as the Image Roll Entry.
+    /// Gets the Source image for this entry. This is the same Source image as the Image Roll Entry.
     /// </summary>
     public ImageEntry SourceImage { get; }
+    /// <summary>
+    /// Gets the UID of the source image.
+    /// </summary>
     public string SourceImageUID => SourceImage.UID;
 
-    public ObservableCollection<IImageResultDeviceEntry> ImageResultDeviceEntries { get; }
     /// <summary>
-    /// How many times to print the image
+    /// Gets the collection of device-specific image result entries.
+    /// </summary>
+    public ObservableCollection<IImageResultDeviceEntry> ImageResultDeviceEntries { get; }
+    #endregion
+
+    #region Printer Properties
+    /// <summary>
+    /// Gets how many times to print the image.
     /// </summary>
     public int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
 
@@ -121,22 +155,32 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     private V275_REST_Lib.Printer.Controller PrinterController { get; } = new();
     [ObservableProperty] private PrinterSettings selectedPrinter;
     partial void OnSelectedPrinterChanged(PrinterSettings value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
+    #endregion
 
+    #endregion
+
+    #region Constructor and Finalizer
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ImageResultEntry"/> class.
+    /// </summary>
+    /// <param name="sourceImage">The source image entry.</param>
+    /// <param name="imageResults">The image results manager.</param>
     public ImageResultEntry(ImageEntry sourceImage, ImageResultsManager imageResults)
     {
         ImageResultsManager = imageResults;
         SourceImage = sourceImage;
 
-        ImageResultDeviceEntries = [
+        ImageResultDeviceEntries =
+        [
             new ImageResultDeviceEntryV275(this),
-            new ImageResultDeviceEntry_V5(this) ,
-            new ImageResultDeviceEntry_L95(this) ,
+            new ImageResultDeviceEntry_V5(this),
+            new ImageResultDeviceEntry_L95(this),
         ];
 
         IsActive = true;
         ReceiveAll();
 
-        App.Settings.PropertyChanged += (s, e) =>
+        _settingsPropertyChangedHandler = (s, e) =>
         {
             if (e.PropertyName == nameof(ImagesMaxHeight))
                 ImagesMaxHeight = App.Settings.GetValue<int>(nameof(ImagesMaxHeight));
@@ -145,31 +189,29 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             else if (e.PropertyName == nameof(ShowExtendedData))
                 ShowExtendedData = App.Settings.GetValue<bool>(nameof(ShowExtendedData));
         };
+        App.Settings.PropertyChanged += _settingsPropertyChangedHandler;
     }
+
+    /// <summary>
+    /// Finalizes an instance of the <see cref="ImageResultEntry"/> class.
+    /// </summary>
     ~ImageResultEntry()
     {
-        App.Settings.PropertyChanged -= (s, e) =>
-        {
-            if (e.PropertyName == nameof(ImagesMaxHeight))
-                ImagesMaxHeight = App.Settings.GetValue<int>(nameof(ImagesMaxHeight));
-            else if (e.PropertyName == nameof(DualSectorColumns))
-                DualSectorColumns = App.Settings.GetValue<bool>(nameof(DualSectorColumns));
-            else if (e.PropertyName == nameof(ShowExtendedData))
-                ShowExtendedData = App.Settings.GetValue<bool>(nameof(ShowExtendedData));
-        };
+        App.Settings.PropertyChanged -= _settingsPropertyChangedHandler;
     }
+    #endregion
 
-    private void ReceiveAll()
-    {
-        RequestMessage<PrinterSettings> mes2 = new();
-        _ = WeakReferenceMessenger.Default.Send(mes2);
-        SelectedPrinter = mes2.Response;
+    #region Commands
+    /// <summary>
+    /// Invokes the <see cref="BringIntoView"/> event to scroll this item into the visible area.
+    /// </summary>
+    [RelayCommand]
+    public void BringIntoViewHandler() => BringIntoView?.Invoke();
 
-        RequestMessage<ImageResultsDatabase> mes4 = new();
-        _ = WeakReferenceMessenger.Default.Send(mes4);
-        SelectedDatabase = mes4.Response;
-    }
-
+    /// <summary>
+    /// Saves the provided image data to a file.
+    /// </summary>
+    /// <param name="bmp">The image data in BMP format.</param>
     [RelayCommand]
     private void Save(byte[] bmp)
     {
@@ -189,8 +231,13 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             Clipboard.SetText(path);
         }
         catch (Exception ex)
-        { Logger.Error(ex);}
+        { Logger.Error(ex); }
     }
+
+    /// <summary>
+    /// Stores the current results for a specific device to the database.
+    /// </summary>
+    /// <param name="device">The device to store results for.</param>
     [RelayCommand]
     private void Store(ImageResultEntryDevices device)
     {
@@ -203,6 +250,11 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         _ = dev.Store();
         BringIntoViewHandler();
     }
+
+    /// <summary>
+    /// Processes the image for a specific device.
+    /// </summary>
+    /// <param name="device">The device to process the image with.</param>
     [RelayCommand]
     private void Process(ImageResultEntryDevices device)
     {
@@ -215,6 +267,11 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         dev.Process();
         BringIntoViewHandler();
     }
+
+    /// <summary>
+    /// Clears the stored sectors for a specific device after user confirmation.
+    /// </summary>
+    /// <param name="device">The device whose stored sectors will be cleared.</param>
     [RelayCommand]
     private async Task ClearStored(ImageResultEntryDevices device)
     {
@@ -231,12 +288,11 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             BringIntoViewHandler();
         }
     }
-    public void DeleteStored()
-    {
-        _ = SelectedDatabase.Delete_Result(ImageResultEntryDevices.L95, ImageRollUID, SourceImageUID, ImageRollUID);
-        _ = SelectedDatabase.Delete_Result(ImageResultEntryDevices.V275, ImageRollUID, SourceImageUID, ImageRollUID);
-        _ = SelectedDatabase.Delete_Result(ImageResultEntryDevices.V5, ImageRollUID, SourceImageUID, ImageRollUID);
-    }
+
+    /// <summary>
+    /// Clears the currently processed (but not stored) sectors for a specific device.
+    /// </summary>
+    /// <param name="device">The device whose current sectors will be cleared.</param>
     [RelayCommand]
     private void ClearCurrent(ImageResultEntryDevices device)
     {
@@ -251,6 +307,29 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
 
     }
 
+    /// <summary>
+    /// Invokes the <see cref="DeleteImage"/> event to delete this entry.
+    /// </summary>
+    [RelayCommand]
+    private void Delete() => DeleteImage?.Invoke(this);
+    #endregion
+
+    #region Public Methods
+    /// <summary>
+    /// Deletes all stored results associated with this image entry from the database.
+    /// </summary>
+    public void DeleteStored()
+    {
+        _ = SelectedDatabase.Delete_Result(ImageResultEntryDevices.L95, ImageRollUID, SourceImageUID, ImageRollUID);
+        _ = SelectedDatabase.Delete_Result(ImageResultEntryDevices.V275, ImageRollUID, SourceImageUID, ImageRollUID);
+        _ = SelectedDatabase.Delete_Result(ImageResultEntryDevices.V5, ImageRollUID, SourceImageUID, ImageRollUID);
+    }
+
+    /// <summary>
+    /// Gets the name of a sector at a specific point on the image.
+    /// </summary>
+    /// <param name="center">The point to check.</param>
+    /// <returns>The name of the sector if found; otherwise, null.</returns>
     public string? GetName(System.Drawing.Point center)
     {
         string name = null;
@@ -302,6 +381,10 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         return name;
     }
 
+    /// <summary>
+    /// Triggers a handler update for a specific device or all devices.
+    /// </summary>
+    /// <param name="device">The device to update. Use 'All' to update all devices.</param>
     public void HandlerUpdate(ImageResultEntryDevices device)
     {
         if (device == ImageResultEntryDevices.All)
@@ -321,20 +404,11 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         }
     }
 
-    [RelayCommand] private void Delete() => DeleteImage?.Invoke(this);
-
-    private string GetSaveFilePath()
-    {
-        SaveFileDialog saveFileDialog1 = new()
-        {
-            Filter = "PNG Image|*.png|Bitmap Image|*.bmp",
-            Title = "Save Image File"
-        };
-        _ = saveFileDialog1.ShowDialog();
-
-        return saveFileDialog1.FileName;
-    }
-
+    /// <summary>
+    /// Creates an overlay representing the printable area of the selected printer.
+    /// </summary>
+    /// <param name="useRatio">If true, scales the overlay to match the low-resolution image dimensions.</param>
+    /// <returns>A <see cref="DrawingImage"/> of the printer area overlay.</returns>
     public DrawingImage CreatePrinterAreaOverlay(bool useRatio)
     {
         if (SelectedPrinter == null) return null;
@@ -371,20 +445,67 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         return geometryImage;
     }
 
+    /// <summary>
+    /// Sorts a list of sectors from top to bottom, then left to right.
+    /// </summary>
+    /// <param name="list">The list of sectors to sort.</param>
+    /// <returns>The sorted list of sectors.</returns>
     public List<Sectors.Interfaces.ISector> SortList3(List<Sectors.Interfaces.ISector> list) =>
         //Sort the list from top to bottom, left to right given x,y coordinates
         list.OrderBy(x => x.Report.Top).ThenBy(x => x.Report.Left).ToList();
+    #endregion
 
-    #region Receive Messages
+    #region Private Methods
+    /// <summary>
+    /// Requests initial state from other view models via MVVM messaging.
+    /// </summary>
+    private void ReceiveAll()
+    {
+        RequestMessage<PrinterSettings> mes2 = new();
+        _ = WeakReferenceMessenger.Default.Send(mes2);
+        SelectedPrinter = mes2.Response;
+
+        RequestMessage<ImageResultsDatabase> mes4 = new();
+        _ = WeakReferenceMessenger.Default.Send(mes4);
+        SelectedDatabase = mes4.Response;
+    }
+
+    /// <summary>
+    /// Shows a save file dialog to get a path for saving an image.
+    /// </summary>
+    /// <returns>The selected file path, or null if canceled.</returns>
+    private string GetSaveFilePath()
+    {
+        SaveFileDialog saveFileDialog1 = new()
+        {
+            Filter = "PNG Image|*.png|Bitmap Image|*.bmp",
+            Title = "Save Image File"
+        };
+        _ = saveFileDialog1.ShowDialog();
+
+        return saveFileDialog1.FileName;
+    }
+    #endregion
+
+    #region Message Handlers
+    /// <summary>
+    /// Receives property changed messages for the ImageResultsDatabase.
+    /// </summary>
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
+    /// <summary>
+    /// Receives property changed messages for the PrinterSettings.
+    /// </summary>
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
     #endregion
 
     #region Dialogs
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
+    /// <summary>
+    /// Shows a dialog with "OK" and "Cancel" buttons.
+    /// </summary>
+    /// <param name="title">The title of the dialog.</param>
+    /// <param name="message">The message to display.</param>
+    /// <returns>The result of the user's interaction with the dialog.</returns>
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
     #endregion
-
-
-
 }

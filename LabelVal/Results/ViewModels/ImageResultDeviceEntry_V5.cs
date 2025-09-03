@@ -9,7 +9,10 @@ using LabelVal.Sectors.Classes;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -17,59 +20,153 @@ using System.Windows.Media;
 using LabelVal.Sectors.Interfaces;
 
 namespace LabelVal.Results.ViewModels;
-public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultDeviceEntry
+
+/// <summary>
+/// Represents a device-specific entry for V5 devices in the image results view.
+/// This class manages the state, data, and operations for images and sectors from a V5 device.
+/// </summary>
+public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultDeviceEntry, IDisposable
 {
+    /// <summary>
+    /// Gets the parent image result entry.
+    /// </summary>
     public ImageResultEntry ImageResultEntry { get; }
+
+    /// <summary>
+    /// Gets the manager for all image results.
+    /// </summary>
     public ImageResultsManager ImageResultsManager => ImageResultEntry.ImageResultsManager;
 
+    /// <summary>
+    /// Gets the device type for this entry.
+    /// </summary>
     public ImageResultEntryDevices Device { get; } = ImageResultEntryDevices.V5;
-    public string Version => throw new NotImplementedException();
 
+    /// <summary>
+    /// Gets or sets the database result row associated with this entry.
+    /// </summary>
     [ObservableProperty] private Databases.Result resultRow;
     partial void OnResultRowChanged(Result value) { StoredImage = value?.Stored; HandlerUpdate(); }
+
+    /// <summary>
+    /// Gets or sets the result data, which is an alias for ResultRow.
+    /// </summary>
     public Result Result { get => ResultRow; set { ResultRow = value; HandlerUpdate(); } }
 
+    /// <summary>
+    /// Gets or sets the stored image entry.
+    /// </summary>
     [ObservableProperty] private ImageEntry storedImage;
+
+    /// <summary>
+    /// Gets or sets the overlay for the stored image, displaying sector boundaries.
+    /// </summary>
     [ObservableProperty] private DrawingImage storedImageOverlay;
 
+    /// <summary>
+    /// Gets or sets the current (newly processed) image entry.
+    /// </summary>
     [ObservableProperty] private ImageEntry currentImage;
+
+    /// <summary>
+    /// Gets or sets the overlay for the current image, displaying sector boundaries.
+    /// </summary>
     [ObservableProperty] private DrawingImage currentImageOverlay;
 
+    /// <summary>
+    /// Gets or sets the JSON template from the current processing result.
+    /// </summary>
     public JObject CurrentTemplate { get; set; }
+
+    /// <summary>
+    /// Gets the serialized JSON string of the current template.
+    /// </summary>
     public string SerializeTemplate => JsonConvert.SerializeObject(CurrentTemplate);
 
+    /// <summary>
+    /// Gets the JSON report from the current processing result.
+    /// </summary>
     public JObject CurrentReport { get; private set; }
+
+    /// <summary>
+    /// Gets the serialized JSON string of the current report.
+    /// </summary>
     public string SerializeReport => JsonConvert.SerializeObject(CurrentReport);
 
+    /// <summary>
+    /// Gets the collection of sectors from the current processing result.
+    /// </summary>
     public ObservableCollection<Sectors.Interfaces.ISector> CurrentSectors { get; } = [];
+
+    /// <summary>
+    /// Gets the collection of sectors from the stored result.
+    /// </summary>
     public ObservableCollection<Sectors.Interfaces.ISector> StoredSectors { get; } = [];
+
+    /// <summary>
+    /// Gets the collection of differences between stored and current sectors.
+    /// </summary>
     public ObservableCollection<SectorDifferences> DiffSectors { get; } = [];
 
+    /// <summary>
+    /// Gets or sets the currently selected sector in the UI.
+    /// </summary>
     [ObservableProperty] private Sectors.Interfaces.ISector currentSelectedSector = null;
 
+    /// <summary>
+    /// Gets or sets the stored sector that has focus.
+    /// </summary>
     [ObservableProperty] private Sectors.Interfaces.ISector focusedStoredSector = null;
+
+    /// <summary>
+    /// Gets or sets the current sector that has focus.
+    /// </summary>
     [ObservableProperty] private Sectors.Interfaces.ISector focusedCurrentSector = null;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether a process is currently running.
+    /// A timer will set this to false if the operation takes too long.
+    /// </summary>
     [ObservableProperty] private bool isWorking = false;
     partial void OnIsWorkingChanged(bool value)
     {
+        if (value) _IsWorkingTimer.Start();
+        else _IsWorkingTimer.Stop();
         ImageResultsManager.WorkingUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotWorking));
     }
+
+    /// <summary>
+    /// Gets a value indicating whether a process is not currently running.
+    /// </summary>
     public bool IsNotWorking => !IsWorking;
     private const int _isWorkingTimerInterval = 30000;
-    private Timer _IsWorkingTimer = new(_isWorkingTimerInterval);
+    private readonly Timer _IsWorkingTimer = new(_isWorkingTimerInterval);
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the last operation resulted in a fault.
+    /// </summary>
     [ObservableProperty] private bool isFaulted = false;
     partial void OnIsFaultedChanged(bool value)
     {
         ImageResultsManager.FaultedUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotFaulted));
     }
+
+    /// <summary>
+    /// Gets a value indicating whether the last operation did not result in a fault.
+    /// </summary>
     public bool IsNotFaulted => !IsFaulted;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether this device entry is selected in the UI.
+    /// </summary>
     [ObservableProperty] private bool isSelected = false;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ImageResultDeviceEntry_V5"/> class.
+    /// </summary>
+    /// <param name="imageResultsEntry">The parent image result entry.</param>
     public ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntry)
     {
         ImageResultEntry = imageResultsEntry;
@@ -85,6 +182,9 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
     }
     partial void OnIsSelectedChanging(bool value) { if (value) ImageResultEntry.ImageResultsManager.ResetSelected(Device); }
 
+    /// <summary>
+    /// Gets the appropriate label handler based on the current state and settings.
+    /// </summary>
     public LabelHandlers Handler => ImageResultsManager?.SelectedV5?.Controller != null && ImageResultsManager.SelectedV5.Controller.IsConnected ? ImageResultsManager.SelectedV5.Controller.IsSimulator
             ? ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
@@ -98,8 +198,14 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
                 : LabelHandlers.CameraTrigger
         : LabelHandlers.Offline;
 
+    /// <summary>
+    /// Notifies the UI that the <see cref="Handler"/> property has changed.
+    /// </summary>
     public void HandlerUpdate() => OnPropertyChanged(nameof(Handler));
 
+    /// <summary>
+    /// Retrieves and loads the stored result and sectors from the database.
+    /// </summary>
     public void GetStored()
     {
         if (!Application.Current.Dispatcher.CheckAccess())
@@ -156,6 +262,9 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
 
     }
 
+    /// <summary>
+    /// Stores the current sectors, template, and report to the database.
+    /// </summary>
     [RelayCommand]
     public async Task Store()
     {
@@ -192,6 +301,9 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
         ClearCurrent();
     }
 
+    /// <summary>
+    /// Initiates the processing of an image by the V5 device or simulator.
+    /// </summary>
     [RelayCommand]
     public void Process()
     {
@@ -213,6 +325,11 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
     }
 
     private void ProcessRepeat(V5_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat?.FullReport);
+
+    /// <summary>
+    /// Processes the full report received from the V5 device, updating the current image, sectors, and overlays.
+    /// </summary>
+    /// <param name="report">The full report from the device.</param>
     public void ProcessFullReport(V5_REST_Lib.Controllers.FullReport report)
     {
         if (!Application.Current.Dispatcher.CheckAccess())
@@ -293,6 +410,9 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
         }
     }
 
+    /// <summary>
+    /// Clears all data related to the current processing result.
+    /// </summary>
     [RelayCommand]
     public void ClearCurrent()
     {
@@ -311,6 +431,9 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
         CurrentImageOverlay = null;
     }
 
+    /// <summary>
+    /// Clears the stored result from the database after user confirmation.
+    /// </summary>
     [RelayCommand]
     public async Task ClearStored()
     {
@@ -405,26 +528,33 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
                 DiffSectors.Add(d);
     }
 
+    /// <summary>
+    /// Triggers the device to read/scan and waits for the result.
+    /// </summary>
     [RelayCommand]
     private Task<bool> Read() => ReadTask();
+
+    /// <summary>
+    /// Asynchronously triggers the device to read/scan and processes the resulting report.
+    /// </summary>
+    /// <returns>True if successful, otherwise false.</returns>
     public async Task<bool> ReadTask()
     {
         var result = await ImageResultEntry.ImageResultsManager.SelectedV5.Controller.Trigger_Wait_Return(true);
         ProcessFullReport(result);
-        //V275V5_REST_Lib.FullReport report;
-        //if ((report = await ImageResults.SelectedV275Node.Controller.GetFullReport(repeat, true)) == null)
-        //{
-        //    Logger.Error("Unable to read the repeat report from the node.");
-        //    ClearRead(ImageResultEntryDevices.V275);
-        //    return false;
-        //}
-
-        //V275ProcessRepeat(new V275V5_REST_Lib.Repeat(0, null) { FullReport = report });
-        return true;
+        return result != null;
     }
 
+    /// <summary>
+    /// Loads the stored configuration to the device.
+    /// </summary>
     [RelayCommand]
     private Task<int> Load() => LoadTask();
+
+    /// <summary>
+    /// Asynchronously loads the stored configuration (template) to the connected device.
+    /// </summary>
+    /// <returns>An integer indicating the result: 1 for success, -1 for failure, 0 if no action was taken.</returns>
     public async Task<int> LoadTask()
     {
         if (ResultRow == null)
@@ -436,48 +566,55 @@ public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultD
         if (StoredSectors.Count == 0)
         {
             return 0;
-            //return await ImageResults.Selected.Controller.Learn();
         }
 
         if (await ImageResultEntry.ImageResultsManager.SelectedV5.Controller.CopySectorsSetConfig(null, ResultRow.Template) == V5_REST_Lib.Controllers.RestoreSectorsResults.Failure)
             return -1;
 
-        //if (!await ImageResults.SelectedV275Node.Controller.DeleteSectors())
-        //    return -1;
-
-        //if (V275StoredSectors.Count == 0)
-        //{
-        //    return !await ImageResults.SelectedV275Node.Controller.DetectSectors() ? -1 : 2;
-        //}
-
-        //foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
-        //{
-        //    if (!await ImageResults.SelectedV275Node.Controller.AddSector(sec.Template.Name, JsonConvert.SerializeObject(((V275.Sectors.SectorTemplate)sec.Template).Original)))
-        //        return -1;
-
-        //    if (sec.Template.BlemishMask.Layers != null)
-        //    {
-
-        //        foreach (V275V5_REST_Lib.Models.Job.Layer layer in sec.Template.BlemishMask.Layers)
-        //        {
-        //            if (!await ImageResults.SelectedV275Node.Controller.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
-        //            {
-        //                if (layer.value != 0)
-        //                    return -1;
-        //            }
-        //        }
-        //    }
-        //}
-
         return 1;
     }
 
+    /// <summary>
+    /// Refreshes both the current and stored image overlays.
+    /// </summary>
     public void RefreshOverlays()
     {
         RefreshCurrentOverlay();
         RefreshStoredOverlay();
     }
+
+    /// <summary>
+    /// Refreshes the overlay for the stored image.
+    /// </summary>
     public void RefreshStoredOverlay() => StoredImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(StoredImage, StoredSectors);
+
+    /// <summary>
+    /// Refreshes the overlay for the current image.
+    /// </summary>
     public void RefreshCurrentOverlay() => CurrentImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
 
+    /// <summary>
+    /// Releases the resources used by the <see cref="ImageResultDeviceEntry_V5"/> object.
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Releases the unmanaged resources used by the <see cref="ImageResultDeviceEntry_V5"/> and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            if (_IsWorkingTimer != null)
+            {
+                _IsWorkingTimer.Elapsed -= _IsWorkingTimer_Elapsed;
+                _IsWorkingTimer.Dispose();
+            }
+        }
+    }
 }

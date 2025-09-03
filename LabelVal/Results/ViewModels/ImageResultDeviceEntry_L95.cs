@@ -14,6 +14,7 @@ using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Timers;
@@ -22,60 +23,134 @@ using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
 
-
+/// <summary>
+/// Represents a device-specific entry for an L95 device within the image results view.
+/// This class manages the state, data, and operations related to image verification results from an L95 device.
+/// </summary>
 public partial class ImageResultDeviceEntry_L95
-    : ObservableRecipient, IImageResultDeviceEntry, IRecipient<PropertyChangedMessage<FullReport>>
+    : ObservableRecipient, IImageResultDeviceEntry, IRecipient<PropertyChangedMessage<FullReport>>, IDisposable
 {
+    /// <summary>
+    /// Gets the parent <see cref="ImageResultEntry"/> that this device entry belongs to.
+    /// </summary>
     public ImageResultEntry ImageResultEntry { get; }
+    /// <summary>
+    /// Gets the manager for image results, providing access to shared data and services.
+    /// </summary>
     public ImageResultsManager ImageResultsManager => ImageResultEntry.ImageResultsManager;
+    /// <summary>
+    /// Gets the device type for this entry, which is L95.
+    /// </summary>
     public ImageResultEntryDevices Device { get; } = ImageResultEntryDevices.L95;
-    public string Version => throw new NotImplementedException();
 
+    /// <summary>
+    /// Gets or sets the database result record associated with this entry.
+    /// </summary>
     [ObservableProperty] private Databases.Result resultRow;
     partial void OnResultRowChanged(Result value) { StoredImage = value?.Stored; HandlerUpdate(); }
+    /// <summary>
+    /// Gets or sets the result data for this entry. This is an alias for <see cref="ResultRow"/>.
+    /// </summary>
     public Result Result { get => ResultRow; set { ResultRow = value; HandlerUpdate(); } }
 
+    /// <summary>
+    /// Gets or sets the stored image associated with the result.
+    /// </summary>
     [ObservableProperty] private ImageEntry storedImage;
+    /// <summary>
+    /// Gets or sets the overlay for the stored image, which may contain sector outlines.
+    /// </summary>
     [ObservableProperty] private DrawingImage storedImageOverlay;
 
+    /// <summary>
+    /// Gets or sets the current image being processed or displayed.
+    /// </summary>
     [ObservableProperty] private ImageEntry currentImage;
+    /// <summary>
+    /// Gets or sets the overlay for the current image.
+    /// </summary>
     [ObservableProperty] private DrawingImage currentImageOverlay;
 
+    /// <summary>
+    /// Gets or sets the JSON template for the current verification.
+    /// </summary>
     public JObject CurrentTemplate { get; set; } = null;
+    /// <summary>
+    /// Gets the serialized JSON string of the current template.
+    /// </summary>
     public string SerializeTemplate => JsonConvert.SerializeObject(CurrentTemplate);
 
+    /// <summary>
+    /// Gets the JSON report for the current verification.
+    /// </summary>
     public JObject CurrentReport { get; private set; }
+    /// <summary>
+    /// Gets the serialized JSON string of the current report.
+    /// </summary>
     public string SerializeReport => JsonConvert.SerializeObject(CurrentReport);
 
+    /// <summary>
+    /// Gets the collection of sectors from the current verification.
+    /// </summary>
     public ObservableCollection<Sectors.Interfaces.ISector> CurrentSectors { get; } = [];
+    /// <summary>
+    /// Gets the collection of sectors from the stored result.
+    /// </summary>
     public ObservableCollection<Sectors.Interfaces.ISector> StoredSectors { get; } = [];
+    /// <summary>
+    /// Gets the collection of differences between stored and current sectors.
+    /// </summary>
     public ObservableCollection<SectorDifferences> DiffSectors { get; } = [];
 
+    /// <summary>
+    /// Gets or sets the currently selected sector in the UI.
+    /// </summary>
     [ObservableProperty] private Sectors.Interfaces.ISector currentSelectedSector = null;
 
+    /// <summary>
+    /// Gets or sets the stored sector that has focus.
+    /// </summary>
     [ObservableProperty] private Sectors.Interfaces.ISector focusedStoredSector = null;
+    /// <summary>
+    /// Gets or sets the current sector that has focus.
+    /// </summary>
     [ObservableProperty] private Sectors.Interfaces.ISector focusedCurrentSector = null;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether a long-running operation is in progress.
+    /// </summary>
     [ObservableProperty] private bool isWorking = false;
     partial void OnIsWorkingChanged(bool value)
     {
         ImageResultsManager.WorkingUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotWorking));
     }
+    /// <summary>
+    /// Gets a value indicating whether no long-running operation is in progress.
+    /// </summary>
     public bool IsNotWorking => !IsWorking;
     private const int _isWorkingTimerInterval = 30000;
-    private Timer _IsWorkingTimer = new(_isWorkingTimerInterval);
+    private readonly Timer _IsWorkingTimer = new(_isWorkingTimerInterval);
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the last operation resulted in a fault.
+    /// </summary>
     [ObservableProperty] private bool isFaulted = false;
     partial void OnIsFaultedChanged(bool value)
     {
         ImageResultsManager.FaultedUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotFaulted));
     }
+    /// <summary>
+    /// Gets a value indicating whether the last operation did not result in a fault.
+    /// </summary>
     public bool IsNotFaulted => !IsFaulted;
 
     ////95xx Only
     //[ObservableProperty] private Sectors.Interfaces.ISector currentSectorSelected;
+    /// <summary>
+    /// Gets the appropriate label handler based on the current state of the L95 device and image roll settings.
+    /// </summary>
     public LabelHandlers Handler => ImageResultsManager?.SelectedL95?.Controller != null && ImageResultsManager.SelectedL95.Controller.IsConnected && ImageResultsManager.SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running ? ImageResultsManager.SelectedL95.Controller.IsSimulator
             ? ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
@@ -89,11 +164,21 @@ public partial class ImageResultDeviceEntry_L95
                 : LabelHandlers.CameraTrigger
         : LabelHandlers.Offline;
 
+    /// <summary>
+    /// Notifies that the <see cref="Handler"/> property has changed.
+    /// </summary>
     public void HandlerUpdate() => OnPropertyChanged(nameof(Handler));
 
+    /// <summary>
+    /// Gets or sets a value indicating whether this device entry is selected in the UI.
+    /// </summary>
     [ObservableProperty] private bool isSelected = false;
     partial void OnIsSelectedChanging(bool value) { if (value) ImageResultEntry.ImageResultsManager.ResetSelected(Device); }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ImageResultDeviceEntry_L95"/> class.
+    /// </summary>
+    /// <param name="imageResultsEntry">The parent image result entry.</param>
     public ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEntry)
     {
         ImageResultEntry = imageResultsEntry;
@@ -111,12 +196,19 @@ public partial class ImageResultDeviceEntry_L95
         IsFaulted = true;
     }
 
+    /// <summary>
+    /// Receives property changed messages for <see cref="FullReport"/> to process new verification data.
+    /// </summary>
+    /// <param name="message">The message containing the new <see cref="FullReport"/>.</param>
     public void Receive(PropertyChangedMessage<FullReport> message)
     {
         if (IsSelected || IsWorking)
             _ = Application.Current.Dispatcher.BeginInvoke(() => ProcessFullReport(message.NewValue, false));
     }
 
+    /// <summary>
+    /// Retrieves the stored verification result from the database for the current image.
+    /// </summary>
     public void GetStored()
     {
         if (!Application.Current.Dispatcher.CheckAccess())
@@ -166,6 +258,9 @@ public partial class ImageResultDeviceEntry_L95
         }
     }
 
+    /// <summary>
+    /// Stores the currently selected sector into the database, overwriting if it already exists.
+    /// </summary>
     [RelayCommand]
     public async Task StoreSingle()
     {
@@ -215,6 +310,9 @@ public partial class ImageResultDeviceEntry_L95
         GetStored();
         ClearSingle();
     }
+    /// <summary>
+    /// Stores all current sectors into the database, overwriting any existing stored sectors for the image.
+    /// </summary>
     [RelayCommand]
     public async Task Store()
     {
@@ -345,6 +443,9 @@ public partial class ImageResultDeviceEntry_L95
         return res;
     }
 
+    /// <summary>
+    /// Initiates the verification process for the current image using the L95 device.
+    /// </summary>
     [RelayCommand]
     public void Process()
     {
@@ -372,6 +473,11 @@ public partial class ImageResultDeviceEntry_L95
 
         _ = Task.Run(() => ImageResultEntry.ImageResultsManager.SelectedL95.Controller.ProcessLabelAsync(lab));
     }
+    /// <summary>
+    /// Processes the full report received from the L95 device.
+    /// </summary>
+    /// <param name="message">The full report data.</param>
+    /// <param name="replaceSectors">A value indicating whether to replace existing current sectors.</param>
     public void ProcessFullReport(FullReport message, bool replaceSectors)
     {
         if (!Application.Current.Dispatcher.CheckAccess())
@@ -431,6 +537,9 @@ public partial class ImageResultDeviceEntry_L95
         }
     }
 
+    /// <summary>
+    /// Clears the currently selected sector from the current results.
+    /// </summary>
     [RelayCommand]
     public void ClearSingle()
     {
@@ -461,6 +570,9 @@ public partial class ImageResultDeviceEntry_L95
         }
     }
 
+    /// <summary>
+    /// Clears all sectors and related data from the current verification result.
+    /// </summary>
     [RelayCommand]
     public void ClearCurrent()
     {
@@ -477,6 +589,9 @@ public partial class ImageResultDeviceEntry_L95
         CurrentImage = null;
     }
 
+    /// <summary>
+    /// Clears all stored sectors for the current image from the database.
+    /// </summary>
     [RelayCommand]
     public async Task ClearStored()
     {
@@ -582,9 +697,20 @@ public partial class ImageResultDeviceEntry_L95
         RefreshCurrentOverlay();
     }
 
+    /// <summary>
+    /// Refreshes the overlay for the stored image.
+    /// </summary>
     public void RefreshStoredOverlay() => StoredImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(StoredImage, StoredSectors);
+    /// <summary>
+    /// Refreshes the overlay for the current image.
+    /// </summary>
     public void RefreshCurrentOverlay() => CurrentImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
 
+    /// <summary>
+    /// Sorts an <see cref="ObservableCollection{ISector}"/> to match the order of a <see cref="List{ISector}"/>.
+    /// </summary>
+    /// <param name="list">The list with the desired order.</param>
+    /// <param name="observableCollection">The observable collection to sort.</param>
     public static void SortObservableCollectionByList(List<ISector> list, ObservableCollection<ISector> observableCollection)
     {
         for (var i = 0; i < list.Count; i++)
@@ -596,6 +722,16 @@ public partial class ImageResultDeviceEntry_L95
                 observableCollection.Move(currentIndex, i);
             }
         }
+    }
+
+    /// <summary>
+    /// Releases the unmanaged resources used by the <see cref="ImageResultDeviceEntry_L95"/> and optionally releases the managed resources.
+    /// </summary>
+    public void Dispose()
+    {
+        _IsWorkingTimer.Elapsed -= _IsWorkingTimer_Elapsed;
+        _IsWorkingTimer.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     //public int LoadTask()

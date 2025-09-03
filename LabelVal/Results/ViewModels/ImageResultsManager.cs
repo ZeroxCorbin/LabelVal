@@ -29,6 +29,7 @@ namespace LabelVal.Results.ViewModels;
 
 /// <summary>
 /// This is the ViewModel for the Image Results Manager.
+/// It manages the display and interaction with image results from various devices.
 /// </summary>
 public partial class ImageResultsManager : ObservableRecipient,
     IRecipient<PropertyChangedMessage<ImageRoll>>,
@@ -39,32 +40,55 @@ public partial class ImageResultsManager : ObservableRecipient,
     IRecipient<PropertyChangedMessage<PrinterSettings>>,
     IRecipient<PropertyChangedMessage<FullReport>>
 {
-    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+    #region Fields
 
-    private IKeyboardMouseEvents _globalHook;
-    private bool _shiftPressed = false;
+    private readonly IKeyboardMouseEvents _globalHook;
+    private bool _shiftPressed;
+    private bool _isLoadingImages;
 
-    /// <see cref="ImagesMaxHeight"/>
+    #endregion
+
+    #region Properties
+
+    #region UI State Properties
+
+    /// <summary>
+    /// Gets or sets the maximum height for images in the results view.
+    /// </summary>
     [ObservableProperty] private int _imagesMaxHeight = App.Settings.GetValue(nameof(ImagesMaxHeight), 200, true);
     partial void OnImagesMaxHeightChanged(int value) => App.Settings.SetValue(nameof(ImagesMaxHeight), value);
 
-    /// <see cref="ImagesMaxWidth"/>
+    /// <summary>
+    /// Gets or sets a value indicating whether to display sectors in two columns.
+    /// </summary>
     [ObservableProperty] private bool _dualSectorColumns = App.Settings.GetValue(nameof(DualSectorColumns), false, true);
     partial void OnDualSectorColumnsChanged(bool value) => App.Settings.SetValue(nameof(DualSectorColumns), value);
 
-    /// <see cref="ShowExtendedData"/>
+    /// <summary>
+    /// Gets or sets a value indicating whether to show extended data for results.
+    /// </summary>
     [ObservableProperty] private bool _showExtendedData = App.Settings.GetValue(nameof(ShowExtendedData), false, true);
     partial void OnShowExtendedDataChanged(bool value) => App.Settings.SetValue(nameof(ShowExtendedData), value);
 
-    /// <see cref="HideErrorsWarnings"/>
+    /// <summary>
+    /// Gets or sets a value indicating whether to hide entries with errors or warnings.
+    /// </summary>
     [ObservableProperty] private bool _hideErrorsWarnings = App.Settings.GetValue(nameof(HideErrorsWarnings), false, true);
     partial void OnHideErrorsWarningsChanged(bool value) => App.Settings.SetValue(nameof(HideErrorsWarnings), value);
 
-    /// <see cref="ImageAddPosition"/>
+    /// <summary>
+    /// Gets or sets the position where new images are added.
+    /// </summary>
     [ObservableProperty] private ImageAddPositions _imageAddPosition = App.Settings.GetValue(nameof(ImageAddPosition), ImageAddPositions.Bottom, true);
     partial void OnImageAddPositionChanged(ImageAddPositions value) => App.Settings.SetValue(nameof(ImageAddPosition), value);
 
-    /// <see cref="SelectedImageRoll"/>
+    #endregion
+
+    #region Selected Item Properties
+
+    /// <summary>
+    /// Gets or sets the currently selected image roll.
+    /// </summary>
     [ObservableProperty] private ImageRoll _selectedImageRoll;
     partial void OnSelectedImageRollChanged(ImageRoll oldValue, ImageRoll newValue)
     {
@@ -85,9 +109,14 @@ public partial class ImageResultsManager : ObservableRecipient,
             Application.Current.Dispatcher.Invoke(() => ImageResultsEntries.Clear());
     }
 
-    /// <see cref="SelectedDatabase"/>
+    /// <summary>
+    /// Gets or sets the currently selected image results database.
+    /// </summary>
     [ObservableProperty] private Databases.ImageResultsDatabase _selectedDatabase;
 
+    /// <summary>
+    /// Gets or sets the topmost image result entry in the view.
+    /// </summary>
     [ObservableProperty]
     private ImageResultEntry _topmostItem;
     partial void OnTopmostItemChanged(ImageResultEntry oldValue, ImageResultEntry newValue)
@@ -102,81 +131,156 @@ public partial class ImageResultsManager : ObservableRecipient,
         }
     }
 
-    public ObservableCollection<ImageResultEntry> ImageResultsEntries { get; } = [];
-
-    /// <see cref="FocusedTemplate"/>
+    /// <summary>
+    /// Gets or sets the focused template JSON object.
+    /// </summary>
     [ObservableProperty] private JObject _focusedTemplate;
-    /// <see cref="FocusedReport"/>
+
+    /// <summary>
+    /// Gets or sets the focused report JSON object.
+    /// </summary>
     [ObservableProperty] private JObject _focusedReport;
 
-    /// <see cref="SelectedV275Node"/>
+    /// <summary>
+    /// Gets or sets the selected V275 device node.
+    /// </summary>
     [ObservableProperty] private Node _selectedV275Node;
-    /// <see cref="SelectedV5"/>
+
+    /// <summary>
+    /// Gets or sets the selected V5 scanner device.
+    /// </summary>
     [ObservableProperty] private Scanner _selectedV5;
-    /// <see cref="SelectedL95"/>
+
+    /// <summary>
+    /// Gets or sets the selected L95 verifier device.
+    /// </summary>
     [ObservableProperty] private Verifier _selectedL95;
 
-    /// <see cref="SelectedPrinter"/>
+    /// <summary>
+    /// Gets or sets the selected printer.
+    /// </summary>
     [ObservableProperty] private PrinterSettings _selectedPrinter;
 
-    /// <see cref="IsV275Working"/>
+    #endregion
+
+    #region Device State Properties
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the V275 device is currently working.
+    /// </summary>
     [ObservableProperty] private bool _isV275Working;
-    /// <see cref="IsV275Selected"/>
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the V275 device is selected for operations.
+    /// </summary>
     [ObservableProperty] private bool _isV275Selected;
     partial void OnIsV275SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.V275); }
-    /// <see cref="IsV5Faulted"/>
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the V275 device is in a faulted state.
+    /// </summary>
     [ObservableProperty] private bool _isV275Faulted;
+
+    /// <summary>
+    /// Gets the current label handler for the V275 device based on its state.
+    /// </summary>
     public LabelHandlers V275Handler => SelectedV275Node?.Controller != null && SelectedV275Node.Controller.IsLoggedIn_Control
                 ? SelectedV275Node.Controller.IsSimulator
                     ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
                     : _shiftPressed ? LabelHandlers.CameraDetect : LabelHandlers.CameraTrigger
                 : LabelHandlers.Offline;
 
-    /// <see cref="IsV5Working"/>
+    /// <summary>
+    /// Gets or sets a value indicating whether the V5 device is currently working.
+    /// </summary>
     [ObservableProperty] private bool _isV5Working;
-    /// <see cref="IsV5Selected"/>
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the V5 device is selected for operations.
+    /// </summary>
     [ObservableProperty] private bool _isV5Selected;
     partial void OnIsV5SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.V5); }
-    /// <see cref="IsV5Faulted"/>
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the V5 device is in a faulted state.
+    /// </summary>
     [ObservableProperty] private bool _isV5Faulted;
+
+    /// <summary>
+    /// Gets the current label handler for the V5 device based on its state.
+    /// </summary>
     public LabelHandlers V5Handler => SelectedV5?.Controller != null && SelectedV5.Controller.IsConnected
                 ? SelectedV5.Controller.IsSimulator
                     ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
                     : _shiftPressed ? LabelHandlers.CameraDetect : LabelHandlers.CameraTrigger
                 : LabelHandlers.Offline;
 
-    /// <see cref="IsL95Working"/>
+    /// <summary>
+    /// Gets or sets a value indicating whether the L95 device is currently working.
+    /// </summary>
     [ObservableProperty] private bool _isL95Working;
-    /// <see cref="IsL95Selected"/>
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the L95 device is selected for operations.
+    /// </summary>
     [ObservableProperty] private bool _isL95Selected;
     partial void OnIsL95SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.L95); }
-    /// <see cref="IsL95Faulted"/>
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the L95 device is in a faulted state.
+    /// </summary>
     [ObservableProperty] private bool _isL95Faulted;
+
+    /// <summary>
+    /// Gets the current label handler for the L95 device based on its state.
+    /// </summary>
     public LabelHandlers L95Handler => SelectedL95?.Controller != null && SelectedL95?.Controller.IsConnected == true && SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running
                 ? SelectedL95.Controller.IsSimulator
                     ? _shiftPressed ? LabelHandlers.SimulatorDetect : LabelHandlers.SimulatorTrigger
                     : _shiftPressed ? LabelHandlers.CameraDetect : LabelHandlers.CameraTrigger
                 : LabelHandlers.Offline;
 
+    #endregion
+
+    #region Collections
+
+    /// <summary>
+    /// Gets the collection of image result entries displayed in the UI.
+    /// </summary>
+    public ObservableCollection<ImageResultEntry> ImageResultsEntries { get; } = [];
+
+    #endregion
+
+    #endregion
+
+    #region Constructor and Destructor
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ImageResultsManager"/> class.
+    /// </summary>
     public ImageResultsManager()
     {
-        //WeakReferenceMessenger.Default.Register<RequestMessage<ImageRoll>>(
-        //this,
-        //(recipient, message) => message.Reply(SelectedImageRoll));
-
         _globalHook = Hook.GlobalEvents();
         _globalHook.KeyDown += _globalHook_KeyDown;
-        _globalHook.KeyUp += _globalHook_KeyUp; ;
+        _globalHook.KeyUp += _globalHook_KeyUp;
 
         IsActive = true;
         ReceiveAll();
     }
+
+    /// <summary>
+    /// Finalizes an instance of the <see cref="ImageResultsManager"/> class.
+    /// </summary>
     ~ImageResultsManager()
     {
         _globalHook.KeyDown -= _globalHook_KeyDown;
         _globalHook.KeyUp -= _globalHook_KeyUp;
         _globalHook.Dispose();
     }
+
+    #endregion
+
+    #region Keyboard Hook Handlers
 
     private void _globalHook_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
     {
@@ -186,6 +290,7 @@ public partial class ImageResultsManager : ObservableRecipient,
             Application.Current.Dispatcher.Invoke(HandlerUpdate);
         }
     }
+
     private void _globalHook_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
     {
         if (e.KeyCode is System.Windows.Forms.Keys.LShiftKey or System.Windows.Forms.Keys.RShiftKey)
@@ -195,19 +300,18 @@ public partial class ImageResultsManager : ObservableRecipient,
         }
     }
 
+    #endregion
+
+    #region Initialization
+
+    /// <summary>
+    /// Requests initial state from other view models upon activation.
+    /// </summary>
     private void ReceiveAll()
     {
-        //var ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<Node>());
-        //if(ret1.HasReceivedResponse)
-        //    SelectedV275Node = ret1.Response;
-
         var ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
         if (ret2.HasReceivedResponse)
             Receive(new PropertyChangedMessage<PrinterSettings>("", "", null, ret2.Response));
-
-        //RequestMessage<ImageRoll> ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRoll>());
-        //if (ret3.HasReceivedResponse)
-        //    SelectedImageRoll = ret3.Response;
 
         var ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<Databases.ImageResultsDatabase>());
         if (ret4.HasReceivedResponse)
@@ -220,10 +324,15 @@ public partial class ImageResultsManager : ObservableRecipient,
         var ret6 = WeakReferenceMessenger.Default.Send(new RequestMessage<Verifier>());
         if (ret6.HasReceivedResponse)
             Receive(new PropertyChangedMessage<Verifier>("", "", null, ret6.Response));
-
     }
 
-    private bool _isLoadingImages = false;
+    #endregion
+
+    #region Image Entry Management
+
+    /// <summary>
+    /// Asynchronously loads image result entries from the currently selected image roll.
+    /// </summary>
     public async Task LoadImageResultsEntries()
     {
         if (SelectedImageRoll == null)
@@ -280,9 +389,9 @@ public partial class ImageResultsManager : ObservableRecipient,
             }
         }
     }
+
     private void SelectedImageRoll_Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         {
             foreach (var itm in e.NewItems.Cast<ImageEntry>())
@@ -321,8 +430,7 @@ public partial class ImageResultsManager : ObservableRecipient,
                 WorkingUpdate(ird.Device, false);
             }
         }
-
-        if (img.NewData is V5_REST_Lib.Controllers.FullReport v5)
+        else if (img.NewData is V5_REST_Lib.Controllers.FullReport v5)
         {
             if (ire.ImageResultDeviceEntries.FirstOrDefault((e) => e.Device == ImageResultEntryDevices.V5) is ImageResultDeviceEntry_V5 ird)
             {
@@ -330,7 +438,6 @@ public partial class ImageResultsManager : ObservableRecipient,
                 WorkingUpdate(ird.Device, false);
             }
         }
-
         else if (img.NewData is FullReport l95)
         {
             System.Drawing.Point center = new(l95.Template.GetParameter<int>("Report.X1") + (l95.Template.GetParameter<int>("Report.SizeX") / 2), l95.Template.GetParameter<int>("Report.Y1") + (l95.Template.GetParameter<int>("Report.SizeY") / 2));
@@ -357,6 +464,7 @@ public partial class ImageResultsManager : ObservableRecipient,
             }), System.Windows.Threading.DispatcherPriority.ContextIdle);
         }
     }
+
     private void RemoveImageResultEntry(ImageEntry img)
     {
         var itm = ImageResultsEntries.FirstOrDefault(ir => ir.SourceImage == img);
@@ -364,16 +472,15 @@ public partial class ImageResultsManager : ObservableRecipient,
         {
             _ = ImageResultsEntries.Remove(itm);
         }
-
-        //// Reorder the remaining items in the list
-        //var order = 1;
-        //foreach (ImageResultEntry item in ImageResultsEntries.OrderBy(item => item.SourceImage.Order))
-        //{
-        //    item.SourceImage.Order = order++;
-        //    SelectedImageRoll.SaveImage(item.SourceImage);
-        //}
     }
 
+    #endregion
+
+    #region Device and UI State Updates
+
+    /// <summary>
+    /// Notifies the UI that device handler properties have changed.
+    /// </summary>
     public void HandlerUpdate()
     {
         OnPropertyChanged(nameof(V275Handler));
@@ -381,6 +488,11 @@ public partial class ImageResultsManager : ObservableRecipient,
         OnPropertyChanged(nameof(L95Handler));
     }
 
+    /// <summary>
+    /// Updates the working state for a specific device.
+    /// </summary>
+    /// <param name="device">The device to update.</param>
+    /// <param name="state">The new working state.</param>
     public void WorkingUpdate(ImageResultEntryDevices device, bool state)
     {
         if (device == ImageResultEntryDevices.V275)
@@ -391,6 +503,11 @@ public partial class ImageResultsManager : ObservableRecipient,
             IsL95Working = state;
     }
 
+    /// <summary>
+    /// Updates the faulted state for a specific device.
+    /// </summary>
+    /// <param name="device">The device to update.</param>
+    /// <param name="state">The new faulted state.</param>
     public void FaultedUpdate(ImageResultEntryDevices device, bool state)
     {
         if (device == ImageResultEntryDevices.V275)
@@ -401,6 +518,10 @@ public partial class ImageResultsManager : ObservableRecipient,
             IsL95Faulted = state;
     }
 
+    /// <summary>
+    /// Resets the selection state for a given device across all image entries.
+    /// </summary>
+    /// <param name="device">The device whose selection to reset.</param>
     public void ResetSelected(ImageResultEntryDevices device)
     {
         foreach (var lab in ImageResultsEntries)
@@ -423,24 +544,26 @@ public partial class ImageResultsManager : ObservableRecipient,
         }
     }
 
+    #endregion
+
+    #region Commands
+
+    /// <summary>
+    /// Adds a new image from a file.
+    /// </summary>
     [RelayCommand]
     private void AddImage() => AddImage(ImageAddPosition, null);
-    private void AddImage(ImageAddPositions position, ImageResultEntry imageResult)
-    {
-        var newImages = PromptForNewImages(); // Prompt the user to select an image or multiple images
 
-        SelectedImageRoll.AddImages(position, newImages);
-    }
-
+    /// <summary>
+    /// Adds an image acquired from a specified device.
+    /// </summary>
     [RelayCommand]
     private async Task AddDeviceImage(ImageResultEntryDevices device) => await Application.Current.Dispatcher.Invoke(async () =>
     {
         switch (device)
         {
             case ImageResultEntryDevices.V275:
-
                 WorkingUpdate(device, true);
-
                 if (V275Handler is LabelHandlers.CameraDetect or LabelHandlers.SimulatorDetect)
                 {
                     var label = new V275_REST_Lib.Controllers.Label(ProcessRepeat, null, V275Handler, SelectedImageRoll.SelectedGS1Table);
@@ -451,11 +574,10 @@ public partial class ImageResultsManager : ObservableRecipient,
                     var res = await SelectedV275Node.Controller.ReadTask(-1);
                     ProcessFullReport(res);
                 }
-
                 break;
+
             case ImageResultEntryDevices.V5:
                 WorkingUpdate(device, true);
-
                 if (V5Handler is LabelHandlers.CameraDetect or LabelHandlers.SimulatorDetect)
                 {
                     var label = new V5_REST_Lib.Controllers.Label(ProcessRepeat, null, V5Handler, SelectedImageRoll.SelectedGS1Table);
@@ -466,17 +588,102 @@ public partial class ImageResultsManager : ObservableRecipient,
                     var res1 = await SelectedV5.Controller.Trigger_Wait_Return(true);
                     ProcessFullReport(res1);
                 }
-
                 break;
+
             case ImageResultEntryDevices.L95:
                 WorkingUpdate(device, true);
-
                 var res2 = SelectedL95.Controller.GetFullReport(-1);
                 ProcessFullReport(res2);
                 break;
         }
-
     });
+
+    /// <summary>
+    /// Deletes an image and its associated results.
+    /// </summary>
+    [RelayCommand]
+    public async Task DeleteImage(ImageResultEntry imageToDelete)
+    {
+        if (SelectedImageRoll.IsLocked)
+        {
+            Logger.Warning("The database is locked. Cannot delete image.");
+            return;
+        }
+
+        var answer = await AllImageCancelDialog("Delete Image & Remove Results", $"Are you sure you want to delete this image from the Image Roll?\r\nThis can not be undone!");
+        if (answer == MessageDialogResult.FirstAuxiliary)
+            return;
+        else if (answer == MessageDialogResult.Affirmative)
+        {
+            // Remove the image from the ImageRoll and remove all result entries
+            foreach (var img in ImageResultsEntries)
+            {
+                if (img.SourceImage.UID == imageToDelete.SourceImage.UID)
+                {
+                    img.DeleteStored();
+                }
+            }
+            SelectedImageRoll.DeleteImage(imageToDelete.SourceImage);
+        }
+        else if (answer == MessageDialogResult.Negative)
+        {
+            // Remove the image from the ImageRoll
+            SelectedImageRoll.DeleteImage(imageToDelete.SourceImage);
+        }
+    }
+
+    /// <summary>
+    /// Stores the current results for all images and devices.
+    /// </summary>
+    [RelayCommand]
+    private void StoreAllCurrentResults()
+    {
+        foreach (var img in ImageResultsEntries)
+        {
+            img.StoreCommand.Execute(ImageResultEntryDevices.V275);
+            img.StoreCommand.Execute(ImageResultEntryDevices.V5);
+            img.StoreCommand.Execute(ImageResultEntryDevices.L95);
+        }
+    }
+
+    /// <summary>
+    /// Clears the current results for all images and devices.
+    /// </summary>
+    [RelayCommand]
+    private void ClearAllCurrentResults()
+    {
+        foreach (var img in ImageResultsEntries)
+        {
+            img.ClearCurrentCommand.Execute(ImageResultEntryDevices.V275);
+            img.ClearCurrentCommand.Execute(ImageResultEntryDevices.V5);
+            img.ClearCurrentCommand.Execute(ImageResultEntryDevices.L95);
+        }
+    }
+
+    /// <summary>
+    /// Copies all sector data to the clipboard.
+    /// </summary>
+    [RelayCommand]
+    private void CopyAllSectorsToClipboard()
+    {
+        var data = "";
+        var sorted = ImageResultsEntries.OrderBy(i => i.SourceImage.Order);
+        foreach (var img in sorted)
+        {
+            foreach (var device in img.ImageResultDeviceEntries)
+            {
+                if (device.StoredSectors.Count != 0)
+                    data += device.StoredSectors.GetSectorsReport($"{img.ImageResultsManager.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
+                if (device.CurrentSectors.Count != 0)
+                    data += device.CurrentSectors.GetSectorsReport($"{img.ImageResultsManager.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
+            }
+        }
+        Clipboard.SetText(data);
+    }
+
+    #endregion
+
+    #region Report Processing
 
     public void Receive(PropertyChangedMessage<FullReport> message)
     {
@@ -489,25 +696,20 @@ public partial class ImageResultsManager : ObservableRecipient,
     {
         try
         {
-            if (res == null)
-                return;
-
-            var ire = new ImageEntry(SelectedImageRoll.UID, res.Image, SelectedImageRoll.TargetDPI);
+            if (res == null) return;
 
             if (SelectedImageRoll.IsLocked)
             {
+                var ire = new ImageEntry(SelectedImageRoll.UID, res.Image, SelectedImageRoll.TargetDPI);
                 if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
                 {
                     Logger.Warning("The database is locked. Cannot add image.");
                     return;
                 }
-
-                //This assumes the image is already in the database and the results will be added to it.
             }
 
             (var entry, var isNew) = SelectedImageRoll.GetImageEntry(res.Image);
-            if (entry == null)
-                return;
+            if (entry == null) return;
 
             entry.NewData = res;
 
@@ -527,25 +729,20 @@ public partial class ImageResultsManager : ObservableRecipient,
     {
         try
         {
-            if (res == null)
-                return;
-
-            var ire = new ImageEntry(SelectedImageRoll.UID, res.Image, SelectedImageRoll.TargetDPI);
+            if (res == null) return;
 
             if (SelectedImageRoll.IsLocked)
             {
+                var ire = new ImageEntry(SelectedImageRoll.UID, res.Image, SelectedImageRoll.TargetDPI);
                 if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
                 {
                     Logger.Warning("The database is locked. Cannot add image.");
                     return;
                 }
-
-                //This assumes the image is already in the database and the results will be added to it.
             }
 
             (var entry, var isNew) = SelectedImageRoll.GetImageEntry(res.Image);
-            if (entry == null)
-                return;
+            if (entry == null) return;
 
             entry.NewData = res;
 
@@ -559,29 +756,26 @@ public partial class ImageResultsManager : ObservableRecipient,
             WorkingUpdate(ImageResultEntryDevices.V275, false);
         }
     }
+
     public void ProcessFullReport(FullReport res)
     {
         try
         {
-            if (res == null || res.Report == null)
-                return;
+            if (res == null || res.Report == null) return;
 
-            var ire = new ImageEntry(SelectedImageRoll.UID, res.Template.GetParameter<byte[]>("Report.Thumbnail"), SelectedImageRoll.TargetDPI);
-
+            var thumbnail = res.Template.GetParameter<byte[]>("Report.Thumbnail");
             if (SelectedImageRoll.IsLocked)
             {
+                var ire = new ImageEntry(SelectedImageRoll.UID, thumbnail, SelectedImageRoll.TargetDPI);
                 if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
                 {
                     Logger.Warning("The database is locked. Cannot add image.");
                     return;
                 }
-
-                //This assumes the image is already in the database and the results will be added to it.
             }
 
-            (var entry, var isNew) = SelectedImageRoll.GetImageEntry(res.Template.GetParameter<byte[]>("Report.Thumbnail"));
-            if (entry == null)
-                return;
+            (var entry, var isNew) = SelectedImageRoll.GetImageEntry(thumbnail);
+            if (entry == null) return;
 
             entry.NewData = res;
 
@@ -589,8 +783,6 @@ public partial class ImageResultsManager : ObservableRecipient,
                 SelectedImageRoll.AddImage(ImageAddPosition, entry);
             else
                 AddImageResultEntry(entry);
-
-
         }
         finally
         {
@@ -598,98 +790,34 @@ public partial class ImageResultsManager : ObservableRecipient,
         }
     }
 
-    [RelayCommand]
-    public async Task DeleteImage(ImageResultEntry imageToDelete)
-    {
-        // Remove the image from the database
-        if (SelectedImageRoll.IsLocked)
-        {
-            Logger.Warning("The database is locked. Cannot delete image.");
-            return;
-        }
+    #endregion
 
-        var answer = await AllImageCancelDialog("Delete Image & Remove Results", $"Are you sure you want to delete this image from the Image Roll?\r\nThis can not be undone!");
-        if (answer == MessageDialogResult.FirstAuxiliary)
-            return;
-        else
-        if (answer == MessageDialogResult.Affirmative)
-        {
-            // Remove the image from the ImageRoll and remove all result entries
-            foreach (var img in ImageResultsEntries)
-            {
-                if (img.SourceImage.UID == imageToDelete.SourceImage.UID)
-                {
-                    img.DeleteStored();
-                }
-            }
-            SelectedImageRoll.DeleteImage(imageToDelete.SourceImage);
-        }
-        else
-        if (answer == MessageDialogResult.Negative)
-        {
-            // Remove the image from the ImageRoll
-            SelectedImageRoll.DeleteImage(imageToDelete.SourceImage);
-        }
-    }
+    #region Private Helper Methods
 
-    [RelayCommand]
-    private void StoreAllCurrentResults()
+    private void AddImage(ImageAddPositions position, ImageResultEntry imageResult)
     {
-        foreach (var img in ImageResultsEntries)
+        var newImages = PromptForNewImages();
+        if (newImages != null && newImages.Count > 0)
         {
-            img.StoreCommand.Execute(ImageResultEntryDevices.V275);
-            img.StoreCommand.Execute(ImageResultEntryDevices.V5);
-            img.StoreCommand.Execute(ImageResultEntryDevices.L95);
+            SelectedImageRoll.AddImages(position, newImages);
         }
-    }
-
-    [RelayCommand]
-    private void ClearAllCurrentResults()
-    {
-        foreach (var img in ImageResultsEntries)
-        {
-            img.ClearCurrentCommand.Execute(ImageResultEntryDevices.V275);
-            img.ClearCurrentCommand.Execute(ImageResultEntryDevices.V5);
-            img.ClearCurrentCommand.Execute(ImageResultEntryDevices.L95);
-        }
-    }
-
-    [RelayCommand]
-    private void CopyAllSectorsToClipboard()
-    {
-        var data = "";
-        var sorted = ImageResultsEntries.OrderBy(i => i.SourceImage.Order);
-        foreach (var img in sorted)
-        {
-            foreach (var device in img.ImageResultDeviceEntries)
-            {
-                if (device.StoredSectors.Count != 0)
-                    data += device.StoredSectors.GetSectorsReport($"{img.ImageResultsManager.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
-                if (device.CurrentSectors.Count != 0)
-                    data += device.CurrentSectors.GetSectorsReport($"{img.ImageResultsManager.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
-            }
-        }
-        Clipboard.SetText(data);
     }
 
     private List<ImageEntry> PromptForNewImages()
     {
         FileUtilities.LoadFileDialogSettings settings = new()
         {
-            Filters =
-            [
-                new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"])
-            ],
+            Filters = [new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"])],
             Title = "Select image(s).",
-            Multiselect = true, // Ensure this property is set to allow multiple file selections
+            Multiselect = true,
         };
 
         if (Utilities.FileUtilities.LoadFileDialog(settings))
         {
             List<ImageEntry> newImages = [];
-            foreach (var filePath in settings.SelectedFiles) // Iterate over selected files
+            foreach (var filePath in settings.SelectedFiles)
             {
-                (var entry, var isNew) = SelectedImageRoll.GetImageEntry(filePath); // Order will be set in InsertImageAtOrder
+                (var entry, var isNew) = SelectedImageRoll.GetImageEntry(filePath);
                 if (entry != null && isNew)
                 {
                     newImages.Add(entry);
@@ -701,13 +829,13 @@ public partial class ImageResultsManager : ObservableRecipient,
         return null;
     }
 
-    #region Receive Messages
+    #endregion
+
+    #region Message Handlers (Receive)
 
     /// <summary>
-    /// Receive the selected ImageRoll.
-    /// Attach to the PropertyChanged event of the new ImageRoll.
+    /// Receives property changes for <see cref="ImageRoll"/> and updates the selection.
     /// </summary>
-    /// <param name="message"></param>
     public void Receive(PropertyChangedMessage<ImageRoll> message)
     {
         if (SelectedImageRoll != null)
@@ -724,9 +852,7 @@ public partial class ImageResultsManager : ObservableRecipient,
             SelectedImageRoll.ImageEntries.CollectionChanged += SelectedImageRoll_Images_CollectionChanged;
         }
     }
-    /// <summary>
-    /// This will update the Handler for all ImageResultDeviceEntries.
-    /// </summary>
+
     private void SelectedImageRoll_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(ImageRoll.SectorType))
@@ -734,22 +860,27 @@ public partial class ImageResultsManager : ObservableRecipient,
                 lab.HandlerUpdate(ImageResultEntryDevices.All);
     }
 
+    /// <summary>
+    /// Receives property changes for <see cref="PrinterSettings"/> and updates the selection.
+    /// </summary>
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
+
+    /// <summary>
+    /// Receives property changes for <see cref="Databases.ImageResultsDatabase"/> and updates the selection.
+    /// </summary>
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
 
     /// <summary>
-    /// Receive the selected Node.
-    /// Attach to the PropertyChanged event of the new Node.Controller.
+    /// Receives property changes for <see cref="Node"/> (V275) and updates the selection.
     /// </summary>
-    /// <param name="message"></param>
     public void Receive(PropertyChangedMessage<Node> message)
     {
-        if (SelectedV275Node != null && SelectedV275Node.Controller != null)
+        if (SelectedV275Node?.Controller != null)
             SelectedV275Node.Controller.PropertyChanged -= V275Controller_PropertyChanged;
 
         SelectedV275Node = message.NewValue;
 
-        if (SelectedV275Node != null && SelectedV275Node.Controller != null)
+        if (SelectedV275Node?.Controller != null)
             SelectedV275Node.Controller.PropertyChanged += V275Controller_PropertyChanged;
 
         foreach (var lab in ImageResultsEntries)
@@ -757,9 +888,7 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         HandlerUpdate();
     }
-    /// <summary>
-    /// This will update the Handler for all ImageResultDeviceEntries.
-    /// </summary>
+
     private void V275Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(Node.Controller.IsSimulator) or nameof(Node.Controller.IsLoggedIn_Control))
@@ -771,22 +900,25 @@ public partial class ImageResultsManager : ObservableRecipient,
         }
     }
 
+    /// <summary>
+    /// Receives property changes for <see cref="Scanner"/> (V5) and updates the selection.
+    /// </summary>
     public void Receive(PropertyChangedMessage<Scanner> message)
     {
-        if (SelectedV5 != null && SelectedV5.Controller != null)
+        if (SelectedV5?.Controller != null)
             SelectedV5.Controller.PropertyChanged -= V5Controller_PropertyChanged;
 
         SelectedV5 = message.NewValue;
 
-        if (SelectedV5 != null && SelectedV5.Controller != null)
+        if (SelectedV5?.Controller != null)
             SelectedV5.Controller.PropertyChanged += V5Controller_PropertyChanged;
 
         foreach (var lab in ImageResultsEntries)
             lab.HandlerUpdate(ImageResultEntryDevices.V5);
 
         HandlerUpdate();
-
     }
+
     private void V5Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(V5_REST_Lib.Controllers.Controller.IsSimulator) or nameof(V5_REST_Lib.Controllers.Controller.IsConnected))
@@ -798,14 +930,17 @@ public partial class ImageResultsManager : ObservableRecipient,
         }
     }
 
+    /// <summary>
+    /// Receives property changes for <see cref="Verifier"/> (L95) and updates the selection.
+    /// </summary>
     public void Receive(PropertyChangedMessage<Verifier> message)
     {
-        if (SelectedL95 != null && SelectedL95.Controller != null)
+        if (SelectedL95?.Controller != null)
             SelectedL95.Controller.PropertyChanged -= L95Controller_PropertyChanged;
 
         SelectedL95 = message.NewValue;
 
-        if (SelectedL95 != null && SelectedL95.Controller != null)
+        if (SelectedL95?.Controller != null)
             SelectedL95.Controller.PropertyChanged += L95Controller_PropertyChanged;
 
         foreach (var lab in ImageResultsEntries)
@@ -813,6 +948,7 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         HandlerUpdate();
     }
+
     private void L95Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(Lvs95xx.lib.Core.Controllers.Controller.IsSimulator) or nameof(Lvs95xx.lib.Core.Controllers.Controller.IsConnected) or nameof(Lvs95xx.lib.Core.Controllers.Controller.ProcessState))
@@ -827,9 +963,21 @@ public partial class ImageResultsManager : ObservableRecipient,
     #endregion
 
     #region Dialogs
-    public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-    public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
-    public async Task<MessageDialogResult> AllImageCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, new MetroDialogSettings() { DefaultButtonFocus = MessageDialogResult.FirstAuxiliary, AffirmativeButtonText = "Image & Results", NegativeButtonText = "Image Only", FirstAuxiliaryButtonText = "Cancel" });
-    #endregion
 
+    /// <summary>
+    /// Gets the dialog coordinator for showing dialogs.
+    /// </summary>
+    public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
+
+    /// <summary>
+    /// Shows a dialog with OK and Cancel buttons.
+    /// </summary>
+    public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
+
+    /// <summary>
+    /// Shows a dialog for deleting an image with multiple options.
+    /// </summary>
+    public async Task<MessageDialogResult> AllImageCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, new MetroDialogSettings() { DefaultButtonFocus = MessageDialogResult.FirstAuxiliary, AffirmativeButtonText = "Image & Results", NegativeButtonText = "Image Only", FirstAuxiliaryButtonText = "Cancel" });
+
+    #endregion
 }
