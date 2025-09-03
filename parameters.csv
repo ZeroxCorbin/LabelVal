@@ -1,0 +1,37 @@
+﻿Postal,_1D,_1D1,_1D2,_1D3,_1D4,_1D5,_2DStacked,QR1,QR2,DataMatrix,DPM,HanXin,Aztec,MaxiCode
+Bar height,Bar height,Bar growth,Bar growth,Bar growth,Bar growth,Blemish,Codeword PQ,Axial nonuniformity,Axial nonuniformity,AG,Axial nonuniformity,Axial nonuniformity,Axial nonuniformity,Axial nonuniformity
+Bar pitch,Blemish,Bar height,Bar height,Bar height,Bar height,Contrast,Codeword Yield,Cell height,Cell height,Axial nonuniformity,Cell contrast,Cell height,Cell height,Cell height
+Bar space,Contrast,Blemish,Blemish,Blemish,Blemish,DataBar type,Contrast,Cell size,Cell size,Cell height,Cell height,Cell size,Cell size,Cell Size
+Bar tilt,Decodability,Contrast,Contrast,Contrast,Contrast,Decodability,Corrections,Cell width,Cell width,Cell size,Cell modulation,Cell width,Cell width,Cell width
+Bar width,Decode,Decodability,Decodability,Decodability,DataBar type,Decode,Data CW,Contrast,Contrast,Cell width,Cell size,Code type,Code type,Contrast
+Baseline shift,Defects,Decode,Decode,Decode,Decodability,Defects,Decodability,Corrections,Corrections,Contrast,Cell width,Contrast,Contrast,Corrections
+Connected bars,Edge determ,Defects,Defects,Defects,Decode,Edge determ,Decode,Data CW,Data CW,Contrast uniformity,Corrections,Corrections,Corrections,Data CW
+Contrast,GT,Edge determ,Edge determ,Edge determ,Defects,GT,Defects,Decode,Decode,Corrections,CTD,Data CW,Data CW,Decode
+Contrast ratio,Human Readable,GT,GT,Expansion,Edge determ,Guard pattern,ECMin,Fixed pattern damage,Fixed pattern damage,CTD,CTR,Decode,Decode,Human Readable
+Decode,Min Reflect,Human Readable,Human Readable,GT,GT,Human Readable,Erasures,Format info,Format info,CTR,Data CW,Fixed pattern damage,Fixed pattern damage,Light Direction
+Pattern skew,Minimum EC,Min Reflect,Min Reflect,Human Readable,Guard pattern,Min Reflect,Human Readable,Grid nonuniformity,Grid nonuniformity,Data CW,DDG,Fixed pattern damage A,Fixed pattern damage A,Local nonuniformity
+Rmax,Modulation,Minimum EC,Minimum EC,Min Reflect,Human Readable,Minimum EC,Modulation,Human Readable,Human Readable,Decode,Decode,Fixed pattern damage B,Grid nonuniformity,Mode
+Rmin,Quiet zone,Modulation,Modulation,Minimum EC,Min Reflect,Modulation,Rmax,Light Direction,Light Direction,Fixed pattern damage,Fixed pattern damage,Grid nonuniformity,Human Readable,Modulation
+Structure,Rmax,Quiet zone,NW ratio,Modulation,Minimum EC,Rmax,Rmin,Modulation,Modulation,Grid nonuniformity,Grid nonuniformity,Human Readable,Light Direction,Rmax
+Symbology,Rmin,Rmax,Quiet zone,Quiet zone,Modulation,Rmin,Row Height,Reflectance margin,Reflectance margin,Human Readable,L1,Light Direction,Modulation,Rmin
+,Structure,Rmin,Rmax,Rmax,Rmax,Shortest row height,Stacked SRP,Rmax,Rmax,L1,L2,Modulation,Rmax,Sensor Angle
+,Symbology,Structure,Rmin,Rmin,Rmin,Structure,Structure,Rmin,Rmin,L2,Light Direction,Rmax,Rmin,Size
+,Xdim,Symbology,Structure,Structure,Structure,Symbol height,Symbology,Segement C,Segment A1,Light Direction,MeanDark,Rmin,Sensor Angle,Structure
+,,Xdim,Symbology,Symbology,Symbology,Symbology,Total CW,Segment A1,Segment B1,Modulation,MeanLight,Sensor Angle,Size,Symbol Rotation
+,,,Xdim,Xdim,Xdim,Xdim,Unused EC,Segment A2,Segment B2,OCTASA,Minimum reflectance,Size,Structure,Symbology
+,,,,,,,Xdim,Segment A3,Sensor Angle,QZL1,OCTASA,Structure,Symbol Rotation,Total CW
+,,,,,,,,Segment B1,Size,QZL2,QZL1,Symbol Rotation,Symbology,Unused EC
+,,,,,,,,Segment B2,Structure,Reflectance margin,QZL2,Symbology,Total CW,X print growth
+,,,,,,,,Sensor Angle,Symbol Rotation,Rmax,Sensor Angle,Total CW,Unused EC,Y print growth
+,,,,,,,,Size,Symbology,Rmin,SFP,Unused EC,,
+,,,,,,,,Structure,Total CW,Sensor Angle,Size,,,
+,,,,,,,,Symbol Rotation,Unused EC,SFP,Stick Used,,,
+,,,,,,,,Symbology,Version,Size,Structure,,,
+,,,,,,,,Total CW,X print growth,Structure,Symbol Rotation,,,
+,,,,,,,,Unused EC,Y print growth,Symbol Rotation,Symbology,,,
+,,,,,,,,Version,,Symbology,Total CW,,,
+,,,,,,,,X print growth,,Total CW,TR,,,
+,,,,,,,,Y print growth,,TR,Unused EC,,,
+,,,,,,,,,,Unused EC,X print growth,,,
+,,,,,,,,,,X print growth,Y print growth,,,
+,,,,,,,,,,Y print growth,,,,
