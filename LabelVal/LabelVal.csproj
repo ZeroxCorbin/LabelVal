@@ -10,8 +10,8 @@
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
 		<Title>Label Validator</Title>
     
-		<AssemblyVersion>6.0.0.1000</AssemblyVersion>
-		<FileVersion>6.0.0.1000</FileVersion>
+		<AssemblyVersion>5.2.20.1000</AssemblyVersion>
+		<FileVersion>5.2.20.1000</FileVersion>
 	</PropertyGroup>
 
   <ItemGroup>
