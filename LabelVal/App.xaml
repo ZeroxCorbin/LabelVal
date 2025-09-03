@@ -6,6 +6,7 @@
     xmlns:bar_gs1="clr-namespace:BarcodeVerification.lib.GS1;assembly=BarcodeVerification.lib"
     xmlns:converters="clr-namespace:Wpf.lib.Converters;assembly=Wpf.lib"
     xmlns:imageRoll_enums="clr-namespace:LabelVal.ImageRolls.ViewModels"
+    xmlns:watchers="clr-namespace:Watchers.lib.Process;assembly=Watchers.lib"
     xmlns:local="clr-namespace:LabelVal"
     xmlns:logging="clr-namespace:Logging.lib;assembly=Logging.lib"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -165,6 +166,16 @@
                     <x:Type TypeName="imageRoll_enums:ImageAddPositions" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
+
+            <ObjectDataProvider
+                x:Key="ProcessStates"
+                MethodName="GetValues"
+                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="watchers:Win32_ProcessWatcherProcessState" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
 
             <Style BasedOn="{StaticResource MahApps.Styles.ScrollBar}" TargetType="ScrollBar">
                 <!--<Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}"/>-->

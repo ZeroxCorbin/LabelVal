@@ -75,6 +75,25 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
             _ = AvailablePorts.Remove(name);
     }
 
+    [RelayCommand]
+    private void EnterLvsCredentials()
+    {
+        if (Controller.Process != null)
+        {
+            WinAPI.lib.WinAPI.SendString($"lvs\t{Lvs95xx.lib.Core.Controllers.Controller.GetTodaysPassword()}\n", Controller.Process);
+            // WinAPI.SetFocus(_process);
+        }
+    }
+    [RelayCommand]
+    private void EnterAdminCredentials()
+    {
+        if (Controller.Process != null)
+        {
+            WinAPI.lib.WinAPI.SendString($"admin\tadmin\n", Controller.Process);
+            // WinAPI.SetFocus(_process);
+        }
+    }
+
     private void PostLogin()
     {
         var cur = Controller.Database.GetSetting("Report", "ReportImageReduction");

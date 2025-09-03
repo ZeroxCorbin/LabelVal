@@ -38,3 +38,14 @@ Always focus newest entry. Setting maybe?
 User image roll database managment.
 
 Add parameters for DPM Maxi,postal...
+
+Check tooltips for naming issues.
+Review Grading and App standards for consitance and review why IsWrongStandard is not updating on Roll changes.
+Change the standard in the 95xx softwarae before processing the imge.
+Make top/ bottom selection stored in the image roll, not globally.
+Add connect button the menu icon area.
+aUTO SELECT DIVERT BUTTON FOR IMAGE WHEN YOU MANUALLY PROCESS AND IMAGE WITH 95XX
+
+seems to be an issue when moving an image down.
+Deleted a Curernt 95xx sector gave me an Dialog not registered.
+

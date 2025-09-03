@@ -6,6 +6,7 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:imageRollEnums="clr-namespace:LabelVal.ImageRolls.ViewModels"
     xmlns:imageRolls="clr-namespace:LabelVal.ImageRolls.Views"
+    xmlns:watchers="clr-namespace:Watchers.lib.Process;assembly=Watchers.lib"
     xmlns:l95="clr-namespace:LabelVal.L95.Views"
     xmlns:l95Vm="clr-namespace:LabelVal.L95.ViewModels"
     xmlns:labelBuilder="clr-namespace:LabelVal.LabelBuilder.Views"
@@ -901,20 +902,21 @@
                 Background="{DynamicResource L95_Brush}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" /> <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Image
                     Grid.Row="0"
                     Width="36"
                     Height="36"
+                    Margin="0,3,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Source="/Assets/Images/l95-white-outline.ico" />
 
                 <md:Card
                     Grid.Row="1"
-                    Margin="3"
+                    Margin="3,3,3,3"
                     Padding="3"
                     Background="{DynamicResource MahApps.Brushes.Accent4}">
                     <md:Card.Style>
@@ -950,6 +952,52 @@
                             </Style>
                         </Button.Style>
                     </Button>
+                </md:Card>
+
+                <md:Card Grid.Row="2"
+                    Margin="3,3,3,3"
+                    Padding="3"
+                    Background="{DynamicResource MahApps.Brushes.Accent4}"
+                    DockPanel.Dock="Top">
+                    <md:Card.Style>
+                        <Style TargetType="{x:Type md:Card}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedDevice.Controller.ProcessState}" Value="{x:Static watchers:Win32_ProcessWatcherProcessState.Exited}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </md:Card.Style>
+
+                    <StackPanel>
+
+                        <Button
+                            Style="{StaticResource MahApps.Styles.Button}"
+                     
+                            BorderThickness="0"
+                  
+                            Margin="0,0,0,3"
+                            Padding="0"
+                            Command="{Binding SelectedDevice.EnterLvsCredentialsCommand}"
+                            ToolTip="Login as LVS super user">
+                            <iconPacks:PackIconMaterial Kind="AccountStar" />
+                        </Button>
+
+                        <Button
+                            Style="{StaticResource MahApps.Styles.Button}"
+                            BorderThickness="0"
+                  
+                            Margin="0,0,0,0"
+                            Padding="0"
+                            Command="{Binding SelectedDevice.EnterAdminCredentialsCommand}"
+                            ToolTip="Login as Admin">
+                            <iconPacks:PackIconMaterial Kind="ShieldAccount" />
+                        </Button>
+                    </StackPanel>
                 </md:Card>
             </Grid>
 

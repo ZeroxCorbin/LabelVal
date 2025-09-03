@@ -23,22 +23,23 @@
 
         <DockPanel Margin="3">
 
-            <DockPanel VerticalAlignment="Top">
-                <DockPanel.Style>
-                    <Style TargetType="DockPanel">
+            <StackPanel VerticalAlignment="Top">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </DockPanel.Style>
+                </StackPanel.Style>
 
                 <md:Card
                     Margin="3"
                     Padding="3"
                     Background="{DynamicResource MahApps.Brushes.Accent4}"
                     DockPanel.Dock="Top">
+
 
                     <Button BorderThickness="0" Command="{Binding ConnectCommand}">
                         <Button.Style>
@@ -63,7 +64,43 @@
 
                 </md:Card>
 
-                <Button
+                <md:Card
+                    Margin="3,0,3,0"
+                    Padding="3"
+                    Background="{DynamicResource MahApps.Brushes.Accent4}"
+                    DockPanel.Dock="Top">
+                    <StackPanel>
+
+
+                        <Button
+                            Width="24"
+                            Height="24"
+                            Margin="0,0,0,3"
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            BorderThickness="0"
+                            Command="{Binding EnterLvsCredentialsCommand}"
+                            Style="{StaticResource MahApps.Styles.Button}"
+                            ToolTip="Login as LVS super user">
+                            <iconPacks:PackIconMaterial Kind="AccountStar" />
+                        </Button>
+
+                        <Button
+                            Width="24"
+                            Height="24"
+                            Margin="0,0,0,0"
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            BorderThickness="0"
+                            Command="{Binding EnterAdminCredentialsCommand}"
+                            Style="{StaticResource MahApps.Styles.Button}"
+                            ToolTip="Login as Admin">
+                            <iconPacks:PackIconMaterial Kind="ShieldAccount" />
+                        </Button>
+                    </StackPanel>
+                </md:Card>
+
+                <!--<Button
                     Width="24"
                     Height="24"
                     Margin="3"
@@ -76,9 +113,9 @@
                         Width="18"
                         Height="18"
                         Kind="Cog" />
-                </Button>
+                </Button>-->
 
-            </DockPanel>
+            </StackPanel>
 
             <md:DrawerHost
                 x:Name="drwSettings"
@@ -104,64 +141,29 @@
                             </Style>
                         </md:Card.Style>
 
-                        <DockPanel>
+                        <StackPanel>
+                            <TextBlock Text="Database Path" />
+                            <TextBox
+                                MaxWidth="220"
+                                Margin="3"
+                                HorizontalAlignment="Left"
+                                HorizontalContentAlignment="Left"
+                                IsHitTestVisible="false"
+                                Text="{Binding DatabasePath}"
+                                TextWrapping="Wrap" />
 
-                            <!--<DockPanel DockPanel.Dock="Top">
-                                <ComboBox
-                                    Margin="3"
-                                    md:HintAssist.Hint="COM Port"
-                                    md:HintAssist.IsFloating="True"
-                                    ItemsSource="{Binding AvailablePorts}"
-                                    SelectedItem="{Binding SelectedComName}">
-                                    <ComboBox.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}" TargetType="ComboBox">
-                                            <Setter Property="IsEnabled" Value="True" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
-                                                    <Setter Property="IsEnabled" Value="False" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ComboBox.Style>
-                                </ComboBox>
+                        </StackPanel>
 
-                                <Button
-                                    VerticalAlignment="Bottom"
-                                    Command="{Binding RefreshComListCommand}"
-                                    Content="{iconPacks:Material Kind=Refresh}"
-                                    Style="{StaticResource GroupHeaderCirlceButton}"
-                                    ToolTip="Refresh" />
-
-                            </DockPanel>-->
-
-                            <StackPanel>
-                                <TextBlock Text="Database Path" />
-                                <TextBox
-                                    MaxWidth="220"
-                                    Margin="3"
-                                    HorizontalAlignment="Left"
-                                    HorizontalContentAlignment="Left"
-                                    IsHitTestVisible="false"
-                                    Text="{Binding DatabasePath}"
-                                    TextWrapping="Wrap" />
-
-                                <!--<Button
-                                    Margin="10,0"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Bottom"
-                                    Command="{Binding Manager.DeleteCommand}"
-                                    CommandParameter="{Binding}"
-                                    Content="{iconPacks:Material Kind=Delete}"
-                                    Style="{StaticResource GroupHeaderCirlceButton}"
-                                    ToolTip="Delete this verifier?" />-->
-                            </StackPanel>
-                        </DockPanel>
                     </md:Card>
                 </md:DrawerHost.TopDrawerContent>
 
-                <StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-                    <DockPanel DockPanel.Dock="Top">
+                    <DockPanel>
 
                         <TextBox
                             Margin="3,3"
@@ -193,10 +195,11 @@
 
                     </DockPanel>
 
-                    <DockPanel HorizontalAlignment="Left">
+                    <DockPanel Grid.Row="1">
 
                         <TextBox
                             Margin="3,3,-10,3"
+                            VerticalAlignment="Top"
                             d:Text="State"
                             md:HintAssist.Hint="Connection"
                             BorderThickness="0"
@@ -204,14 +207,11 @@
 
                             <TextBox.Style>
                                 <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
-
                                     <Setter Property="Text" Value="Offline" />
-
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
                                             <Setter Property="Text" Value="Online" />
                                         </DataTrigger>
-
                                     </Style.Triggers>
                                 </Style>
                             </TextBox.Style>
@@ -219,6 +219,7 @@
 
                         <TextBox
                             Margin="3,3"
+                            VerticalAlignment="Top"
                             d:Text="Exited"
                             md:HintAssist.Hint="Process"
                             BorderThickness="0"
@@ -226,8 +227,9 @@
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             Text="{Binding Path=Controller.ProcessState, Mode=OneWay}" />
 
+
                         <TextBox
-                            Margin="3,3"
+                            Margin="3,3,0,0"
                             d:Text="LVS1234"
                             md:HintAssist.Hint="Password"
                             BorderThickness="0"
@@ -235,9 +237,11 @@
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             Text="{Binding Path=PasswordOfTheDay, Mode=OneWay}" />
 
+
+
                     </DockPanel>
 
-                    <DockPanel>
+                    <!--<DockPanel>
 
                         <mah:ToggleSwitch
                             Margin="3"
@@ -250,8 +254,8 @@
                             </mah:ToggleSwitch.LayoutTransform>
 
                         </mah:ToggleSwitch>
-                    </DockPanel>
-                </StackPanel>
+                    </DockPanel>-->
+                </Grid>
             </md:DrawerHost>
 
             <!--<Expander

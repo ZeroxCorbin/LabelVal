@@ -227,7 +227,7 @@
                             <Setter Property="Visibility" Value="Visible" />
                             <Setter Property="IsEnabled" Value="True" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding CurrentSectorSelected, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                <DataTrigger Binding="{Binding CurrentSelectedSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                     <Setter Property="IsEnabled" Value="False" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
