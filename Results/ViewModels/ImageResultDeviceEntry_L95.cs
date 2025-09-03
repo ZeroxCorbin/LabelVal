@@ -1,5 +1,6 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
@@ -11,20 +12,69 @@ using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
+using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultDeviceEntry_L95
-    : ImageResultDeviceEntryBase, IRecipient<PropertyChangedMessage<FullReport>>
+    : ObservableRecipient, IImageResultDeviceEntry, IRecipient<PropertyChangedMessage<FullReport>>
 {
-    public override ImageResultEntryDevices Device { get; } = ImageResultEntryDevices.L95;
+    public ImageResultEntry ImageResultEntry { get; }
+    public ImageResultsManager ImageResultsManager => ImageResultEntry.ImageResultsManager;
+    public ImageResultEntryDevices Device { get; } = ImageResultEntryDevices.L95;
+    public string Version => throw new NotImplementedException();
 
-    public override LabelHandlers Handler => ImageResultsManager?.SelectedL95?.Controller != null && ImageResultsManager.SelectedL95.Controller.IsConnected && ImageResultsManager.SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running ? ImageResultsManager.SelectedL95.Controller.IsSimulator
+    [ObservableProperty] private Databases.Result resultRow;
+    partial void OnResultRowChanged(Result value) { StoredImage = value?.Stored; HandlerUpdate(); }
+    public Result Result { get => ResultRow; set { ResultRow = value; HandlerUpdate(); } }
+
+    [ObservableProperty] private ImageEntry storedImage;
+    [ObservableProperty] private DrawingImage storedImageOverlay;
+
+    [ObservableProperty] private ImageEntry currentImage;
+    [ObservableProperty] private DrawingImage currentImageOverlay;
+
+    public JObject CurrentTemplate { get; set; } = null;
+    public string SerializeTemplate => JsonConvert.SerializeObject(CurrentTemplate);
+
+    public JObject CurrentReport { get; private set; }
+    public string SerializeReport => JsonConvert.SerializeObject(CurrentReport);
+
+    public ObservableCollection<Sectors.Interfaces.ISector> CurrentSectors { get; } = [];
+    public ObservableCollection<Sectors.Interfaces.ISector> StoredSectors { get; } = [];
+    public ObservableCollection<SectorDifferences> DiffSectors { get; } = [];
+
+    [ObservableProperty] private Sectors.Interfaces.ISector currentSelectedSector = null;
+
+    [ObservableProperty] private Sectors.Interfaces.ISector focusedStoredSector = null;
+    [ObservableProperty] private Sectors.Interfaces.ISector focusedCurrentSector = null;
+
+    [ObservableProperty] private bool isWorking = false;
+    partial void OnIsWorkingChanged(bool value)
+    {
+        ImageResultsManager.WorkingUpdate(Device, value);
+        OnPropertyChanged(nameof(IsNotWorking));
+    }
+    public bool IsNotWorking => !IsWorking;
+    private const int _isWorkingTimerInterval = 30000;
+    private Timer _IsWorkingTimer = new(_isWorkingTimerInterval);
+
+    [ObservableProperty] private bool isFaulted = false;
+    partial void OnIsFaultedChanged(bool value)
+    {
+        ImageResultsManager.FaultedUpdate(Device, value);
+        OnPropertyChanged(nameof(IsNotFaulted));
+    }
+    public bool IsNotFaulted => !IsFaulted;
+
+    ////95xx Only
+    //[ObservableProperty] private Sectors.Interfaces.ISector currentSectorSelected;
+    public LabelHandlers Handler => ImageResultsManager?.SelectedL95?.Controller != null && ImageResultsManager.SelectedL95.Controller.IsConnected && ImageResultsManager.SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running ? ImageResultsManager.SelectedL95.Controller.IsSimulator
             ? ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
@@ -37,9 +87,26 @@ public partial class ImageResultDeviceEntry_L95
                 : LabelHandlers.CameraTrigger
         : LabelHandlers.Offline;
 
-    public ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEntry) : base(imageResultsEntry)
+    public void HandlerUpdate() => OnPropertyChanged(nameof(Handler));
+
+    [ObservableProperty] private bool isSelected = false;
+    partial void OnIsSelectedChanging(bool value) { if (value) ImageResultEntry.ImageResultsManager.ResetSelected(Device); }
+
+    public ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEntry)
     {
+        ImageResultEntry = imageResultsEntry;
+
+        _IsWorkingTimer.AutoReset = false;
+        _IsWorkingTimer.Elapsed += _IsWorkingTimer_Elapsed;
+
         IsActive = true;
+    }
+
+    private void _IsWorkingTimer_Elapsed(object sender, ElapsedEventArgs e)
+    {
+        Logger.Error($"Working timer elapsed for {Device}.");
+        IsWorking = false;
+        IsFaulted = true;
     }
 
     public void Receive(PropertyChangedMessage<FullReport> message)
@@ -48,11 +115,11 @@ public partial class ImageResultDeviceEntry_L95
             _ = Application.Current.Dispatcher.BeginInvoke(() => ProcessFullReport(message.NewValue, false));
     }
 
-    public override void GetStored()
+    public void GetStored()
     {
         if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = Application.Current.Dispatcher.BeginInvoke(GetStored);
+            _ = Application.Current.Dispatcher.BeginInvoke(() => GetStored());
             return;
         }
 
@@ -74,13 +141,9 @@ public partial class ImageResultDeviceEntry_L95
                 return;
             }
 
-            List<ISector> tempSectors = [];
-            if (row.Report != null && row.Report.ContainsKey("AllReports"))
-            {
-                foreach (var rSec in row.Report.GetParameter<JArray>("AllReports"))
-                    tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
-            }
-
+            List<Sectors.Interfaces.ISector> tempSectors = [];
+            foreach (var rSec in row.Report.GetParameter<JArray>("AllReports"))
+                tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
 
             if (tempSectors.Count > 0)
             {
@@ -94,7 +157,7 @@ public partial class ImageResultDeviceEntry_L95
             RefreshStoredOverlay();
 
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             Logger.Error(ex);
             Logger.Error($"Error while loading stored results from: {ImageResultEntry.SelectedDatabase.File.Name}");
@@ -104,9 +167,9 @@ public partial class ImageResultDeviceEntry_L95
     [RelayCommand]
     public async Task StoreSingle()
     {
-        if (CurrentSectors.Count == 0 || CurrentSelectedSector == null)
+        if (CurrentSectors.Count == 0)
         {
-            Logger.Error("No sector selected to store.");
+            Logger.Error("No sectors to store.");
             return;
         }
 
@@ -125,10 +188,10 @@ public partial class ImageResultDeviceEntry_L95
 
         //Save the list to the database.
         List<FullReport> temp = [];
-        foreach (var sector in StoredSectors.Where(s => s.Template.Name != CurrentSelectedSector.Template.Name))
-            temp.Add(new FullReport(((Sector)sector).Template.Original, ((Sector)sector).Report.Original));
+        foreach (var sector in StoredSectors)
+            temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
 
-        temp.Add(new FullReport(((Sector)CurrentSelectedSector).Template.Original, ((Sector)CurrentSelectedSector).Report.Original));
+        temp.Add(new FullReport(((L95.Sectors.Sector)CurrentSelectedSector).Template.Original, ((L95.Sectors.Sector)CurrentSelectedSector).Report.Original));
 
         JObject report = new()
         {
@@ -148,10 +211,10 @@ public partial class ImageResultDeviceEntry_L95
         });
 
         GetStored();
-        _ = CurrentSectors.Remove(CurrentSelectedSector);
-        GetSectorDiff();
+        ClearSingle();
     }
-    public override async Task Store()
+    [RelayCommand]
+    public async Task Store()
     {
         if (CurrentSectors.Count == 0)
         {
@@ -176,6 +239,81 @@ public partial class ImageResultDeviceEntry_L95
 
         GetStored();
         ClearCurrent();
+
+        //        else if (device == ImageResultEntryDevices.L95)
+        //{
+
+        //    if (L95CurrentSectorSelected == null)
+        //    {
+        //        Logger.Error("No sector selected to store.");
+        //        return;
+        //    }
+        //    //Does the selected sector exist in the Stored sectors list?
+        //    //If so, prompt to overwrite or cancel.
+
+        //    Sectors.Interfaces.ISector old = L95StoredSectors.FirstOrDefault(x => x.Template.Name == L95CurrentSectorSelected.Template.Name);
+        //    if (old != null)
+        //    {
+        //        if (await OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+        //            return;
+        //    }
+
+        //    //Save the list to the database.
+        //    List<FullReport> temp = [];
+        //    if (L95ResultRow != null)
+        //        temp = L95ResultRow._AllSectors;
+
+        //    temp.Add(new FullReport(((L95.Sectors.Sector)L95CurrentSectorSelected).Template.Original, ((L95.Sectors.Sector)L95CurrentSectorSelected).Report.Original));
+
+        //    _ = SelectedDatabase.InsertOrReplace_L95Result(new Databases.L95Result
+        //    {
+        //        ImageRollUID = ImageRollUID,
+        //        RunUID = ImageRollUID,
+        //        Source = SourceImage,
+        //        Stored = L95CurrentImage,
+
+        //        _AllSectors = temp,
+        //    });
+
+        //    ClearRead(device);
+
+        //    L95GetStored();
+        //}
+        //else if (device == ImageResultEntryDevices.L95All)
+        //{
+
+        //    if (L95CurrentSectors.Count == 0)
+        //    {
+        //        Logger.Debug($"There are no sectors to store for: {device}");
+        //        return;
+        //    }
+        //    //Does the selected sector exist in the Stored sectors list?
+        //    //If so, prompt to overwrite or cancel.
+
+        //    if (L95StoredSectors.Count > 0)
+        //        if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+        //            return;
+
+        //    //Save the list to the database.
+        //    List<FullReport> temp = [];
+        //    foreach (Sectors.Interfaces.ISector sector in L95CurrentSectors)
+
+        //        temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
+
+        //    _ = SelectedDatabase.InsertOrReplace_L95Result(new Databases.L95Result
+        //    {
+        //        ImageRollUID = ImageRollUID,
+        //        RunUID = ImageRollUID,
+        //        Source = SourceImage,
+        //        Stored = L95CurrentImage,
+
+        //        _AllSectors = temp,
+        //    });
+
+        //    ClearRead(device);
+
+        //    L95GetStored();
+        //}
     }
 
     private Result GetCurrentReport()
@@ -183,7 +321,7 @@ public partial class ImageResultDeviceEntry_L95
         //Save the list to the database.
         List<FullReport> temp = [];
         foreach (var sector in CurrentSectors)
-            temp.Add(new FullReport(((Sector)sector).Template.Original, ((Sector)sector).Report.Original));
+            temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
 
         JObject report = new()
         {
@@ -205,15 +343,16 @@ public partial class ImageResultDeviceEntry_L95
         return res;
     }
 
-    public override void Process()
+    [RelayCommand]
+    public void Process()
     {
         Label lab = new()
         {
-            Config = new Config()
+            Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
                 ApplicationStandard = ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard.GetDescription(),
             },
-            RepeatAvailable = (report, replace) => ProcessFullReport(report, replace),
+            RepeatAvailable = ProcessFullReport,
         };
 
         if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard == ApplicationStandards.GS1)
@@ -240,7 +379,7 @@ public partial class ImageResultDeviceEntry_L95
         try
         {
 
-            if (message == null || message.Report == null)
+            if (message == null || message.Report == null)// || message.Report.OverallGrade.StartsWith("Bar"))
             {
                 IsFaulted = true;
                 return;
@@ -252,10 +391,12 @@ public partial class ImageResultDeviceEntry_L95
             if ((name = ImageResultEntry.GetName(center)) == null)
                 name ??= $"Verify_{CurrentSectors.Count + 1}";
 
-            _ = message.Template.SetParameter("Name", name);
+            _ = message.Template.SetParameter<string>("Name", name);
 
             if (replaceSectors)
                 CurrentSectors.Clear();
+
+            System.IO.File.WriteAllText(System.IO.Path.Combine(App.UserDataDirectory, "L95Report.json"), message.Report.ToString());
 
             CurrentSectors.Add(new Sector(message.Template, message.Report, [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
 
@@ -274,7 +415,7 @@ public partial class ImageResultDeviceEntry_L95
 
             IsFaulted = false;
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             Logger.Error(ex);
             IsFaulted = true;
@@ -289,6 +430,12 @@ public partial class ImageResultDeviceEntry_L95
     [RelayCommand]
     public void ClearSingle()
     {
+        if (!Application.Current.Dispatcher.CheckAccess())
+        {
+            _ = Application.Current.Dispatcher.BeginInvoke(() => ClearCurrent());
+            return;
+        }
+
         if (CurrentSelectedSector == null)
         {
             Logger.Error("No sector selected to clear.");
@@ -310,7 +457,34 @@ public partial class ImageResultDeviceEntry_L95
         }
     }
 
-    protected override void GetSectorDiff()
+    [RelayCommand]
+    public void ClearCurrent()
+    {
+        if (!Application.Current.Dispatcher.CheckAccess())
+        {
+            _ = Application.Current.Dispatcher.BeginInvoke(() => ClearCurrent());
+            return;
+        }
+
+        CurrentSectors.Clear();
+        DiffSectors.Clear();
+
+        CurrentImageOverlay = null;
+        CurrentImage = null;
+    }
+
+    [RelayCommand]
+    public async Task ClearStored()
+    {
+        if (await ImageResultEntry.OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
+        {
+            _ = ImageResultEntry.SelectedDatabase.Delete_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
+            GetStored();
+            GetSectorDiff();
+        }
+    }
+
+    private void GetSectorDiff()
     {
         DiffSectors.Clear();
 
@@ -351,7 +525,7 @@ public partial class ImageResultDeviceEntry_L95
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     found = true;
-                    break;
+                    continue;
                 }
 
             if (!found)
@@ -375,7 +549,7 @@ public partial class ImageResultDeviceEntry_L95
                     if (sec.Template.Name == cSec.Template.Name)
                     {
                         found = true;
-                        break;
+                        continue;
                     }
 
                 if (!found)
@@ -391,8 +565,21 @@ public partial class ImageResultDeviceEntry_L95
             }
 
         foreach (var d in diff)
+
             DiffSectors.Add(d);
     }
+
+    /// <summary>
+    /// This is exposed through the interface to allow for the ImageResultsManager to call this method.
+    /// </summary>
+    public void RefreshOverlays()
+    {
+        RefreshStoredOverlay();
+        RefreshCurrentOverlay();
+    }
+
+    public void RefreshStoredOverlay() => StoredImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(StoredImage, StoredSectors);
+    public void RefreshCurrentOverlay() => CurrentImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
 
     public static void SortObservableCollectionByList(List<ISector> list, ObservableCollection<ISector> observableCollection)
     {
@@ -400,10 +587,82 @@ public partial class ImageResultDeviceEntry_L95
         {
             var item = list[i];
             var currentIndex = observableCollection.IndexOf(item);
-            if (currentIndex != i && currentIndex != -1)
+            if (currentIndex != i)
             {
                 observableCollection.Move(currentIndex, i);
             }
         }
     }
+
+    //public int LoadTask()
+    //{
+    //    return 1;
+    //}
+    //private DrawingImage CreateSectorsImageOverlay(bool useStored)
+    //{
+    //    var bmp = ImageUtilities.CreateBitmap(Image);
+
+    //    //Draw the image outline the same size as the stored image
+    //    var border = new GeometryDrawing
+    //    {
+    //        Geometry = new RectangleGeometry(new Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight)),
+    //        Pen = new Pen(Brushes.Transparent, 1)
+    //    };
+
+    //    var secAreas = new GeometryGroup();
+    //    var bndAreas = new GeometryGroup();
+
+    //    var drwGroup = new DrawingGroup();
+
+    //    if (useStored)
+    //    {
+    //        foreach (var sec in StoredReport._event.data.cycleConfig.qualifiedResults)
+    //        {
+    //            if (sec.boundingBox == null)
+    //                continue;
+
+    //            secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec.boundingBox[0].x, sec.boundingBox[0].y), new Point(sec.boundingBox[2].x, sec.boundingBox[2].y))));
+    //        }
+
+    //        foreach (var sec in StoredReport._event.data.cycleConfig.job.toolList)
+    //            foreach (var r in sec.SymbologyTool.regionList)
+    //                bndAreas.Children.Add(new RectangleGeometry(new Rect(r.Region.shape.RectShape.x, r.Region.shape.RectShape.y, r.Region.shape.RectShape.width, r.Region.shape.RectShape.height)));
+
+    //    }
+    //    else
+    //    {
+    //        foreach (var sec in CurrentReport._event.data.cycleConfig.qualifiedResults)
+    //        {
+    //            if (sec.boundingBox == null)
+    //                continue;
+
+    //            secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec.boundingBox[0].x, sec.boundingBox[0].y), new Point(sec.boundingBox[2].x, sec.boundingBox[2].y))));
+    //        }
+
+    //        foreach (var sec in CurrentReport._event.data.cycleConfig.job.toolList)
+    //            foreach (var r in sec.SymbologyTool.regionList)
+    //                bndAreas.Children.Add(new RectangleGeometry(new Rect(r.Region.shape.RectShape.x, r.Region.shape.RectShape.y, r.Region.shape.RectShape.width, r.Region.shape.RectShape.height)));
+
+    //    }
+
+    //    var sectors = new GeometryDrawing
+    //    {
+    //        Geometry = secAreas,
+    //        Pen = new Pen(Brushes.Red, 5)
+    //    };
+
+    //    var bounding = new GeometryDrawing
+    //    {
+    //        Geometry = bndAreas,
+    //        Pen = new Pen(Brushes.Purple, 5)
+    //    };
+
+    //    drwGroup.Children.Add(bounding);
+    //    drwGroup.Children.Add(sectors);
+    //    drwGroup.Children.Add(border);
+
+    //    var geometryImage = new DrawingImage(drwGroup);
+    //    geometryImage.Freeze();
+    //    return geometryImage;
+    //}
 }

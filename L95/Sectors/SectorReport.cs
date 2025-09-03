@@ -74,8 +74,8 @@ public class SectorReport : ISectorReport
         DecodeText = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.DecodeText, Device, Symbology);
 
         _ = SetStandardAndTable(report);
-        _ = SetXDimAndUnits(report);
-        _ = SetAperture(report);
+        _ = SetXdimAndUnits(report);
+        _ = SetApeture(report);
         _ = SetOverallGrade(report);
 
         //foreach (AvailableParameters parameter in Params.CommonParameters)
@@ -172,7 +172,7 @@ public class SectorReport : ISectorReport
         return true;
     }
 
-    private bool SetXDimAndUnits(JObject report)
+    private bool SetXdimAndUnits(JObject report)
     {
         var xdim = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.CellSize, Device, Symbology);
         xdim ??= report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Xdim, Device, Symbology);
@@ -209,7 +209,7 @@ public class SectorReport : ISectorReport
         return true;
     }
 
-    private bool SetAperture(JObject report)
+    private bool SetApeture(JObject report)
     {
         var aperture = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Aperture, Device, Symbology);
         if (aperture != null)

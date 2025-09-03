@@ -50,37 +50,37 @@ public partial class ImageResultEntry : UserControl
         }
     }
 
-    //private void btnMove_Click(object sender, RoutedEventArgs e)
-    //{
-    //    popMove.PlacementTarget = sender as UIElement;
-    //    popMove.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
-    //    popMove.StaysOpen = false;
-    //    popMove.IsOpen = true;
-    //}
+    private void btnMove_Click(object sender, RoutedEventArgs e)
+    {
+        popMove.PlacementTarget = sender as UIElement;
+        popMove.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
+        popMove.StaysOpen = false;
+        popMove.IsOpen = true;
+    }
 
-    //private void btnMoveImage_Click(object sender, RoutedEventArgs e)
-    //{
-    //    popMove.IsOpen = false;
-    //    var viewModel = (ViewModels.ImageResultEntry)DataContext;
-    //    if (((Button)sender).Tag is string s)
-    //        switch (s)
-    //        {
-    //            case "top":
-    //                viewModel.ImageResultsManager.SelectedImageRoll.MoveImageTop(viewModel.SourceImage);
-    //                break;
-    //            case "up":
-    //                viewModel.ImageResultsManager.SelectedImageRoll.MoveImageUp(viewModel.SourceImage);
-    //                break;
-    //            case "down":
-    //                viewModel.ImageResultsManager.SelectedImageRoll.MoveImageDown(viewModel.SourceImage);
-    //                break;
-    //            case "bottom":
-    //                viewModel.ImageResultsManager.SelectedImageRoll.MoveImageBottom(viewModel.SourceImage);
-    //                break;
-    //        }
+    private void btnMoveImage_Click(object sender, RoutedEventArgs e)
+    {
+        popMove.IsOpen = false;
+        var viewModel = (ViewModels.ImageResultEntry)DataContext;
+        if (((Button)sender).Tag is string s)
+            switch (s)
+            {
+                case "top":
+                    viewModel.ImageResultsManager.SelectedImageRoll.MoveImageTop(viewModel.SourceImage);
+                    break;
+                case "up":
+                    viewModel.ImageResultsManager.SelectedImageRoll.MoveImageUp(viewModel.SourceImage);
+                    break;
+                case "down":
+                    viewModel.ImageResultsManager.SelectedImageRoll.MoveImageDown(viewModel.SourceImage);
+                    break;
+                case "bottom":
+                    viewModel.ImageResultsManager.SelectedImageRoll.MoveImageBottom(viewModel.SourceImage);
+                    break;
+            }
 
-    //    BringIntoView();
-    //}
+        BringIntoView();
+    }
 
     private void btnShowDetailsToggle(object sender, RoutedEventArgs e) => ((ViewModels.ImageResultEntry)DataContext).ShowDetails = !((ViewModels.ImageResultEntry)DataContext).ShowDetails;
 }

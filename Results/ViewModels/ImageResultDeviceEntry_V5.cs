@@ -1,23 +1,91 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
-using LabelVal.Sectors.Interfaces;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
+using System.Windows.Media;
+using LabelVal.Sectors.Interfaces;
 
 namespace LabelVal.Results.ViewModels;
-public partial class ImageResultDeviceEntry_V5 : ImageResultDeviceEntryBase
+public partial class ImageResultDeviceEntry_V5 : ObservableObject, IImageResultDeviceEntry
 {
-    public override ImageResultEntryDevices Device { get; } = ImageResultEntryDevices.V5;
+    public ImageResultEntry ImageResultEntry { get; }
+    public ImageResultsManager ImageResultsManager => ImageResultEntry.ImageResultsManager;
 
-    public override LabelHandlers Handler => ImageResultsManager?.SelectedV5?.Controller != null && ImageResultsManager.SelectedV5.Controller.IsConnected ? ImageResultsManager.SelectedV5.Controller.IsSimulator
+    public ImageResultEntryDevices Device { get; } = ImageResultEntryDevices.V5;
+    public string Version => throw new NotImplementedException();
+
+    [ObservableProperty] private Databases.Result resultRow;
+    partial void OnResultRowChanged(Result value) { StoredImage = value?.Stored; HandlerUpdate(); }
+    public Result Result { get => ResultRow; set { ResultRow = value; HandlerUpdate(); } }
+
+    [ObservableProperty] private ImageEntry storedImage;
+    [ObservableProperty] private DrawingImage storedImageOverlay;
+
+    [ObservableProperty] private ImageEntry currentImage;
+    [ObservableProperty] private DrawingImage currentImageOverlay;
+
+    public JObject CurrentTemplate { get; set; }
+    public string SerializeTemplate => JsonConvert.SerializeObject(CurrentTemplate);
+
+    public JObject CurrentReport { get; private set; }
+    public string SerializeReport => JsonConvert.SerializeObject(CurrentReport);
+
+    public ObservableCollection<Sectors.Interfaces.ISector> CurrentSectors { get; } = [];
+    public ObservableCollection<Sectors.Interfaces.ISector> StoredSectors { get; } = [];
+    public ObservableCollection<SectorDifferences> DiffSectors { get; } = [];
+
+    [ObservableProperty] private Sectors.Interfaces.ISector currentSelectedSector = null;
+
+    [ObservableProperty] private Sectors.Interfaces.ISector focusedStoredSector = null;
+    [ObservableProperty] private Sectors.Interfaces.ISector focusedCurrentSector = null;
+
+    [ObservableProperty] private bool isWorking = false;
+    partial void OnIsWorkingChanged(bool value)
+    {
+        ImageResultsManager.WorkingUpdate(Device, value);
+        OnPropertyChanged(nameof(IsNotWorking));
+    }
+    public bool IsNotWorking => !IsWorking;
+    private const int _isWorkingTimerInterval = 30000;
+    private Timer _IsWorkingTimer = new(_isWorkingTimerInterval);
+
+    [ObservableProperty] private bool isFaulted = false;
+    partial void OnIsFaultedChanged(bool value)
+    {
+        ImageResultsManager.FaultedUpdate(Device, value);
+        OnPropertyChanged(nameof(IsNotFaulted));
+    }
+    public bool IsNotFaulted => !IsFaulted;
+
+    [ObservableProperty] private bool isSelected = false;
+
+    public ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntry)
+    {
+        ImageResultEntry = imageResultsEntry;
+        _IsWorkingTimer.AutoReset = false;
+        _IsWorkingTimer.Elapsed += _IsWorkingTimer_Elapsed;
+    }
+
+    private void _IsWorkingTimer_Elapsed(object sender, ElapsedEventArgs e)
+    {
+        Logger.Error($"Working timer elapsed for {Device}.");
+        IsWorking = false;
+        IsFaulted = true;
+    }
+    partial void OnIsSelectedChanging(bool value) { if (value) ImageResultEntry.ImageResultsManager.ResetSelected(Device); }
+
+    public LabelHandlers Handler => ImageResultsManager?.SelectedV5?.Controller != null && ImageResultsManager.SelectedV5.Controller.IsConnected ? ImageResultsManager.SelectedV5.Controller.IsSimulator
             ? ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
@@ -30,11 +98,9 @@ public partial class ImageResultDeviceEntry_V5 : ImageResultDeviceEntryBase
                 : LabelHandlers.CameraTrigger
         : LabelHandlers.Offline;
 
-    public ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntry) : base(imageResultsEntry)
-    {
-    }
+    public void HandlerUpdate() => OnPropertyChanged(nameof(Handler));
 
-    public override void GetStored()
+    public void GetStored()
     {
         if (!Application.Current.Dispatcher.CheckAccess())
         {
@@ -58,7 +124,7 @@ public partial class ImageResultDeviceEntry_V5 : ImageResultDeviceEntryBase
             return;
         }
 
-        List<ISector> tempSectors = [];
+        List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(row.ReportString))
         {
             foreach (var toolResult in row.Report.GetParameter<JArray>("event.data.toolResults"))
@@ -90,7 +156,8 @@ public partial class ImageResultDeviceEntry_V5 : ImageResultDeviceEntryBase
 
     }
 
-    public override async Task Store()
+    [RelayCommand]
+    public async Task Store()
     {
         if (CurrentSectors.Count == 0)
         {
@@ -125,7 +192,8 @@ public partial class ImageResultDeviceEntry_V5 : ImageResultDeviceEntryBase
         ClearCurrent();
     }
 
-    public override void Process()
+    [RelayCommand]
+    public void Process()
     {
 
         V5_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? ResultRow.Template : null, Handler, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table);
@@ -178,7 +246,7 @@ public partial class ImageResultDeviceEntry_V5 : ImageResultDeviceEntryBase
 
             CurrentSectors.Clear();
 
-            List<ISector> tempSectors = [];
+            List<Sectors.Interfaces.ISector> tempSectors = [];
             //Tray and match a toolResult to a toolList
             foreach (var toolResult in CurrentReport.GetParameter<JArray>("event.data.toolResults"))
             {
@@ -225,7 +293,36 @@ public partial class ImageResultDeviceEntry_V5 : ImageResultDeviceEntryBase
         }
     }
 
-    protected override void GetSectorDiff()
+    [RelayCommand]
+    public void ClearCurrent()
+    {
+        if (!Application.Current.Dispatcher.CheckAccess())
+        {
+            _ = Application.Current.Dispatcher.BeginInvoke(ClearCurrent);
+            return;
+        }
+
+        CurrentSectors.Clear();
+        DiffSectors.Clear();
+
+        CurrentTemplate = null;
+        CurrentReport = null;
+        CurrentImage = null;
+        CurrentImageOverlay = null;
+    }
+
+    [RelayCommand]
+    public async Task ClearStored()
+    {
+        if (await ImageResultEntry.OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
+        {
+            _ = ImageResultEntry.SelectedDatabase.Delete_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
+            GetStored();
+            GetSectorDiff();
+        }
+    }
+
+    private void GetSectorDiff()
     {
         DiffSectors.Clear();
 
@@ -239,7 +336,7 @@ public partial class ImageResultDeviceEntry_V5 : ImageResultDeviceEntryBase
                 {
                     if (sec.Report.Symbology == cSec.Report.Symbology)
                     {
-                        var dat = sec.SectorDetails.Compare(cSec.SectorDetails);
+                        var dat = SectorDifferences.Compare(sec.SectorDetails, cSec.SectorDetails);
                         if (dat != null)
                             diff.Add(dat);
                     }
@@ -314,6 +411,15 @@ public partial class ImageResultDeviceEntry_V5 : ImageResultDeviceEntryBase
     {
         var result = await ImageResultEntry.ImageResultsManager.SelectedV5.Controller.Trigger_Wait_Return(true);
         ProcessFullReport(result);
+        //V275V5_REST_Lib.FullReport report;
+        //if ((report = await ImageResults.SelectedV275Node.Controller.GetFullReport(repeat, true)) == null)
+        //{
+        //    Logger.Error("Unable to read the repeat report from the node.");
+        //    ClearRead(ImageResultEntryDevices.V275);
+        //    return false;
+        //}
+
+        //V275ProcessRepeat(new V275V5_REST_Lib.Repeat(0, null) { FullReport = report });
         return true;
     }
 
@@ -330,11 +436,48 @@ public partial class ImageResultDeviceEntry_V5 : ImageResultDeviceEntryBase
         if (StoredSectors.Count == 0)
         {
             return 0;
+            //return await ImageResults.Selected.Controller.Learn();
         }
 
         if (await ImageResultEntry.ImageResultsManager.SelectedV5.Controller.CopySectorsSetConfig(null, ResultRow.Template) == V5_REST_Lib.Controllers.RestoreSectorsResults.Failure)
             return -1;
 
+        //if (!await ImageResults.SelectedV275Node.Controller.DeleteSectors())
+        //    return -1;
+
+        //if (V275StoredSectors.Count == 0)
+        //{
+        //    return !await ImageResults.SelectedV275Node.Controller.DetectSectors() ? -1 : 2;
+        //}
+
+        //foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
+        //{
+        //    if (!await ImageResults.SelectedV275Node.Controller.AddSector(sec.Template.Name, JsonConvert.SerializeObject(((V275.Sectors.SectorTemplate)sec.Template).Original)))
+        //        return -1;
+
+        //    if (sec.Template.BlemishMask.Layers != null)
+        //    {
+
+        //        foreach (V275V5_REST_Lib.Models.Job.Layer layer in sec.Template.BlemishMask.Layers)
+        //        {
+        //            if (!await ImageResults.SelectedV275Node.Controller.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
+        //            {
+        //                if (layer.value != 0)
+        //                    return -1;
+        //            }
+        //        }
+        //    }
+        //}
+
         return 1;
     }
+
+    public void RefreshOverlays()
+    {
+        RefreshCurrentOverlay();
+        RefreshStoredOverlay();
+    }
+    public void RefreshStoredOverlay() => StoredImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(StoredImage, StoredSectors);
+    public void RefreshCurrentOverlay() => CurrentImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
+
 }

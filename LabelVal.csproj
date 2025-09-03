@@ -1,49 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  
 	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
+    <OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0-windows</TargetFramework>
 
-		<ImplicitUsings>enabled</ImplicitUsings>
-
+    <ImplicitUsings>enabled</ImplicitUsings>
+    
 		<UseWPF>true</UseWPF>
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
 		<Title>Label Validator</Title>
-
+    
 		<AssemblyVersion>6.0.0.1000</AssemblyVersion>
 		<FileVersion>6.0.0.1000</FileVersion>
 	</PropertyGroup>
 
+  <ItemGroup>
+    <Using Include="Logging.lib" />
+
+    <Using Include="System" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.Linq" />
+
+  </ItemGroup>
+  
 	<ItemGroup>
-		<Using Include="Logging.lib" />
-
-		<Using Include="System" />
-		<Using Include="System.Collections.Generic" />
-		<Using Include="System.Linq" />
-
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Remove="Assets\Image Rolls\VALIDATION\**" />
-		<Compile Remove="ImageViewer3D\Models\**" />
-		<Compile Remove="ImageViewer3D\Processing\**" />
-		<Compile Remove="packages\**" />
-		<Compile Remove="Setup\**" />
-		<EmbeddedResource Remove="Assets\Image Rolls\VALIDATION\**" />
-		<EmbeddedResource Remove="ImageViewer3D\Models\**" />
-		<EmbeddedResource Remove="ImageViewer3D\Processing\**" />
-		<EmbeddedResource Remove="packages\**" />
-		<EmbeddedResource Remove="Setup\**" />
-		<None Remove="Assets\Image Rolls\VALIDATION\**" />
-		<None Remove="ImageViewer3D\Models\**" />
-		<None Remove="ImageViewer3D\Processing\**" />
-		<None Remove="packages\**" />
-		<None Remove="Setup\**" />
-		<Page Remove="Assets\Image Rolls\VALIDATION\**" />
-		<Page Remove="ImageViewer3D\Models\**" />
-		<Page Remove="ImageViewer3D\Processing\**" />
-		<Page Remove="packages\**" />
-		<Page Remove="Setup\**" />
+	  <Compile Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <Compile Remove="ImageViewer3D\Models\**" />
+	  <Compile Remove="ImageViewer3D\Processing\**" />
+	  <EmbeddedResource Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <EmbeddedResource Remove="ImageViewer3D\Models\**" />
+	  <EmbeddedResource Remove="ImageViewer3D\Processing\**" />
+	  <None Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <None Remove="ImageViewer3D\Models\**" />
+	  <None Remove="ImageViewer3D\Processing\**" />
+	  <Page Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <Page Remove="ImageViewer3D\Models\**" />
+	  <Page Remove="ImageViewer3D\Processing\**" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="ImageRolls\Databases\StandardsDatabase.cs" />
@@ -54,9 +46,6 @@
 		<Compile Remove="L95\ViewModels\SerialPort.cs" />
 		<Compile Remove="L95\Views\LVS95xx_SerialPortView.xaml.cs" />
 		<Compile Remove="Main\Views\StatusMessageViewer.xaml.cs" />
-		<Compile Remove="Results\Views\ImageResultDeviceEntry_L95.xaml.cs" />
-		<Compile Remove="Results\Views\ImageResultDeviceEntry_V275.xaml.cs" />
-		<Compile Remove="Results\Views\ImageResultDeviceEntry_V5.xaml.cs" />
 		<Compile Remove="Run\Controller.cs" />
 		<Compile Remove="Run\Databases\V2RunEntryDatabase.cs" />
 		<Compile Remove="Run\ViewModels\Result.cs" />
@@ -70,6 +59,7 @@
 		<Compile Remove="V275\ViewModels\Sectors.cs" />
 	</ItemGroup>
 	<ItemGroup>
+		<None Remove=".gitattributes" />
 		<None Remove="Assets\Image Rolls\GS1 TABLE 10\600\setting.imgr" />
 		<None Remove="Assets\Image Rolls\GS1 TABLE 11\600\setting.imgr" />
 		<None Remove="Assets\Image Rolls\GS1 TABLE 12.1\600\setting.imgr" />
@@ -239,16 +229,14 @@
 		<None Remove="Assets\Images\v5-white-outline.ico" />
 		<None Remove="Assets\Images\v5-white-outline.xcf" />
 		<None Remove="Assets\Images\v5_1.png" />
+		<None Remove="Descriptions.txt" />
 		<None Remove="Excel\Templates\PRIME_DM_Comparison_Template.xlsx" />
 		<None Remove="gs1encoders.dll" />
-		<None Remove="LabelVal.csproj~RFddddd.TMP" />
+		<None Remove="parameters.csv" />
 	</ItemGroup>
 	<ItemGroup>
 		<Page Remove="L95\Views\LVS95xx_SerialPortView.xaml" />
 		<Page Remove="Main\Views\StatusMessageViewer.xaml" />
-		<Page Remove="Results\Views\ImageResultDeviceEntry_L95.xaml" />
-		<Page Remove="Results\Views\ImageResultDeviceEntry_V275.xaml" />
-		<Page Remove="Results\Views\ImageResultDeviceEntry_V5.xaml" />
 		<Page Remove="Run\Views\RunControl.xaml" />
 	</ItemGroup>
 	<ItemGroup>
@@ -293,394 +281,394 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_01.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_02.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_03.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_04.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_05.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_05.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_06.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_07.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_08.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_09.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_09.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_10.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_11.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_11.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_12.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_13.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_14.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_15.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_15.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_16.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_16.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_17.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_18.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_19.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_19.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_20.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_21.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_22.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_23.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_24.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_25.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_25.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_26.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_27.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_28.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_28.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_29.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_30.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_30.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_31.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_32.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_33.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_34.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_34.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_35.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_36.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_37.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_37.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_38.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_39.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_39.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_40.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_41.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_42.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_43.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_44.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_44.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_45.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_46.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_47.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_48.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_49.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_49.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_50.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\300\setting.imgr">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_01.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_02.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_03.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_04.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_05.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_05.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_06.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_07.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_08.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_09.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_09.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_10.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_11.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_11.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_12.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_13.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_14.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_15.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_15.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_16.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_16.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_17.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_18.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_19.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_19.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_20.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_21.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_22.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_23.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_24.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_25.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_25.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_26.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_27.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_28.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_28.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_29.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_30.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_30.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_31.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_32.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_33.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_34.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_34.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_35.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_36.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_37.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_37.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_38.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_39.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_39.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_40.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_41.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_42.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_43.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_44.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_44.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_45.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_46.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_47.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_48.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_49.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_49.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_50.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\IQOQPQ\600\setting.imgr">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\OCR OCV RECOGNITION\300\setting.imgr">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -710,37 +698,43 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\all-codes.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\barcode-1d.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\dpm.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\iec.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\iso.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\l95-white-outline.ico">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\v275-black-outline.ico">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\v275-white-outline.ico">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\v5-white-outline.ico">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Descriptions.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Excel\Templates\PRIME_DM_Comparison_Template.xlsx">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="gs1encoders.dll">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="parameters.csv">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
@@ -1469,24 +1463,24 @@
 		</BootstrapperPackage>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\BarcodeBuilder.lib.Wpf\BarcodeBuilder.lib.Wpf.csproj" />
-		<ProjectReference Include="..\BarcodeVerification.lib\BarcodeVerification.lib.csproj" />
-		<ProjectReference Include="..\Cameras_Lib\Cameras_Lib.csproj" />
-		<ProjectReference Include="..\ImageUtilities.lib\Wpf\ImageUtilities.lib.Wpf.csproj" />
-		<ProjectReference Include="..\JSONViewer_WPF\JSONViewer_WPF.csproj" />
-		<ProjectReference Include="..\Logging.lib\Logging.lib.csproj" />
-		<ProjectReference Include="..\Lvs95xx.lib.Core\Lvs95xx.lib.Core.csproj" />
-		<ProjectReference Include="..\LibDatabases\LibSimpleDatabase\LibSimpleDatabase.csproj" />
-		<ProjectReference Include="..\LibStaticUtilities\LibStaticUtilities\LibStaticUtilities.csproj" />
-		<ProjectReference Include="..\Lvs95xx.lib.Core\Lvs95xx.lib.Core.csproj" />
-		<ProjectReference Include="..\Lvs95xx.lib.Shared\Lvs95xx.lib.Shared.csproj" />
-		<ProjectReference Include="..\RingBuffer.lib\RingBuffer.lib.csproj" />
-		<ProjectReference Include="..\V275_REST_Lib\V275_REST_Lib.csproj" />
-		<ProjectReference Include="..\V5_REST_Lib\V5_REST_Lib.csproj" />
-		<ProjectReference Include="..\Watchers.lib\Watchers.lib.csproj" />
-		<ProjectReference Include="..\WinAPI.lib\WinAPI.lib.csproj" />
-		<ProjectReference Include="..\Wpf.lib\Wpf.lib.csproj" />
-		<ProjectReference Include="..\Zint.CLI\Zint.CLI.csproj" />
+		<ProjectReference Include="..\..\BarcodeBuilder.lib.Wpf\BarcodeBuilder.lib.Wpf.csproj" />
+		<ProjectReference Include="..\..\BarcodeVerification.lib\BarcodeVerification.lib.csproj" />
+		<ProjectReference Include="..\..\Cameras_Lib\Cameras_Lib.csproj" />
+		<ProjectReference Include="..\..\ImageUtilities.lib\Wpf\ImageUtilities.lib.Wpf.csproj" />
+		<ProjectReference Include="..\..\JSONViewer_WPF\JSONViewer_WPF.csproj" />
+		<ProjectReference Include="..\..\Logging.lib\Logging.lib.csproj" />
+		<ProjectReference Include="..\..\Lvs95xx.lib.Core\Lvs95xx.lib.Core.csproj" />
+		<ProjectReference Include="..\..\LibDatabases\LibSimpleDatabase\LibSimpleDatabase.csproj" />
+		<ProjectReference Include="..\..\LibStaticUtilities\LibStaticUtilities\LibStaticUtilities.csproj" />
+		<ProjectReference Include="..\..\Lvs95xx.lib.Core\Lvs95xx.lib.Core.csproj" />
+		<ProjectReference Include="..\..\Lvs95xx.lib.Shared\Lvs95xx.lib.Shared.csproj" />
+		<ProjectReference Include="..\..\RingBuffer.lib\RingBuffer.lib.csproj" />
+		<ProjectReference Include="..\..\V275_REST_Lib\V275_REST_Lib.csproj" />
+		<ProjectReference Include="..\..\V5_REST_Lib\V5_REST_Lib.csproj" />
+		<ProjectReference Include="..\..\Watchers.lib\Watchers.lib.csproj" />
+		<ProjectReference Include="..\..\WinAPI.lib\WinAPI.lib.csproj" />
+		<ProjectReference Include="..\..\Wpf.lib\Wpf.lib.csproj" />
+		<ProjectReference Include="..\..\Zint.CLI\Zint.CLI.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="ClosedXML" Version="0.105.0" />
@@ -1554,7 +1548,8 @@
 		<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3.v110_xp">
 			<Version>1.1.15</Version>
 		</PackageReference>
-		<PackageReference Include="SSH.NET"><Version>2025.0.0</Version>
+		<PackageReference Include="SSH.NET">
+			<Version>2025.0.0</Version>
 		</PackageReference>
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
@@ -1595,7 +1590,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Update="Properties\Resources.es-MX.resx">
-			<Generator>PublicResXFileCodeGenerator</Generator>
+		  <Generator>PublicResXFileCodeGenerator</Generator>
 		</EmbeddedResource>
 		<EmbeddedResource Update="Properties\Resources.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
