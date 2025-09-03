@@ -1,97 +1,24 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.Extensions;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
+using LabelVal.Sectors.Interfaces;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
-using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
-public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResultDeviceEntry
+public partial class ImageResultDeviceEntry_V275 : ImageResultDeviceEntryBase
 {
-    public ImageResultEntry ImageResultEntry { get; }
-    public ImageResultsManager ImageResultsManager => ImageResultEntry.ImageResultsManager;
+    public override ImageResultEntryDevices Device { get; } = ImageResultEntryDevices.V275;
 
-    public ImageResultEntryDevices Device { get; } = ImageResultEntryDevices.V275;
-    public string Version => throw new NotImplementedException();
-
-    [ObservableProperty] private Databases.Result resultRow;
-    partial void OnResultRowChanged(Result value) { StoredImage = value?.Stored; HandlerUpdate(); }
-    public Result Result { get => ResultRow; set { ResultRow = value; HandlerUpdate(); } }
-
-    [ObservableProperty] private ImageEntry storedImage;
-    [ObservableProperty] private DrawingImage storedImageOverlay;
-
-    [ObservableProperty] private ImageEntry currentImage;
-    [ObservableProperty] private DrawingImage currentImageOverlay;
-
-    public JObject CurrentTemplate { get; set; }
-    public string SerializeTemplate => JsonConvert.SerializeObject(CurrentTemplate);
-
-    public JObject CurrentReport { get; private set; }
-    public string SerializeReport => JsonConvert.SerializeObject(CurrentReport);
-
-    public ObservableCollection<Sectors.Interfaces.ISector> CurrentSectors { get; } = [];
-    public ObservableCollection<Sectors.Interfaces.ISector> StoredSectors { get; } = [];
-    public ObservableCollection<SectorDifferences> DiffSectors { get; } = [];
-
-    [ObservableProperty] private Sectors.Interfaces.ISector currentSelectedSector = null;
-
-    [ObservableProperty] private Sectors.Interfaces.ISector focusedStoredSector = null;
-    [ObservableProperty] private Sectors.Interfaces.ISector focusedCurrentSector = null;
-
-    [ObservableProperty] private bool isWorking = false;
-    partial void OnIsWorkingChanged(bool value)
-    {
-        if (value)
-            _IsWorkingTimer.Start();
-        else
-            _IsWorkingTimer.Stop();
-
-        ImageResultsManager.WorkingUpdate(Device, value);
-        OnPropertyChanged(nameof(IsNotWorking));
-    }
-    public bool IsNotWorking => !IsWorking;
-    private const int _isWorkingTimerInterval = 30000;
-    private Timer _IsWorkingTimer = new(_isWorkingTimerInterval);
-
-    [ObservableProperty] private bool isFaulted = false;
-    partial void OnIsFaultedChanged(bool value)
-    {
-        ImageResultsManager.FaultedUpdate(Device, value);
-        OnPropertyChanged(nameof(IsNotFaulted));
-    }
-    public bool IsNotFaulted => !IsFaulted;
-
-    [ObservableProperty] private bool isSelected = false;
-
-    public ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEntry)
-    {
-        ImageResultEntry = imageResultsEntry;
-
-        _IsWorkingTimer.AutoReset = false;
-        _IsWorkingTimer.Elapsed += _IsWorkingTimer_Elapsed;
-    }
-
-    private void _IsWorkingTimer_Elapsed(object sender, ElapsedEventArgs e)
-    {
-        Logger.Error($"Working timer elapsed for {Device}.");
-        IsWorking = false;
-        IsFaulted = true;
-    }
-
-    partial void OnIsSelectedChanging(bool value) { if (value) ImageResultEntry.ImageResultsManager.ResetSelected(Device); }
-
-    public LabelHandlers Handler => ImageResultsManager?.SelectedV275Node?.Controller != null && ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn_Control ? ImageResultsManager.SelectedV275Node.Controller.IsSimulator
+    public override LabelHandlers Handler => ImageResultsManager?.SelectedV275Node?.Controller != null && ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn_Control ? ImageResultsManager.SelectedV275Node.Controller.IsSimulator
             ? ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
@@ -104,16 +31,18 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
                 : LabelHandlers.CameraTrigger
         : LabelHandlers.Offline;
 
-    public void HandlerUpdate() => OnPropertyChanged(nameof(Handler));
-
     public delegate void ProcessImageDelegate(ImageResultEntry imageResults, string type);
     public event ProcessImageDelegate ProcessImage;
 
-    public void GetStored()
+    public ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEntry) : base(imageResultsEntry)
+    {
+    }
+
+    public override void GetStored()
     {
         if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = Application.Current.Dispatcher.BeginInvoke(() => GetStored());
+            _ = Application.Current.Dispatcher.BeginInvoke(GetStored);
             return;
         }
 
@@ -135,7 +64,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
                 return;
             }
 
-            List<Sectors.Interfaces.ISector> tempSectors = [];
+            List<ISector> tempSectors = [];
 
             if (!string.IsNullOrEmpty(row.ReportString) && !string.IsNullOrEmpty(row.TemplateString))
             {
@@ -182,8 +111,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
         }
     }
 
-    [RelayCommand]
-    public async Task Store()
+    public override async Task Store()
     {
         if (CurrentSectors.Count == 0)
         {
@@ -218,8 +146,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
         ClearCurrent();
     }
 
-    [RelayCommand]
-    public void Process()
+    public override void Process()
     {
         IsWorking = true;
         IsFaulted = false;
@@ -271,7 +198,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
 
             CurrentSectors.Clear();
 
-            List<Sectors.Interfaces.ISector> tempSectors = [];
+            List<ISector> tempSectors = [];
             foreach (var templateSec in CurrentTemplate["sectors"])
             {
                 foreach (var currentSect in CurrentReport["inspectLabel"]["inspectSector"])
@@ -320,36 +247,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
         }
     }
 
-    [RelayCommand]
-    public void ClearCurrent()
-    {
-        if (!Application.Current.Dispatcher.CheckAccess())
-        {
-            _ = Application.Current.Dispatcher.BeginInvoke(() => ClearCurrent());
-            return;
-        }
-
-        CurrentSectors.Clear();
-        DiffSectors.Clear();
-
-        CurrentTemplate = null;
-        CurrentReport = null;
-        CurrentImage = null;
-        CurrentImageOverlay = null;
-    }
-
-    [RelayCommand]
-    public async Task ClearStored()
-    {
-        if (await ImageResultEntry.OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
-        {
-            _ = ImageResultEntry.SelectedDatabase.Delete_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
-            GetStored();
-            GetSectorDiff();
-        }
-    }
-
-    private void GetSectorDiff()
+    protected override void GetSectorDiff()
     {
         DiffSectors.Clear();
 
@@ -494,12 +392,4 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
 
         return 1;
     }
-
-    public void RefreshOverlays()
-    {
-        RefreshCurrentOverlay();
-        RefreshStoredOverlay();
-    }
-    public void RefreshCurrentOverlay() => CurrentImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
-    public void RefreshStoredOverlay() => StoredImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(StoredImage, StoredSectors);
 }
