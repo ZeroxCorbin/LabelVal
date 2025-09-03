@@ -233,6 +233,13 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     [ObservableProperty][property: SQLite.Ignore] private PrinterSettings selectedPrinter;
 
     /// <summary>
+    /// Gets or sets the position where new images are added.
+    /// </summary>
+    [ObservableProperty] [property: JsonProperty]
+    private ImageAddPositions _imageAddPosition;
+    partial void OnImageAddPositionChanged(ImageAddPositions value)=> SaveRoll();
+
+    /// <summary>
     /// Gets or sets a value indicating whether to right-align overflow content.
     /// </summary>
     public bool RightAlignOverflow

@@ -99,6 +99,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     /// Gets or sets a value indicating whether this is the topmost visible item in the scroll viewer.
     /// </summary>
     [ObservableProperty] private bool isTopmost;
+
     #endregion
 
     #region Data Properties

@@ -76,12 +76,6 @@ public partial class ImageResultsManager : ObservableRecipient,
     [ObservableProperty] private bool _hideErrorsWarnings = App.Settings.GetValue(nameof(HideErrorsWarnings), false, true);
     partial void OnHideErrorsWarningsChanged(bool value) => App.Settings.SetValue(nameof(HideErrorsWarnings), value);
 
-    /// <summary>
-    /// Gets or sets the position where new images are added.
-    /// </summary>
-    [ObservableProperty] private ImageAddPositions _imageAddPosition = App.Settings.GetValue(nameof(ImageAddPosition), ImageAddPositions.Bottom, true);
-    partial void OnImageAddPositionChanged(ImageAddPositions value) => App.Settings.SetValue(nameof(ImageAddPosition), value);
-
     #endregion
 
     #region Selected Item Properties
@@ -367,7 +361,7 @@ public partial class ImageResultsManager : ObservableRecipient,
         {
             ImageResultEntry entryToView = null;
             var sortedEntries = ImageResultsEntries.OrderBy(e => e.SourceImage.Order).ToList();
-            switch (ImageAddPosition)
+            switch (SelectedImageRoll.ImageAddPosition)
             {
                 case ImageAddPositions.Top:
                 case ImageAddPositions.Above:
@@ -552,7 +546,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     /// Adds a new image from a file.
     /// </summary>
     [RelayCommand]
-    private void AddImage() => AddImage(ImageAddPosition, null);
+    private void AddImage() => AddImage(SelectedImageRoll.ImageAddPosition, null);
 
     /// <summary>
     /// Adds an image acquired from a specified device.
@@ -714,7 +708,7 @@ public partial class ImageResultsManager : ObservableRecipient,
             entry.NewData = res;
 
             if (isNew)
-                SelectedImageRoll.AddImage(ImageAddPosition, entry);
+                SelectedImageRoll.AddImage(SelectedImageRoll.ImageAddPosition, entry);
             else
                 AddImageResultEntry(entry);
         }
@@ -747,7 +741,7 @@ public partial class ImageResultsManager : ObservableRecipient,
             entry.NewData = res;
 
             if (isNew)
-                SelectedImageRoll.AddImage(ImageAddPosition, entry);
+                SelectedImageRoll.AddImage(SelectedImageRoll.ImageAddPosition, entry);
             else
                 AddImageResultEntry(entry);
         }
@@ -780,7 +774,7 @@ public partial class ImageResultsManager : ObservableRecipient,
             entry.NewData = res;
 
             if (isNew)
-                SelectedImageRoll.AddImage(ImageAddPosition, entry);
+                SelectedImageRoll.AddImage(SelectedImageRoll.ImageAddPosition, entry);
             else
                 AddImageResultEntry(entry);
         }
