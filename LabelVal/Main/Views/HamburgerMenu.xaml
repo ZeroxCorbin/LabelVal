@@ -687,23 +687,70 @@
     <!--  V275  -->
     <DataTemplate x:Key="V275MenuItem">
         <DockPanel DataContext="{Binding Content}">
+
             <Border Style="{StaticResource hamMenuBottomBar}" />
 
-            <DockPanel
+            <Grid
                 Width="48"
-                MinHeight="48"
+                MinHeight="82"
                 Background="{DynamicResource V275_Brush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
                 <Image
+                    Grid.Row="0"
                     Width="36"
                     Height="36"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Source="/Assets/Images/v275-white-outline.ico" />
-            </DockPanel>
+
+                <md:Card
+                    Grid.Row="1"
+                    Margin="3"
+                    Padding="3"
+                    Background="{DynamicResource MahApps.Brushes.Accent4}">
+                    <md:Card.Style>
+                        <Style TargetType="{x:Type md:Card}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </md:Card.Style>
+
+                    <Button BorderThickness="0" Command="{Binding SelectedDevice.ConnectCommand}">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <iconPacks:Modern Kind="Connect" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedDevice.Controller.IsConnected}" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <iconPacks:Modern Kind="Disconnect" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+
+
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </md:Card>
+            </Grid>
 
             <Border Style="{StaticResource imageBar}" />
 
-            <!--  Show the label name if not node is selected.  -->
+            <!--  Show the label name if no node is selected.  -->
             <DockPanel>
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">
@@ -747,17 +794,63 @@
 
             <Border Style="{StaticResource hamMenuBottomBar}" />
 
-            <DockPanel
+            <Grid
                 Width="48"
-                MinHeight="48"
+                MinHeight="82"
                 Background="{DynamicResource V5_Brush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
                 <Image
+                    Grid.Row="0"
                     Width="36"
                     Height="36"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Source="/Assets/Images/v5-white-outline.ico" />
-            </DockPanel>
+
+                <md:Card
+                    Grid.Row="1"
+                    Margin="3"
+                    Padding="3"
+                    Background="{DynamicResource MahApps.Brushes.Accent4}">
+                    <md:Card.Style>
+                        <Style TargetType="{x:Type md:Card}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </md:Card.Style>
+
+                    <Button BorderThickness="0" Command="{Binding SelectedDevice.ConnectCommand}">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <iconPacks:Modern Kind="Connect" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedDevice.Controller.IsConnected}" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <iconPacks:Modern Kind="Disconnect" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+
+
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </md:Card>
+            </Grid>
 
             <Border Style="{StaticResource imageBar}" />
 
@@ -802,17 +895,63 @@
     <DataTemplate x:Key="L95MenuItem">
         <DockPanel DataContext="{Binding Content}">
 
-            <DockPanel
+            <Grid
                 Width="48"
-                MinHeight="48"
+                MinHeight="82"
                 Background="{DynamicResource L95_Brush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
                 <Image
+                    Grid.Row="0"
                     Width="36"
                     Height="36"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Source="/Assets/Images/l95-white-outline.ico" />
-            </DockPanel>
+
+                <md:Card
+                    Grid.Row="1"
+                    Margin="3"
+                    Padding="3"
+                    Background="{DynamicResource MahApps.Brushes.Accent4}">
+                    <md:Card.Style>
+                        <Style TargetType="{x:Type md:Card}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </md:Card.Style>
+
+                    <Button BorderThickness="0" Command="{Binding SelectedDevice.ConnectCommand}">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <iconPacks:Modern Kind="Connect" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedDevice.Controller.IsConnected}" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <iconPacks:Modern Kind="Disconnect" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+
+
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </md:Card>
+            </Grid>
 
             <Border Style="{StaticResource imageBar}" />
 

@@ -63,27 +63,27 @@
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
-                                    <Setter Property="ToolTip" Value="V5: Process and Detect sectors." />
+                                    <Setter Property="ToolTip" Value="V275: Process the source image and detect sectors." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
-                                    <Setter Property="ToolTip" Value="V5: Process and Restore sectors." />
+                                    <Setter Property="ToolTip" Value="V275: Process the source image and restore sectors from the database." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
-                                    <Setter Property="ToolTip" Value="V5: Process only." />
+                                    <Setter Property="ToolTip" Value="V275: Process the source image without sector detection or restoration." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
-                                    <Setter Property="ToolTip" Value="V5: Trigger, Detect sectors, and Trigger." />
+                                    <Setter Property="ToolTip" Value="V275: Trigger the printer, then detect sectors." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
-                                    <Setter Property="ToolTip" Value="V5: Trigger, Restore sectors, and Trigger." />
+                                    <Setter Property="ToolTip" Value="V275: Trigger the printer, then restore sectors from the database." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
-                                    <Setter Property="ToolTip" Value="V5: Trigger." />
+                                    <Setter Property="ToolTip" Value="V275: Trigger the printer." />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -318,27 +318,27 @@
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
-                                    <Setter Property="ToolTip" Value="V5: Process and Detect sectors." />
+                                    <Setter Property="ToolTip" Value="V5: Process the source image and detect sectors." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
-                                    <Setter Property="ToolTip" Value="V5: Process and Restore sectors." />
+                                    <Setter Property="ToolTip" Value="V5: Process the source image and restore sectors from the database." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
-                                    <Setter Property="ToolTip" Value="V5: Process only." />
+                                    <Setter Property="ToolTip" Value="V5: Process the source image without sector detection or restoration." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
-                                    <Setter Property="ToolTip" Value="V5: Trigger, Detect sectors, and Trigger." />
+                                    <Setter Property="ToolTip" Value="V5: Trigger the camera, then detect sectors." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
-                                    <Setter Property="ToolTip" Value="V5: Trigger, Restore sectors, and Trigger." />
+                                    <Setter Property="ToolTip" Value="V5: Trigger the camera, then restore sectors from the database." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
-                                    <Setter Property="ToolTip" Value="V5: Trigger." />
+                                    <Setter Property="ToolTip" Value="V5: Trigger the camera." />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -575,27 +575,27 @@
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
-                                    <Setter Property="ToolTip" Value="V5: Process and Detect sectors." />
+                                    <Setter Property="ToolTip" Value="L95: Process the source image and detect sectors." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
-                                    <Setter Property="ToolTip" Value="V5: Process and Restore sectors." />
+                                    <Setter Property="ToolTip" Value="L95: Process the source image and restore sectors from the database." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
-                                    <Setter Property="ToolTip" Value="V5: Process only." />
+                                    <Setter Property="ToolTip" Value="L95: Process the source image without sector detection or restoration." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
-                                    <Setter Property="ToolTip" Value="V5: Trigger, Detect sectors, and Trigger." />
+                                    <Setter Property="ToolTip" Value="L95: Trigger the camera, then detect sectors." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
-                                    <Setter Property="ToolTip" Value="V5: Trigger, Restore sectors, and Trigger." />
+                                    <Setter Property="ToolTip" Value="L95: Trigger the camera, then restore sectors from the database." />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
-                                    <Setter Property="ToolTip" Value="V5: Trigger." />
+                                    <Setter Property="ToolTip" Value="L95: Trigger the camera." />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -823,7 +823,7 @@
                     IsChecked="{Binding IsSelected}">
                     <ToggleButton.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.ToggleButton}" TargetType="ToggleButton">
-                            <Setter Property="ToolTip" Value="Click to redirect 95xx results to the image roll." />
+                            <Setter Property="ToolTip" Value="Redirect L95 results to this image roll." />
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <DockPanel>
@@ -850,7 +850,7 @@
                             <Style.Triggers>
 
                                 <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                    <Setter Property="ToolTip" Value="Data is redirected to the image roll." />
+                                    <Setter Property="ToolTip" Value="L95 results are being redirected to this image roll. Click to disable." />
                                     <Setter Property="Content">
                                         <Setter.Value>
                                             <DockPanel>
@@ -953,7 +953,7 @@
                     Command="{Binding ProcessCommand}"
                     CommandParameter="{x:Static vm:ImageResultEntryDevices.V275}"
                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                    ToolTip="Print the source image.">
+                    ToolTip="Print the source image using the V275 printer.">
 
                     <Grid>
                         <!--<mah:ProgressRing
@@ -1004,7 +1004,7 @@
                                                  Height=24}"
                     DockPanel.Dock="Top"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    ToolTip="Move">
+                    ToolTip="Move image within the roll.">
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
                             <Style.Triggers>
@@ -1132,11 +1132,11 @@
 
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Setter Property="ToolTip" Value="Show printer area overlay." />
+                            <Setter Property="ToolTip" Value="Show image details." />
 
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ShowPrinterAreaOverSource}" Value="True">
-                                    <Setter Property="ToolTip" Value="Hide printer area overlay." />
+                                <DataTrigger Binding="{Binding ShowDetails}" Value="True">
+                                    <Setter Property="ToolTip" Value="Hide image details." />
                                 </DataTrigger>
 
                             </Style.Triggers>
@@ -1155,7 +1155,7 @@
                                                  Height=24}"
                     DockPanel.Dock="Top"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    ToolTip="Delete">
+                    ToolTip="Delete this image from the roll.">
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Style.Triggers>

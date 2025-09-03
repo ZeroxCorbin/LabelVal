@@ -64,7 +64,7 @@
                         Content="{iconPacks:Material Kind=ContentSave}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Save the image." />
+                        ToolTip="Save the stored image to a file." />
 
                 </DockPanel>
 
@@ -99,7 +99,7 @@
                         Content="{iconPacks:Material Kind=Download}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Overwrite the template sectors with the stored data." />
+                        ToolTip="Overwrite the template sectors with the stored data from the database." />
 
                     <Border Margin="3,0" Style="{StaticResource imageBar}" />
 
@@ -114,7 +114,7 @@
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Setter Property="Tag" Value="{Binding StoredSectors}" />
-                            <Setter Property="ToolTip" Value="Copy the sectors to the clipboard as Delimited values." />
+                            <Setter Property="ToolTip" Value="Copy the sectors to the clipboard as CSV." />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
                                     <Setter Property="Tag" Value="{Binding StoredImage}" />
@@ -131,7 +131,7 @@
                     Click="StoredSectors_Click"
                     Content="{iconPacks:Modern Kind=Eye}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more.">
+                    ToolTip="Show all stored sectors in a popup.&#x0a;Hold Shift and click to show the template and report JSON.">
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Style.Triggers>
@@ -168,7 +168,7 @@
                         Content="{iconPacks:Modern Kind=Delete}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Remove the stored data from the database, permanently.&#x0a;(CAUTION) This can not be undone!" />
+                        ToolTip="Permanently remove the stored image and sectors from the database.&#x0a;(CAUTION) This can not be undone!" />
                 </DockPanel>
 
             </DockPanel>
@@ -198,7 +198,7 @@
                         Content="{iconPacks:Material Kind=ContentSave}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Save the image." />
+                        ToolTip="Save the current image to a file." />
 
                 </DockPanel>
 
@@ -209,7 +209,7 @@
                     CommandParameter="{x:Static vm:ImageResultEntryDevices.V275}"
                     Content="{iconPacks:Material Kind=StorePlusOutline}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    ToolTip="Store the current sectors and images to the database.">
+                    ToolTip="Store the current sectors and image to the database.">
 
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
@@ -232,7 +232,7 @@
                     Command="{Binding ReadCommand}"
                     Content="{iconPacks:Material Kind=Upload}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    ToolTip="Read the last results and image from the .&#x0a;Just reads the data. No processing.">
+                    ToolTip="Read the last results and image from the device.&#x0a;This action does not process the data.">
 
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
@@ -282,7 +282,7 @@
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Setter Property="Tag" Value="{Binding CurrentSectors}" />
-                            <Setter Property="ToolTip" Value="Copy the sectors to the clipboard as Delimited values." />
+                            <Setter Property="ToolTip" Value="Copy the sectors to the clipboard as CSV." />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
                                     <Setter Property="Tag" Value="{Binding CurrentImage}" />
@@ -300,7 +300,7 @@
                     Click="CurrentSectorDetails_Click"
                     Content="{iconPacks:Modern Kind=Eye}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more.">
+                    ToolTip="Show all current sectors in a popup.&#x0a;Hold Shift and click to show the template and report JSON.">
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Style.Triggers>
@@ -426,7 +426,8 @@
                             MaxWidth="{Binding ImageResultEntry.ImagesMaxHeight}"
                             MaxHeight="{Binding ImageResultEntry.ImagesMaxHeight}"
                             Margin="3"
-                            MouseDown="StoredImage_MouseDown">
+                            MouseDown="StoredImage_MouseDown"
+                            ToolTip="Click to open a larger view of the image.&#x0a;Hold Shift and click to open a 3D view of the image.">
 
                             <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding StoredImage.ImageLow, Mode=OneWay}" />
 
@@ -527,7 +528,7 @@
                                     Content="{iconPacks:Material Kind=ContentSave}"
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                    ToolTip="Save as image." />
+                                    ToolTip="Save the sector details as a PNG image." />
 
                                 <Button
                                     Width="28"
@@ -535,7 +536,7 @@
                                     Content="{iconPacks:MaterialDesign Kind=Image}"
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                    ToolTip="Copy image to clipboard as PNG." />
+                                    ToolTip="Copy the sector details to the clipboard as a PNG image." />
 
                                 <Button
                                     Width="28"
@@ -544,7 +545,7 @@
                                     Content="{iconPacks:Material Kind=ContentCopy}"
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                    ToolTip="Copy sector to CSV." />
+                                    ToolTip="Copy the focused sector to the clipboard as CSV." />
 
                                 <Button
                                     Width="28"
@@ -553,7 +554,7 @@
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                     Tag="Stored"
-                                    ToolTip="Close this." />
+                                    ToolTip="Close the sector details view.&#x0a;Hold Shift and click to close all details views." />
 
                             </DockPanel>
 
@@ -750,7 +751,8 @@
                             MaxWidth="{Binding ImageResultEntry.ImagesMaxHeight}"
                             MaxHeight="{Binding ImageResultEntry.ImagesMaxHeight}"
                             Margin="3"
-                            MouseDown="CurrentImage_MouseDown">
+                            MouseDown="CurrentImage_MouseDown"
+                            ToolTip="Click to open a larger view of the image.&#x0a;Hold Shift and click to open a 3D view of the image.">
 
                             <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding CurrentImage.ImageLow, Mode=OneWay}" />
 
@@ -840,7 +842,7 @@
                                     Content="{iconPacks:Material Kind=ContentSave}"
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                    ToolTip="Save as image." />
+                                    ToolTip="Save the sector details as a PNG image." />
 
                                 <Button
                                     Width="28"
@@ -848,7 +850,7 @@
                                     Content="{iconPacks:MaterialDesign Kind=ContentCopy}"
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                    ToolTip="Copy image to clipboard as PNG." />
+                                    ToolTip="Copy the sector details to the clipboard as a PNG image." />
 
                                 <Button
                                     Width="28"
@@ -857,7 +859,7 @@
                                     Content="{iconPacks:Material Kind=ContentCopy}"
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                    ToolTip="Copy sector to CSV." />
+                                    ToolTip="Copy the focused sector to the clipboard as CSV." />
 
                                 <Button
                                     Width="28"
@@ -866,7 +868,7 @@
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                     Tag="Current"
-                                    ToolTip="Close this." />
+                                    ToolTip="Close the sector details view.&#x0a;Hold Shift and click to close all details views." />
 
                             </DockPanel>
                         </md:Card>

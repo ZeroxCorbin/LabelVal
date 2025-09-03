@@ -24,6 +24,15 @@
         <DockPanel Margin="3">
 
             <DockPanel VerticalAlignment="Top">
+                <DockPanel.Style>
+                    <Style TargetType="DockPanel">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
 
                 <md:Card
                     Margin="3"
@@ -62,15 +71,7 @@
                     VerticalAlignment="Top"
                     Click="btnShowSettings_Click"
                     ToolTip="Show Settings">
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="Button">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
+
                     <iconPacks:PackIconMaterial
                         Width="18"
                         Height="18"
@@ -227,7 +228,7 @@
 
                         <TextBox
                             Margin="3,3"
-                            d:Text="Exited"
+                            d:Text="LVS1234"
                             md:HintAssist.Hint="Password"
                             BorderThickness="0"
                             IsHitTestVisible="False"
