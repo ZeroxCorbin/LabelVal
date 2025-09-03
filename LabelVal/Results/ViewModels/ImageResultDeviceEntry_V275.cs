@@ -16,7 +16,7 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
-public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResultDeviceEntry
+public partial class ImageResultDeviceEntryV275 : ObservableObject, IImageResultDeviceEntry
 {
     public ImageResultEntry ImageResultEntry { get; }
     public ImageResultsManager ImageResultsManager => ImageResultEntry.ImageResultsManager;
@@ -74,7 +74,7 @@ public partial class ImageResultDeviceEntry_V275 : ObservableObject, IImageResul
 
     [ObservableProperty] private bool isSelected = false;
 
-    public ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEntry)
+    public ImageResultDeviceEntryV275(ImageResultEntry imageResultsEntry)
     {
         ImageResultEntry = imageResultsEntry;
 

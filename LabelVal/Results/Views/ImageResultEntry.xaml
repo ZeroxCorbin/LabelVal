@@ -45,7 +45,7 @@
             V275Template="{StaticResource V275Template}"
             V5Template="{StaticResource V5Template}" />
 
-        <DataTemplate x:Key="V275Buttons">
+        <DataTemplate x:Key="V275Buttons" DataType="{x:Type vm:ImageResultDeviceEntryV275}">
             <DockPanel>
 
                 <!--  V275  -->
@@ -301,7 +301,7 @@
             </DockPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="V5Buttons">
+        <DataTemplate x:Key="V5Buttons" DataType="{x:Type vm:ImageResultDeviceEntry_V5}">
             <DockPanel>
 
                 <Border
@@ -557,7 +557,7 @@
             </DockPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="L95Buttons">
+        <DataTemplate x:Key="L95Buttons" DataType="{x:Type vm:ImageResultDeviceEntry_L95}">
             <DockPanel>
 
                 <!--  L95 Process Image  -->

@@ -12,7 +12,7 @@ public class ImageResultDeviceEntryTemplateSelector : DataTemplateSelector
 
     public override DataTemplate SelectTemplate(object item, DependencyObject container) => item is ImageResultDeviceEntry_V5
             ? V5Template
-            : item is ImageResultDeviceEntry_V275
+            : item is ImageResultDeviceEntryV275
             ? V275Template
             : item is ImageResultDeviceEntry_L95 ? L95Template : base.SelectTemplate(item, container);
 }

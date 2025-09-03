@@ -21,6 +21,8 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
+
+
 public partial class ImageResultDeviceEntry_L95
     : ObservableRecipient, IImageResultDeviceEntry, IRecipient<PropertyChangedMessage<FullReport>>
 {

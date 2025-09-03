@@ -128,7 +128,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         SourceImage = sourceImage;
 
         ImageResultDeviceEntries = [
-            new ImageResultDeviceEntry_V275(this),
+            new ImageResultDeviceEntryV275(this),
             new ImageResultDeviceEntry_V5(this) ,
             new ImageResultDeviceEntry_L95(this) ,
         ];

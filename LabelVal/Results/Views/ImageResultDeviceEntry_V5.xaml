@@ -23,10 +23,6 @@
                 <ResourceDictionary Source="ImageDetailsTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <converters:ShortenUIDConverter x:Key="shortenUID" />
-
-            <converters:Double2String x:Key="double2String" />
-
             <CollectionViewSource x:Key="StoredSectorsViewSource" Source="{Binding StoredSectors}">
                 <CollectionViewSource.SortDescriptions>
                     <componentmodel:SortDescription PropertyName="CenterPoint.X" />

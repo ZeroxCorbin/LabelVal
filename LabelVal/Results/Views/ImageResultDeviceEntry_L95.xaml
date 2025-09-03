@@ -137,7 +137,7 @@
             </DockPanel>
 
             <!--  Current Toolbar  -->
-            <DockPanel x:Key="L96Current_Toolbar" x:Shared="False">
+            <DockPanel x:Key="CurrentToolbar" x:Shared="False">
 
                 <Border Margin="3,0" Style="{StaticResource imageBar}" />
 
@@ -696,7 +696,7 @@
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Image" />
                         </md:Card>
 
-                        <ContentControl Content="{StaticResource L96Current_Toolbar}" Tag="Image" />
+                        <ContentControl Content="{StaticResource CurrentToolbar}" Tag="Image" />
 
                     </DockPanel>
 
@@ -755,7 +755,7 @@
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Sectors" />
                             </md:Card>
 
-                            <ContentControl Content="{StaticResource L96Current_Toolbar}" Tag="Sectors" />
+                            <ContentControl Content="{StaticResource CurrentToolbar}" Tag="Sectors" />
 
                         </DockPanel>
 

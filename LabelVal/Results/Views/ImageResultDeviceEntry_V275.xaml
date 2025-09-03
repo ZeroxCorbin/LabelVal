@@ -15,7 +15,7 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels"
-    d:DataContext="{d:DesignInstance Type=vm:ImageResultDeviceEntry_V275,
+    d:DataContext="{d:DesignInstance Type=vm:ImageResultDeviceEntryV275,
                                      IsDesignTimeCreatable=False}"
     mc:Ignorable="d">
 
@@ -24,10 +24,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ImageDetailsTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <converters:ShortenUIDConverter x:Key="shortenUID" />
-
-            <converters:Double2String x:Key="double2String" />
 
             <CollectionViewSource x:Key="StoredSectorsViewSource" Source="{Binding StoredSectors}">
                 <CollectionViewSource.SortDescriptions>
@@ -178,7 +174,7 @@
             </DockPanel>
 
             <!--  Current Toolbar  -->
-            <DockPanel x:Key="Current_Toolbar" x:Shared="False">
+            <DockPanel x:Key="CurrentToolbar" x:Shared="False">
 
                 <Border Margin="3,0" Style="{StaticResource imageBar}" />
 
@@ -575,7 +571,7 @@
 
                             <ListBox
                                 Padding="0,1,0,0"
-                                ItemsSource="{Binding StoredSectors}"
+                                ItemsSource="{Binding Source={StaticResource StoredSectorsViewSource}}"
                                 PreviewMouseWheel="StoredSectors_PreviewMouseWheel"
                                 Tag="v275Stored">
 
@@ -736,7 +732,7 @@
                             </md:Card>
 
                             <ContentControl
-                                Content="{StaticResource Current_Toolbar}"
+                                Content="{StaticResource CurrentToolbar}"
                                 DataContext="{Binding .}"
                                 Tag="Image" />
                         </DockPanel>
@@ -798,7 +794,7 @@
                                 </md:Card>
 
                                 <ContentControl
-                                    Content="{StaticResource Current_Toolbar}"
+                                    Content="{StaticResource CurrentToolbar}"
                                     DataContext="{Binding .}"
                                     Tag="Sectors" />
 
@@ -888,7 +884,7 @@
 
                             <ListBox
                                 Padding="0,1,0,0"
-                                ItemsSource="{Binding CurrentSectors}"
+                                ItemsSource="{Binding Source={StaticResource CurrentSectorsViewSource}}"
                                 PreviewMouseWheel="CurrentSectors_PreviewMouseWheel"
                                 SelectedItem="{Binding CurrentSelectedSector}"
                                 Tag="v275Current">

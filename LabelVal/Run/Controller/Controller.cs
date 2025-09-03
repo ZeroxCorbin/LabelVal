@@ -356,9 +356,9 @@ public partial class Controller : ObservableObject
 
         //Start the V275 processing the image.
         if (ire.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
-           ((ImageResultDeviceEntry_V275) ire).ProcessCommand.Execute(Results.ViewModels.ImageResultEntryImageTypes.V275Stored);
+           ((ImageResultDeviceEntryV275) ire).ProcessCommand.Execute(Results.ViewModels.ImageResultEntryImageTypes.V275Stored);
         else
-            ((ImageResultDeviceEntry_V275)ire).ProcessCommand.Execute(Results.ViewModels.ImageResultEntryImageTypes.Source);
+            ((ImageResultDeviceEntryV275)ire).ProcessCommand.Execute(Results.ViewModels.ImageResultEntryImageTypes.Source);
 
         //Wait for the V275 to finish processing the image or fault.
 

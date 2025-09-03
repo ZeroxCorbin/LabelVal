@@ -315,7 +315,7 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         if (img.NewData is V275_REST_Lib.Controllers.FullReport v275)
         {
-            if (ire.ImageResultDeviceEntries.FirstOrDefault((e) => e.Device == ImageResultEntryDevices.V275) is ImageResultDeviceEntry_V275 ird)
+            if (ire.ImageResultDeviceEntries.FirstOrDefault((e) => e.Device == ImageResultEntryDevices.V275) is ImageResultDeviceEntryV275 ird)
             {
                 ird.ProcessFullReport(v275);
                 WorkingUpdate(ird.Device, false);
