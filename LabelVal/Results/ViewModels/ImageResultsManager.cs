@@ -50,6 +50,8 @@ public partial class ImageResultsManager : ObservableRecipient,
 
     #region Properties
 
+    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+
     #region UI State Properties
 
     /// <summary>
