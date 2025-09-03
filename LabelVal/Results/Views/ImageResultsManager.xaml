@@ -52,27 +52,27 @@
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
-                                <Setter Property="ToolTip" Value="V5: Process and Detect sectors." />
+                                <Setter Property="ToolTip" Value="V275: Process and Detect sectors." />
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
-                                <Setter Property="ToolTip" Value="V5: Process and Restore sectors." />
+                                <Setter Property="ToolTip" Value="V275: Process and Restore sectors." />
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
-                                <Setter Property="ToolTip" Value="V5: Process only." />
+                                <Setter Property="ToolTip" Value="V275: Process only." />
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
-                                <Setter Property="ToolTip" Value="V5: Trigger, Detect sectors, and Trigger." />
+                                <Setter Property="ToolTip" Value="V275: Trigger, Detect sectors, and Trigger." />
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
-                                <Setter Property="ToolTip" Value="V5: Trigger, Restore sectors, and Trigger." />
+                                <Setter Property="ToolTip" Value="V275: Trigger, Restore sectors, and Trigger." />
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
-                                <Setter Property="ToolTip" Value="V5: Trigger." />
+                                <Setter Property="ToolTip" Value="V275: Trigger." />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -499,27 +499,27 @@
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
-                                <Setter Property="ToolTip" Value="V5: Process and Detect sectors." />
+                                <Setter Property="ToolTip" Value="L95: Process and Detect sectors." />
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
-                                <Setter Property="ToolTip" Value="V5: Process and Restore sectors." />
+                                <Setter Property="ToolTip" Value="L95: Process and Restore sectors." />
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
-                                <Setter Property="ToolTip" Value="V5: Process only." />
+                                <Setter Property="ToolTip" Value="L95: Process only." />
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
-                                <Setter Property="ToolTip" Value="V5: Trigger, Detect sectors, and Trigger." />
+                                <Setter Property="ToolTip" Value="L95: Trigger, Detect sectors, and Trigger." />
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
-                                <Setter Property="ToolTip" Value="V5: Trigger, Restore sectors, and Trigger." />
+                                <Setter Property="ToolTip" Value="L95: Trigger, Restore sectors, and Trigger." />
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
-                                <Setter Property="ToolTip" Value="V5: Trigger." />
+                                <Setter Property="ToolTip" Value="L95: Trigger." />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -828,7 +828,8 @@
                             BorderThickness="0"
                             Focusable="False"
                             SelectedValue="{Binding ImageAddPosition}"
-                            Style="{StaticResource MahApps.Styles.ListBox}">
+                            Style="{StaticResource MahApps.Styles.ListBox}"
+                            ToolTip="Select where to add new images.">
                             <ListBox.ItemContainerStyle>
                                 <Style BasedOn="{StaticResource MaterialDesignToolToggleListBoxItem}" TargetType="ListBoxItem">
                                     <Setter Property="Padding" Value="4" />
@@ -1126,6 +1127,7 @@
                                     Style="{StaticResource MahApps.Styles.Slider.Flat}"
                                     TickFrequency="100"
                                     TickPlacement="BottomRight"
+                                    ToolTip="Adjust the size of the images in the list."
                                     Value="{Binding ImagesMaxHeight}" />
 
                             </DockPanel>
@@ -1344,7 +1346,7 @@
                                 Command="{Binding CopyAllSectorsToClipboardCommand}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                ToolTip="Copy all sector details to clipboard ">
+                                ToolTip="Copy all sector details to clipboard.">
 
                                 <DockPanel>
                                     <TextBlock
@@ -1380,7 +1382,8 @@
                                                  Width=24,
                                                  Height=24}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    Style="{StaticResource MaterialDesignHamburgerToggleButton}">
+                    Style="{StaticResource MaterialDesignHamburgerToggleButton}"
+                    ToolTip="Toggle the right side bar.">
                     <ToggleButton.LayoutTransform>
                         <RotateTransform Angle="180" />
                     </ToggleButton.LayoutTransform>
@@ -1521,7 +1524,8 @@
                             ItemsSource="{Binding Source={StaticResource cvsImageResultsEntries}}"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                             ScrollViewer.VerticalScrollBarVisibility="Auto"
-                            SelectedItem="{Binding TopmostItem, Mode=OneWay}">
+                            SelectedItem="{Binding TopmostItem, Mode=OneWay}"
+                            ToolTip="Click to navigate to an image.">
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel />
