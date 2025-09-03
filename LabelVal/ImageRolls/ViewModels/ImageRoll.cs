@@ -235,9 +235,16 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// <summary>
     /// Gets or sets the position where new images are added.
     /// </summary>
-    [ObservableProperty] [property: JsonProperty]
+    [ObservableProperty]
+    [property: JsonProperty]
     private ImageAddPositions _imageAddPosition;
-    partial void OnImageAddPositionChanged(ImageAddPositions value)=> SaveRoll();
+    partial void OnImageAddPositionChanged(ImageAddPositions value)
+    {
+        if (ImageRollsDatabase != null)
+        {
+            SaveRoll();
+        }
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether to right-align overflow content.
