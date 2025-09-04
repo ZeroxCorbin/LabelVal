@@ -14,9 +14,11 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace LabelVal;
 
@@ -249,8 +251,8 @@ public partial class App : Application
     //     }
     // }
 
-
-
+    private static ManualResetEvent _splashScreenReady = new(false);
+    private static Dispatcher? _splashScreenDispatcher;
 
 
     public App()
@@ -304,24 +306,27 @@ public partial class App : Application
         }
     }
 
-    protected override async void OnStartup(StartupEventArgs e)
+    protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
 
-        var splashScreen = new Main.Views.SplashScreen();
-        splashScreen.Show();
+        // Create and start the splash screen thread
+        var splashThread = new Thread(ShowSplashScreen);
+        splashThread.SetApartmentState(ApartmentState.STA);
+        splashThread.IsBackground = true;
+        splashThread.Name = "SplashScreenThread";
+        splashThread.Start();
 
-        WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading settings..."));
-        await Task.Delay(500); // Simulate work
+        // Wait until the splash screen is created and its dispatcher is running
+        _splashScreenReady.WaitOne();
+
+        UpdateSplashScreen("Loading settings...");
 
         Logger.Info("Starting: Getting colorblind setting.");
         var isColorBlind = Settings.GetValue("App.IsColorBlind", false);
         Dispatcher.Invoke(() => ChangeColorBlindTheme(isColorBlind));
 
-        WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Initializing main window..."));
-
-        var mainWindow = new MainWindow();
-        this.MainWindow = mainWindow;
+        UpdateSplashScreen("Initializing main window...");
 
         // Defer non-critical UI updates until the application is idle.
         // This allows the main window to render sooner.
@@ -329,7 +334,7 @@ public partial class App : Application
         {
             await Task.Run(() =>
             {
-                WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Applying themes..."));
+                UpdateSplashScreen("Applying themes...");
                 Logger.Info("Starting: Getting color theme.");
                 var themeName = Settings.GetValue("App.Theme", "Dark.Steel", true);
                 Dispatcher.Invoke(() =>
@@ -345,11 +350,43 @@ public partial class App : Application
             });
 
             Logger.Info("Starting: Complete");
-            WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Main Window...."));
+            UpdateSplashScreen("Startup Complete!");
+
+            var mainWindow = new MainWindow();
+            this.MainWindow = mainWindow;
 
             mainWindow.Show();
 
         }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+    }
+
+    private void ShowSplashScreen()
+    {
+        var splashScreen = new Main.Views.SplashScreen();
+        if (splashScreen.DataContext is Main.ViewModels.SplashScreenViewModel vm)
+        {
+            vm.SplashScreenDispatcher = Dispatcher.CurrentDispatcher;
+            vm.RequestClose = () => CloseSplashScreen();
+        }
+        splashScreen.Show();
+
+        _splashScreenDispatcher = Dispatcher.CurrentDispatcher;
+        _splashScreenReady.Set(); // Signal that the splash screen is ready
+
+        // Start the dispatcher processing loop
+        Dispatcher.Run();
+    }
+
+    public static void UpdateSplashScreen(string message)
+    {
+        _splashScreenDispatcher?.BeginInvoke(
+            (Action)(() => WeakReferenceMessenger.Default.Send(new SplashScreenMessage(message)))
+        );
+    }
+
+    public static void CloseSplashScreen()
+    {
+        _splashScreenDispatcher?.BeginInvokeShutdown(DispatcherPriority.Normal);
     }
     protected override void OnExit(ExitEventArgs e)
     {

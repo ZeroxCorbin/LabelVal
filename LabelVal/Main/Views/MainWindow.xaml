@@ -24,8 +24,19 @@
     Dialog:DialogParticipation.Register="{Binding}"
     d:DataContext="{d:DesignInstance Type=viewModels:MainWindow}"
     Closing="MetroWindow_Closing"
+    Icon="/favicon.ico"
     SaveWindowPosition="True"
     mc:Ignorable="d">
+
+    <mah:MetroWindow.IconTemplate>
+        <DataTemplate>
+            <Image
+                Width="24"
+                Height="24"
+                Margin="4,0,0,0"
+                Source="{Binding}" />
+        </DataTemplate>
+    </mah:MetroWindow.IconTemplate>
 
     <mah:MetroWindow.DataContext>
         <viewModels:MainWindow />
@@ -115,6 +126,27 @@
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl>
             <mah:Flyout x:Name="ApplicationSettings" Position="Left">
+                <mah:Flyout.Header>
+                    <StackPanel>
+                        <Image Width="200" Source="/Assets/Images/label-val-logo.png" />
+                        <StackPanel Margin="0,0,0,10" VerticalAlignment="Bottom">
+
+                            <TextBlock
+                                Margin="0,2,0,0"
+                                HorizontalAlignment="Center"
+                                FontSize="10"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource MahApps.Brushes.Gray5}"
+                                Text="For Internal Use Only! (Confidential B)" />                            
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="10"
+                                Foreground="{DynamicResource MahApps.Brushes.Gray5}"
+                                Text="Copyright &#169; Omron 2015" />
+                        </StackPanel>
+                    </StackPanel>
+
+                </mah:Flyout.Header>
 
                 <ScrollViewer>
 

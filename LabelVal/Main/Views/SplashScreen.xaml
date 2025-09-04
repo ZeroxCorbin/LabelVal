@@ -21,23 +21,37 @@
     </Window.DataContext>
     <Border Background="{DynamicResource MahApps.Brushes.Gray8}" CornerRadius="10">
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+            <Image
+                Height="60"
+                Margin="10"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Source="/Assets/Images/label-val-logo.png" />
 
-            <!--  Placeholder for the application logo/image  -->
-            <Viewbox Grid.Row="0" Margin="20">
-                <TextBlock Foreground="{DynamicResource MahApps.Brushes.Gray2}" Text="Label Validator" />
-            </Viewbox>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Width="200" Source="/Assets/Images/label-val-splash.png" />
+                <TextBlock
+                    Margin="0,20,0,0"
+                    HorizontalAlignment="Center"
+                    Foreground="{DynamicResource MahApps.Brushes.Gray4}"
+                    Text="{Binding StatusMessage}" />
+            </StackPanel>
 
-            <TextBlock
-                Grid.Row="1"
-                Margin="0,0,0,20"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Foreground="{DynamicResource MahApps.Brushes.Gray4}"
-                Text="{Binding StatusMessage}" />
+            <StackPanel Margin="0,0,0,10" VerticalAlignment="Bottom">
+
+                <TextBlock
+                    Margin="0,2,0,0"
+                    HorizontalAlignment="Center"
+                    FontSize="10"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource MahApps.Brushes.Gray5}"
+                    Text="For Internal Use Confidential B" />                
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    FontSize="10"
+                    Foreground="{DynamicResource MahApps.Brushes.Gray5}"
+                    Text="Copyright &#169; Omron 2015" />
+            </StackPanel>
         </Grid>
     </Border>
 </Window>

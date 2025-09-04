@@ -17,7 +17,7 @@ public partial class MainWindow : ObservableRecipient
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
     [ObservableProperty]
-    private string _applicationTitle = $"Label Validator : {GetAssemblyVersion()} : CONFIDENTIAL B (Internal Use Only)";
+    private string _applicationTitle = $"Label Validator : {GetAssemblyVersion()} : For Internal Use Only! (Confidential B)";
 
     public LoggingStatusBarVm LoggingStatusBarVm { get; } = new LoggingStatusBarVm();
 

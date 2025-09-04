@@ -229,6 +229,9 @@
 		<None Remove="Assets\Images\iso.png" />
 		<None Remove="Assets\Images\l95-white-outline.ico" />
 		<None Remove="Assets\Images\l95-white-outline.xcf" />
+		<None Remove="Assets\Images\label-val-logo.png" />
+		<None Remove="Assets\Images\label-val-splash.png" />
+		<None Remove="Assets\Images\label-val-splash.xcf" />
 		<None Remove="Assets\Images\v275-black-outline.ico" />
 		<None Remove="Assets\Images\v275-black-outline.xcf" />
 		<None Remove="Assets\Images\v275-white-outline.ico" />
@@ -720,6 +723,12 @@
 		</Content>
 		<Content Include="Assets\Images\l95-white-outline.ico">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Images\label-val-logo.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Images\label-val-splash.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\v275-black-outline.ico">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
