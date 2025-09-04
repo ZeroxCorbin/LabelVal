@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using ControlzEx.Theming;
 using LabelVal.Main.Messages;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -62,10 +63,16 @@ public partial class MainWindow : MetroWindow
     private void btnLightTheme_Click(object sender, RoutedEventArgs e) => ThemeManager.Current.ChangeTheme(Application.Current, "Light.Steel");
     private void btnDarkTheme_Click(object sender, RoutedEventArgs e) => ThemeManager.Current.ChangeTheme(Application.Current, "Dark.Steel");
     private void btnSyncOSTheme_Click(object sender, RoutedEventArgs e) => ThemeManager.Current.SyncTheme(ThemeSyncMode.SyncAll);
-    private void btnColorBlind_Click(object sender, RoutedEventArgs e) => App.ChangeColorBlindTheme(!App.Settings.GetValue("App.IsColorBlind", false));
+    private void btnColorBlind_Click(object sender, RoutedEventArgs e)
+    {
+        var currentType = App.Settings.GetValue("App.ColorBlindnessType", ColorBlindnessType.None);
+        var nextType = (ColorBlindnessType)(((int)currentType + 1) % Enum.GetValues(typeof(ColorBlindnessType)).Length);
+        App.ChangeColorBlindTheme(nextType);
+    }
 
     private void btnShowSettings_Click(object sender, RoutedEventArgs e) => ApplicationSettings.IsOpen = true;
 
+    private void MetroWindow_Closed(object sender, System.EventArgs e) => DialogParticipation.SetRegister(this, null);
 
     private void hamMenu_ItemClick(object sender, ItemClickEventArgs args)
     {

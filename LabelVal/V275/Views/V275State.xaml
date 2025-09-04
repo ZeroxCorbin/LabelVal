@@ -51,15 +51,15 @@
                 <Label>
                     <Label.Style>
                         <Style TargetType="{x:Type Label}">
-                            <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
+                            <Setter Property="Background" Value="{DynamicResource StatusRed_Brush_Active}" />
                             <Setter Property="Content" Value="{Binding SelectedV275Node.JobName}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsWrongTemplateName}" Value="False">
-                                    <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                    <Setter Property="Background" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding SelectedV275Node.JobName}" Value="">
                                     <Setter Property="Content" Value="-----" />
-                                    <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
+                                    <Setter Property="Background" Value="{DynamicResource StatusRed_Brush_Active}" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -71,7 +71,7 @@
                 <Label Content="{Binding SelectedV275Node.State}">
                     <Label.Style>
                         <Style TargetType="{x:Type Label}">
-                            <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
+                            <Setter Property="Background" Value="{DynamicResource StatusRed_Brush_Active}" />
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
                                 <MultiDataTrigger>
@@ -79,14 +79,14 @@
                                         <Condition Binding="{Binding SelectedV275Node.State}" Value="Editing" />
                                         <Condition Binding="{Binding SelectedImageRoll.IsGS1}" Value="True" />
                                     </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                    <Setter Property="Background" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding SelectedV275Node.State}" Value="Running" />
                                         <Condition Binding="{Binding SelectedImageRoll.IsGS1}" Value="False" />
                                     </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                    <Setter Property="Background" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                 </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>

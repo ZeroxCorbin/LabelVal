@@ -129,10 +129,10 @@
                             CornerRadius="5">
                             <Border.Style>
                                 <Style TargetType="{x:Type Border}">
-                                    <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=Value, Mode=OneTime}" Value="False">
-                                            <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
+                                            <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -188,10 +188,10 @@
                             CornerRadius="5">
                             <Border.Style>
                                 <Style TargetType="{x:Type Border}">
-                                    <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=PassFail.Value, Mode=OneTime}" Value="False">
-                                            <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
+                                            <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -231,19 +231,19 @@
                             CornerRadius="5">
                             <Border.Style>
                                 <Style TargetType="{x:Type Border}">
-                                    <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Letter, Mode=OneTime}" Value="B">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush}" />
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Letter, Mode=OneTime}" Value="C">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush}" />
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Letter, Mode=OneTime}" Value="D">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush}" />
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Letter, Mode=OneTime}" Value="F">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush}" />
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -303,19 +303,19 @@
                             CornerRadius="5">
                             <Border.Style>
                                 <Style TargetType="{x:Type Border}">
-                                    <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Grade.Letter, Mode=OneTime}" Value="B">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush}" />
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Grade.Letter, Mode=OneTime}" Value="C">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush}" />
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Grade.Letter, Mode=OneTime}" Value="D">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush}" />
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Grade.Letter, Mode=OneTime}" Value="F">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush}" />
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

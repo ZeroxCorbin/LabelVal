@@ -32,7 +32,7 @@
                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent4}" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Controller.IsSimulator}" Value="True">
-                        <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource StatusYellow_Brush_Active}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -456,13 +456,13 @@
                                 Text="{Binding Controller.CameraMode}">
                                 <TextBox.Style>
                                     <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                         <Style.Triggers>
                                             <MultiDataTrigger>
                                                 <MultiDataTrigger.Conditions>
                                                     <Condition Binding="{Binding Controller.CameraMode}" Value="Offline" />
                                                 </MultiDataTrigger.Conditions>
-                                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
+                                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush_Active}" />
                                             </MultiDataTrigger>
 
                                         </Style.Triggers>
@@ -558,13 +558,13 @@
 
                             <ComboBox.Style>
                                 <Style BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}" TargetType="{x:Type ComboBox}">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush_Active}" />
                                     <Setter Property="Visibility" Value="Collapsed" />
                                     <Setter Property="IsHitTestVisible" Value="True" />
                                     <Style.Triggers>
 
                                         <!--<DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
-                                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource StatusGreen_Brush_Active}"/>
                                         </DataTrigger>-->
 
                                         <DataTrigger Binding="{Binding JobSlots.Count, Converter={StaticResource NumberGreaterThanZero}}" Value="True">
@@ -593,7 +593,7 @@
                             IsHitTestVisible="False">
                             <TextBox.Style>
                                 <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush_Active}" />
                                     <Setter Property="Text" Value="{Binding JobName}" />
 
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -601,7 +601,7 @@
 
                                         <DataTrigger Binding="{Binding JobName}" Value="">
                                             <Setter Property="Text" Value="-----" />
-                                            <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
+                                            <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush_Active}" />
                                         </DataTrigger>
 
                                         <DataTrigger Binding="{Binding JobSlots.Count}" Value="0">
@@ -769,7 +769,7 @@
                                             <Setter Property="Fill" Value="Gray" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Controller.EventWsState}" Value="Open">
-                                                    <Setter Property="Fill" Value="Green" />
+                                                    <Setter Property="Fill" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -793,7 +793,7 @@
                                             <Setter Property="Fill" Value="Gray" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Controller.ResultWsState}" Value="Open">
-                                                    <Setter Property="Fill" Value="Green" />
+                                                    <Setter Property="Fill" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -817,7 +817,7 @@
                                             <Setter Property="Fill" Value="Gray" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Controller.ImageWsState}" Value="Open">
-                                                    <Setter Property="Fill" Value="Green" />
+                                                    <Setter Property="Fill" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>

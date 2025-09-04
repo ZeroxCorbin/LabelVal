@@ -45,7 +45,7 @@
                     FontSize="10"
                     FontWeight="SemiBold"
                     Foreground="{DynamicResource MahApps.Brushes.Gray5}"
-                    Text="For Internal Use Confidential B" />                
+                    Text="For Internal Use Confidential B" />
                 <TextBlock
                     HorizontalAlignment="Center"
                     FontSize="10"

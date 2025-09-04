@@ -516,21 +516,20 @@ public interface IImageResultDeviceEntry
         return drwGroup;
     }
 
-    /// <summary>
-    /// Gets a brush for a given grade with a specified transparency.
-    /// </summary>
-    /// <param name="grade">The grade letter (e.g., "A", "B", "F").</param>
     /// <param name="trans">The alpha channel value (0-255).</param>
     /// <returns>A <see cref="SolidColorBrush"/> with the appropriate color and transparency.</returns>
-    private static SolidColorBrush GetGradeBrush(string grade, byte trans) => grade switch
+    private static SolidColorBrush GetGradeBrush(string grade, byte trans)
     {
-        "A" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["CB_Green"], trans),
-        "B" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeB_Brush"], trans),
-        "C" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeC_Brush"], trans),
-        "D" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeD_Brush"], trans),
-        "F" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeF_Brush"], trans),
-        _ => ChangeTransparency((SolidColorBrush)Application.Current.Resources["CB_Green"], trans),
-    };
+        return grade switch
+        {
+            "A" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeA_Brush_Active"], trans),
+            "B" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeB_Brush_Active"], trans),
+            "C" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeC_Brush_Active"], trans),
+            "D" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeD_Brush_Active"], trans),
+            "F" => ChangeTransparency((SolidColorBrush)Application.Current.Resources["ISO_GradeF_Brush_Active"], trans),
+            _ => ChangeTransparency(Brushes.Black, trans),
+        };
+    }
 
     /// <summary>
     /// Creates a new brush from an existing one with a new transparency value.

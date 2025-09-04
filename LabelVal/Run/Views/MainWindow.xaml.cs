@@ -16,7 +16,7 @@ public partial class MainWindow : MetroWindow
     private void btnLightTheme_Click(object sender, RoutedEventArgs e) => ThemeManager.Current.ChangeTheme(Application.Current, "Light.Steel");
     private void btnDarkTheme_Click(object sender, RoutedEventArgs e) => ThemeManager.Current.ChangeTheme(Application.Current, "Dark.Steel");
     private void btnSyncOSTheme_Click(object sender, RoutedEventArgs e) => ThemeManager.Current.SyncTheme(ThemeSyncMode.SyncAll);
-    private void btnColorBlind_Click(object sender, RoutedEventArgs e) => App.ChangeColorBlindTheme(!App.Settings.GetValue("App.IsColorBlind", false));
+    private void btnColorBlind_Click(object sender, RoutedEventArgs e) => App.Settings.GetValue("App.ColorBlindnessType", ColorBlindnessType.None);
 
 
     private void MetroWindow_Closed(object sender, System.EventArgs e) => DialogParticipation.SetRegister(this, null);

@@ -32,7 +32,7 @@
                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent4}" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Controller.IsSimulator}" Value="True">
-                        <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource StatusYellow_Brush_Active}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -150,7 +150,7 @@
                                                 <Condition Binding="{Binding Controller.Is600Dpi}" Value="False" />
                                             </MultiDataTrigger.Conditions>
 
-                                            <Setter Property="Foreground" Value="Red" />
+                                            <Setter Property="Foreground" Value="{DynamicResource StatusRed_Brush_Active}" />
                                         </MultiDataTrigger>
 
                                         <MultiDataTrigger>
@@ -159,7 +159,7 @@
                                                 <Condition Binding="{Binding Controller.Is600Dpi}" Value="False" />
                                             </MultiDataTrigger.Conditions>
 
-                                            <Setter Property="Foreground" Value="Yellow" />
+                                            <Setter Property="Foreground" Value="{DynamicResource StatusYellow_Brush_Active}" />
                                         </MultiDataTrigger>
 
                                         <DataTrigger Binding="{Binding Controller.Inspection.device}" Value="camera">
@@ -185,7 +185,7 @@
                                 <Setter Property="Text" Value="{Binding Path=Controller.Node.printerModel}" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsWrongTemplateName}" Value="False">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Path=Controller.Node.printerModel}" Value="Unknown">
                                         <Setter Property="Text" Value="-----" />
@@ -217,14 +217,14 @@
                         Text="{Binding Controller.State, Converter={StaticResource LocalizeEnumValue}}">
                         <TextBox.Style>
                             <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
-                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
+                                <Setter Property="BorderBrush" Value="{DynamicResource StatusRed_Brush_Active}" />
                                 <Style.Triggers>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding Controller.State}" Value="Editing" />
                                             <Condition Binding="{Binding SelectedImageRoll.SectorType}" Value="{x:Static imageRoll_enums:ImageRollSectorTypes.Dynamic}" />
                                         </MultiDataTrigger.Conditions>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                     </MultiDataTrigger>
 
                                     <MultiDataTrigger>
@@ -232,7 +232,7 @@
                                             <Condition Binding="{Binding Controller.State}" Value="Running" />
                                             <Condition Binding="{Binding SelectedImageRoll.SectorType}" Value="{x:Static imageRoll_enums:ImageRollSectorTypes.Fixed}" />
                                         </MultiDataTrigger.Conditions>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                     </MultiDataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -247,13 +247,13 @@
 
                         <ComboBox.Style>
                             <Style BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}" TargetType="{x:Type ComboBox}">
-                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
+                                <Setter Property="BorderBrush" Value="{DynamicResource StatusRed_Brush_Active}" />
                                 <Setter Property="Visibility" Value="Collapsed" />
                                 <Setter Property="IsHitTestVisible" Value="True" />
                                 <Style.Triggers>
 
                                     <DataTrigger Binding="{Binding IsWrongTemplateName}" Value="False">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding Controller.Jobs, Converter={StaticResource IsNullOrEmpty}}" Value="False">
@@ -285,7 +285,7 @@
                         IsHitTestVisible="False">
                         <TextBox.Style>
                             <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
-                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
+                                <Setter Property="BorderBrush" Value="{DynamicResource StatusRed_Brush_Active}" />
                                 <Setter Property="Text" Value="{Binding Controller.JobName, Mode=OneWay}" />
 
                                 <Setter Property="Visibility" Value="Collapsed" />
@@ -293,7 +293,7 @@
 
                                     <DataTrigger Binding="{Binding Controller.JobName, Mode=OneWay}" Value="">
                                         <Setter Property="Text" Value="-----" />
-                                        <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource StatusRed_Brush_Active}" />
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding Controller.Jobs, Converter={StaticResource IsNullOrEmpty}}" Value="True">
@@ -378,7 +378,7 @@
                                     <DataTrigger Binding="{Binding Controller.Print.enabled}" Value="True">
                                         <Setter Property="Content">
                                             <Setter.Value>
-                                                <iconPacks:PackIconMaterial Foreground="{DynamicResource CB_Green}" Kind="Printer" />
+                                                <iconPacks:PackIconMaterial Foreground="{DynamicResource StatusGreen_Brush_Active}" Kind="Printer" />
                                             </Setter.Value>
                                         </Setter>
                                         <Setter Property="Command" Value="{Binding EnablePrintCommand}" />
@@ -389,7 +389,7 @@
                                     <DataTrigger Binding="{Binding Controller.Print.enabled}" Value="False">
                                         <Setter Property="Content">
                                             <Setter.Value>
-                                                <iconPacks:PackIconMaterial Foreground="{DynamicResource SectorError_Brush}" Kind="PrinterAlert" />
+                                                <iconPacks:PackIconMaterial Foreground="{DynamicResource StatusRed_Brush_Active}" Kind="PrinterAlert" />
                                             </Setter.Value>
                                         </Setter>
                                         <Setter Property="Command" Value="{Binding EnablePrintCommand}" />

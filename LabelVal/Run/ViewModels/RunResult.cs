@@ -172,11 +172,11 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
     }
     private static SolidColorBrush GetGradeBrush(string grade) => grade switch
     {
-        "A" => (SolidColorBrush)Application.Current.Resources["CB_Green"],
-        "B" => (SolidColorBrush)Application.Current.Resources["ISO_GradeB_Brush"],
-        "C" => (SolidColorBrush)Application.Current.Resources["ISO_GradeC_Brush"],
-        "D" => (SolidColorBrush)Application.Current.Resources["ISO_GradeD_Brush"],
-        "F" => (SolidColorBrush)Application.Current.Resources["ISO_GradeF_Brush"],
+        "A" => (SolidColorBrush)Application.Current.Resources["ISO_GradeA_Brush_Active"],
+        "B" => (SolidColorBrush)Application.Current.Resources["ISO_GradeB_Brush_Active"],
+        "C" => (SolidColorBrush)Application.Current.Resources["ISO_GradeC_Brush_Active"],
+        "D" => (SolidColorBrush)Application.Current.Resources["ISO_GradeD_Brush_Active"],
+        "F" => (SolidColorBrush)Application.Current.Resources["ISO_GradeF_Brush_Active"],
         _ => Brushes.Black,
     };
     public static void SortList(List<Sectors.Interfaces.ISector> list) => list.Sort((item1, item2) =>
