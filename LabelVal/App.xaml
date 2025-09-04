@@ -12,8 +12,7 @@
     xmlns:sectorOutput="clr-namespace:LabelVal.Sectors.Classes"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
-    xmlns:watchers="clr-namespace:Watchers.lib.Process;assembly=Watchers.lib"
-    StartupUri="Main/Views/MainWindow.xaml">
+    xmlns:watchers="clr-namespace:Watchers.lib.Process;assembly=Watchers.lib">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

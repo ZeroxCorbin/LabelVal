@@ -1,5 +1,8 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.GS1;
+using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Main.Messages;
+using LabelVal.Main.Views;
 using LibSimpleDatabase;
 using Lvs95xx.Producer.Watchers;
 using MaterialDesignThemes.Wpf;
@@ -305,9 +308,20 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-                Logger.Info("Starting: Getting colorblind setting.");
-                var isColorBlind = Settings.GetValue("App.IsColorBlind", false);
-                Dispatcher.Invoke(() => ChangeColorBlindTheme(isColorBlind));
+        var splashScreen = new Main.Views.SplashScreen();
+        splashScreen.Show();
+
+        WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading settings..."));
+        await Task.Delay(500); // Simulate work
+
+        Logger.Info("Starting: Getting colorblind setting.");
+        var isColorBlind = Settings.GetValue("App.IsColorBlind", false);
+        Dispatcher.Invoke(() => ChangeColorBlindTheme(isColorBlind));
+
+        WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Initializing main window..."));
+
+        var mainWindow = new MainWindow();
+        this.MainWindow = mainWindow;
 
         // Defer non-critical UI updates until the application is idle.
         // This allows the main window to render sooner.
@@ -315,8 +329,7 @@ public partial class App : Application
         {
             await Task.Run(() =>
             {
-
-
+                WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Applying themes..."));
                 Logger.Info("Starting: Getting color theme.");
                 var themeName = Settings.GetValue("App.Theme", "Dark.Steel", true);
                 Dispatcher.Invoke(() =>
@@ -332,6 +345,10 @@ public partial class App : Application
             });
 
             Logger.Info("Starting: Complete");
+            WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Main Window...."));
+
+            mainWindow.Show();
+
         }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
     }
     protected override void OnExit(ExitEventArgs e)

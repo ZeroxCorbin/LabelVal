@@ -145,9 +145,14 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     [SQLite.Ignore] public Databases.ImageRollsDatabase ImageRollsDatabase { get; set; }
 
     /// <summary>
+    /// Gets or sets the path to the database file for this image roll.
+    /// </summary>
+    [JsonProperty] public string DatabasePath { get; set; }
+
+    /// <summary>
     /// If this is a directory-based image roll, this is the path to the directory where the images are stored.
     /// </summary>
-    public string Path { get; set; }
+    [JsonProperty] public string Path { get; set; }
 
     /// <summary>
     /// Gets the type of the image roll (Directory or Database).

@@ -1,0 +1,43 @@
+<Window
+    x:Class="LabelVal.Main.Views.SplashScreen"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"
+    Title="SplashScreen"
+    Width="450"
+    Height="300"
+    AllowsTransparency="True"
+    Background="Transparent"
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    Topmost="True"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
+    mc:Ignorable="d">
+    <Window.DataContext>
+        <viewModels:SplashScreenViewModel />
+    </Window.DataContext>
+    <Border Background="{DynamicResource MahApps.Brushes.Gray8}" CornerRadius="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--  Placeholder for the application logo/image  -->
+            <Viewbox Grid.Row="0" Margin="20">
+                <TextBlock Foreground="{DynamicResource MahApps.Brushes.Gray2}" Text="Label Validator" />
+            </Viewbox>
+
+            <TextBlock
+                Grid.Row="1"
+                Margin="0,0,0,20"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Foreground="{DynamicResource MahApps.Brushes.Gray4}"
+                Text="{Binding StatusMessage}" />
+        </Grid>
+    </Border>
+</Window>

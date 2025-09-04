@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ControlzEx.Theming;
+using LabelVal.Main.Messages;
 using MahApps.Metro.Controls;
 using System;
 using System.Windows;
@@ -44,8 +46,14 @@ public partial class MainWindow : MetroWindow
             RunWindow.Owner = this;
             RunWindow.Show();
         });
+
+        Loaded += MainWindow_Loaded;
     }
 
+    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+    {
+        _ = WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage());
+    }
     public void ClearSelectedMenuItem() => ((ViewModels.MainWindow)this.DataContext).SetDeafultMenuItem();
 
     private void MainWindow_DpiChanged(object sender, DpiChangedEventArgs e) => ((ViewModels.MainWindow)this.DataContext).DPIChangedMessage = new ViewModels.DPIChangedMessage(e.NewDpi);
@@ -88,7 +96,6 @@ public partial class MainWindow : MetroWindow
         if (openOneShot)
         {
             hamMenu.Focus();
-            hamMenu.Items.Refresh();
         }
 
 
