@@ -506,9 +506,18 @@ public partial class ImageResultDeviceEntry_L95
             if (replaceSectors)
                 CurrentSectors.Clear();
 
-            System.IO.File.WriteAllText(System.IO.Path.Combine(App.UserDataDirectory, "L95Report.json"), message.Report.ToString());
-
             CurrentSectors.Add(new Sector(message.Template, message.Report, [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
+
+            List<FullReport> temp = [];
+            foreach (var sector in CurrentSectors)
+                temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
+
+            JObject report = new()
+            {
+                ["AllReports"] = JArray.FromObject(temp)
+            };
+            CurrentReport = report;
+            CurrentTemplate = null;
 
             var tempSectors = CurrentSectors.ToList();
 

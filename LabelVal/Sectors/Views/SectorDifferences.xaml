@@ -5,6 +5,7 @@
     xmlns:Converters="clr-namespace:LabelVal.Converters"
     xmlns:ViewModels="clr-namespace:LabelVal.Sectors.Interfaces"
     xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
+    xmlns:bar_common_parameters="clr-namespace:BarcodeVerification.lib.ISO.ParameterTypes;assembly=BarcodeVerification.lib"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:LabelVal.Sectors.Views"
@@ -18,12 +19,15 @@
     mc:Ignorable="d">
 
     <UserControl.Resources>
+        <local_converters:TypeConverter x:Key="TypeConverter" />
         <Converters:FloatStringTrimConverter x:Key="floatTrim" />
         <BooleanToVisibilityConverter x:Key="booltovis" />
         <Converters:StringCamelUnspaced2StringPascalSpaced x:Key="stringToUpper" />
 
-        <local_converters:BoolToPassFailString x:Key="BoolToPassFailString" />
         <local_converters:ParameterEnumToParameterDescription x:Key="ParameterEnumToParameterDescription" />
+        <local_converters:EnumValueToDescription_ShortenString x:Key="EnumValueToDescription_ShortenString" />
+        <local_converters:BoolToPassFailString x:Key="BoolToPassFailString" />
+        <local_converters:ParameterSuffixToUnitsMultiConverter x:Key="ParameterSuffixToUnitsMultiConverter" />
 
         <local_converters:DifferenceParameterTemplateSelector x:Key="DifferenceParameterTemplateSelector">
 
@@ -47,6 +51,7 @@
                 </DataTemplate>
             </local_converters:DifferenceParameterTemplateSelector.Missing>
 
+            <!--  Value Double Template  -->
             <local_converters:DifferenceParameterTemplateSelector.ValueDoubleTemplate>
                 <DataTemplate>
                     <Grid>
@@ -57,74 +62,78 @@
 
                         <TextBlock
                             Grid.Column="0"
-                            Text="{Binding Name, Converter={StaticResource stringToUpper}, Mode=OneWay}"
-                            TextWrapping="Wrap" />
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
+                            ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
 
                         <StackPanel
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
 
-                            <DockPanel HorizontalAlignment="Right">
-
-                                <TextBlock Margin="3,0" Text="{Binding Current.Value, Mode=OneWay, StringFormat={}({0:N1})}" />
-
-                                <Border
-                                    Width="10"
-                                    Height="10"
-                                    BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                                    BorderThickness="1"
-                                    CornerRadius="3">
-                                    <Border.Style>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                            <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <ContentControl>
+                                    <ContentControl.Style>
+                                        <Style TargetType="{x:Type ContentControl}">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <DockPanel>
+                                                        <TextBlock Text="{Binding Current.Value, StringFormat={}{0:N1}}" />
+                                                        <TextBlock VerticalAlignment="Bottom" Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                                                    <Binding Mode="OneTime" Path="Current.Suffix" />
+                                                                    <Binding
+                                                                        Mode="OneTime"
+                                                                        Path="DataContext.Report.Units"
+                                                                        RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+                                                    </DockPanel>
+                                                </Setter.Value>
+                                            </Setter>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Current.Result, Mode=OneWay}" Value="FAIL">
-                                                    <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
+                                                <DataTrigger Binding="{Binding Current, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                    <Setter Property="Content" Value="---" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </Border.Style>
-                                </Border>
-
-                                <TextBlock
-                                    MinWidth="10"
-                                    Margin="3,0"
-                                    Text="{Binding Current.Result, Mode=OneWay}" />
-
+                                    </ContentControl.Style>
+                                </ContentControl>
                             </DockPanel>
 
-                            <DockPanel HorizontalAlignment="Right">
-
-                                <TextBlock Margin="3,0" Text="{Binding Previous.Value, Mode=OneWay, StringFormat={}({0:N1})}" />
-
-                                <Border
-                                    Width="10"
-                                    Height="10"
-                                    BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                                    BorderThickness="1"
-                                    CornerRadius="3">
-                                    <Border.Style>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                            <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <ContentControl>
+                                    <ContentControl.Style>
+                                        <Style TargetType="{x:Type ContentControl}">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <DockPanel>
+                                                        <TextBlock Text="{Binding Previous.Value, StringFormat={}{0:N1}}" />
+                                                        <TextBlock VerticalAlignment="Bottom" Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                                                    <Binding Mode="OneTime" Path="Previous.Suffix" />
+                                                                    <Binding
+                                                                        Mode="OneTime"
+                                                                        Path="DataContext.Report.Units"
+                                                                        RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+                                                    </DockPanel>
+                                                </Setter.Value>
+                                            </Setter>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Previous.Result, Mode=OneWay}" Value="FAIL">
-                                                    <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
+                                                <DataTrigger Binding="{Binding Previous, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                    <Setter Property="Content" Value="---" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </Border.Style>
-                                </Border>
-
-                                <TextBlock
-                                    MinWidth="10"
-                                    Margin="3,0"
-                                    Text="{Binding Previous.Result, Mode=OneWay}" />
-
+                                    </ContentControl.Style>
+                                </ContentControl>
                             </DockPanel>
                         </StackPanel>
-
-
                     </Grid>
                 </DataTemplate>
             </local_converters:DifferenceParameterTemplateSelector.ValueDoubleTemplate>
@@ -139,70 +148,62 @@
 
                         <TextBlock
                             Grid.Column="0"
-                            Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneWay}"
-                            TextWrapping="Wrap" />
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
+                            ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
 
                         <StackPanel
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
 
-                            <DockPanel HorizontalAlignment="Right">
-
-                                <TextBlock Margin="3,0" Text="{Binding Current.Value, Mode=OneWay, StringFormat={}({0:N1})}" />
-
-                                <Border
-                                    Width="10"
-                                    Height="10"
-                                    BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                                    BorderThickness="1"
-                                    CornerRadius="3">
-                                    <Border.Style>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                            <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <ContentControl>
+                                    <ContentControl.Style>
+                                        <Style TargetType="{x:Type ContentControl}">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <TextBlock
+                                                        MinWidth="26"
+                                                        Margin="3,0"
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding Path=Current.Value, Mode=OneTime}"
+                                                        TextWrapping="Wrap" />
+                                                </Setter.Value>
+                                            </Setter>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Current.Result, Mode=OneWay}" Value="FAIL">
-                                                    <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
+                                                <DataTrigger Binding="{Binding Current, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                    <Setter Property="Content" Value="---" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </Border.Style>
-                                </Border>
-
-                                <TextBlock
-                                    MinWidth="10"
-                                    Margin="3,0"
-                                    Text="{Binding Current.Result, Mode=OneWay}" />
-
+                                    </ContentControl.Style>
+                                </ContentControl>
                             </DockPanel>
 
-                            <DockPanel HorizontalAlignment="Right">
-
-                                <TextBlock Margin="3,0" Text="{Binding Previous.Value, Mode=OneWay, StringFormat={}({0:N1})}" />
-
-                                <Border
-                                    Width="10"
-                                    Height="10"
-                                    BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                                    BorderThickness="1"
-                                    CornerRadius="3">
-                                    <Border.Style>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                            <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <ContentControl>
+                                    <ContentControl.Style>
+                                        <Style TargetType="{x:Type ContentControl}">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <TextBlock
+                                                        MinWidth="26"
+                                                        Margin="3,0"
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding Path=Previous.Value, Mode=OneTime}"
+                                                        TextWrapping="Wrap" />
+                                                </Setter.Value>
+                                            </Setter>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Previous.Result, Mode=OneWay}" Value="FAIL">
-                                                    <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
+                                                <DataTrigger Binding="{Binding Previous, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                    <Setter Property="Content" Value="---" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </Border.Style>
-                                </Border>
-
-                                <TextBlock
-                                    MinWidth="10"
-                                    Margin="3,0"
-                                    Text="{Binding Previous.Result, Mode=OneWay}" />
-
+                                    </ContentControl.Style>
+                                </ContentControl>
                             </DockPanel>
                         </StackPanel>
 
@@ -217,42 +218,101 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
+
                         <TextBlock
                             Grid.Column="0"
-                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
-                            TextWrapping="Wrap"
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
                             ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
-                        <DockPanel
+
+                        <StackPanel
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
 
-
-                            <TextBlock
-                                Width="25"
-                                Margin="3,0"
-                                Text="{Binding Path=Value, Converter={StaticResource BoolToPassFailString}, Mode=OneTime}" />
-                            <Border
-                                Width="10"
-                                Height="10"
-                                BorderThickness="0"
-                                CornerRadius="5">
-                                <Border.Style>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="{x:Type ContentControl}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                    <TextBlock
+                                                        Width="25"
+                                                        Margin="3,0"
+                                                        Text="{Binding Path=Current.Value, Converter={StaticResource BoolToPassFailString}, Mode=OneTime}" />
+                                                    <Border
+                                                        Width="10"
+                                                        Height="10"
+                                                        BorderThickness="0"
+                                                        CornerRadius="5">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Path=Current.Value, Mode=OneTime}" Value="False">
+                                                                        <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                </DockPanel>
+                                            </Setter.Value>
+                                        </Setter>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=Value, Mode=OneTime}" Value="False">
-                                                <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
+                                            <DataTrigger Binding="{Binding Current, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                <Setter Property="Content" Value="---" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Border.Style>
-                            </Border>
-                        </DockPanel>
+                                </ContentControl.Style>
+                            </ContentControl>
+
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="{x:Type ContentControl}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                    <TextBlock
+                                                        Width="25"
+                                                        Margin="3,0"
+                                                        Text="{Binding Path=Previous.Value, Converter={StaticResource BoolToPassFailString}, Mode=OneTime}" />
+                                                    <Border
+                                                        Width="10"
+                                                        Height="10"
+                                                        BorderThickness="0"
+                                                        CornerRadius="5">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Path=Previous.Value, Mode=OneTime}" Value="False">
+                                                                        <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                </DockPanel>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Previous, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                <Setter Property="Content" Value="---" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentControl.Style>
+                            </ContentControl>
+                        </StackPanel>
+
+
                     </Grid>
                 </DataTemplate>
             </local_converters:DifferenceParameterTemplateSelector.PassFailTemplate>
 
+            <!--  Pass/Fail Template  -->
+            <!--  Pass/Fail Template  -->
             <local_converters:DifferenceParameterTemplateSelector.ValuePassFailTemplate>
                 <DataTemplate>
                     <Grid>
@@ -260,50 +320,99 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
+
                         <TextBlock
                             Grid.Column="0"
-                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
-                            TextWrapping="Wrap"
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
                             ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
-                        <DockPanel
+
+                        <StackPanel
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-                            <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center">
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0:N1} {1}">
-                                        <Binding Mode="OneTime" Path="Value" />
-                                        <Binding Mode="OneTime" Path="Suffix" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
 
-                            <TextBlock
-                                Width="25"
-                                Margin="3,0"
-                                Text="{Binding PassFail.Value, Converter={StaticResource BoolToPassFailString}}" />
-
-                            <Border
-                                Width="10"
-                                Height="10"
-                                BorderThickness="0"
-                                CornerRadius="5">
-                                <Border.Style>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="{x:Type ContentControl}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                    <TextBlock
+                                                        Width="25"
+                                                        Margin="3,0"
+                                                        Text="{Binding Path=Current.Value, Converter={StaticResource BoolToPassFailString}, Mode=OneTime}" />
+                                                    <Border
+                                                        Width="10"
+                                                        Height="10"
+                                                        BorderThickness="0"
+                                                        CornerRadius="5">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Path=Current.Value, Mode=OneTime}" Value="False">
+                                                                        <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                </DockPanel>
+                                            </Setter.Value>
+                                        </Setter>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=PassFail.Value, Mode=OneTime}" Value="False">
-                                                <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
+                                            <DataTrigger Binding="{Binding Current, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                <Setter Property="Content" Value="---" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Border.Style>
-                            </Border>
-                        </DockPanel>
+                                </ContentControl.Style>
+                            </ContentControl>
+
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="{x:Type ContentControl}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                    <TextBlock
+                                                        Width="25"
+                                                        Margin="3,0"
+                                                        Text="{Binding Path=Previous.Value, Converter={StaticResource BoolToPassFailString}, Mode=OneTime}" />
+                                                    <Border
+                                                        Width="10"
+                                                        Height="10"
+                                                        BorderThickness="0"
+                                                        CornerRadius="5">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Path=Previous.Value, Mode=OneTime}" Value="False">
+                                                                        <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                </DockPanel>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Previous, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                <Setter Property="Content" Value="---" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentControl.Style>
+                            </ContentControl>
+                        </StackPanel>
                     </Grid>
                 </DataTemplate>
             </local_converters:DifferenceParameterTemplateSelector.ValuePassFailTemplate>
 
+            <!--  Grade Template  -->
+            <!--  Grade Template  -->
             <local_converters:DifferenceParameterTemplateSelector.GradeTemplate>
                 <DataTemplate>
                     <Grid>
@@ -312,93 +421,154 @@
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0" Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneWay}" />
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
+                            ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
 
                         <StackPanel
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-                            <DockPanel HorizontalAlignment="Right">
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="{x:Type ContentControl}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
 
-                                <TextBlock Margin="3,0" Text="{Binding Path=Current.Value, StringFormat=N1, Mode=OneWay}" />
+                                                    <TextBlock HorizontalAlignment="Right" Text="{Binding Path=Current.Value, StringFormat={}{0:N1}, Mode=OneTime}" />
 
-                                <Border
-                                    Width="10"
-                                    Height="10"
-                                    BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                                    BorderThickness="1"
-                                    CornerRadius="3">
-                                    <Border.Style>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Current.Letter, Mode=OneWay}" Value="B">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Current.Letter, Mode=OneWay}" Value="C">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Current.Letter, Mode=OneWay}" Value="D">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Current.Letter, Mode=OneWay}" Value="F">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                </Border>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom"
+                                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
+                                                        <TextBlock.Text>
+                                                            <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                                                <Binding Mode="OneTime" Path="Current.Suffix" />
+                                                                <Binding
+                                                                    Mode="OneTime"
+                                                                    Path="DataContext.Report.Units"
+                                                                    RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
 
-                                <TextBlock
-                                    MinWidth="10"
-                                    Margin="3,0"
-                                    Text="{Binding Path=Current.Letter, Mode=OneWay}" />
+                                                    <TextBlock Margin="3,0" Text="{Binding Current.Value, StringFormat=N1}" />
 
-                            </DockPanel>
 
-                            <DockPanel HorizontalAlignment="Right">
+                                                    <TextBlock Margin="3,0" Text="{Binding Path=Current.Letter, Mode=OneTime}" />
 
-                                <TextBlock Margin="3,0" Text="{Binding Path=Previous.Value, StringFormat=N1, Mode=OneWay}" />
+                                                    <Border
+                                                        Width="10"
+                                                        Height="10"
+                                                        BorderThickness="0"
+                                                        CornerRadius="5">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Current.Letter, Mode=OneTime}" Value="B">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Current.Letter, Mode=OneTime}" Value="C">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Current.Letter, Mode=OneTime}" Value="D">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Current.Letter, Mode=OneTime}" Value="F">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                </DockPanel>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Current, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                <Setter Property="Content" Value="---" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentControl.Style>
+                            </ContentControl>
 
-                                <Border
-                                    Width="10"
-                                    Height="10"
-                                    BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                                    BorderThickness="1"
-                                    CornerRadius="3">
-                                    <Border.Style>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Previous.Letter, Mode=OneWay}" Value="B">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Previous.Letter, Mode=OneWay}" Value="C">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Previous.Letter, Mode=OneWay}" Value="D">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Previous.Letter, Mode=OneWay}" Value="F">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                </Border>
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="{x:Type ContentControl}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
 
-                                <TextBlock
-                                    MinWidth="10"
-                                    Margin="3,0"
-                                    Text="{Binding Path=Previous.Letter, Mode=OneWay}" />
+                                                    <TextBlock HorizontalAlignment="Right" Text="{Binding Path=Previous.Value, StringFormat={}{0:N1}, Mode=OneTime}" />
 
-                            </DockPanel>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom"
+                                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
+                                                        <TextBlock.Text>
+                                                            <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                                                <Binding Mode="OneTime" Path="Previous.Suffix" />
+                                                                <Binding
+                                                                    Mode="OneTime"
+                                                                    Path="DataContext.Report.Units"
+                                                                    RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+
+                                                    <TextBlock Margin="3,0" Text="{Binding Previous.Value, StringFormat=N1}" />
+
+
+                                                    <TextBlock Margin="3,0" Text="{Binding Path=Previous.Letter, Mode=OneTime}" />
+
+                                                    <Border
+                                                        Width="10"
+                                                        Height="10"
+                                                        BorderThickness="0"
+                                                        CornerRadius="5">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Previous.Letter, Mode=OneTime}" Value="B">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Previous.Letter, Mode=OneTime}" Value="C">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Previous.Letter, Mode=OneTime}" Value="D">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Previous.Letter, Mode=OneTime}" Value="F">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                </DockPanel>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Previous, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                <Setter Property="Content" Value="---" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentControl.Style>
+                            </ContentControl>
                         </StackPanel>
 
                     </Grid>
                 </DataTemplate>
             </local_converters:DifferenceParameterTemplateSelector.GradeTemplate>
 
+            <!--  Grade Value Template  -->
+            <!--  Grade Value Template  -->
             <local_converters:DifferenceParameterTemplateSelector.GradeValueTemplate>
                 <DataTemplate>
                     <Grid>
@@ -409,90 +579,146 @@
 
                         <TextBlock
                             Grid.Column="0"
-                            Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneWay}"
-                            TextWrapping="Wrap" />
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
+                            ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
 
                         <StackPanel
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-                            <DockPanel HorizontalAlignment="Right">
-                                <TextBlock Margin="3,0" Text="{Binding Path=Current.Value, Mode=OneWay, StringFormat={}({0:N1})}" />
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="{x:Type ContentControl}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
 
-                                <TextBlock Margin="3,0" Text="{Binding Path=Current.Grade.Value, StringFormat=N1, Mode=OneWay}" />
+                                                    <TextBlock HorizontalAlignment="Right" Text="{Binding Path=Current.Value, StringFormat={}{0:N1}, Mode=OneTime}" />
 
-                                <Border
-                                    Width="10"
-                                    Height="10"
-                                    BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                                    BorderThickness="1"
-                                    CornerRadius="3">
-                                    <Border.Style>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneWay}" Value="B">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneWay}" Value="C">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneWay}" Value="D">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneWay}" Value="F">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                </Border>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom"
+                                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
+                                                        <TextBlock.Text>
+                                                            <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                                                <Binding Mode="OneTime" Path="Current.Suffix" />
+                                                                <Binding
+                                                                    Mode="OneTime"
+                                                                    Path="DataContext.Report.Units"
+                                                                    RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
 
-                                <TextBlock
-                                    MinWidth="10"
-                                    Margin="3,0"
-                                    Text="{Binding Path=Current.Grade.Letter, Mode=OneWay}" />
+                                                    <TextBlock Margin="3,0" Text="{Binding Current.Grade.Value, StringFormat=N1}" />
 
-                            </DockPanel>
 
-                            <DockPanel HorizontalAlignment="Right">
-                                <TextBlock Margin="3,0" Text="{Binding Path=Previous.Value, Mode=OneWay, StringFormat={}({0:N1})}" />
+                                                    <TextBlock Margin="3,0" Text="{Binding Path=Current.Grade.Letter, Mode=OneTime}" />
 
-                                <TextBlock Margin="3,0" Text="{Binding Path=Previous.Grade.Value, StringFormat=N1, Mode=OneWay}" />
+                                                    <Border
+                                                        Width="10"
+                                                        Height="10"
+                                                        BorderThickness="0"
+                                                        CornerRadius="5">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneTime}" Value="B">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneTime}" Value="C">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneTime}" Value="D">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneTime}" Value="F">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                </DockPanel>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Current, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                <Setter Property="Content" Value="---" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentControl.Style>
+                            </ContentControl>
 
-                                <Border
-                                    Width="10"
-                                    Height="10"
-                                    BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                                    BorderThickness="1"
-                                    CornerRadius="3">
-                                    <Border.Style>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Previous.Grade.Letter, Mode=OneWay}" Value="B">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Previous.Grade.Letter, Mode=OneWay}" Value="C">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Previous.Grade.Letter, Mode=OneWay}" Value="D">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Previous.Grade.Letter, Mode=OneWay}" Value="F">
-                                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                </Border>
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="{x:Type ContentControl}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <DockPanel
+                                                    HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center">
 
-                                <TextBlock
-                                    MinWidth="10"
-                                    Margin="3,0"
-                                    Text="{Binding Path=Previous.Grade.Letter, Mode=OneWay}" />
+                                                    <TextBlock HorizontalAlignment="Right" Text="{Binding Path=Previous.Value, StringFormat={}{0:N1}, Mode=OneTime}" />
 
-                            </DockPanel>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom"
+                                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
+                                                        <TextBlock.Text>
+                                                            <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                                                <Binding Mode="OneTime" Path="Previous.Suffix" />
+                                                                <Binding
+                                                                    Mode="OneTime"
+                                                                    Path="DataContext.Report.Units"
+                                                                    RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+
+                                                    <TextBlock Margin="3,0" Text="{Binding Previous.Grade.Value, StringFormat=N1}" />
+
+
+                                                    <TextBlock Margin="3,0" Text="{Binding Path=Previous.Grade.Letter, Mode=OneTime}" />
+
+                                                    <Border
+                                                        Width="10"
+                                                        Height="10"
+                                                        BorderThickness="0"
+                                                        CornerRadius="5">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Previous.Grade.Letter, Mode=OneTime}" Value="B">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Previous.Grade.Letter, Mode=OneTime}" Value="C">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Previous.Grade.Letter, Mode=OneTime}" Value="D">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Previous.Grade.Letter, Mode=OneTime}" Value="F">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                </DockPanel>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Previous, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                <Setter Property="Content" Value="---" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentControl.Style>
+                            </ContentControl>
                         </StackPanel>
 
                     </Grid>
@@ -531,16 +757,11 @@
                             <DataTemplate>
                                 <Grid Margin="2">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto" />
                                         <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
-                                        TextWrapping="Wrap" />
+
                                     <ContentControl
-                                        Grid.Column="1"
+                                        Grid.Column="0"
                                         Content="{Binding}"
                                         ContentTemplateSelector="{StaticResource DifferenceParameterTemplateSelector}" />
                                 </Grid>
@@ -566,9 +787,7 @@
                             <HierarchicalDataTemplate>
                                 <Grid Margin="2">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto" />
                                         <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
 
                                     <StackPanel Grid.Column="0" Orientation="Horizontal">

@@ -91,30 +91,14 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
 
     private void LaunchLvs()
     {
-//        if (Controller.Process == null || Controller.Process.HasExited)
-//        {
-//if(Controller.ProcessState == Win32_ProcessWatcherProcessState.Exited)
-//            {
-//                var proc = new Win32_ProcessWatcher
-//                {
-//                    StartInfo = new System.Diagnostics.ProcessStartInfo
-//                    {
-//                        FileName = "LVS-95XX.exe",
-//                        WorkingDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
-//                        UseShellExecute = true,
-//                        // CreateNoWindow = true,
-//                        // RedirectStandardOutput = true,
-//                        // RedirectStandardError = true,
-//                        // RedirectStandardInput = true,
-//                    }
-//                };
-//                proc.Start();
-//            Controller.Process = proc.Process;
-//            Controller.Process.EnableRaisingEvents = true;
-//            Controller.Process.Exited += (s, e) => { Controller.Disconnect(); };
-//            }
+        if (Controller.Process == null || Controller.Process.HasExited)
+        {
+            if (Controller.ProcessState == Win32_ProcessWatcherProcessState.Exited)
+            {
+               
+            }
 
-//        }
+        }
     }
 
     /// <summary>

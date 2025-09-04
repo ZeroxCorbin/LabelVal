@@ -54,6 +54,11 @@ public partial class MainWindow : MetroWindow
     private void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
         WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage());
+
+        App.Current.Dispatcher.BeginInvoke(() =>
+        {
+            this.BringIntoView();
+        });
     }
     public void ClearSelectedMenuItem() => ((ViewModels.MainWindow)this.DataContext).SetDeafultMenuItem();
 
