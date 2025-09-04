@@ -500,7 +500,7 @@
                         Margin="6,0"
                         Padding="4,1"
                         HorizontalAlignment="Left"
-                        Background="{DynamicResource V275_Brush}">
+                        Background="{DynamicResource V275_Brush_Active}">
                         <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Foreground="White">
                             <TextBlock.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="{x:Type TextBlock}">
@@ -877,7 +877,7 @@
                         Margin="6,0"
                         Padding="4,1"
                         HorizontalAlignment="Left"
-                        Background="{DynamicResource V275_Brush}">
+                        Background="{DynamicResource V275_Brush_Active}">
                         <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Foreground="White">
                             <TextBlock.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="{x:Type TextBlock}">
@@ -1255,7 +1255,7 @@
                         Margin="6,0"
                         Padding="4,1"
                         HorizontalAlignment="Left"
-                        Background="{DynamicResource V5_Brush}">
+                        Background="{DynamicResource V5_Brush_Active}">
                         <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Foreground="White">
                             <TextBlock.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="{x:Type TextBlock}">
@@ -1630,7 +1630,7 @@
                         Margin="6,0"
                         Padding="4,1"
                         HorizontalAlignment="Left"
-                        Background="{DynamicResource V5_Brush}">
+                        Background="{DynamicResource V5_Brush_Active}">
                         <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Foreground="White">
                             <TextBlock.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="{x:Type TextBlock}">

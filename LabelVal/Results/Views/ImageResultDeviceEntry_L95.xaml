@@ -335,9 +335,9 @@
             </Style>
         </DockPanel.Style>
 
-        <Border Background="{DynamicResource L95_Brush}" Style="{StaticResource groupLeft}" />
+        <Border Background="{DynamicResource L95_Brush_Active}" Style="{StaticResource groupLeft}" />
 
-        <Border Background="{DynamicResource L95_Brush}" Style="{StaticResource groupBottom}" />
+        <Border Background="{DynamicResource L95_Brush_Active}" Style="{StaticResource groupBottom}" />
 
         <!--  Stored  -->
         <DockPanel>
@@ -377,7 +377,7 @@
                             Margin="3,3,0,3"
                             Padding="4,1"
                             HorizontalAlignment="Left"
-                            Background="{DynamicResource L95_Brush}">
+                            Background="{DynamicResource L95_Brush_Active}">
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Image" />
                         </md:Card>
 
@@ -446,7 +446,7 @@
                                 Margin="3,3,0,3"
                                 Padding="4,1"
                                 HorizontalAlignment="Left"
-                                Background="{DynamicResource L95_Brush}">
+                                Background="{DynamicResource L95_Brush_Active}">
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Sectors" />
                             </md:Card>
 
@@ -693,7 +693,7 @@
                             Margin="3"
                             Padding="4,1"
                             HorizontalAlignment="Left"
-                            Background="{DynamicResource L95_Brush}">
+                            Background="{DynamicResource L95_Brush_Active}">
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Image" />
                         </md:Card>
 
@@ -753,7 +753,7 @@
                                 Margin="3"
                                 Padding="4,1"
                                 HorizontalAlignment="Left"
-                                Background="{DynamicResource L95_Brush}">
+                                Background="{DynamicResource L95_Brush_Active}">
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Sectors" />
                             </md:Card>
 
@@ -975,7 +975,7 @@
                             Margin="3"
                             Padding="4,1"
                             HorizontalAlignment="Left"
-                            Background="{DynamicResource L95_Brush}">
+                            Background="{DynamicResource L95_Brush_Active}">
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Dissimilar Results" />
                         </md:Card>
 

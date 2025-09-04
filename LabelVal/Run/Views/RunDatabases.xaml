@@ -116,11 +116,11 @@
                                     Kind="Run">
                                     <iconPacks:PackIconMaterial.Style>
                                         <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                                            <Setter Property="Foreground" Value="{DynamicResource CB_Green}" />
+                                            <Setter Property="Foreground" Value="{DynamicResource StatusGreen_Brush_Active}" />
 
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsComplete}" Value="False">
-                                                    <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
+                                                    <Setter Property="Background" Value="{DynamicResource StatusRed_Brush_Active}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>

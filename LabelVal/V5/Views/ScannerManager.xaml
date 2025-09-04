@@ -25,7 +25,7 @@
             <DockPanel>
 
 
-                <DockPanel Width="48" Background="{DynamicResource V5_Brush}">
+                <DockPanel Width="48" Background="{DynamicResource V5_Brush_Active}">
                     <Image
                         Width="36"
                         Height="36"

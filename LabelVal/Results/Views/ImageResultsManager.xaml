@@ -40,7 +40,7 @@
             <Border
                 Margin="3,0,0,0"
                 VerticalAlignment="Center"
-                BorderBrush="{DynamicResource V275_Brush}"
+                BorderBrush="{DynamicResource V275_Brush_Active}"
                 BorderThickness="1"
                 CornerRadius="3">
 
@@ -96,7 +96,7 @@
                             Text="V275"
                             Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                        <Grid Background="{DynamicResource V275_Brush}">
+                        <Grid Background="{DynamicResource V275_Brush_Active}">
 
                             <mah:MetroProgressBar
                                 Width="62"
@@ -264,7 +264,7 @@
             <Border
                 Margin="3,0,0,0"
                 VerticalAlignment="Center"
-                BorderBrush="{DynamicResource V5_Brush}"
+                BorderBrush="{DynamicResource V5_Brush_Active}"
                 BorderThickness="1"
                 CornerRadius="3">
 
@@ -320,7 +320,7 @@
                             Text="V5"
                             Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                        <Grid Background="{DynamicResource V5_Brush}">
+                        <Grid Background="{DynamicResource V5_Brush_Active}">
 
                             <mah:MetroProgressBar
                                 Width="62"
@@ -487,7 +487,7 @@
             <Border
                 Margin="3,0,0,0"
                 VerticalAlignment="Center"
-                BorderBrush="{DynamicResource L95_Brush}"
+                BorderBrush="{DynamicResource L95_Brush_Active}"
                 BorderThickness="1"
                 CornerRadius="3">
 
@@ -543,7 +543,7 @@
                             Text="L95"
                             Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                        <Grid Background="{DynamicResource L95_Brush}">
+                        <Grid Background="{DynamicResource L95_Brush_Active}">
 
                             <mah:MetroProgressBar
                                 Width="62"
@@ -711,7 +711,7 @@
                 VerticalAlignment="Center"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Stretch"
-                BorderBrush="{DynamicResource L95_Brush}"
+                BorderBrush="{DynamicResource L95_Brush_Active}"
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                 IsChecked="{Binding IsL95Selected}">
                 <ToggleButton.Style>
@@ -754,7 +754,7 @@
                                                 Text="L95"
                                                 Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                                            <Grid Background="{DynamicResource L95_Brush}">
+                                            <Grid Background="{DynamicResource L95_Brush_Active}">
                                                 <Grid
                                                     Margin="3,6"
                                                     HorizontalAlignment="Left"

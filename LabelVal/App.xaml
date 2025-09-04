@@ -424,6 +424,44 @@
             <SolidColorBrush x:Key="StatusYellow_Brush_Active" Color="{StaticResource StatusYellow}" />
             <SolidColorBrush x:Key="StatusRed_Brush_Active" Color="{StaticResource StatusRed}" />
 
+            <!--  Red-Green Colorblind Friendly (Deuteranopia/Protanopia) Device Colors  -->
+            <Color x:Key="V275_RG">#0072B2</Color>
+            <!--  Blue  -->
+            <SolidColorBrush x:Key="V275_RG_Brush" Color="{StaticResource V275_RG}" />
+            <Color x:Key="V5_RG">#E69F00</Color>
+            <!--  Orange  -->
+            <SolidColorBrush x:Key="V5_RG_Brush" Color="{StaticResource V5_RG}" />
+            <Color x:Key="L95_RG">#000000</Color>
+            <!--  Black  -->
+            <SolidColorBrush x:Key="L95_RG_Brush" Color="{StaticResource L95_RG}" />
+
+            <!--  Blue-Yellow Colorblind Friendly (Tritanopia) Device Colors  -->
+            <Color x:Key="V275_BY">#D81B60</Color>
+            <!--  Pink  -->
+            <SolidColorBrush x:Key="V275_BY_Brush" Color="{StaticResource V275_BY}" />
+            <Color x:Key="V5_BY">#004D40</Color>
+            <!--  Dark Teal  -->
+            <SolidColorBrush x:Key="V5_BY_Brush" Color="{StaticResource V5_BY}" />
+            <Color x:Key="L95_BY">#1E88E5</Color>
+            <!--  Blue  -->
+            <SolidColorBrush x:Key="L95_BY_Brush" Color="{StaticResource L95_BY}" />
+
+            <!--  Monochrome Colorblind Friendly (Achromatopsia) Device Colors  -->
+            <Color x:Key="V275_M">#FFFFFF</Color>
+            <!--  White  -->
+            <SolidColorBrush x:Key="V275_M_Brush" Color="{StaticResource V275_M}" />
+            <Color x:Key="V5_M">#A9A9A9</Color>
+            <!--  Dark Gray  -->
+            <SolidColorBrush x:Key="V5_M_Brush" Color="{StaticResource V5_M}" />
+            <Color x:Key="L95_M">#000000</Color>
+            <!--  Black  -->
+            <SolidColorBrush x:Key="L95_M_Brush" Color="{StaticResource L95_M}" />
+
+            <!--  Active Device Colors (dynamically set for color blindness)  -->
+            <SolidColorBrush x:Key="V275_Brush_Active" Color="{StaticResource V275}" />
+            <SolidColorBrush x:Key="V5_Brush_Active" Color="{StaticResource V5}" />
+            <SolidColorBrush x:Key="L95_Brush_Active" Color="{StaticResource L95}" />
+
             <Color x:Key="V275">#193cbc</Color>
             <SolidColorBrush x:Key="V275_Brush" Color="{StaticResource V275}" />
 

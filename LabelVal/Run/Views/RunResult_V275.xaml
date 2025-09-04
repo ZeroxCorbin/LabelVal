@@ -59,7 +59,7 @@
                         <md:Card
                             Padding="4,1"
                             HorizontalAlignment="Left"
-                            Background="{DynamicResource V275_Brush}">
+                            Background="{DynamicResource V275_Brush_Active}">
                             <TextBlock
                                 FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
                                 Foreground="White"
@@ -274,7 +274,7 @@
                             Padding="4,1"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Background="{DynamicResource V275_Brush}">
+                            Background="{DynamicResource V275_Brush_Active}">
                             <TextBlock
                                 FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
                                 Foreground="White"
@@ -435,7 +435,7 @@
                             Padding="1"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
-                            Background="{DynamicResource V275_Brush}">
+                            Background="{DynamicResource V275_Brush_Active}">
                             <TextBlock
                                 FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
                                 Foreground="White"

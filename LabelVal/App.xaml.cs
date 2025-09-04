@@ -232,7 +232,8 @@ public partial class App : Application
         {
             "ISO_GradeA", "ISO_GradeB", "ISO_GradeC", "ISO_GradeD", "ISO_GradeF",
             "SectorWarning", "SectorError",
-            "StatusGreen", "StatusYellow", "StatusRed"
+            "StatusGreen", "StatusYellow", "StatusRed",
+            "V275", "V5", "L95"
         };
 
         foreach (var key in resourceKeys)
