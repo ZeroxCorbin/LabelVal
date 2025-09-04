@@ -6,7 +6,6 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:imageRollEnums="clr-namespace:LabelVal.ImageRolls.ViewModels"
     xmlns:imageRolls="clr-namespace:LabelVal.ImageRolls.Views"
-    xmlns:watchers="clr-namespace:Watchers.lib.Process;assembly=Watchers.lib"
     xmlns:l95="clr-namespace:LabelVal.L95.Views"
     xmlns:l95Vm="clr-namespace:LabelVal.L95.ViewModels"
     xmlns:labelBuilder="clr-namespace:LabelVal.LabelBuilder.Views"
@@ -27,7 +26,8 @@
     xmlns:v275Vm="clr-namespace:LabelVal.V275.ViewModels"
     xmlns:v5="clr-namespace:LabelVal.V5.Views"
     xmlns:v5Vm="clr-namespace:LabelVal.V5.ViewModels"
-    xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels">
+    xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"
+    xmlns:watchers="clr-namespace:Watchers.lib.Process;assembly=Watchers.lib">
 
     <converters:LocalizeEnumValue x:Key="LocalizeEnumValue" />
     <converters:MACAddressSplitConverter x:Key="MacAddressSplitConverter" />
@@ -902,7 +902,8 @@
                 Background="{DynamicResource L95_Brush}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" /> <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Image
@@ -954,7 +955,8 @@
                     </Button>
                 </md:Card>
 
-                <md:Card Grid.Row="2"
+                <md:Card
+                    Grid.Row="2"
                     Margin="3,3,3,3"
                     Padding="3"
                     Background="{DynamicResource MahApps.Brushes.Accent4}"
@@ -976,24 +978,21 @@
                     <StackPanel>
 
                         <Button
-                            Style="{StaticResource MahApps.Styles.Button}"
-                     
-                            BorderThickness="0"
-                  
                             Margin="0,0,0,3"
                             Padding="0"
+                            BorderThickness="0"
                             Command="{Binding SelectedDevice.EnterLvsCredentialsCommand}"
+                            Style="{StaticResource MahApps.Styles.Button}"
                             ToolTip="Login as LVS super user">
                             <iconPacks:PackIconMaterial Kind="AccountStar" />
                         </Button>
 
                         <Button
-                            Style="{StaticResource MahApps.Styles.Button}"
-                            BorderThickness="0"
-                  
                             Margin="0,0,0,0"
                             Padding="0"
+                            BorderThickness="0"
                             Command="{Binding SelectedDevice.EnterAdminCredentialsCommand}"
+                            Style="{StaticResource MahApps.Styles.Button}"
                             ToolTip="Login as Admin">
                             <iconPacks:PackIconMaterial Kind="ShieldAccount" />
                         </Button>

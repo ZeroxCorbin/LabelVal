@@ -14,26 +14,40 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace LabelVal.ImageRolls.ViewModels;
-public partial class ImageRolls : ObservableRecipient , IDisposable
+
+/// <summary>
+/// ViewModel for managing both fixed (asset-based) and user-created image rolls.
+/// This class handles loading, creating, editing, and deleting image rolls and their associated databases.
+/// </summary>
+public partial class ImageRolls : ObservableRecipient, IDisposable
 {
+    #region Properties
+
+    /// <summary>
+    /// Gets the singleton instance of the global application settings.
+    /// </summary>
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
+    /// <summary>
+    /// Gets or sets the root entry for the user's image roll databases.
+    /// </summary>
     [ObservableProperty] private FileFolderEntry fileRoot = App.Settings.GetValue("UserImageRollsDatabases_FileRoot", new FileFolderEntry(App.UserImageRollsRoot), true);
     partial void OnFileRootChanged(FileFolderEntry value) => App.Settings.SetValue("UserImageRollsDatabases_FileRoot", value);
 
     /// <summary>
-    /// User databases are loaded from the <see cref="FileRoot"/>/>
+    /// User databases are loaded from the <see cref="FileRoot"/>.
     /// </summary>
     private ObservableCollection<Databases.ImageRollsDatabase> UserDatabases { get; } = [];
+
     /// <summary>
     /// The currently selected User Image Rolls database.
-    /// <see cref="SelectedUserDatabase"/>/>"
+    /// <see cref="SelectedUserDatabase"/>
     /// </summary>
     [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageRollsDatabase selectedUserDatabase;
 
     /// <summary>
     /// A temporary image roll used for adding or editing.
-    /// <see cref="NewImageRoll"/>"/>
+    /// <see cref="NewImageRoll"/>
     /// </summary>
     [ObservableProperty] private ImageRoll newImageRoll = null;
 
@@ -41,9 +55,10 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
     /// Fixed image rolls are loaded from the Assets folder.
     /// </summary>
     public ObservableCollection<ImageRoll> FixedImageRolls { get; } = [];
+
     /// <summary>
     /// The currently selected fixed image roll.
-    /// <see cref="SelectedFixedImageRoll"/>"/>
+    /// <see cref="SelectedFixedImageRoll"/>
     /// </summary>
     [ObservableProperty] private ImageRoll selectedFixedImageRoll;
     partial void OnSelectedFixedImageRollChanged(ImageRoll value)
@@ -57,12 +72,13 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
     }
 
     /// <summary>
-    /// User image rolls are loaded from the <see cref="SelectedUserDatabase"/>/>
+    /// User image rolls are loaded from the <see cref="SelectedUserDatabase"/>.
     /// </summary>
     public ObservableCollection<ImageRoll> UserImageRolls { get; } = [];
+
     /// <summary>
     /// The currently selected user image roll.
-    /// <see cref="SelectedUserImageRoll"/>/>
+    /// <see cref="SelectedUserImageRoll"/>
     /// </summary>
     [ObservableProperty]
     private ImageRoll selectedUserImageRoll;
@@ -77,7 +93,7 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
     }
 
     /// <summary>
-    /// <see cref="SelectedImageRoll"/>
+    /// Gets or sets the currently selected image roll, which can be either a fixed or a user image roll.
     /// </summary>
     [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRoll selectedImageRoll;
     partial void OnSelectedImageRollChanged(ImageRoll value)
@@ -85,14 +101,27 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
         App.Settings.SetValue(nameof(SelectedImageRoll), value);
     }
 
+    /// <summary>
+    /// Gets or sets a flag to trigger a view refresh.
+    /// </summary>
     [ObservableProperty] private bool refreshView;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether to right-align overflow content in the UI.
+    /// </summary>
     public bool RightAlignOverflow
     {
         get => App.Settings.GetValue(nameof(RightAlignOverflow), false);
         set => App.Settings.SetValue(nameof(RightAlignOverflow), value);
     }
 
+    #endregion
+
+    #region Constructor and Initialization
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ImageRolls"/> class.
+    /// </summary>
     public ImageRolls()
     {
         if (!Directory.Exists(FileRoot.Path))
@@ -114,6 +143,15 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
             OnPropertyChanged(nameof(RightAlignOverflow));
     }
 
+    #endregion
+
+    #region File and Database Management
+
+    /// <summary>
+    /// Recursively enumerates folders and files to build a file system tree.
+    /// </summary>
+    /// <param name="root">The root entry to start enumeration from.</param>
+    /// <returns>The updated root entry with its children.</returns>
     private FileFolderEntry EnumerateFolders(FileFolderEntry root)
     {
         var currentDirectories = Directory.EnumerateDirectories(root.Path).ToHashSet();
@@ -147,6 +185,12 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
 
         return root;
     }
+
+    /// <summary>
+    /// Creates a new <see cref="FileFolderEntry"/> and attaches property changed event handlers.
+    /// </summary>
+    /// <param name="path">The path of the file or folder.</param>
+    /// <returns>A new <see cref="FileFolderEntry"/> instance.</returns>
     private FileFolderEntry GetNewFileFolderEntry(string path)
     {
         FileFolderEntry ffe = new(path);
@@ -161,8 +205,19 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
         };
         return ffe;
     }
+
+    /// <summary>
+    /// Retrieves a <see cref="FileFolderEntry"/> by its path from the file tree.
+    /// </summary>
+    /// <param name="path">The path to search for.</param>
+    /// <returns>The matching <see cref="FileFolderEntry"/>, or null if not found.</returns>
     private FileFolderEntry GetFileFolderEntry(string path) =>
         GetAllFiles(FileRoot).FirstOrDefault((e) => e.Path == path);
+
+    /// <summary>
+    /// Recursively attaches property changed event handlers to a <see cref="FileFolderEntry"/> and its children.
+    /// </summary>
+    /// <param name="root">The root entry.</param>
     private void UpdateFileFolderEvents(FileFolderEntry root)
     {
         root.PropertyChanged += (s, e) =>
@@ -179,6 +234,11 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
             UpdateFileFolderEvents(child);
     }
 
+    /// <summary>
+    /// Recursively gets all selected files from a file system tree.
+    /// </summary>
+    /// <param name="root">The root entry to start from.</param>
+    /// <returns>A list of selected <see cref="FileFolderEntry"/> items.</returns>
     private List<FileFolderEntry> GetSelectedFiles(FileFolderEntry root)
     {
         List<FileFolderEntry> selectedFiles = [];
@@ -191,6 +251,12 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
         }
         return selectedFiles;
     }
+
+    /// <summary>
+    /// Recursively gets all files from a file system tree.
+    /// </summary>
+    /// <param name="root">The root entry to start from.</param>
+    /// <returns>A list of all <see cref="FileFolderEntry"/> file items.</returns>
     private List<FileFolderEntry> GetAllFiles(FileFolderEntry root)
     {
         List<FileFolderEntry> files = [];
@@ -204,6 +270,9 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
         return files;
     }
 
+    /// <summary>
+    /// Updates the list of user image roll databases from the file system.
+    /// </summary>
     private void UpdateImageRollsDatabasesList()
     {
         Logger.Info($"Loading Image Rolls databases from file system. {App.UserImageRollsRoot}");
@@ -218,6 +287,11 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
 
         LoadUserImageRollsList();
     }
+
+    /// <summary>
+    /// Synchronizes the <see cref="UserDatabases"/> collection with the selected files in the file tree.
+    /// </summary>
+    /// <param name="root">The root of the file tree.</param>
     private void UpdateDatabases(FileFolderEntry root)
     {
         var selectedFiles = GetSelectedFiles(root).Select(file => file.Path).ToHashSet();
@@ -246,6 +320,9 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
         SetSelectedUserDatabase();
     }
 
+    /// <summary>
+    /// Sets the selected user database, defaulting to the standard user image roll file.
+    /// </summary>
     private void SetSelectedUserDatabase()
     {
         var def = UserDatabases.FirstOrDefault((e) => e.File.Path == App.UserImageRollDefaultFile);
@@ -264,28 +341,44 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
             }
         }
     }
+
+    /// <summary>
+    /// Loads image rolls from the currently selected user databases, using a cache to improve performance.
+    /// </summary>
     private void LoadUserImageRollsList()
     {
-        var currentRolls = new HashSet<string>(UserImageRolls.Select(roll => roll.UID));
-        var newRolls = new List<ImageRoll>();
+        var selectedDbFiles = UserDatabases.Where(db => db.File.IsSelected).ToList();
+        var currentMetadata = selectedDbFiles.ToDictionary(db => db.File.Path, db => File.GetLastWriteTimeUtc(db.File.Path));
+        var cachedMetadata = App.Settings.GetValue("UserImageRolls_CacheMetadata", new Dictionary<string, DateTime>());
 
-        foreach (var db in UserDatabases)
+        // If metadata matches, load from cache
+        if (cachedMetadata.Count > 0 && !cachedMetadata.Except(currentMetadata).Any() && !currentMetadata.Except(cachedMetadata).Any())
         {
-            if (!db.File.IsSelected)
-                continue;
+            Logger.Info("Loading user image rolls from cache.");
+            var cachedRolls = App.Settings.GetValue("UserImageRolls_Cache", new List<ImageRoll>());
+            UserImageRolls.Clear();
+            foreach (var roll in cachedRolls)
+            {
+                // Re-associate the database instance, as it's not serialized
+                roll.ImageRollsDatabase = UserDatabases.FirstOrDefault(db => db.File.Path == roll.ImageRollsDatabase?.File.Path);
+                UserImageRolls.Add(roll);
+            }
+            Logger.Info($"Processed {UserImageRolls.Count} user image rolls from cache.");
+            return;
+        }
 
-            Logger.Info($"Loading user image rolls from database. {db.File.Name}");
-
+        // Otherwise, load from databases and update cache
+        Logger.Info("User image roll cache is invalid or missing, loading from databases.");
+        var newRolls = new List<ImageRoll>();
+        foreach (var db in selectedDbFiles)
+        {
+            Logger.Info($"Loading user image rolls from database: {db.File.Name}");
             try
             {
                 foreach (var roll in db.SelectAllImageRolls())
                 {
                     Logger.Debug($"Found: {roll.Name}");
                     roll.ImageRollsDatabase = db;
-
-                    if (!currentRolls.Contains(roll.UID))
-                        UserImageRolls.Add(roll);
-
                     newRolls.Add(roll);
                 }
             }
@@ -295,18 +388,45 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
             }
         }
 
-        // Remove rolls that are no longer present
-        for (var i = UserImageRolls.Count - 1; i >= 0; i--)
-            if (!newRolls.Any(newRoll => newRoll.UID == UserImageRolls[i].UID))
-                UserImageRolls.RemoveAt(i);
+        UserImageRolls.Clear();
+        foreach (var roll in newRolls)
+        {
+            UserImageRolls.Add(roll);
+        }
+
+        App.Settings.SetValue("UserImageRolls_Cache", UserImageRolls.ToList());
+        App.Settings.SetValue("UserImageRolls_CacheMetadata", currentMetadata);
 
         Logger.Info($"Processed {UserImageRolls.Count} user image rolls.");
     }
 
+    /// <summary>
+    /// Loads the list of fixed image rolls from the assets folder, using a cache to improve performance.
+    /// The cache is invalidated if the file structure or modification times have changed.
+    /// </summary>
     private void LoadFixedImageRollsList()
     {
         Logger.Info($"Loading image rolls from file system. {App.AssetsImageRollsRoot}");
 
+        var cachedMetadata = App.Settings.GetValue("FixedImageRolls_CacheMetadata", new Dictionary<string, DateTime>());
+        var currentMetadata = GetDirectoryMetadata(App.AssetsImageRollsRoot, "*.imgr");
+
+        // If metadata matches, load from cache
+        if (cachedMetadata.Count > 0 && !cachedMetadata.Except(currentMetadata).Any() && !currentMetadata.Except(cachedMetadata).Any())
+        {
+            Logger.Info("Loading fixed image rolls from cache.");
+            var cachedRolls = App.Settings.GetValue("FixedImageRolls_Cache", new List<ImageRoll>());
+            FixedImageRolls.Clear();
+            foreach (var roll in cachedRolls)
+            {
+                FixedImageRolls.Add(roll);
+            }
+            Logger.Info($"Processed {FixedImageRolls.Count} fixed image rolls from cache.");
+            return;
+        }
+
+        // Otherwise, load from file system and update cache
+        Logger.Info("Cache is invalid or missing, loading from file system.");
         FixedImageRolls.Clear();
 
         foreach (var dir in Directory.EnumerateDirectories(App.AssetsImageRollsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
@@ -334,9 +454,49 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
             }
         }
 
+        App.Settings.SetValue("FixedImageRolls_Cache", FixedImageRolls.ToList());
+        App.Settings.SetValue("FixedImageRolls_CacheMetadata", currentMetadata);
+
         Logger.Info($"Processed {FixedImageRolls.Count} fixed image rolls.");
     }
 
+    /// <summary>
+    /// Recursively gets the last write time for all subdirectories and files matching a pattern within a given path.
+    /// </summary>
+    /// <param name="path">The root directory path.</param>
+    /// <param name="searchPattern">The search string to match against the names of files.</param>
+    /// <returns>A dictionary mapping file/directory paths to their last write time (UTC).</returns>
+    private Dictionary<string, DateTime> GetDirectoryMetadata(string path, string searchPattern)
+    {
+        var metadata = new Dictionary<string, DateTime>();
+        if (!Directory.Exists(path))
+            return metadata;
+
+        var directories = new Stack<string>();
+        directories.Push(path);
+
+        while (directories.Count > 0)
+        {
+            string currentDir = directories.Pop();
+            metadata[currentDir] = Directory.GetLastWriteTimeUtc(currentDir);
+
+            foreach (string d in Directory.GetDirectories(currentDir))
+                directories.Push(d);
+
+            foreach (string f in Directory.GetFiles(currentDir, searchPattern))
+                metadata[f] = File.GetLastWriteTimeUtc(f);
+        }
+
+        return metadata;
+    }
+
+    #endregion
+
+    #region Commands
+
+    /// <summary>
+    /// Prepares a new image roll for addition.
+    /// </summary>
     [RelayCommand]
     private void Add()
     {
@@ -345,6 +505,9 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
         NewImageRoll = new ImageRoll() { ImageRollsDatabase = SelectedUserDatabase };
     }
 
+    /// <summary>
+    /// Prepares the selected user image roll for editing.
+    /// </summary>
     [RelayCommand]
     private void Edit()
     {
@@ -353,6 +516,9 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
         NewImageRoll = SelectedUserImageRoll.CopyLite();
     }
 
+    /// <summary>
+    /// Saves the new or edited image roll to the database.
+    /// </summary>
     [RelayCommand]
     public void Save()
     {
@@ -402,6 +568,9 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
         NewImageRoll = null;
     }
 
+    /// <summary>
+    /// Deletes the selected user image roll and its associated images after confirmation.
+    /// </summary>
     [RelayCommand]
     public async Task Delete()
     {
@@ -432,18 +601,44 @@ public partial class ImageRolls : ObservableRecipient , IDisposable
             Logger.Error($"Failed to delete image roll: {NewImageRoll.UID}");
     }
 
+    /// <summary>
+    /// Cancels the add/edit operation.
+    /// </summary>
     [RelayCommand]
     public void Cancel() => NewImageRoll = null;
 
+    /// <summary>
+    /// Copies a new GUID to the clipboard.
+    /// </summary>
     [RelayCommand]
     private void UIDToClipboard() => Clipboard.SetText(Guid.NewGuid().ToString());
 
+    #endregion
+
+    #region Dialogs
+
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
+
+    /// <summary>
+    /// Displays a confirmation dialog with "OK" and "Cancel" buttons.
+    /// </summary>
+    /// <param name="title">The title of the dialog.</param>
+    /// <param name="message">The message to display.</param>
+    /// <returns>The result of the user's choice.</returns>
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
 
+    #endregion
+
+    #region IDisposable Implementation
+
+    /// <summary>
+    /// Cleans up resources and unsubscribes from events.
+    /// </summary>
     public void Dispose()
     {
         App.Settings.PropertyChanged -= Settings_PropertyChanged;
         GC.SuppressFinalize(this);
     }
+
+    #endregion
 }
