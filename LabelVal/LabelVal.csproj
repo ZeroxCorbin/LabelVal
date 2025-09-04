@@ -54,6 +54,9 @@
 		<Compile Remove="L95\ViewModels\SerialPort.cs" />
 		<Compile Remove="L95\Views\LVS95xx_SerialPortView.xaml.cs" />
 		<Compile Remove="Main\Views\StatusMessageViewer.xaml.cs" />
+		<Compile Remove="Results\ViewModels\ExcelReportGenerator.cs" />
+		<Compile Remove="Results\ViewModels\ReportGenerationViewModel.cs" />
+		<Compile Remove="Results\Views\ReportGeneratorControl.xaml.cs" />
 		<Compile Remove="Run\Controller.cs" />
 		<Compile Remove="Run\Databases\V2RunEntryDatabase.cs" />
 		<Compile Remove="Run\ViewModels\Result.cs" />
@@ -246,6 +249,7 @@
 	<ItemGroup>
 		<Page Remove="L95\Views\LVS95xx_SerialPortView.xaml" />
 		<Page Remove="Main\Views\StatusMessageViewer.xaml" />
+		<Page Remove="Results\Views\ReportGeneratorControl.xaml" />
 		<Page Remove="Run\Views\RunControl.xaml" />
 	</ItemGroup>
 	<ItemGroup>

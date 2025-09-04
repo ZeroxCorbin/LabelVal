@@ -70,6 +70,8 @@ public static class ListReportDataExtensions
         {
             foreach (Parameters param in Enum.GetValues(typeof(Parameters)))
             {
+                if(param == Parameters.Unknown)
+                    continue;
                 parameters.Add(param);
             }
         }

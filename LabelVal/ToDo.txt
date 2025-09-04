@@ -17,8 +17,6 @@ Rework the info button. Add a badge to indicate issue with DPI  or hash, ...
 
 Shrink all images.
 
-Placeholder image is displayed.
-
 If printer is slow open the umage details anyway.
 
 Work on grid view for runs and result views.

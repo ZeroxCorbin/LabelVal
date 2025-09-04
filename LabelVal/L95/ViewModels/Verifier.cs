@@ -12,46 +12,74 @@ using Watchers.lib.Process;
 
 namespace LabelVal.L95.ViewModels;
 
+/// <summary>
+/// ViewModel for managing an LVS-95XX verifier, its connection, and related settings.
+/// </summary>
 [JsonObject(MemberSerialization.OptIn)]
 public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
 {
+    #region Properties
+
+    /// <summary>
+    /// Gets or sets the unique identifier for the verifier instance.
+    /// </summary>
     [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
 
+    /// <summary>
+    /// Gets or sets the manager associated with this verifier.
+    /// </summary>
     public VerifierManager Manager { get; set; }
+
+    /// <summary>
+    /// Gets the core controller for interacting with the LVS-95XX device.
+    /// </summary>
     public Controller Controller { get; } = new();
 
+    /// <summary>
+    /// Gets the collection of available COM ports for connection.
+    /// </summary>
     public ObservableCollection<string> AvailablePorts { get; } = [];
 
+    /// <summary>
+    /// Gets or sets the name of the selected COM port.
+    /// </summary>
     [ObservableProperty][property: JsonProperty] private string selectedComName;
+
+    /// <summary>
+    /// Gets or sets the baud rate for the selected COM port.
+    /// </summary>
     [ObservableProperty][property: JsonProperty] private string selectedComBaudRate = "9600";
+
+    /// <summary>
+    /// Gets or sets the file path to the LVS-95XX database.
+    /// </summary>
     [ObservableProperty] private string databasePath = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the password of the day for LVS credentials.
+    /// </summary>
     [ObservableProperty] private string passwordOfTheDay;
 
+    #endregion
 
-    partial void OnDatabasePathChanged(string value)
-    {
-        //if(string.IsNullOrEmpty(value))
-        //    App.Current.Dispatcher.BeginInvoke(() => DatabasePath = @"C:\Users\Public\LVS-95XX\LVS-95XX.mdb");
-    }
+    #region Constructor
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Verifier"/> class.
+    /// </summary>
     public Verifier()
     {
         RequestMessages();
         IsActive = true;
     }
-    private void RequestMessages()
-    {
-        var ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PasswordOfTheDayMessage>());
-        if (ret2.HasReceivedResponse)
-            PasswordOfTheDay = ret2.Response.Value;
 
-        var ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<RegistryMessage>());
-        if (ret3.HasReceivedResponse)
-            DatabasePath = ExtractDatabasePath(ret3.Response.RegistryValue);
-    }
+    #endregion
 
-    private string ExtractDatabasePath(string registry) => !string.IsNullOrWhiteSpace(registry) ? registry[(registry.IndexOf("Data Source=") + "Data Source=".Length)..].Trim('\"') : DatabasePath;
+    #region Commands
 
+    /// <summary>
+    /// Connects to or disconnects from the verifier controller.
+    /// </summary>
     [RelayCommand]
     private void Connect()
     {
@@ -61,6 +89,37 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
             _ = Controller.Connect(DatabasePath);
     }
 
+    private void LaunchLvs()
+    {
+//        if (Controller.Process == null || Controller.Process.HasExited)
+//        {
+//if(Controller.ProcessState == Win32_ProcessWatcherProcessState.Exited)
+//            {
+//                var proc = new Win32_ProcessWatcher
+//                {
+//                    StartInfo = new System.Diagnostics.ProcessStartInfo
+//                    {
+//                        FileName = "LVS-95XX.exe",
+//                        WorkingDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
+//                        UseShellExecute = true,
+//                        // CreateNoWindow = true,
+//                        // RedirectStandardOutput = true,
+//                        // RedirectStandardError = true,
+//                        // RedirectStandardInput = true,
+//                    }
+//                };
+//                proc.Start();
+//            Controller.Process = proc.Process;
+//            Controller.Process.EnableRaisingEvents = true;
+//            Controller.Process.Exited += (s, e) => { Controller.Disconnect(); };
+//            }
+
+//        }
+    }
+
+    /// <summary>
+    /// Refreshes the list of available COM ports.
+    /// </summary>
     [RelayCommand]
     private void RefreshComList()
     {
@@ -75,6 +134,9 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
             _ = AvailablePorts.Remove(name);
     }
 
+    /// <summary>
+    /// Sends the standard LVS user credentials to the running LVS-95XX process.
+    /// </summary>
     [RelayCommand]
     private void EnterLvsCredentials()
     {
@@ -84,6 +146,10 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
             // WinAPI.SetFocus(_process);
         }
     }
+
+    /// <summary>
+    /// Sends administrator credentials to the running LVS-95XX process.
+    /// </summary>
     [RelayCommand]
     private void EnterAdminCredentials()
     {
@@ -94,6 +160,54 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
         }
     }
 
+    #endregion
+
+    #region Public Methods
+
+    /// <summary>
+    /// Receives a <see cref="RegistryMessage"/> to update the database path.
+    /// </summary>
+    /// <param name="message">The message containing the new registry value.</param>
+    public void Receive(RegistryMessage message)
+    {
+        Controller.Disconnect();
+        DatabasePath = ExtractDatabasePath(message.RegistryValue);
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    partial void OnDatabasePathChanged(string value)
+    {
+        //if(string.IsNullOrEmpty(value))
+        //    App.Current.Dispatcher.BeginInvoke(() => DatabasePath = @"C:\Users\Public\LVS-95XX\LVS-95XX.mdb");
+    }
+
+    /// <summary>
+    /// Requests initial state information, such as passwords and registry settings, via messaging.
+    /// </summary>
+    private void RequestMessages()
+    {
+        var ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PasswordOfTheDayMessage>());
+        if (ret2.HasReceivedResponse)
+            PasswordOfTheDay = ret2.Response.Value;
+
+        var ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<RegistryMessage>());
+        if (ret3.HasReceivedResponse)
+            DatabasePath = ExtractDatabasePath(ret3.Response.RegistryValue);
+    }
+
+    /// <summary>
+    /// Extracts the database path from a full registry connection string.
+    /// </summary>
+    /// <param name="registry">The registry value containing the connection string.</param>
+    /// <returns>The extracted database path.</returns>
+    private string ExtractDatabasePath(string registry) => !string.IsNullOrWhiteSpace(registry) ? registry[(registry.IndexOf("Data Source=") + "Data Source=".Length)..].Trim('\"') : DatabasePath;
+
+    /// <summary>
+    /// Performs post-login configuration, such as updating database settings.
+    /// </summary>
     private void PostLogin()
     {
         var cur = Controller.Database.GetSetting("Report", "ReportImageReduction");
@@ -103,10 +217,5 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
             Controller.Database.SetSetting("Report", "ReportImageReduction", "1");
     }
 
-    public void Receive(RegistryMessage message)
-    {
-        Controller.Disconnect();
-        DatabasePath = ExtractDatabasePath(message.RegistryValue);
-    }
-
+    #endregion
 }
