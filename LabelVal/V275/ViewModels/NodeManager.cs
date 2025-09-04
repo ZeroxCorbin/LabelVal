@@ -11,13 +11,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using V275_REST_Lib.Models;
 
 namespace LabelVal.V275.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
-public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRoll>>
+public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRoll>>, IDisposable
 {
     [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
 
@@ -25,14 +26,14 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
 
-    [ObservableProperty][property: JsonProperty] private string host; //App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.Host)}", "127.0.0.1", true);
+    [ObservableProperty][property: JsonProperty] private string host;
     partial void OnHostChanged(string value)
     {
         foreach (var nd in Nodes)
             nd.Controller.Host = value;
     }
 
-    [ObservableProperty][property: JsonProperty] private uint systemPort; //App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.SystemPort)}", GetPortNumber(), true);
+    [ObservableProperty][property: JsonProperty] private uint systemPort;
     partial void OnSystemPortChanged(uint value)
     {
         if (!LibStaticUtilities_IPHostPort.Ports.IsPortValid(value))
@@ -55,14 +56,14 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         }
     }
 
-    [ObservableProperty][property: JsonProperty] private string username;// App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.Username)}", "admin", true);
+    [ObservableProperty][property: JsonProperty] private string username;
     partial void OnUsernameChanged(string value)
     {
         foreach (var nd in Nodes)
             nd.Controller.Username = value;
     }
 
-    [ObservableProperty][property: JsonProperty] private string password; // App.Settings.GetValue($"{NodeManager.ClassName}{nameof(Password)}", "admin", true);
+    [ObservableProperty][property: JsonProperty] private string password;
     partial void OnPasswordChanged(string value)
     {
         foreach (var nd in Nodes)
@@ -82,6 +83,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     }
 
     [ObservableProperty] private ImageRoll selectedImageRoll;
+    private readonly Timer _deviceDiscoveryTimer;
 
     public NodeManager()
     {
@@ -94,12 +96,23 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         Password ??= "admin";
 
         SimulatorImageDirectory ??= GetSimulationDirectory();
+
+        _deviceDiscoveryTimer = new Timer(10000);
+        _deviceDiscoveryTimer.Elapsed += OnDeviceDiscoveryTimerElapsed;
+        _deviceDiscoveryTimer.AutoReset = true;
+        _deviceDiscoveryTimer.Start();
+    }
+
+    private void OnDeviceDiscoveryTimerElapsed(object? sender, ElapsedEventArgs e)
+    {
+        _deviceDiscoveryTimer.Interval = 30000;
+        _ = GetDevices();
     }
 
     [RelayCommand]
     private async Task GetDevices()
     {
-        if(!Application.Current.Dispatcher.CheckAccess())
+        if (!Application.Current.Dispatcher.CheckAccess())
         {
             _ = Application.Current.Dispatcher.BeginInvoke(() => GetDevices());
             return;
@@ -111,6 +124,9 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
         if ((await system.Controller.Commands.GetDevices()).Object is Devices dev)
         {
+            // Stop the timer since we have successfully connected and retrieved the devices.
+            _deviceDiscoveryTimer.Stop();
+
             List<Node> lst = [];
             foreach (var node in dev.nodes)
             {
@@ -138,10 +154,14 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
             foreach (var node in srt)
                 Nodes.Add(node);
-
         }
         else
         {
+            // If we fail to get devices, ensure the timer is running to try again.
+            if (!_deviceDiscoveryTimer.Enabled)
+            {
+                _deviceDiscoveryTimer.Start();
+            }
             Nodes.Clear();
         }
 
@@ -180,4 +200,27 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
     #endregion
 
+    #region IDisposable
+    private bool disposedValue;
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                _deviceDiscoveryTimer.Stop();
+                _deviceDiscoveryTimer.Elapsed -= OnDeviceDiscoveryTimerElapsed;
+                _deviceDiscoveryTimer.Dispose();
+            }
+            disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+    #endregion
 }

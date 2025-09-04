@@ -723,7 +723,7 @@
                         </Style>
                     </md:Card.Style>
 
-                    <Button BorderThickness="0" Command="{Binding SelectedDevice.ConnectCommand}">
+                    <Button BorderThickness="0" Command="{Binding SelectedDevice.LoginCommand}">
                         <Button.Style>
                             <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
                                 <Setter Property="Visibility" Value="Visible" />
@@ -733,7 +733,7 @@
                                     </Setter.Value>
                                 </Setter>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedDevice.Controller.IsConnected}" Value="True">
+                                    <DataTrigger Binding="{Binding SelectedDevice.Controller.IsLoggedIn}" Value="True">
                                         <Setter Property="Content">
                                             <Setter.Value>
                                                 <iconPacks:Modern Kind="Disconnect" />

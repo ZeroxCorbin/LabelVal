@@ -12,7 +12,7 @@ public partial class V275Manager : ObservableRecipient
     public ObservableCollection<NodeManager> Devices { get; } = App.Settings.GetValue($"V275_{nameof(Devices)}", new ObservableCollection<NodeManager>(), true);
 
     [ObservableProperty][NotifyPropertyChangedRecipients] private Node selectedDevice;
-    partial void OnSelectedDeviceChanged(Node value) => App.Settings.SetValue($"V275_{nameof(SelectedDevice)}", value);
+    partial void OnSelectedDeviceChanged(Node value) { if (value != null) App.Settings.SetValue($"V275_{nameof(SelectedDevice)}", value); }
 
     public V275Manager()
     {
