@@ -657,9 +657,7 @@
                                     <Style TargetType="{x:Type ContentControl}">
                                         <Setter Property="Content">
                                             <Setter.Value>
-                                                <DockPanel
-                                                    HorizontalAlignment="Right"
-                                                    VerticalAlignment="Center">
+                                                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
 
                                                     <TextBlock HorizontalAlignment="Right" Text="{Binding Path=Previous.Value, StringFormat={}{0:N1}, Mode=OneTime}" />
 
