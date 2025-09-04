@@ -260,7 +260,7 @@
             <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.OnSwitchMouseOverBrush.Win10" Color="{DynamicResource Primary400}" />
             <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.ThumbIndicatorCheckedBrush.Win10" Color="{DynamicResource Primary500Foreground}" />
 
-            <!-- Standard ISO Grade Colors -->
+            <!--  Standard ISO Grade Colors  -->
             <Color x:Key="ISO_GradeA">Green</Color>
             <SolidColorBrush x:Key="ISO_GradeA_Brush" Color="{StaticResource ISO_GradeA}" />
 
@@ -276,102 +276,102 @@
             <Color x:Key="ISO_GradeF">Red</Color>
             <SolidColorBrush x:Key="ISO_GradeF_Brush" Color="{StaticResource ISO_GradeF}" />
 
-            <!-- Red-Green Colorblind Friendly (Deuteranopia/Protanopia) ISO Grade Colors -->
+            <!--  Red-Green Colorblind Friendly (Deuteranopia/Protanopia) ISO Grade Colors  -->
             <Color x:Key="ISO_GradeA_RG">#0072B2</Color>
-            <!-- Blue -->
+            <!--  Blue  -->
             <SolidColorBrush x:Key="ISO_GradeA_RG_Brush" Color="{StaticResource ISO_GradeA_RG}" />
 
             <Color x:Key="ISO_GradeB_RG">#56B4E9</Color>
-            <!-- Sky Blue -->
+            <!--  Sky Blue  -->
             <SolidColorBrush x:Key="ISO_GradeB_RG_Brush" Color="{StaticResource ISO_GradeB_RG}" />
 
             <Color x:Key="ISO_GradeC_RG">#F0E442</Color>
-            <!-- Yellow -->
+            <!--  Yellow  -->
             <SolidColorBrush x:Key="ISO_GradeC_RG_Brush" Color="{StaticResource ISO_GradeC_RG}" />
 
             <Color x:Key="ISO_GradeD_RG">#E69F00</Color>
-            <!-- Orange -->
+            <!--  Orange  -->
             <SolidColorBrush x:Key="ISO_GradeD_RG_Brush" Color="{StaticResource ISO_GradeD_RG}" />
 
             <Color x:Key="ISO_GradeF_RG">#D55E00</Color>
-            <!-- Vermillion -->
+            <!--  Vermillion  -->
             <SolidColorBrush x:Key="ISO_GradeF_RG_Brush" Color="{StaticResource ISO_GradeF_RG}" />
 
-            <!-- Blue-Yellow Colorblind Friendly (Tritanopia) ISO Grade Colors -->
+            <!--  Blue-Yellow Colorblind Friendly (Tritanopia) ISO Grade Colors  -->
             <Color x:Key="ISO_GradeA_BY">#D81B60</Color>
-            <!-- Pink -->
+            <!--  Pink  -->
             <SolidColorBrush x:Key="ISO_GradeA_BY_Brush" Color="{StaticResource ISO_GradeA_BY}" />
 
             <Color x:Key="ISO_GradeB_BY">#FFC107</Color>
-            <!-- Amber -->
+            <!--  Amber  -->
             <SolidColorBrush x:Key="ISO_GradeB_BY_Brush" Color="{StaticResource ISO_GradeB_BY}" />
 
             <Color x:Key="ISO_GradeC_BY">#004D40</Color>
-            <!-- Dark Teal -->
+            <!--  Dark Teal  -->
             <SolidColorBrush x:Key="ISO_GradeC_BY_Brush" Color="{StaticResource ISO_GradeC_BY}" />
 
             <Color x:Key="ISO_GradeD_BY">#1E88E5</Color>
-            <!-- Blue -->
+            <!--  Blue  -->
             <SolidColorBrush x:Key="ISO_GradeD_BY_Brush" Color="{StaticResource ISO_GradeD_BY}" />
 
             <Color x:Key="ISO_GradeF_BY">#8B0000</Color>
-            <!-- Dark Red -->
+            <!--  Dark Red  -->
             <SolidColorBrush x:Key="ISO_GradeF_BY_Brush" Color="{StaticResource ISO_GradeF_BY}" />
 
-            <!-- Monochrome Colorblind Friendly (Achromatopsia) ISO Grade Colors -->
+            <!--  Monochrome Colorblind Friendly (Achromatopsia) ISO Grade Colors  -->
             <Color x:Key="ISO_GradeA_M">#FFFFFF</Color>
-            <!-- White -->
+            <!--  White  -->
             <SolidColorBrush x:Key="ISO_GradeA_M_Brush" Color="{StaticResource ISO_GradeA_M}" />
 
             <Color x:Key="ISO_GradeB_M">#D3D3D3</Color>
-            <!-- Light Gray -->
+            <!--  Light Gray  -->
             <SolidColorBrush x:Key="ISO_GradeB_M_Brush" Color="{StaticResource ISO_GradeB_M}" />
 
             <Color x:Key="ISO_GradeC_M">#A9A9A9</Color>
-            <!-- Dark Gray -->
+            <!--  Dark Gray  -->
             <SolidColorBrush x:Key="ISO_GradeC_M_Brush" Color="{StaticResource ISO_GradeC_M}" />
 
             <Color x:Key="ISO_GradeD_M">#808080</Color>
-            <!-- Gray -->
+            <!--  Gray  -->
             <SolidColorBrush x:Key="ISO_GradeD_M_Brush" Color="{StaticResource ISO_GradeD_M}" />
 
             <Color x:Key="ISO_GradeF_M">#000000</Color>
-            <!-- Black -->
+            <!--  Black  -->
             <SolidColorBrush x:Key="ISO_GradeF_M_Brush" Color="{StaticResource ISO_GradeF_M}" />
 
 
-            <!-- Standard Sector Status Colors -->
+            <!--  Standard Sector Status Colors  -->
             <Color x:Key="SectorWarning">#FFC107</Color>
             <SolidColorBrush x:Key="SectorWarning_Brush" Color="{StaticResource SectorWarning}" />
 
             <Color x:Key="SectorError">Red</Color>
             <SolidColorBrush x:Key="SectorError_Brush" Color="{StaticResource SectorError}" />
 
-            <!-- Red-Green Colorblind Friendly (Deuteranopia/Protanopia) Sector Colors -->
+            <!--  Red-Green Colorblind Friendly (Deuteranopia/Protanopia) Sector Colors  -->
             <Color x:Key="SectorWarning_RG">#F0E442</Color>
-            <!-- Yellow -->
+            <!--  Yellow  -->
             <SolidColorBrush x:Key="SectorWarning_RG_Brush" Color="{StaticResource SectorWarning_RG}" />
             <Color x:Key="SectorError_RG">#D55E00</Color>
-            <!-- Vermillion -->
+            <!--  Vermillion  -->
             <SolidColorBrush x:Key="SectorError_RG_Brush" Color="{StaticResource SectorError_RG}" />
 
-            <!-- Blue-Yellow Colorblind Friendly (Tritanopia) Sector Colors -->
+            <!--  Blue-Yellow Colorblind Friendly (Tritanopia) Sector Colors  -->
             <Color x:Key="SectorWarning_BY">#AF002A</Color>
-            <!-- Dark Pink -->
+            <!--  Dark Pink  -->
             <SolidColorBrush x:Key="SectorWarning_BY_Brush" Color="{StaticResource SectorWarning_BY}" />
             <Color x:Key="SectorError_BY">#8B0000</Color>
-            <!-- Dark Red -->
+            <!--  Dark Red  -->
             <SolidColorBrush x:Key="SectorError_BY_Brush" Color="{StaticResource SectorError_BY}" />
 
-            <!-- Monochrome Colorblind Friendly (Achromatopsia) Sector Colors -->
+            <!--  Monochrome Colorblind Friendly (Achromatopsia) Sector Colors  -->
             <Color x:Key="SectorWarning_M">#A9A9A9</Color>
-            <!-- Dark Gray -->
+            <!--  Dark Gray  -->
             <SolidColorBrush x:Key="SectorWarning_M_Brush" Color="{StaticResource SectorWarning_M}" />
             <Color x:Key="SectorError_M">#000000</Color>
-            <!-- Black -->
+            <!--  Black  -->
             <SolidColorBrush x:Key="SectorError_M_Brush" Color="{StaticResource SectorError_M}" />
 
-            <!-- Base Status Colors -->
+            <!--  Base Status Colors  -->
             <Color x:Key="StatusGreen">#4CAF50</Color>
             <SolidColorBrush x:Key="StatusGreen_Brush" Color="{StaticResource StatusGreen}" />
             <Color x:Key="StatusYellow">#FFC107</Color>
@@ -379,40 +379,40 @@
             <Color x:Key="StatusRed">#F44336</Color>
             <SolidColorBrush x:Key="StatusRed_Brush" Color="{StaticResource StatusRed}" />
 
-            <!-- Red-Green Colorblind Friendly (Deuteranopia/Protanopia) Status Colors -->
+            <!--  Red-Green Colorblind Friendly (Deuteranopia/Protanopia) Status Colors  -->
             <Color x:Key="StatusGreen_RG">#0072B2</Color>
-            <!-- Blue -->
+            <!--  Blue  -->
             <SolidColorBrush x:Key="StatusGreen_RG_Brush" Color="{StaticResource StatusGreen_RG}" />
             <Color x:Key="StatusYellow_RG">#F0E442</Color>
-            <!-- Yellow -->
+            <!--  Yellow  -->
             <SolidColorBrush x:Key="StatusYellow_RG_Brush" Color="{StaticResource StatusYellow_RG}" />
             <Color x:Key="StatusRed_RG">#D55E00</Color>
-            <!-- Vermillion -->
+            <!--  Vermillion  -->
             <SolidColorBrush x:Key="StatusRed_RG_Brush" Color="{StaticResource StatusRed_RG}" />
 
-            <!-- Blue-Yellow Colorblind Friendly (Tritanopia) Status Colors -->
+            <!--  Blue-Yellow Colorblind Friendly (Tritanopia) Status Colors  -->
             <Color x:Key="StatusGreen_BY">#D81B60</Color>
-            <!-- Pink -->
+            <!--  Pink  -->
             <SolidColorBrush x:Key="StatusGreen_BY_Brush" Color="{StaticResource StatusGreen_BY}" />
             <Color x:Key="StatusYellow_BY">#004D40</Color>
-            <!-- Dark Teal -->
+            <!--  Dark Teal  -->
             <SolidColorBrush x:Key="StatusYellow_BY_Brush" Color="{StaticResource StatusYellow_BY}" />
             <Color x:Key="StatusRed_BY">#8B0000</Color>
-            <!-- Dark Red -->
+            <!--  Dark Red  -->
             <SolidColorBrush x:Key="StatusRed_BY_Brush" Color="{StaticResource StatusRed_BY}" />
 
-            <!-- Monochrome Colorblind Friendly (Achromatopsia) Status Colors -->
+            <!--  Monochrome Colorblind Friendly (Achromatopsia) Status Colors  -->
             <Color x:Key="StatusGreen_M">#FFFFFF</Color>
-            <!-- White -->
+            <!--  White  -->
             <SolidColorBrush x:Key="StatusGreen_M_Brush" Color="{StaticResource StatusGreen_M}" />
             <Color x:Key="StatusYellow_M">#A9A9A9</Color>
-            <!-- Dark Gray -->
+            <!--  Dark Gray  -->
             <SolidColorBrush x:Key="StatusYellow_M_Brush" Color="{StaticResource StatusYellow_M}" />
             <Color x:Key="StatusRed_M">#000000</Color>
-            <!-- Black -->
+            <!--  Black  -->
             <SolidColorBrush x:Key="StatusRed_M_Brush" Color="{StaticResource StatusRed_M}" />
 
-            <!-- Active Colors (dynamically set for color blindness) -->
+            <!--  Active Colors (dynamically set for color blindness)  -->
             <SolidColorBrush x:Key="ISO_GradeA_Brush_Active" Color="{StaticResource ISO_GradeA}" />
             <SolidColorBrush x:Key="ISO_GradeB_Brush_Active" Color="{StaticResource ISO_GradeB}" />
             <SolidColorBrush x:Key="ISO_GradeC_Brush_Active" Color="{StaticResource ISO_GradeC}" />
