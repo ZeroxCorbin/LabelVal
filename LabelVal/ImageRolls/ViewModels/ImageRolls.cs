@@ -73,11 +73,10 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
         else
             return;
 
-        if(IsLoading)
+        if (IsLoading)
             return;
-
-        App.ShowSplashScreen = true;
-        App.Current.Dispatcher.BeginInvoke(() => WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Fixed Image Roll...")));
+App.ShowSplashScreen = true;
+        _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => {  WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Fixed Image Roll...")); });
 
         SelectedImageRoll = value;
         IsLoading = true;
@@ -103,9 +102,8 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
 
         if (IsLoading)
             return;
-
-        App.ShowSplashScreen = true;
-        App.Current.Dispatcher.BeginInvoke(() => WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Image Roll...")));
+App.ShowSplashScreen = true; 
+        _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Image Roll...")); });
 
         SelectedImageRoll = value;
         IsLoading = true;
@@ -152,6 +150,8 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
         UpdateFileFolderEvents(FileRoot);
         UpdateImageRollsDatabasesList();
 
+        LoadUserImageRollsList();
+
         App.Settings.PropertyChanged += Settings_PropertyChanged;
 
         IsActive = true;
@@ -164,11 +164,10 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
             IsLoading = false;
             try
             {
-                WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage(true));
-                App.Current.MainWindow?.Activate();
+                _ = WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage(true));
+                _ = (App.Current.MainWindow?.Activate());
             }
             catch { }
-
         }
     }
 
@@ -319,8 +318,6 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
         }
         FileRoot = EnumerateFolders(FileRoot);
         UpdateDatabases(FileRoot);
-
-        LoadUserImageRollsList();
     }
 
     /// <summary>
@@ -382,8 +379,6 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
     /// </summary>
     private void LoadUserImageRollsList()
     {
-        _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Initializing user image rolls..."));
-
         var selectedDbFiles = UserDatabases.Where(db => db.File.IsSelected).ToList();
         var currentMetadata = selectedDbFiles.ToDictionary(db => db.File.Path, db => File.GetLastWriteTimeUtc(db.File.Path));
         Dictionary<string, DateTime> cachedMetadata = App.Settings.GetValue("UserImageRolls_CacheMetadata", new Dictionary<string, DateTime>());
@@ -393,6 +388,7 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
         if (cachedMetadata.Count > 0 && !cachedMetadata.Except(currentMetadata).Any() && !currentMetadata.Except(cachedMetadata).Any())
         {
             Logger.Info("Loading user image rolls from cache.");
+            _ = Application.Current.Dispatcher.Invoke(DispatcherPriority.Render, () => _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage(message: "Loading Image Rolls from Cache...")));
             List<ImageRoll> cachedRolls = App.Settings.GetValue("UserImageRolls_Cache", new List<ImageRoll>());
             UserImageRolls.Clear();
             foreach (ImageRoll roll in cachedRolls)
@@ -417,6 +413,8 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
                 return;
             }
         }
+
+        _ = Application.Current.Dispatcher.Invoke(DispatcherPriority.Render, () => _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage(message: "Indexing Image Rolls from Databases...")));
 
         // Otherwise, load from databases and update cache
         Logger.Info("User image roll cache is invalid or missing, loading from databases.");
@@ -449,11 +447,6 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
         App.Settings.SetValue("UserImageRolls_CacheMetadata", currentMetadata);
 
         Logger.Info($"Processed {UserImageRolls.Count} user image rolls.");
-
-        _ = Application.Current.Dispatcher.BeginInvoke(() =>
-        {
-            _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Main Window..."));
-        });
     }
 
     /// <summary>
@@ -462,8 +455,6 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
     /// </summary>
     private void LoadFixedImageRollsList()
     {
-        _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Initializing fixed image rolls..."));
-
         Logger.Info($"Loading image rolls from file system. {App.AssetsImageRollsRoot}");
 
         Dictionary<string, DateTime> cachedMetadata = App.Settings.GetValue("FixedImageRolls_CacheMetadata", new Dictionary<string, DateTime>());
@@ -474,11 +465,12 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
         if (cachedMetadata.Count > 0 && !cachedMetadata.Except(currentMetadata).Any() && !currentMetadata.Except(cachedMetadata).Any())
         {
             Logger.Info("Loading fixed image rolls from cache.");
+            _ = Application.Current.Dispatcher.Invoke(DispatcherPriority.Render, () => _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage(message: "Loading Fixed Image Rolls from Cache...")));
             List<ImageRoll> cachedRolls = App.Settings.GetValue("FixedImageRolls_Cache", new List<ImageRoll>());
             FixedImageRolls.Clear();
             foreach (ImageRoll roll in cachedRolls)
             {
-                if(roll.Path == null || !Directory.Exists(roll.Path))
+                if (roll.Path == null || !Directory.Exists(roll.Path))
                 {
                     failed = true;
                     break;
@@ -495,6 +487,7 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
                 return;
             }
         }
+        _ = Application.Current.Dispatcher.Invoke(DispatcherPriority.Render, () => _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage(message: "Indexing Fixed Image Rolls from File System...")));
 
         // Otherwise, load from file system and update cache
         Logger.Info("Cache is invalid or missing, loading from file system.");
@@ -527,8 +520,6 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
 
         App.Settings.SetValue("FixedImageRolls_Cache", FixedImageRolls.ToList());
         App.Settings.SetValue("FixedImageRolls_CacheMetadata", currentMetadata);
-
-        Logger.Info($"Processed {FixedImageRolls.Count} fixed image rolls.");
     }
 
     /// <summary>

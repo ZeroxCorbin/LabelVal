@@ -38,7 +38,7 @@ public partial class MainWindow : ObservableRecipient
     public Printer.ViewModels.PrinterDetails PrinterDetails { get; }
 
     public ImageRolls.ViewModels.ImageRolls ImageRolls { get; }
-    public Results.ViewModels.ImageResultsManager ImageResults { get; }
+    public Results.ViewModels.ImageResultsManager ImageResultsManager { get; }
 
     public V5.ViewModels.ScannerManager ScannerManager { get; }
     public V5.ViewModels.ScannerDetails ScannerDetails { get; }
@@ -87,9 +87,9 @@ public partial class MainWindow : ObservableRecipient
 
         ImageRolls = new ImageRolls.ViewModels.ImageRolls();
         ImageResultsDatabases = new Results.ViewModels.ImageResultsDatabases();
-        ImageResults = new Results.ViewModels.ImageResultsManager();
+        ImageResultsManager = new Results.ViewModels.ImageResultsManager();
 
-        RunManager = new Run.ViewModels.RunManager(ImageResults);
+        RunManager = new Run.ViewModels.RunManager(ImageResultsManager);
 
         LabelBuilderViewModel = new LabelBuilder.ViewModels.LabelBuilderViewModel();
 

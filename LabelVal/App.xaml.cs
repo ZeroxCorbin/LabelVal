@@ -176,10 +176,15 @@ public partial class App : Application
             });
 
             Logger.Info("Starting: Complete");
-            UpdateSplashScreen("Startup Complete!");
+
+            _ = Application.Current.Dispatcher.BeginInvoke(() =>
+            {
+                _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Main Window..."));
+            });
 
             var mainWindow = new MainWindow();
             this.MainWindow = mainWindow;
+
 
             mainWindow.Show();
 

@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace LabelVal.ImageRolls.Views;
 
@@ -30,17 +31,23 @@ public partial class ImageRolls : UserControl
 
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-            var ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRolls.SelectedImageRoll));
+            ImageRoll ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRolls.SelectedImageRoll));
 
             _viewModel.SelectedFixedImageRoll = ir != null ? _viewModel.FixedImageRolls.FirstOrDefault((roll) => roll.UID == ir.UID) : null;
             _viewModel.SelectedUserImageRoll = ir != null ? _viewModel.UserImageRolls.FirstOrDefault((roll) => roll.UID == ir.UID) : null;
+
+            if (ir != null && _viewModel.SelectedFixedImageRoll == null && _viewModel.SelectedUserImageRoll == null)
+                App.Settings.SetValue(nameof(ViewModels.ImageRolls.SelectedImageRoll), null);
+          
+            if(ir == null)
+                _ = Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage(true))));
         };
 
         TabCtlUserIr.Loaded += (s, e) =>
         {
             if (_viewModel.SelectedUserImageRoll != null)
             {
-                var item = TabCtlUserIr.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedUserImageRoll));
+                CollectionViewGroup item = TabCtlUserIr.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedUserImageRoll));
                 if (item != null)
                 {
                     TabCtlUserIr.SelectedItem = item;
@@ -52,7 +59,7 @@ public partial class ImageRolls : UserControl
         {
             if (_viewModel.SelectedFixedImageRoll != null)
             {
-                var item = TabCtlFixedIr.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedFixedImageRoll));
+                CollectionViewGroup item = TabCtlFixedIr.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedFixedImageRoll));
                 if (item != null)
                 {
                     TabCtlFixedIr.SelectedItem = item;
@@ -107,12 +114,12 @@ public partial class ImageRolls : UserControl
         try
         {
             userChanging = true;
-            foreach (var l in userLists)
+            foreach (ListView l in userLists)
             {
                 if (l != lst)
                     l.SelectedItem = null;
             }
-            foreach (var l in fixedLists)
+            foreach (ListView l in fixedLists)
             {
                 if (l != lst)
                     l.SelectedItem = null;
@@ -143,12 +150,12 @@ public partial class ImageRolls : UserControl
         try
         {
             fixedChanging = true;
-            foreach (var l in userLists)
+            foreach (ListView l in userLists)
             {
                 if (l != lst)
                     l.SelectedItem = null;
             }
-            foreach (var l in fixedLists)
+            foreach (ListView l in fixedLists)
             {
                 if (l != lst)
                     l.SelectedItem = null;

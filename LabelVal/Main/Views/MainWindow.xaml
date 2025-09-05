@@ -269,7 +269,7 @@
 
                             <!--<ContentControl Content="{Binding Source=imageRollsContent}" />-->
 
-                            <results:ImageResultsManager DataContext="{Binding ImageResults}">
+                            <results:ImageResultsManager DataContext="{Binding ImageResultsManager}">
                                 <results:ImageResultsManager.Style>
                                     <Style TargetType="results:ImageResultsManager">
                                         <Style.Triggers>
