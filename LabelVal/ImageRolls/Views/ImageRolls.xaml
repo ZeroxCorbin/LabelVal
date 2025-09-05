@@ -602,7 +602,7 @@
                                 Margin="6,0,6,3"
                                 DockPanel.Dock="Top"
                                 Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
-                                Text="User Image Rolls" />
+                                Text="Image Rolls" />
                             <Border Style="{StaticResource imageBarHor}" />
                         </DockPanel>
 

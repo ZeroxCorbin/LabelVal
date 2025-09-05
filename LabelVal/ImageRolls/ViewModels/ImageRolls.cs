@@ -14,6 +14,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
@@ -74,7 +75,10 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
 
         if(IsLoading)
             return;
+
         App.ShowSplashScreen = true;
+        App.Current.Dispatcher.BeginInvoke(() => WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Fixed Image Roll...")));
+
         SelectedImageRoll = value;
         IsLoading = true;
     }
@@ -99,7 +103,10 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
 
         if (IsLoading)
             return;
+
         App.ShowSplashScreen = true;
+        App.Current.Dispatcher.BeginInvoke(() => WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Image Roll...")));
+
         SelectedImageRoll = value;
         IsLoading = true;
     }
@@ -157,7 +164,7 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
             IsLoading = false;
             try
             {
-                WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage());
+                WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage(true));
                 App.Current.MainWindow?.Activate();
             }
             catch { }

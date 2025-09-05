@@ -34,7 +34,8 @@ public partial class SplashScreenViewModel : ObservableRecipient, IRecipient<Spl
     {
         // This message is sent from the main thread, so this method executes on the main thread.
         // We must use the cached SplashScreenDispatcher to invoke the close action.
-        await Task.Delay(2000);
+        if(!message.NoDelay)
+            await Task.Delay(2000);
 
         // Use the splash screen's dispatcher to invoke the close action.
         SplashScreenDispatcher?.Invoke(() => RequestClose?.Invoke());
