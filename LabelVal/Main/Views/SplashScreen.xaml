@@ -45,12 +45,12 @@
                     FontSize="10"
                     FontWeight="SemiBold"
                     Foreground="{DynamicResource MahApps.Brushes.Gray5}"
-                    Text="For Internal Use Confidential B" />
+                    Text="For Internal Use Only! (Confidential B)" />
                 <TextBlock
                     HorizontalAlignment="Center"
                     FontSize="10"
                     Foreground="{DynamicResource MahApps.Brushes.Gray5}"
-                    Text="Copyright &#169; Omron 2015" />
+                    Text="Copyright &#169; Omron 2025" />
             </StackPanel>
         </Grid>
     </Border>

@@ -452,7 +452,7 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
 
         _ = Application.Current.Dispatcher.BeginInvoke(() =>
         {
-            _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Main Window & Image Roll..."));
+            _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Main Window..."));
         });
     }
 
