@@ -74,6 +74,7 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
 
         if(IsLoading)
             return;
+        App.ShowSplashScreen = true;
         SelectedImageRoll = value;
         IsLoading = true;
     }
@@ -98,6 +99,7 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
 
         if (IsLoading)
             return;
+        App.ShowSplashScreen = true;
         SelectedImageRoll = value;
         IsLoading = true;
     }

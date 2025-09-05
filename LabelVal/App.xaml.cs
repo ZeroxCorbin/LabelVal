@@ -43,6 +43,19 @@ public partial class App : Application
 
     private static Main.Views.SplashScreen _splashScreen;
 
+    private static bool _showSplashScreen = true;
+    public static bool ShowSplashScreen
+    {
+        get=> _showSplashScreen;
+        set
+        {
+            _showSplashScreen = value;
+
+            if (value)
+                DisplaySplashScreen();
+        }
+    }
+
 #if DEBUG
     public static string WorkingDir => Directory.GetCurrentDirectory();
 #else
@@ -128,12 +141,7 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        // Create and start the splash screen thread
-        var splashThread = new Thread(ShowSplashScreen);
-        splashThread.SetApartmentState(ApartmentState.STA);
-        splashThread.IsBackground = true;
-        splashThread.Name = "SplashScreenThread";
-        splashThread.Start();
+        DisplaySplashScreen();
 
         // Wait until the splash screen is created and its dispatcher is running
         _splashScreenReady.WaitOne();
@@ -178,8 +186,22 @@ public partial class App : Application
         }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
     }
 
-    private void ShowSplashScreen()
+    private static void DisplaySplashScreen()
     {
+        Thread splashThread = new(() => Display())
+        {
+            IsBackground = true,
+            Name = "SplashScreenThread"
+        };
+        splashThread.SetApartmentState(ApartmentState.STA); // Splash screen needs to be STA
+        splashThread.Start();
+    }
+
+    private static void Display()
+    {
+        if (_splashScreen != null)
+            return;
+
         _splashScreen = new Main.Views.SplashScreen();
         if (_splashScreen.DataContext is Main.ViewModels.SplashScreenViewModel vm)
         {
@@ -193,6 +215,8 @@ public partial class App : Application
 
         // Start the dispatcher processing loop
         Dispatcher.Run();
+
+        _splashScreen = null;
     }
 
     public static void UpdateSplashScreen(string message)
