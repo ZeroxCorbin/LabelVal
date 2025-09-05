@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LabelVal.Run.Views
+namespace LabelVal.Sectors.Views
 {
     /// <summary>
     /// Interaction logic for CompareSettingsControlView.xaml
     /// </summary>
-    public partial class CompareSettingsView : UserControl
+    public partial class SectorDifferencesDatabaseSettingsView : UserControl
     {
-        public CompareSettingsView()
+        public SectorDifferencesDatabaseSettingsView()
         {
             InitializeComponent();
         }

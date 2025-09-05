@@ -70,7 +70,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         if (sec.Report.GS1Results is null)
             return;
 
-        if (!sec.Report.GS1Results.Valid.Value)
+        if (!sec.Report.GS1Results.PassFail.Value)
         {
             Alarms.Add(new Alarm(AvaailableAlarmCategories.Error, sec.Report.GS1Results.FormattedOut));
         }

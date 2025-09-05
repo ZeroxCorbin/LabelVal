@@ -34,7 +34,7 @@ public static class ListReportDataExtensions
         _ = writer.AppendLine($"Sector Username{delimiter}{sector.Template.Username}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Application Standard{delimiter}{sector.Report.ApplicationStandard.GetDescription()}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Grading Standard{delimiter}{sector.Report.GradingStandard.GetDescription()}{GetDelimiter(3)}");
-        _ = writer.AppendLine($"{sector.Report.Symbology}{delimiter}\"{sector.Report.DecodeText.Replace("\r", "").Replace("\n", "")}\"{GetDelimiter(2)}{sector.Report.OverallGrade.Grade.Value}{delimiter}{sector.Report.OverallGrade.Grade.Letter}");
+        _ = writer.AppendLine($"{sector.Report.Symbology}{delimiter}\"{sector.Report.DecodeText.Replace("\r", "").Replace("\n", "")}\"{GetDelimiter(2)}{sector.Report.OverallGrade.Grade.LetterValue}{delimiter}{sector.Report.OverallGrade.Grade.Letter}");
         _ = writer.AppendLine(sector.Report.OverallGrade.ToDelimitedString(delimiter));
         _ = writer.AppendLine($"X Dimension{delimiter}{sector.Report.XDimension}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Angle{delimiter}{sector.Report.AngleDeg}{GetDelimiter(3)}");

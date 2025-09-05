@@ -1,21 +1,31 @@
-﻿namespace LabelVal.Sectors.Classes;
+﻿using BarcodeVerification.lib.ISO.ParameterTypes;
+using CommunityToolkit.Mvvm.ComponentModel;
 
+namespace LabelVal.Run.ViewModels;
 
-public class SectorDifferencesSettings
+internal partial class SectorDifferencesSettings : ObservableObject
 {
-    private static SectorDifferencesSettings _instance = new();
-    public static SectorDifferencesSettings Instance => _instance;
+    [ObservableProperty]
+    private GradeValueCompareSettings _gradeValueCompareSettings = new();
 
-    public bool GradeValue_UseGradeLetter { get => App.Settings.GetValue("Diff_GradeValue_UseGradeLetter", true); set => App.Settings.SetValue("Diff_GradeValue_UseGradeLetter", value); }
-    public double GradeValue_GradeValueTolerance { get => App.Settings.GetValue("Diff_GradeValue_GradeValueTolerance", 0.01); set => App.Settings.SetValue("Diff_GradeValue_GradeValueTolerance", value); }
-    public bool GradeValue_UseValue { get => App.Settings.GetValue("Diff_GradeValue_UseValue", false); set => App.Settings.SetValue("Diff_GradeValue_UseValue", value); }
-    public double GradeValue_ValueTolerance { get => App.Settings.GetValue("Diff_GradeValue_ValueTolerance", 0.1); set => App.Settings.SetValue("Diff_GradeValue_ValueTolerance", value); }
+    [ObservableProperty]
+    private GradeCompareSettings _gradeCompareSettings = new();
 
-    public bool Grade_UseGradeLetter { get => App.Settings.GetValue("Diff_Grade_UseGradeLetter", true); set => App.Settings.SetValue("Diff_Grade_UseGradeLetter", value); }
-    public double Grade_GradeValueTolerance { get => App.Settings.GetValue("Diff_Grade_GradeValueTolerance", 0.1); set => App.Settings.SetValue("Diff_Grade_GradeValueTolerance", value); }
+    [ObservableProperty]
+    private ValuePassFailCompareSettings _valuePassFailCompareSettings = new();
 
-    public bool ValueResult_UseResult { get => App.Settings.GetValue("Diff_ValueResult_UseResult", true); set => App.Settings.SetValue("Diff_ValueResult_UseResult", value); }
-    public double ValueResult_ValueTolerance { get => App.Settings.GetValue("Diff_ValueResult_ValueTolerance", 5.0); set => App.Settings.SetValue("Diff_ValueResult_ValueTolerance", value); }
+    [ObservableProperty]
+    private ValueDoubleCompareSettings _valueDoubleCompareSettings = new();
 
-    public double Value_ValueTolerance { get => App.Settings.GetValue("Diff_Value_ValueTolerance", 5.0); set => App.Settings.SetValue("Diff_Value_ValueTolerance", value); }
+    [ObservableProperty]
+    private PassFailCompareSettings _passFailCompareSettings = new();
+
+    [ObservableProperty]
+    private GS1DecodeCompareSettings _gS1DecodeCompareSettings = new();
+
+    [ObservableProperty]
+    private OverallGradeCompareSettings _overallGradeCompareSettings = new();
+
+    [ObservableProperty]
+    private ValueStringCompareSettings _valueStringCompareSettings = new();
 }

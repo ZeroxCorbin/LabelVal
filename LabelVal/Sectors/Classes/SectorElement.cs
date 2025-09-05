@@ -4,7 +4,7 @@ using BarcodeVerification.lib.ISO.ParameterTypes;
 
 namespace LabelVal.Sectors.Classes;
 
-public class SectorElement(IParameterValue previous, IParameterValue current, Symbologies symbol)
+public class SectorElement(IParameterValue previous, IParameterValue current, ICompareSettings settings, Symbologies symbol)
 {
     public Type DataType => Parameter.GetDataType(Device, Symbol);
     public Parameters Parameter => GetParameter();
@@ -12,8 +12,9 @@ public class SectorElement(IParameterValue previous, IParameterValue current, Sy
     public Symbologies Symbol => symbol;
     public IParameterValue Previous { get; } = previous;
     public IParameterValue Current { get; } = current;
+    public ICompareSettings Settings { get; } = settings;
 
-    public bool Difference => Previous != null && Current != null && Previous.CompareTo(Current) != 0;
+    public bool Difference => Previous != null && Current != null && Previous.CompareTo(Current, Settings) != 0;
 
     private Parameters GetParameter() => Current is IParameterValue currentParameter
             ? currentParameter.Parameter

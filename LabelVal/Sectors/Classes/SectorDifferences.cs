@@ -1,12 +1,14 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Interfaces;
+using System;
+using System.Linq;
 
 namespace LabelVal.Sectors.Classes;
 
 public class SectorDifferences
 {
-    public static SectorDifferencesSettings Settings=> SectorDifferencesSettings.Instance;
+    public static SectorDifferencesDatabaseSettings Settings => SectorDifferencesDatabaseSettings.Instance;
 
     public string Name { get; set; }
     public string Username { get; set; }
@@ -18,6 +20,11 @@ public class SectorDifferences
     public List<SectorElement> Parameters { get; } = [];
 
     public static SectorDifferences Compare(ISectorParameters previous, ISectorParameters current)
+    {
+        return Compare(previous, current, Settings);
+    }
+
+    public static SectorDifferences Compare(ISectorParameters previous, ISectorParameters current, SectorDifferencesDatabaseSettings settings)
     {
 
         SectorDifferences differences = new()
@@ -32,14 +39,30 @@ public class SectorDifferences
             var cur = current.Parameters.FirstOrDefault(x => x.Parameter == pre.Parameter);
             if (cur != null)
             {
-                if (new SectorElement(pre, cur, current.Sector.Report.Symbology).Difference)
-                    differences.Parameters.Add(new SectorElement( pre, cur, current.Sector.Report.Symbology));
+                var compareSettings = GetCompareSettings(pre, settings);
+                if (new SectorElement(pre, cur, compareSettings, current.Sector.Report.Symbology).Difference)
+                    differences.Parameters.Add(new SectorElement(pre, cur, compareSettings, current.Sector.Report.Symbology));
             }
             else
-                differences.Parameters.Add(new SectorElement(pre, null, current.Sector.Report.Symbology));
+                differences.Parameters.Add(new SectorElement(pre, null, GetCompareSettings(pre, settings), current.Sector.Report.Symbology));
         }
 
         return differences.Parameters.Count > 0 ? differences : null;
     }
-}
 
+    private static ICompareSettings GetCompareSettings(IParameterValue parameter, SectorDifferencesDatabaseSettings settings)
+    {
+        return parameter switch
+        {
+            OverallGrade => settings.OverallGradeCompareSettings,
+            GradeValue => settings.GradeValueCompareSettings,
+            ValuePassFail => settings.ValuePassFailCompareSettings,
+            ValueDouble => settings.ValueDoubleCompareSettings,
+            PassFail => settings.PassFailCompareSettings,
+            GS1Decode => settings.GS1DecodeCompareSettings,
+            ValueString => settings.ValueStringCompareSettings,
+            Missing missing => settings.MissingCompareSettings,
+            _ => null,
+        };
+    }
+}

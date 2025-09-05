@@ -17,6 +17,7 @@
     xmlns:results="clr-namespace:LabelVal.Results.Views"
     xmlns:run="clr-namespace:LabelVal.Run.Views"
     xmlns:sectorOutput="clr-namespace:LabelVal.Sectors.Views"
+    xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
     xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"
     Title="{Binding ApplicationTitle}"
     Width="auto"
@@ -173,7 +174,7 @@
 
                         <StackPanel Margin="10">
                             <TextBlock Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Compare Settings" />
-                            <run:CompareSettingsView Margin="3" />
+                            <sectors:SectorDifferencesDatabaseSettingsView Margin="3" />
                         </StackPanel>
 
 
