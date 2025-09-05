@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LabelVal.Main.ViewModels;
 
-namespace LabelVal.Main.ViewModels
+public class GlobalAppSettings
 {
-    public class  GlobalAppSettings
-    {
-        private static GlobalAppSettings _instance = new();
-        public static GlobalAppSettings Instance => _instance;
+    public static GlobalAppSettings Instance { get; } = new();
 
-        public bool ShowButtonText { get => App.Settings.GetValue("GlobalAppSettings_ShowButtonText", true, true); set => App.Settings.SetValue("GlobalAppSettings_ShowButtonText", value); }
+    public bool ShowButtonText { get => App.Settings.GetValue("GlobalAppSettings_ShowButtonText", true, true); set => App.Settings.SetValue("GlobalAppSettings_ShowButtonText", value); }
 
-        public bool ShowMainMenu { get => App.Settings.GetValue("GlobalAppSettings_ShowMainMenu", true, true); set => App.Settings.SetValue("GlobalAppSettings_ShowMainMenu", value); }
+    public bool ShowMainMenu { get => App.Settings.GetValue("GlobalAppSettings_ShowMainMenu", true, true); set => App.Settings.SetValue("GlobalAppSettings_ShowMainMenu", value); }
 
-    }
+    public bool LaunchLvsOnConnect { get => App.Settings.GetValue("GlobalAppSettings_LaunchLvsOnConnect", false, true); set => App.Settings.SetValue("GlobalAppSettings_LaunchLvsOnConnect", value); }
 }

@@ -48,18 +48,9 @@ public partial class MainWindow : MetroWindow
             RunWindow.Show();
         });
 
-        Loaded += MainWindow_Loaded;
+        
     }
 
-    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
-    {
-        WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage());
-
-        App.Current.Dispatcher.BeginInvoke(() =>
-        {
-            this.BringIntoView();
-        });
-    }
     public void ClearSelectedMenuItem() => ((ViewModels.MainWindow)this.DataContext).SetDeafultMenuItem();
 
     private void MainWindow_DpiChanged(object sender, DpiChangedEventArgs e) => ((ViewModels.MainWindow)this.DataContext).DPIChangedMessage = new ViewModels.DPIChangedMessage(e.NewDpi);

@@ -41,6 +41,8 @@ public partial class App : Application
 
     public static ActiveWatchers Watchers { get; } = new ActiveWatchers();
 
+    private static Main.Views.SplashScreen _splashScreen;
+
 #if DEBUG
     public static string WorkingDir => Directory.GetCurrentDirectory();
 #else
@@ -178,13 +180,13 @@ public partial class App : Application
 
     private void ShowSplashScreen()
     {
-        var splashScreen = new Main.Views.SplashScreen();
-        if (splashScreen.DataContext is Main.ViewModels.SplashScreenViewModel vm)
+        _splashScreen = new Main.Views.SplashScreen();
+        if (_splashScreen.DataContext is Main.ViewModels.SplashScreenViewModel vm)
         {
             vm.SplashScreenDispatcher = Dispatcher.CurrentDispatcher;
             vm.RequestClose = () => CloseSplashScreen();
         }
-        splashScreen.Show();
+        _splashScreen.Show();
 
         _splashScreenDispatcher = Dispatcher.CurrentDispatcher;
         _splashScreenReady.Set(); // Signal that the splash screen is ready
@@ -202,7 +204,15 @@ public partial class App : Application
 
     public static void CloseSplashScreen()
     {
+        if(_splashScreen == null)
+            return;
+
+        if(_splashScreen.DataContext is Main.ViewModels.SplashScreenViewModel vm)
+        {
+            vm.IsActive = false;
+        }
         _splashScreenDispatcher?.BeginInvokeShutdown(DispatcherPriority.Normal);
+        //App.Current.Dispatcher.BeginInvoke(() => App.Current.MainWindow.BringIntoView());
     }
     protected override void OnExit(ExitEventArgs e)
     {

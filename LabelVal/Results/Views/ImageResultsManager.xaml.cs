@@ -1,4 +1,6 @@
-﻿using LabelVal.Results.ViewModels;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Main.Messages;
+using LabelVal.Results.ViewModels;
 using LabelVal.Utilities;
 using MahApps.Metro.Controls.Dialogs;
 using MaterialDesignThemes.Wpf;
@@ -19,25 +21,39 @@ public partial class ImageResultsManager : UserControl
 {
     private ViewModels.ImageResultsManager _viewModel;
     private bool _isSnapping;
+    private bool _isLoaded;
 
     public ImageResultsManager()
     {
         InitializeComponent();
-        DataContextChanged += ImageResultsManager_DataContextChanged;
+        DataContextChanged += OnDataContextChanged;
     }
 
-    private void ImageResultsManager_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+    private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (e.NewValue is ViewModels.ImageResultsManager vm)
+        if (e.OldValue is ViewModels.ImageResultsManager oldVm)
         {
-            _viewModel = vm;
+            oldVm.ImageResultsEntries.CollectionChanged -= OnImageResultsEntriesChanged;
+        }
+        if (e.NewValue is ViewModels.ImageResultsManager newVm)
+        {
+            newVm.ImageResultsEntries.CollectionChanged += OnImageResultsEntriesChanged;
+            _viewModel = newVm;
+        }
+    }
+
+    private void OnImageResultsEntriesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+        {
+            _isLoaded = false;
         }
     }
 
     private void UserControl_Unloaded(object sender, RoutedEventArgs e)
     {
         DialogParticipation.SetRegister(this, null);
-        DataContextChanged -= ImageResultsManager_DataContextChanged;
+        DataContextChanged -= OnDataContextChanged;
     }
 
     private void btnRightSideBar_Click(object sender, RoutedEventArgs e)
@@ -179,6 +195,16 @@ public partial class ImageResultsManager : UserControl
 
     private void ImageResultsScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
+        if (!_isLoaded && e.ExtentHeight > 0)
+        {
+            _isLoaded = true;
+            // Use Dispatcher to send message after rendering is complete
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new System.Action(() =>
+            {
+                WeakReferenceMessenger.Default.Send(new ImageResultsRenderedMessage());
+            }));
+        }
+
         if (_isSnapping || _viewModel?.ImageResultsEntries.Any() != true)
             return;
 

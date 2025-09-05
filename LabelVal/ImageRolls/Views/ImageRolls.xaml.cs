@@ -1,4 +1,6 @@
-﻿using LabelVal.ImageRolls.ViewModels;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Main.Messages;
 using MahApps.Metro.Controls.Dialogs;
 using System.ComponentModel;
 using System.Windows;
@@ -16,20 +18,23 @@ public partial class ImageRolls : UserControl
         InitializeComponent();
 
         DataContextChanged += (s, e) =>
+        {
+            if (_viewModel != null)
             {
-                _viewModel = (ViewModels.ImageRolls)DataContext;
-                if (_viewModel == null)
-                    return;
+                _viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+            }
 
-                _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            _viewModel = e.NewValue as ViewModels.ImageRolls;
+            if (_viewModel == null)
+                return;
 
-                var ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRolls.SelectedImageRoll));
+            _viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-                _viewModel.SelectedFixedImageRoll = ir != null ? _viewModel.FixedImageRolls.FirstOrDefault((e) => e.UID == ir.UID) : null;
-                _viewModel.SelectedUserImageRoll = ir != null ? _viewModel.UserImageRolls.FirstOrDefault((e) => e.UID == ir.UID) : null;
+            var ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRolls.SelectedImageRoll));
 
-
-            };
+            _viewModel.SelectedFixedImageRoll = ir != null ? _viewModel.FixedImageRolls.FirstOrDefault((roll) => roll.UID == ir.UID) : null;
+            _viewModel.SelectedUserImageRoll = ir != null ? _viewModel.UserImageRolls.FirstOrDefault((roll) => roll.UID == ir.UID) : null;
+        };
 
         TabCtlUserIr.Loaded += (s, e) =>
         {
@@ -54,6 +59,7 @@ public partial class ImageRolls : UserControl
                 }
             }
         };
+
     }
 
     private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)

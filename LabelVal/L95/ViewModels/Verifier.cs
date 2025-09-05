@@ -2,12 +2,11 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.Main.ViewModels;
 using Lvs95xx.lib.Core.Controllers;
 using Lvs95xx.lib.Shared.Watchers;
 using Newtonsoft.Json;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Watchers.lib.Process;
 
 namespace LabelVal.L95.ViewModels;
@@ -19,6 +18,8 @@ namespace LabelVal.L95.ViewModels;
 public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
 {
     #region Properties
+
+    public GlobalAppSettings AppSettings { get; } = GlobalAppSettings.Instance;
 
     /// <summary>
     /// Gets or sets the unique identifier for the verifier instance.
@@ -86,7 +87,11 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
         if (Controller.IsConnected)
             Controller.Disconnect();
         else
+        {
             _ = Controller.Connect(DatabasePath);
+            if (Controller.ProcessState == Win32_ProcessWatcherProcessState.Exited && AppSettings.LaunchLvsOnConnect)
+                LaunchLvs();
+        }
     }
 
     private void LaunchLvs()
@@ -95,9 +100,23 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
         {
             if (Controller.ProcessState == Win32_ProcessWatcherProcessState.Exited)
             {
-               
-            }
+                //Check if (the exe esists at C:\Program Files (x86)\Microscan\LVS-95XX\LVS-95XX.exe
+                //Get the Program Files from the environment variables
+                var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+                var path = System.IO.Path.Combine(programFiles, "Microscan", "LVS-95XX", "LVS-95XX.exe");
 
+                if (System.IO.File.Exists(path))
+                {
+                    //Launch the application
+                    System.Diagnostics.ProcessStartInfo startInfo = new()
+                    {
+                        FileName = path,
+                        WorkingDirectory = System.IO.Path.GetDirectoryName(path)
+                    };
+                    _ = System.Diagnostics.Process.Start(startInfo);
+
+                }
+            }
         }
     }
 
@@ -173,11 +192,11 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
     /// </summary>
     private void RequestMessages()
     {
-        var ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PasswordOfTheDayMessage>());
+        RequestMessage<PasswordOfTheDayMessage> ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PasswordOfTheDayMessage>());
         if (ret2.HasReceivedResponse)
             PasswordOfTheDay = ret2.Response.Value;
 
-        var ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<RegistryMessage>());
+        RequestMessage<RegistryMessage> ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<RegistryMessage>());
         if (ret3.HasReceivedResponse)
             DatabasePath = ExtractDatabasePath(ret3.Response.RegistryValue);
     }

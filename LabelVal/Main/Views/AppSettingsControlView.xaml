@@ -17,14 +17,28 @@
 
     <StackPanel>
 
-        <StackPanel>
-            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Show Button Text" />
+        <DockPanel>
+            <StackPanel Margin="3">
+                <TextBlock
+                    Margin="3"
+                    HorizontalAlignment="Center"
+                    Text="Show Button Text" />
 
-            <ToggleButton IsChecked="{Binding ShowButtonText}" />
+                <ToggleButton IsChecked="{Binding ShowButtonText}" />
 
-        </StackPanel>
+            </StackPanel>
+            <StackPanel Margin="3">
+                <TextBlock
+                    Margin="3"
+                    HorizontalAlignment="Center"
+                    Text="Launch LVS on Connect" />
 
-        <StackPanel>
+                <ToggleButton IsChecked="{Binding LaunchLvsOnConnect}" />
+
+            </StackPanel>
+        </DockPanel>
+
+        <!--<StackPanel>
             <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="ORM Support Testing" />
 
             <Button
@@ -36,7 +50,7 @@
                 <iconPacks:PackIconMaterial Kind="Cog" />
             </Button>
 
-        </StackPanel>
+        </StackPanel>-->
 
     </StackPanel>
 </UserControl>

@@ -21,7 +21,7 @@ namespace LabelVal.ImageRolls.ViewModels;
 /// ViewModel for managing both fixed (asset-based) and user-created image rolls.
 /// This class handles loading, creating, editing, and deleting image rolls and their associated databases.
 /// </summary>
-public partial class ImageRolls : ObservableRecipient, IDisposable
+public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<ImageResultsRenderedMessage>
 {
     #region Properties
 
@@ -29,6 +29,8 @@ public partial class ImageRolls : ObservableRecipient, IDisposable
     /// Gets the singleton instance of the global application settings.
     /// </summary>
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+
+    public bool IsLoading { get; set; }
 
     /// <summary>
     /// Gets or sets the root entry for the user's image roll databases.
@@ -70,7 +72,10 @@ public partial class ImageRolls : ObservableRecipient, IDisposable
         else
             return;
 
+        if(IsLoading)
+            return;
         SelectedImageRoll = value;
+        IsLoading = true;
     }
 
     /// <summary>
@@ -91,7 +96,10 @@ public partial class ImageRolls : ObservableRecipient, IDisposable
         else
             return;
 
+        if (IsLoading)
+            return;
         SelectedImageRoll = value;
+        IsLoading = true;
     }
 
     /// <summary>
@@ -138,6 +146,21 @@ public partial class ImageRolls : ObservableRecipient, IDisposable
         App.Settings.PropertyChanged += Settings_PropertyChanged;
 
         IsActive = true;
+    }
+
+    public void Receive(ImageResultsRenderedMessage message)
+    {
+        if (IsLoading)
+        {
+            IsLoading = false;
+            try
+            {
+                WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage());
+                App.Current.MainWindow?.Activate();
+            }
+            catch { }
+
+        }
     }
 
     private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -680,438 +703,4 @@ public partial class ImageRolls : ObservableRecipient, IDisposable
     }
 
     #endregion
-}
-
-public partial class ImageRolls1 : ObservableRecipient, IDisposable
-{
-    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
-
-    [ObservableProperty] private FileFolderEntry fileRoot = App.Settings.GetValue("UserImageRollsDatabases_FileRoot", new FileFolderEntry(App.UserImageRollsRoot), true);
-    partial void OnFileRootChanged(FileFolderEntry value) => App.Settings.SetValue("UserImageRollsDatabases_FileRoot", value);
-
-    /// <summary>
-    /// User databases are loaded from the <see cref="FileRoot"/>/>
-    /// </summary>
-    private ObservableCollection<Databases.ImageRollsDatabase> UserDatabases { get; } = [];
-    /// <summary>
-    /// The currently selected User Image Rolls database.
-    /// <see cref="SelectedUserDatabase"/>/>"
-    /// </summary>
-    [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageRollsDatabase selectedUserDatabase;
-
-    /// <summary>
-    /// A temporary image roll used for adding or editing.
-    /// <see cref="NewImageRoll"/>"/>
-    /// </summary>
-    [ObservableProperty] private ImageRoll newImageRoll = null;
-
-    /// <summary>
-    /// Fixed image rolls are loaded from the Assets folder.
-    /// </summary>
-    public ObservableCollection<ImageRoll> FixedImageRolls { get; } = [];
-    /// <summary>
-    /// The currently selected fixed image roll.
-    /// <see cref="SelectedFixedImageRoll"/>"/>
-    /// </summary>
-    [ObservableProperty] private ImageRoll selectedFixedImageRoll;
-    partial void OnSelectedFixedImageRollChanged(ImageRoll value)
-    {
-        if (value != null)
-            SelectedUserImageRoll = null;
-        else
-            return;
-
-        SelectedImageRoll = value;
-    }
-
-    /// <summary>
-    /// User image rolls are loaded from the <see cref="SelectedUserDatabase"/>/>
-    /// </summary>
-    public ObservableCollection<ImageRoll> UserImageRolls { get; } = [];
-    /// <summary>
-    /// The currently selected user image roll.
-    /// <see cref="SelectedUserImageRoll"/>/>
-    /// </summary>
-    [ObservableProperty]
-    private ImageRoll selectedUserImageRoll;
-    partial void OnSelectedUserImageRollChanged(ImageRoll value)
-    {
-        if (value != null)
-            SelectedFixedImageRoll = null;
-        else
-            return;
-
-        SelectedImageRoll = value;
-    }
-
-    /// <summary>
-    /// <see cref="SelectedImageRoll"/>
-    /// </summary>
-    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRoll selectedImageRoll;
-    partial void OnSelectedImageRollChanged(ImageRoll value)
-    {
-        App.Settings.SetValue(nameof(SelectedImageRoll), value);
-    }
-
-    [ObservableProperty] private bool refreshView;
-
-    public bool RightAlignOverflow
-    {
-        get => App.Settings.GetValue(nameof(RightAlignOverflow), false);
-        set => App.Settings.SetValue(nameof(RightAlignOverflow), value);
-    }
-
-    public ImageRolls1()
-    {
-        if (!Directory.Exists(FileRoot.Path))
-            FileRoot = new FileFolderEntry(App.UserImageRollsRoot);
-
-        LoadFixedImageRollsList();
-
-        UpdateFileFolderEvents(FileRoot);
-        UpdateImageRollsDatabasesList();
-
-        App.Settings.PropertyChanged += Settings_PropertyChanged;
-
-        IsActive = true;
-    }
-
-    private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(RightAlignOverflow))
-            OnPropertyChanged(nameof(RightAlignOverflow));
-    }
-
-    private FileFolderEntry EnumerateFolders(FileFolderEntry root)
-    {
-        var currentDirectories = Directory.EnumerateDirectories(root.Path).ToHashSet();
-        var currentFiles = Directory.EnumerateFiles(root.Path, "*.sqlite").ToHashSet();
-
-        // Remove directories that no longer exist
-        for (var i = root.Children.Count - 1; i >= 0; i--)
-        {
-            FileFolderEntry child = root.Children[i];
-            if (child.IsDirectory && !currentDirectories.Contains(child.Path))
-                root.Children.RemoveAt(i);
-        }
-
-        // Remove files that no longer exist
-        for (var i = root.Children.Count - 1; i >= 0; i--)
-        {
-            FileFolderEntry child = root.Children[i];
-            if (!child.IsDirectory && !currentFiles.Contains(child.Path))
-                root.Children.RemoveAt(i);
-        }
-
-        // Add new directories
-        foreach (var dir in currentDirectories)
-            if (!root.Children.Any(child => child.Path == dir))
-                root.Children.Add(EnumerateFolders(GetNewFileFolderEntry(dir)));
-
-        // Add new files
-        foreach (var file in currentFiles)
-            if (!root.Children.Any(child => child.Path == file))
-                root.Children.Add(GetNewFileFolderEntry(file));
-
-        return root;
-    }
-    private FileFolderEntry GetNewFileFolderEntry(string path)
-    {
-        FileFolderEntry ffe = new(path);
-        ffe.PropertyChanged += (s, e) =>
-        {
-            if (e.PropertyName == "IsSelected")
-            {
-                UpdateDatabases(FileRoot);
-                App.Settings.SetValue("UserImageRollsDatabases_FileRoot", FileRoot);
-                LoadUserImageRollsList();
-            }
-        };
-        return ffe;
-    }
-    private FileFolderEntry GetFileFolderEntry(string path) =>
-        GetAllFiles(FileRoot).FirstOrDefault((e) => e.Path == path);
-    private void UpdateFileFolderEvents(FileFolderEntry root)
-    {
-        root.PropertyChanged += (s, e) =>
-        {
-            if (e.PropertyName == "IsSelected")
-            {
-                UpdateDatabases(FileRoot);
-                App.Settings.SetValue("UserImageRollsDatabases_FileRoot", FileRoot);
-                LoadUserImageRollsList();
-            }
-        };
-
-        foreach (FileFolderEntry child in root.Children)
-            UpdateFileFolderEvents(child);
-    }
-
-    private List<FileFolderEntry> GetSelectedFiles(FileFolderEntry root)
-    {
-        List<FileFolderEntry> selectedFiles = [];
-        foreach (FileFolderEntry child in root.Children)
-        {
-            if (child.IsDirectory)
-                selectedFiles.AddRange(GetSelectedFiles(child));
-            else if (child.IsSelected)
-                selectedFiles.Add(child);
-        }
-        return selectedFiles;
-    }
-    private List<FileFolderEntry> GetAllFiles(FileFolderEntry root)
-    {
-        List<FileFolderEntry> files = [];
-        foreach (FileFolderEntry child in root.Children)
-        {
-            if (child.IsDirectory)
-                files.AddRange(GetSelectedFiles(child));
-            else
-                files.Add(child);
-        }
-        return files;
-    }
-
-    private void UpdateImageRollsDatabasesList()
-    {
-        Logger.Info($"Loading Image Rolls databases from file system. {App.UserImageRollsRoot}");
-
-        if (!File.Exists(App.UserImageRollDefaultFile))
-        {
-            var tmp = new Databases.ImageRollsDatabase(new FileFolderEntry(App.UserImageRollDefaultFile));
-            tmp.Close();
-        }
-        FileRoot = EnumerateFolders(FileRoot);
-        UpdateDatabases(FileRoot);
-
-        LoadUserImageRollsList();
-    }
-    private void UpdateDatabases(FileFolderEntry root)
-    {
-        var selectedFiles = GetSelectedFiles(root).Select(file => file.Path).ToHashSet();
-
-        // Remove databases that no longer exist
-        for (var i = UserDatabases.Count - 1; i >= 0; i--)
-        {
-            ImageRollsDatabase db = UserDatabases[i];
-            if (!selectedFiles.Contains(db.File.Path))
-            {
-                UserDatabases[i].Close();
-                UserDatabases.RemoveAt(i);
-            }
-        }
-
-        // Add new databases
-        foreach (var file in selectedFiles)
-        {
-            if (!UserDatabases.Any(db => db.File.Path == file))
-            {
-                Databases.ImageRollsDatabase newDatabase = new(new FileFolderEntry(file));
-                UserDatabases.Add(newDatabase);
-            }
-        }
-
-        SetSelectedUserDatabase();
-    }
-
-    private void SetSelectedUserDatabase()
-    {
-        ImageRollsDatabase def = UserDatabases.FirstOrDefault((e) => e.File.Path == App.UserImageRollDefaultFile);
-
-        if (def == null)
-        {
-            SelectedUserDatabase?.Close();
-            SelectedUserDatabase = new Databases.ImageRollsDatabase(new FileFolderEntry(App.UserImageRollDefaultFile));
-        }
-        else
-        {
-            if (SelectedUserDatabase != def)
-            {
-                SelectedUserDatabase?.Close();
-                SelectedUserDatabase = def;
-            }
-        }
-    }
-    private void LoadUserImageRollsList()
-    {
-        var currentRolls = new HashSet<string>(UserImageRolls.Select(roll => roll.UID));
-        var newRolls = new List<ImageRoll>();
-
-        foreach (ImageRollsDatabase db in UserDatabases)
-        {
-            if (!db.File.IsSelected)
-                continue;
-
-            Logger.Info($"Loading user image rolls from database. {db.File.Name}");
-
-            try
-            {
-                foreach (ImageRoll roll in db.SelectAllImageRolls())
-                {
-                    Logger.Debug($"Found: {roll.Name}");
-                    roll.ImageRollsDatabase = db;
-
-                    if (!currentRolls.Contains(roll.UID))
-                        UserImageRolls.Add(roll);
-
-                    newRolls.Add(roll);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, $"Error when accessing {db.File.Path}");
-            }
-        }
-
-        // Remove rolls that are no longer present
-        for (var i = UserImageRolls.Count - 1; i >= 0; i--)
-            if (!newRolls.Any(newRoll => newRoll.UID == UserImageRolls[i].UID))
-                UserImageRolls.RemoveAt(i);
-
-        Logger.Info($"Processed {UserImageRolls.Count} user image rolls.");
-    }
-
-    private void LoadFixedImageRollsList()
-    {
-        Logger.Info($"Loading image rolls from file system. {App.AssetsImageRollsRoot}");
-
-        FixedImageRolls.Clear();
-
-        foreach (var dir in Directory.EnumerateDirectories(App.AssetsImageRollsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
-        {
-            var fnd = dir[(dir.LastIndexOf('\\') + 1)..];
-            Logger.Debug($"Found: {fnd}");
-
-            foreach (var subdir in Directory.EnumerateDirectories(dir))
-            {
-                var files = Directory.EnumerateFiles(subdir, "*.imgr").ToList();
-                if (files.Count == 0)
-                    continue;
-
-                try
-                {
-                    ImageRoll imgr = JsonConvert.DeserializeObject<ImageRoll>(File.ReadAllText(files.First()));
-                    imgr.Path = subdir;
-                    FixedImageRolls.Add(imgr);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex, $"Failed to load image roll from {files.First()}");
-                    continue;
-                }
-            }
-        }
-
-        Logger.Info($"Processed {FixedImageRolls.Count} fixed image rolls.");
-    }
-
-    [RelayCommand]
-    private void Add()
-    {
-        Logger.Info("Adding image roll.");
-
-        NewImageRoll = new ImageRoll() { ImageRollsDatabase = SelectedUserDatabase };
-    }
-
-    [RelayCommand]
-    private void Edit()
-    {
-        Logger.Info("Editing image roll.");
-
-        NewImageRoll = SelectedUserImageRoll.CopyLite();
-    }
-
-    [RelayCommand]
-    public void Save()
-    {
-        if (NewImageRoll == null)
-            return;
-
-        if (string.IsNullOrEmpty(NewImageRoll.Name))
-        {
-            Logger.Warning("Name is required for image rolls.");
-            return;
-        }
-
-        if (NewImageRoll.SelectedApplicationStandard is ApplicationStandards.GS1 && NewImageRoll.SelectedGS1Table is GS1Tables.Unknown)
-        {
-            Logger.Warning("GS1 Table is required for GS1 image rolls.");
-            return;
-        }
-
-        if (SelectedUserDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)
-        {
-            Logger.Info($"Saved image roll: {NewImageRoll.Name}");
-
-            ImageRoll update = UserImageRolls.FirstOrDefault((e) => e.UID == NewImageRoll.UID);
-            if (update != null)
-            {
-                SelectedImageRoll.SelectedApplicationStandard = NewImageRoll.SelectedApplicationStandard;
-                SelectedImageRoll.SelectedGradingStandard = NewImageRoll.SelectedGradingStandard;
-                SelectedImageRoll.SelectedGS1Table = NewImageRoll.SelectedGS1Table;
-                SelectedImageRoll.Name = NewImageRoll.Name;
-                SelectedImageRoll.SectorType = NewImageRoll.SectorType;
-                SelectedImageRoll.ImageType = NewImageRoll.ImageType;
-            }
-            else
-            {
-                LoadUserImageRollsList();
-            }
-
-            FileFolderEntry file = GetFileFolderEntry(App.UserImageRollDefaultFile);
-            if (file != null)
-                file.IsSelected = true;
-
-            RefreshView = !RefreshView;
-        }
-        else
-            Logger.Error($"Failed to save image roll: {NewImageRoll.Name}");
-
-        NewImageRoll = null;
-    }
-
-    [RelayCommand]
-    public async Task Delete()
-    {
-        if (UserDatabases == null || SelectedUserImageRoll == null)
-            return;
-
-        if (await OkCancelDialog("Delete Image Roll?", $"Are you sure you want to delete image roll {SelectedUserImageRoll.Name} and images and results?") != MessageDialogResult.Affirmative)
-            return;
-
-        foreach (ImageEntry img in SelectedUserImageRoll.ImageEntries)
-        {
-
-            if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImage(SelectedUserImageRoll.UID, img.UID))
-                Logger.Info($"Deleted image: {img.UID}");
-            else
-                Logger.Error($"Failed to delete image: {img.UID}");
-        }
-
-        if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImageRoll(NewImageRoll.UID))
-        {
-            Logger.Info($"Deleted image roll: {NewImageRoll.UID}");
-
-            LoadUserImageRollsList();
-            NewImageRoll = null;
-            SelectedUserImageRoll = null;
-        }
-        else
-            Logger.Error($"Failed to delete image roll: {NewImageRoll.UID}");
-    }
-
-    [RelayCommand]
-    public void Cancel() => NewImageRoll = null;
-
-    [RelayCommand]
-    private void UIDToClipboard() => Clipboard.SetText(Guid.NewGuid().ToString());
-
-    private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-    public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
-
-    public void Dispose()
-    {
-        App.Settings.PropertyChanged -= Settings_PropertyChanged;
-        GC.SuppressFinalize(this);
-    }
 }
