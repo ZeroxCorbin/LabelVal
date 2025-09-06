@@ -294,7 +294,7 @@
                             <TextBlock>
                                 <TextBlock.Style>
                                     <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
-                                        <Setter Property="Text" Value="{Binding Report.OverallGrade.Grade.Value, StringFormat=N1, Mode=OneTime}" />
+                                        <Setter Property="Text" Value="{Binding Report.OverallGrade.Grade.LetterValue, StringFormat=N1, Mode=OneTime}" />
                                         <!--<Style.Triggers>
                                             <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                                 <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}" />

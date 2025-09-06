@@ -1059,8 +1059,7 @@
                                     <sectors:SectorDifferences
                                         Width="220"
                                         Margin="6,0"
-                                        Background="{StaticResource AccentColorBrush}"
-                                        MouseDown="lstDissimilarSector_Click" />
+                                        Background="{StaticResource AccentColorBrush}" />
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>

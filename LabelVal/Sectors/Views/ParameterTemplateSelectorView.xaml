@@ -221,7 +221,7 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center">
 
-                        <TextBlock Margin="3,0" Text="{Binding Path=Value, StringFormat=N1, Mode=OneTime}" />
+                        <TextBlock Margin="3,0" Text="{Binding Path=LetterValue, StringFormat=N1, Mode=OneTime}" />
 
                         <TextBlock Margin="3,0" Text="{Binding Path=Letter, Mode=OneTime}" />
                         <Border
@@ -291,7 +291,7 @@
                             </TextBlock.Text>
                         </TextBlock>
 
-                        <TextBlock Margin="3,0" Text="{Binding Grade.Value, StringFormat=N1}" />
+                        <TextBlock Margin="3,0" Text="{Binding Grade.LetterValue, StringFormat=N1}" />
 
 
                         <TextBlock Margin="3,0" Text="{Binding Path=Grade.Letter, Mode=OneTime}" />

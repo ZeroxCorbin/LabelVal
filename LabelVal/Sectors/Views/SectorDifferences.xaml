@@ -610,7 +610,7 @@
                                                         </TextBlock.Text>
                                                     </TextBlock>
 
-                                                    <TextBlock Margin="3,0" Text="{Binding Current.Grade.Value, StringFormat=N1}" />
+                                                    <TextBlock Margin="3,0" Text="{Binding Current.Grade.LetterValue, StringFormat=N1}" />
 
 
                                                     <TextBlock Margin="3,0" Text="{Binding Path=Current.Grade.Letter, Mode=OneTime}" />
@@ -676,7 +676,7 @@
                                                         </TextBlock.Text>
                                                     </TextBlock>
 
-                                                    <TextBlock Margin="3,0" Text="{Binding Previous.Grade.Value, StringFormat=N1}" />
+                                                    <TextBlock Margin="3,0" Text="{Binding Previous.Grade.LetterValue, StringFormat=N1}" />
 
 
                                                     <TextBlock Margin="3,0" Text="{Binding Path=Previous.Grade.Letter, Mode=OneTime}" />

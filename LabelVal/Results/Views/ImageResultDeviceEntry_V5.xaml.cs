@@ -300,7 +300,7 @@ public partial class ImageResultDeviceEntry_V5 : UserControl
     {
         if (sender is Button btn && btn.Tag is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
         {
-            _ = sectors.GetSectorsReport($"{_viewModel.ImageResultsManager.SelectedImageRoll.Name}{(char)Sectors.Classes.SectorOutputSettings.CurrentDelimiter}{_viewModel.ImageResultEntry.SourceImage.Order}", true);
+            Clipboard.SetText(sectors.GetSectorsReport($"{_viewModel.ImageResultsManager.SelectedImageRoll.Name}{(char)Sectors.Classes.SectorOutputSettings.CurrentDelimiter}{_viewModel.ImageResultEntry.SourceImage.Order}", true));
         }
         else if (sender is Button btn2 && btn2.Tag is ImageEntry image)
         {
@@ -308,13 +308,4 @@ public partial class ImageResultDeviceEntry_V5 : UserControl
         }
     }
 
-    private void lstDissimilarSector_Click(object sender, MouseButtonEventArgs e)
-    {
-
-    }
-
-    private void btnSaveImage(object sender, RoutedEventArgs e)
-    {
-
-    }
 }

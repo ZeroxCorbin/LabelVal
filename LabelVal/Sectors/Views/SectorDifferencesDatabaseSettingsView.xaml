@@ -47,13 +47,13 @@
 
             </StackPanel>
         </GroupBox>
-        
+
         <GroupBox Header="Pass/Fail">
             <StackPanel>
                 <CheckBox Content="Compare" IsChecked="{Binding PassFailCompareSettings.Compare, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
             </StackPanel>
         </GroupBox>
-        
+
         <GroupBox Header="Pass/Fail Values">
             <StackPanel>
                 <CheckBox Content="Compare Value" IsChecked="{Binding ValuePassFailCompareSettings.CompareValue, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
@@ -62,10 +62,10 @@
                     <TextBox Text="{Binding ValuePassFailCompareSettings.ValueTolerance, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
                 </DockPanel>
                 <CheckBox Content="Compare Pass/Fail" IsChecked="{Binding ValuePassFailCompareSettings.PassFail.Compare, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
-  
+
             </StackPanel>
         </GroupBox>
-        
+
         <GroupBox Header="Value">
             <StackPanel>
                 <CheckBox Content="Compare Value" IsChecked="{Binding ValueDoubleCompareSettings.CompareValue, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />

@@ -166,8 +166,4 @@ public partial class RunResult_V275 : UserControl
         encoder.Frames.Add(frame);
     }
 
-    private void lstDissimilarSector_Click(object sender, MouseButtonEventArgs e)
-    {
-
-    }
 }

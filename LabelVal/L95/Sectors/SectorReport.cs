@@ -118,7 +118,7 @@ public class SectorReport : ISectorReport
     {
         var overall = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.OverallGrade, Device, Symbology);
         if (overall != null)
-            OverallGrade = GetOverallGrade(overall);
+            OverallGrade = ParameterHandling.GetOverallGrade(overall);
         else
         {
             Logger.Error($"Could not find: '{BarcodeVerification.lib.Common.Parameters.OverallGrade.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
@@ -230,30 +230,4 @@ public class SectorReport : ISectorReport
         }
         return true;
     }
-
-    private OverallGrade GetOverallGrade(string original)
-    {
-        var data = original.Replace("DPM", "");
-        var spl = data.Split('/', StringSplitOptions.RemoveEmptyEntries);
-
-        Grade grade = new(BarcodeVerification.lib.Common.Parameters.OverallGrade, Device, spl[0]);
-        return new OverallGrade(Device, grade, original, spl[1], spl[2]);
-    }
-
-    private GradeValue GetGradeValue(Parameters parameter, string data)
-    {
-        if (string.IsNullOrWhiteSpace(data))
-            return null;
-
-        var spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-        if (spl2.Length != 2)
-            return spl2.Length == 1 ? new GradeValue(parameter, Device, Symbology, spl2[0], string.Empty) : null;
-        else
-            return new GradeValue(parameter, Device, Symbology, spl2[0], spl2[1]);//  new GradeValue(name, ParseFloat(spl2[1]), new Grade(name, tmp, GetLetter(tmp)));
-    }
-    private Grade GetGrade(Parameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new Grade(parameter, Device, data);
-    private ValueDouble GetValueDouble(Parameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new ValueDouble(parameter, Device, Symbology, data);
-    private ValueString GetValueString(Parameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new ValueString(parameter, Device, data);
-    private PassFail GetPassFail(Parameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new PassFail(parameter, Device, data);
 }

@@ -39,6 +39,9 @@ public class SectorDifferences
             var cur = current.Parameters.FirstOrDefault(x => x.Parameter == pre.Parameter);
             if (cur != null)
             {
+                if(cur.Parameter == BarcodeVerification.lib.Common.Parameters.OverallGrade)
+                    Logger.Debug($"Comparing");
+
                 var compareSettings = GetCompareSettings(pre, settings);
                 if (new SectorElement(pre, cur, compareSettings, current.Sector.Report.Symbology).Difference)
                     differences.Parameters.Add(new SectorElement(pre, cur, compareSettings, current.Sector.Report.Symbology));

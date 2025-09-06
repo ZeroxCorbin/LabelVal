@@ -48,6 +48,14 @@ namespace LabelVal.L95.Sectors
                 var passFail = GetPassFail(device, parameter, symbology, report.GetParameter<string>(parameter.GetPath(device, symbology)));
                 if (passFail != null) { target.Add(passFail); return; }
             }
+            else if(type == typeof(ValuePassFail))
+            {
+            }
+            else if (type == typeof(OverallGrade))
+            {
+                var overallGrade = GetOverallGrade(report.GetParameter<string>(parameter.GetPath(device, symbology)));
+                if (overallGrade != null) { target.Add(overallGrade); return; }
+            }
             else if (type == typeof(Custom))
             {
 
@@ -55,6 +63,15 @@ namespace LabelVal.L95.Sectors
 
             target.Add(new Missing(parameter));
             Logger.Debug($"Paramter: '{parameter}' @ Path: '{parameter.GetPath(device, symbology)}' missing or parse issue.");
+        }
+
+        public static OverallGrade GetOverallGrade(string original)
+        {
+            var data = original.Replace("DPM", "");
+            var spl = data.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+            Grade grade = new(BarcodeVerification.lib.Common.Parameters.OverallGrade, Devices.L95, spl[0]);
+            return new OverallGrade(Devices.L95, grade, original, spl[1], spl[2]);
         }
 
         private static IParameterValue GetGradeValueOrGrade(Devices device, Parameters parameter, Symbologies symbology, string data)

@@ -47,6 +47,11 @@ public static class ParameterHandling
             var valuePassFail = GetValuePassFail(parameter, symbology, report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
             if (valuePassFail != null) { target.Add(valuePassFail); return; }
         }
+        else if (type == typeof(OverallGrade))
+        {
+            var overallGrade = GetGrade(parameter, report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
+            if (overallGrade != null) { target.Add(overallGrade); return; }
+        }
         else if (type == typeof(Custom))
         {
 
