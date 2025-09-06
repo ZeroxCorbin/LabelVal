@@ -125,7 +125,7 @@ public class SectorReport : ISectorReport
     {
         var overall = report.GetParameter<JObject>(BarcodeVerification.lib.Common.Parameters.OverallGrade, Device, Symbology);
         if (overall != null)
-            OverallGrade = GetOverallGrade(overall);
+            OverallGrade = ParameterHandling.GetOverallGrade(overall);
         else
         {
             Logger.Error($"Could not find: '{BarcodeVerification.lib.Common.Parameters.OverallGrade.GetPath(Device, Symbology)}' in ReportData. {Device}");
@@ -198,119 +198,7 @@ public class SectorReport : ISectorReport
     private bool SetApeture(JObject report)
     {
         Aperture = report.GetParameter<double>(BarcodeVerification.lib.Common.Parameters.Aperture, Device, Symbology);
-
         return true;
     }
 
-    private OverallGrade GetOverallGrade(JObject json)
-    {
-
-        var spl = json["string"].ToString().Split('/', StringSplitOptions.RemoveEmptyEntries);
-
-        Grade grade = new(BarcodeVerification.lib.Common.Parameters.OverallGrade, Device, json["grade"]["value"].Value<double>());
-        return new OverallGrade(Device, grade, json["string"].ToString(), spl[1], spl[2]);
-    }
-
-
-    private void AddParameter(Parameters parameter, Symbologies theSymbology, ObservableCollection<IParameterValue> target, JObject report, JObject template)
-    {
-        var type = parameter.GetDataType(Device, theSymbology);
-
-        if (type == typeof(GradeValue))
-        {
-            var gradeValue = GetGradeValue(parameter, report.GetParameter<JObject>(parameter.GetPath(Device, Symbology)));
-
-            if (gradeValue != null)
-            {
-                target.Add(gradeValue);
-                return;
-            }
-        }
-        else if (type == typeof(Grade))
-        {
-            var grade = GetGrade(parameter, report.GetParameter<JObject>(parameter.GetPath(Device, Symbology)));
-
-            if (grade != null)
-            {
-                target.Add(grade);
-                return;
-            }
-        }
-        else if (type == typeof(ValueDouble))
-        {
-            var valueDouble = GetValueDouble(parameter, report.GetParameter<string>(parameter.GetPath(Device, Symbology)));
-            if (valueDouble != null)
-            {
-                target.Add(valueDouble);
-                return;
-            }
-        }
-        else if (type == typeof(ValueString))
-        {
-            var valueString = parameter is BarcodeVerification.lib.Common.Parameters.GradingStandard or BarcodeVerification.lib.Common.Parameters.GS1Table
-                ? GetValueString(parameter, template.GetParameter<string>(parameter.GetPath(Device, Symbology)))
-                : GetValueString(parameter, report.GetParameter<string>(parameter.GetPath(Device, Symbology)));
-            if (valueString != null) { target.Add(valueString); return; }
-        }
-        else if (type == typeof(PassFail))
-        {
-            var passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetPath(Device, Symbology)));
-            if (passFail != null) { target.Add(passFail); return; }
-        }
-        else if (type == typeof(ValuePassFail))
-        {
-            var valuePassFail = GetValuePassFail(parameter, report.GetParameter<JObject>(parameter.GetPath(Device, Symbology)));
-            if (valuePassFail != null) { target.Add(valuePassFail); return; }
-        }
-        else if (type == typeof(OverallGrade))
-        {
-            target.Add(OverallGrade);
-
-        }
-        else if (type == typeof(Custom))
-        {
-
-        }
-
-        target.Add(new Missing(parameter));
-        Logger.Debug($"Paramter: '{parameter}' @ Path: '{parameter.GetPath(Device, Symbology)}' missing or parse issue.");
-    }
-
-
-    private GradeValue GetGradeValue(Parameters parameter, JObject gradeValue)
-    {
-        if (gradeValue is null)
-            return null;
-
-        Grade grade = new(parameter, Device, gradeValue["grade"].ToString());
-        var value = gradeValue["value"].ToString();
-        return new GradeValue(parameter, Device, Symbology, grade, value);
-    }
-
-    private Grade GetGrade(Parameters parameter, JObject grade)
-    {
-        if (grade is null)
-            return null;
-        var value = grade["value"].ToString();
-        _ = grade["letter"].ToString();
-        return new Grade(parameter, Device, value);
-    }
-
-    private ValueDouble GetValueDouble(Parameters parameter, string value) => string.IsNullOrWhiteSpace(value)
-            ? null
-            : string.IsNullOrWhiteSpace(value) ? null : new ValueDouble(parameter, Device, Symbology, value);
-
-    private ValueString GetValueString(Parameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new ValueString(parameter, Device, value);
-
-    private PassFail GetPassFail(Parameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, Device, value);
-
-    public ValuePassFail GetValuePassFail(Parameters parameter, JObject valuePassFail)
-    {
-        if (valuePassFail is null)
-            return null;
-
-        var passFail = valuePassFail["result"].ToString();
-        var val = valuePassFail["value"].ToString();
-        return new ValuePassFail(parameter, Device, Symbology, val, passFail);
-    }
 }

@@ -9,11 +9,11 @@ public static class ParameterHandling
 {
     public static void AddParameter(Parameters parameter, Symbologies symbology, ICollection<IParameterValue> target, JObject report, JObject template)
     {
-        var type = parameter.GetDataType(Devices.V275, symbology);
+        Type type = parameter.GetDataType(Devices.V275, symbology);
 
         if (type == typeof(GradeValue) || type == typeof(Grade))
         {
-            var gradeValue = GetGradeValueOrGrade(parameter, symbology, report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
+            IParameterValue gradeValue = GetGradeValueOrGrade(parameter, symbology, report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
 
             if (gradeValue != null)
             {
@@ -23,7 +23,7 @@ public static class ParameterHandling
         }
         else if (type == typeof(ValueDouble))
         {
-            var valueDouble = GetValueDouble(parameter, symbology, report.GetParameter<string>(parameter.GetPath(Devices.V275, symbology)));
+            ValueDouble valueDouble = GetValueDouble(parameter, symbology, report.GetParameter<string>(parameter.GetPath(Devices.V275, symbology)));
             if (valueDouble != null)
             {
                 target.Add(valueDouble);
@@ -32,24 +32,24 @@ public static class ParameterHandling
         }
         else if (type == typeof(ValueString))
         {
-            var valueString = parameter is BarcodeVerification.lib.Common.Parameters.GS1Table
+            ValueString valueString = parameter is BarcodeVerification.lib.Common.Parameters.GS1Table
                 ? GetValueString(parameter, template.GetParameter<string>(parameter.GetPath(Devices.V275, symbology)))
                 : GetValueString(parameter, report.GetParameter<string>(parameter.GetPath(Devices.V275, symbology)));
             if (valueString != null) { target.Add(valueString); return; }
         }
         else if (type == typeof(PassFail))
         {
-            var passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetPath(Devices.V275, symbology)));
+            PassFail passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetPath(Devices.V275, symbology)));
             if (passFail != null) { target.Add(passFail); return; }
         }
         else if (type == typeof(ValuePassFail))
         {
-            var valuePassFail = GetValuePassFail(parameter, symbology, report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
+            ValuePassFail valuePassFail = GetValuePassFail(parameter, symbology, report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
             if (valuePassFail != null) { target.Add(valuePassFail); return; }
         }
         else if (type == typeof(OverallGrade))
         {
-            var overallGrade = GetGrade(parameter, report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
+            Grade overallGrade = GetGrade(parameter, report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
             if (overallGrade != null) { target.Add(overallGrade); return; }
         }
         else if (type == typeof(Custom))
@@ -80,12 +80,19 @@ public static class ParameterHandling
         Logger.Debug($"Paramter: '{parameter}' @ Path: '{parameter.GetPath(Devices.V275, symbology)}' missing or parse issue.");
     }
 
+    public static OverallGrade GetOverallGrade(JObject json)
+    {
+        var spl = json["string"].ToString().Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        Grade grade = new(BarcodeVerification.lib.Common.Parameters.OverallGrade, Devices.V275, json["grade"]["value"].Value<double>());
+        return new OverallGrade(Devices.V275, grade, json["string"].ToString(), spl[1], spl[2]);
+    }
     private static IParameterValue GetGradeValueOrGrade(Parameters parameter, Symbologies symbology, JObject gradeValue)
     {
         if (gradeValue is null)
             return null;
         var value = gradeValue["value"].ToString();
-        var grade = GetGrade(parameter, (JObject)gradeValue["grade"]);
+        Grade grade = GetGrade(parameter, (JObject)gradeValue["grade"]);
         return grade == null
             ? new Grade(parameter, Devices.V275, value)
             : new GradeValue(parameter, Devices.V275, symbology, grade, value);
