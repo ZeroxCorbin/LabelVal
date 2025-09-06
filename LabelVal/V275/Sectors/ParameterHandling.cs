@@ -49,7 +49,7 @@ public static class ParameterHandling
         }
         else if (type == typeof(OverallGrade))
         {
-            Grade overallGrade = GetGrade(parameter, report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
+            OverallGrade overallGrade = GetOverallGrade(report.GetParameter<JObject>(parameter.GetPath(Devices.V275, symbology)));
             if (overallGrade != null) { target.Add(overallGrade); return; }
         }
         else if (type == typeof(Custom))

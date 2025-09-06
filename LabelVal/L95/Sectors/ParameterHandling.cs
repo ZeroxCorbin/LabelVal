@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OfficeOpenXml.Drawing.Slicer.Style;
 
 namespace LabelVal.L95.Sectors
 {
@@ -58,7 +59,9 @@ namespace LabelVal.L95.Sectors
             }
             else if (type == typeof(Custom))
             {
-
+            }
+            else
+            {
             }
 
             target.Add(new Missing(parameter));

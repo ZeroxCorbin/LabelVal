@@ -29,9 +29,9 @@
         <local_converters:BoolToPassFailString x:Key="BoolToPassFailString" />
         <local_converters:ParameterSuffixToUnitsMultiConverter x:Key="ParameterSuffixToUnitsMultiConverter" />
 
-        <local_converters:DifferenceParameterTemplateSelector x:Key="DifferenceParameterTemplateSelector">
+        <local_converters:ParameterTemplateSelector x:Key="ParameterTemplateSelector">
 
-            <local_converters:DifferenceParameterTemplateSelector.Missing>
+            <local_converters:ParameterTemplateSelector.Missing>
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -49,10 +49,9 @@
                             Text="---" />
                     </Grid>
                 </DataTemplate>
-            </local_converters:DifferenceParameterTemplateSelector.Missing>
+            </local_converters:ParameterTemplateSelector.Missing>
 
-            <!--  Value Double Template  -->
-            <local_converters:DifferenceParameterTemplateSelector.ValueDoubleTemplate>
+            <local_converters:ParameterTemplateSelector.ValueDoubleTemplate>
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -136,9 +135,9 @@
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
-            </local_converters:DifferenceParameterTemplateSelector.ValueDoubleTemplate>
+            </local_converters:ParameterTemplateSelector.ValueDoubleTemplate>
 
-            <local_converters:DifferenceParameterTemplateSelector.ValueStringTemplate>
+            <local_converters:ParameterTemplateSelector.ValueStringTemplate>
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -209,9 +208,9 @@
 
                     </Grid>
                 </DataTemplate>
-            </local_converters:DifferenceParameterTemplateSelector.ValueStringTemplate>
+            </local_converters:ParameterTemplateSelector.ValueStringTemplate>
 
-            <local_converters:DifferenceParameterTemplateSelector.PassFailTemplate>
+            <local_converters:ParameterTemplateSelector.PassFailTemplate>
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -309,11 +308,9 @@
 
                     </Grid>
                 </DataTemplate>
-            </local_converters:DifferenceParameterTemplateSelector.PassFailTemplate>
+            </local_converters:ParameterTemplateSelector.PassFailTemplate>
 
-            <!--  Pass/Fail Template  -->
-            <!--  Pass/Fail Template  -->
-            <local_converters:DifferenceParameterTemplateSelector.ValuePassFailTemplate>
+            <local_converters:ParameterTemplateSelector.ValuePassFailTemplate>
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -409,11 +406,9 @@
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
-            </local_converters:DifferenceParameterTemplateSelector.ValuePassFailTemplate>
+            </local_converters:ParameterTemplateSelector.ValuePassFailTemplate>
 
-            <!--  Grade Template  -->
-            <!--  Grade Template  -->
-            <local_converters:DifferenceParameterTemplateSelector.GradeTemplate>
+            <local_converters:ParameterTemplateSelector.GradeTemplate>
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -565,11 +560,9 @@
 
                     </Grid>
                 </DataTemplate>
-            </local_converters:DifferenceParameterTemplateSelector.GradeTemplate>
+            </local_converters:ParameterTemplateSelector.GradeTemplate>
 
-            <!--  Grade Value Template  -->
-            <!--  Grade Value Template  -->
-            <local_converters:DifferenceParameterTemplateSelector.GradeValueTemplate>
+            <local_converters:ParameterTemplateSelector.GradeValueTemplate>
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -721,9 +714,163 @@
 
                     </Grid>
                 </DataTemplate>
-            </local_converters:DifferenceParameterTemplateSelector.GradeValueTemplate>
+            </local_converters:ParameterTemplateSelector.GradeValueTemplate>
 
-        </local_converters:DifferenceParameterTemplateSelector>
+            <local_converters:ParameterTemplateSelector.OverallGradeTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
+                            ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
+
+                        <StackPanel
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="{x:Type ContentControl}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+
+                                                    <TextBlock HorizontalAlignment="Right" Text="{Binding Path=Current.Value, StringFormat={}{0:N1}, Mode=OneTime}" />
+
+                                                    <TextBlock
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom"
+                                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
+                                                        <TextBlock.Text>
+                                                            <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                                                <Binding Mode="OneTime" Path="Current.Suffix" />
+                                                                <Binding
+                                                                    Mode="OneTime"
+                                                                    Path="DataContext.Report.Units"
+                                                                    RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+
+                                                    <TextBlock Margin="3,0" Text="{Binding Current.Grade.LetterValue, StringFormat=N1}" />
+
+
+                                                    <TextBlock Margin="3,0" Text="{Binding Path=Current.Grade.Letter, Mode=OneTime}" />
+
+                                                    <Border
+                                                        Width="10"
+                                                        Height="10"
+                                                        BorderThickness="0"
+                                                        CornerRadius="5">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneTime}" Value="B">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneTime}" Value="C">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneTime}" Value="D">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneTime}" Value="F">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                </DockPanel>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Current, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                <Setter Property="Content" Value="---" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentControl.Style>
+                            </ContentControl>
+
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="{x:Type ContentControl}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+
+                                                    <TextBlock HorizontalAlignment="Right" Text="{Binding Path=Previous.Value, StringFormat={}{0:N1}, Mode=OneTime}" />
+
+                                                    <TextBlock
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom"
+                                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
+                                                        <TextBlock.Text>
+                                                            <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                                                <Binding Mode="OneTime" Path="Previous.Suffix" />
+                                                                <Binding
+                                                                    Mode="OneTime"
+                                                                    Path="DataContext.Report.Units"
+                                                                    RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+
+                                                    <TextBlock Margin="3,0" Text="{Binding Previous.Grade.LetterValue, StringFormat=N1}" />
+
+
+                                                    <TextBlock Margin="3,0" Text="{Binding Path=Previous.Grade.Letter, Mode=OneTime}" />
+
+                                                    <Border
+                                                        Width="10"
+                                                        Height="10"
+                                                        BorderThickness="0"
+                                                        CornerRadius="5">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Previous.Grade.Letter, Mode=OneTime}" Value="B">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Previous.Grade.Letter, Mode=OneTime}" Value="C">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Previous.Grade.Letter, Mode=OneTime}" Value="D">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Previous.Grade.Letter, Mode=OneTime}" Value="F">
+                                                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                </DockPanel>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Previous, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                                <Setter Property="Content" Value="---" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentControl.Style>
+                            </ContentControl>
+                        </StackPanel>
+
+                    </Grid>
+                </DataTemplate>
+            </local_converters:ParameterTemplateSelector.OverallGradeTemplate>
+
+        </local_converters:ParameterTemplateSelector>
 
     </UserControl.Resources>
 
@@ -761,7 +908,7 @@
                                     <ContentControl
                                         Grid.Column="0"
                                         Content="{Binding}"
-                                        ContentTemplateSelector="{StaticResource DifferenceParameterTemplateSelector}" />
+                                        ContentTemplateSelector="{StaticResource ParameterTemplateSelector}" />
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
