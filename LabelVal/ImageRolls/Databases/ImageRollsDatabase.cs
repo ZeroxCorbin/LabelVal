@@ -1,11 +1,11 @@
 ﻿using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.ViewModels;
 using SQLite;
+using System;
 
 namespace LabelVal.ImageRolls.Databases;
-public class ImageRollsDatabase
+public class ImageRollsDatabase : IDisposable
 {
-
     public FileFolderEntry File { get; private set; }
     private SQLiteConnection Connection { get; set; } = null;
 
@@ -25,6 +25,12 @@ public class ImageRollsDatabase
         }
     }
     public void Close() => Connection?.Close();
+
+    public void Dispose()
+    {
+        Close();
+        GC.SuppressFinalize(this);
+    }
 
     public int InsertOrReplaceImageRoll(ImageRoll rol) => Connection.InsertOrReplace(rol);
     public bool ExistsImageRoll(string uid)

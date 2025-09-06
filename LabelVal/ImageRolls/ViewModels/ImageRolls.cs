@@ -75,8 +75,8 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
 
         if (IsLoading)
             return;
-App.ShowSplashScreen = true;
-        _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => {  WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Fixed Image Roll...")); });
+        App.ShowSplashScreen = true;
+        _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Fixed Image Roll...")); });
 
         SelectedImageRoll = value;
         IsLoading = true;
@@ -102,8 +102,8 @@ App.ShowSplashScreen = true;
 
         if (IsLoading)
             return;
-App.ShowSplashScreen = true; 
-        _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Image Roll...")); });
+        App.ShowSplashScreen = true;
+        _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Image Roll...")); });
 
         SelectedImageRoll = value;
         IsLoading = true;
@@ -394,12 +394,13 @@ App.ShowSplashScreen = true;
             foreach (ImageRoll roll in cachedRolls)
             {
                 // Re-associate the database instance, as it's not serialized
-                roll.ImageRollsDatabase = UserDatabases.FirstOrDefault(db => db.File.Path == roll.ImageRollsDatabase?.File.Path);
+                roll.ImageRollsDatabase = SelectedUserDatabase;
                 if (roll.ImageRollsDatabase is null)
                 {
                     failed = true;
                     break;
                 }
+                roll.ImageRolls = this;
 
                 UserImageRolls.Add(roll);
             }
@@ -428,6 +429,7 @@ App.ShowSplashScreen = true;
                 {
                     Logger.Debug($"Found: {roll.Name}");
                     roll.ImageRollsDatabase = db;
+                    roll.ImageRolls = this;
                     newRolls.Add(roll);
                 }
             }
@@ -447,6 +449,72 @@ App.ShowSplashScreen = true;
         App.Settings.SetValue("UserImageRolls_CacheMetadata", currentMetadata);
 
         Logger.Info($"Processed {UserImageRolls.Count} user image rolls.");
+    }
+
+    public void SaveUserImageRoll(ImageRoll roll)
+    {
+        if (SelectedUserDatabase.InsertOrReplaceImageRoll(roll) > 0)
+        {
+            Logger.Info($"Saved image roll: {roll.Name}");
+            UpdateUserImageRollCache(roll);
+        }
+        else
+            Logger.Error($"Failed to save image roll: {roll.Name}");
+    }
+
+    public void SaveImageEntry(ImageEntry img)
+    {
+        if (SelectedUserDatabase.InsertOrReplaceImage(img) > 0)
+        {
+            Logger.Info($"Saved image: {img.Name}");
+            UpdateUserImageRollCacheMetadata();
+        }
+        else
+            Logger.Error($"Failed to save image: {img.Name}");
+    }
+
+    /// <summary>
+    /// Updates or adds a single user image roll to the cache.
+    /// </summary>
+    /// <param name="roll">The image roll to update or add.</param>
+    private void UpdateUserImageRollCache(ImageRoll roll)
+    {
+        if (roll?.ImageRollsDatabase?.File?.Path is null)
+        {
+            Logger.Warning("Cannot update user image roll cache for a roll with no database path.");
+            return;
+        }
+
+        Logger.Info($"Updating cache for user image roll: {roll.Name}");
+
+        // Update the image roll list in memory
+        ImageRoll existingRoll = UserImageRolls.FirstOrDefault(r => r.UID == roll.UID);
+        if (existingRoll != null)
+        {
+            var index = UserImageRolls.IndexOf(existingRoll);
+            UserImageRolls[index] = roll;
+        }
+        else
+        {
+            UserImageRolls.Add(roll);
+        }
+
+        // Update the cache in settings
+        App.Settings.SetValue("UserImageRolls_Cache", UserImageRolls.ToList());
+
+        UpdateUserImageRollCacheMetadata();
+    }
+
+    private void UpdateUserImageRollCacheMetadata()
+    {
+        // Update the metadata cache
+        Dictionary<string, DateTime> cachedMetadata = App.Settings.GetValue("UserImageRolls_CacheMetadata", new Dictionary<string, DateTime>());
+        var dbPath = SelectedUserDatabase.File.Path;
+        if (File.Exists(dbPath))
+        {
+            cachedMetadata[dbPath] = File.GetLastWriteTimeUtc(dbPath);
+            App.Settings.SetValue("UserImageRolls_CacheMetadata", cachedMetadata);
+        }
     }
 
     /// <summary>
@@ -564,7 +632,7 @@ App.ShowSplashScreen = true;
     {
         Logger.Info("Adding image roll.");
 
-        NewImageRoll = new ImageRoll() { ImageRollsDatabase = SelectedUserDatabase };
+        NewImageRoll = new ImageRoll(this) { ImageRollsDatabase = SelectedUserDatabase };
     }
 
     /// <summary>
@@ -603,19 +671,16 @@ App.ShowSplashScreen = true;
         {
             Logger.Info($"Saved image roll: {NewImageRoll.Name}");
 
-            ImageRoll update = UserImageRolls.FirstOrDefault((e) => e.UID == NewImageRoll.UID);
-            if (update != null)
+            // Use a copy to ensure the original NewImageRoll is not modified by other processes
+            ImageRoll savedRoll = NewImageRoll.CopyLite();
+            savedRoll.ImageRollsDatabase = SelectedUserDatabase;
+
+            UpdateUserImageRollCache(savedRoll);
+
+            // If the currently selected roll was the one being edited, update it.
+            if (SelectedUserImageRoll != null && SelectedUserImageRoll.UID == savedRoll.UID)
             {
-                SelectedImageRoll.SelectedApplicationStandard = NewImageRoll.SelectedApplicationStandard;
-                SelectedImageRoll.SelectedGradingStandard = NewImageRoll.SelectedGradingStandard;
-                SelectedImageRoll.SelectedGS1Table = NewImageRoll.SelectedGS1Table;
-                SelectedImageRoll.Name = NewImageRoll.Name;
-                SelectedImageRoll.SectorType = NewImageRoll.SectorType;
-                SelectedImageRoll.ImageType = NewImageRoll.ImageType;
-            }
-            else
-            {
-                LoadUserImageRollsList();
+                SelectedUserImageRoll = savedRoll;
             }
 
             FileFolderEntry file = GetFileFolderEntry(App.UserImageRollDefaultFile);

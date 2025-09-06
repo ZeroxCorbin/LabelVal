@@ -132,7 +132,9 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// <summary>
     /// Gets the global application settings instance.
     /// </summary>
-    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+    [SQLite.Ignore] public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+
+    [SQLite.Ignore] public ImageRolls ImageRolls { get; set; }
 
     /// <summary>
     /// The unique identifier for the ImageRoll. This is also called the RollID.
@@ -267,12 +269,17 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// <summary>
     /// Initializes a new instance of the <see cref="ImageRoll"/> class.
     /// </summary>
-    public ImageRoll()
+    public ImageRoll() { }
+
+    public ImageRoll(ImageRolls imageRolls)
     {
+        ImageRolls = imageRolls;
         App.Settings.PropertyChanged += Settings_PropertyChanged;
         IsActive = true;
         ReceiveAll();
     }
+
+    ~ImageRoll() => Dispose();
 
     #endregion
 
@@ -539,7 +546,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         if (RollType == ImageRollTypes.Directory)
             return;
 
-        _ = ImageRollsDatabase.InsertOrReplaceImageRoll(this);
+        ImageRolls.SaveUserImageRoll(this);
     }
 
     /// <summary>
@@ -552,7 +559,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         if (RollType == ImageRollTypes.Directory)
             return;
 
-        _ = ImageRollsDatabase.InsertOrReplaceImage(image);
+        ImageRolls.SaveImageEntry(image);
     }
 
     #endregion
