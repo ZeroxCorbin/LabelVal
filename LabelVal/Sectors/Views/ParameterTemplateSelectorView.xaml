@@ -4,9 +4,9 @@
     xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
     xmlns:ViewModels="clr-namespace:LabelVal.Sectors.Interfaces"
     xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
+    xmlns:bar_common_parameters="clr-namespace:BarcodeVerification.lib.ISO.ParameterTypes;assembly=BarcodeVerification.lib"
     xmlns:converters="clr-namespace:LabelVal.Converters"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-        xmlns:bar_common_parameters="clr-namespace:BarcodeVerification.lib.ISO.ParameterTypes;assembly=BarcodeVerification.lib"
     xmlns:local="clr-namespace:LabelVal.Sectors.Views"
     xmlns:local_converters="clr-namespace:LabelVal.Sectors.Converters"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
@@ -338,14 +338,14 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock
-                            Grid.Column="0"
-                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
-                            ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
+                        Grid.Column="0"
+                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
+                        ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
 
                     <StackPanel
-                            Grid.Column="1"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center">
                         <ContentControl>
                             <ContentControl.Style>
                                 <Style TargetType="{x:Type ContentControl}">
@@ -356,44 +356,44 @@
                                                 <TextBlock HorizontalAlignment="Right" Text="{Binding Path=Current.Value, StringFormat={}{0:N1}, Mode=OneTime}" />
 
                                                 <TextBlock
-                                                        HorizontalAlignment="Right"
-                                                        VerticalAlignment="Bottom"
-                                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
+                                                    HorizontalAlignment="Right"
+                                                    VerticalAlignment="Bottom"
+                                                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
                                                     <TextBlock.Text>
                                                         <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
                                                             <Binding Mode="OneTime" Path="Current.Suffix" />
                                                             <Binding
-                                                                    Mode="OneTime"
-                                                                    Path="DataContext.Report.Units"
-                                                                    RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                                Mode="OneTime"
+                                                                Path="DataContext.Report.Units"
+                                                                RelativeSource="{RelativeSource AncestorType=UserControl}" />
                                                         </MultiBinding>
                                                     </TextBlock.Text>
                                                 </TextBlock>
 
-                                                <TextBlock Margin="3,0" Text="{Binding Current.Grade.LetterValue, StringFormat=N1}" />
+                                                <TextBlock Margin="3,0" Text="{Binding Grade.LetterValue, StringFormat=N1}" />
 
 
-                                                <TextBlock Margin="3,0" Text="{Binding Path=Current.Grade.Letter, Mode=OneTime}" />
+                                                <TextBlock Margin="3,0" Text="{Binding Path=Grade.Letter, Mode=OneTime}" />
 
                                                 <Border
-                                                        Width="10"
-                                                        Height="10"
-                                                        BorderThickness="0"
-                                                        CornerRadius="5">
+                                                    Width="10"
+                                                    Height="10"
+                                                    BorderThickness="0"
+                                                    CornerRadius="5">
                                                     <Border.Style>
                                                         <Style TargetType="{x:Type Border}">
                                                             <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneTime}" Value="B">
+                                                                <DataTrigger Binding="{Binding Grade.Letter, Mode=OneTime}" Value="B">
                                                                     <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
                                                                 </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneTime}" Value="C">
+                                                                <DataTrigger Binding="{Binding Grade.Letter, Mode=OneTime}" Value="C">
                                                                     <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
                                                                 </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneTime}" Value="D">
+                                                                <DataTrigger Binding="{Binding Grade.Letter, Mode=OneTime}" Value="D">
                                                                     <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
                                                                 </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Current.Grade.Letter, Mode=OneTime}" Value="F">
+                                                                <DataTrigger Binding="{Binding Grade.Letter, Mode=OneTime}" Value="F">
                                                                     <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
                                                                 </DataTrigger>
                                                             </Style.Triggers>
@@ -404,7 +404,7 @@
                                         </Setter.Value>
                                     </Setter>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Current, Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
+                                        <DataTrigger Binding="{Binding ., Converter={StaticResource TypeConverter}}" Value="{x:Type bar_common_parameters:Missing}">
                                             <Setter Property="Content" Value="---" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -417,6 +417,6 @@
                 </Grid>
             </DataTemplate>
         </local_converters:ParameterTemplateSelector.OverallGradeTemplate>
-        
+
     </local_converters:ParameterTemplateSelector>
 </ResourceDictionary>
