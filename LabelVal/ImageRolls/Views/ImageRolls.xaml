@@ -819,6 +819,7 @@
 
                     <mah:MetroTabControl
                         x:Name="TabCtlUserIr"
+                        IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBool}}"
                         ItemContainerStyle="{StaticResource UserImageRollIcs}"
                         ItemTemplate="{StaticResource ImageRollItemTemplate}"
                         ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=UserImageRolls}}"
@@ -916,6 +917,7 @@
 
                 <mah:MetroTabControl
                     x:Name="TabCtlFixedIr"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBool}}"
                     ItemContainerStyle="{StaticResource FixedImageRollIcs}"
                     ItemTemplate="{StaticResource ImageRollItemTemplate}"
                     ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=FixedImageRolls}}"

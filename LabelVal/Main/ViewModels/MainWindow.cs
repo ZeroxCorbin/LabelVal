@@ -1,4 +1,5 @@
 ﻿using BarcodeBuilder.lib.Wpf.ViewModels;
+using BarcodeBuilder.lib.Wpf.ViewModels.Browser;
 using BarcodeVerification.lib.Common;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;

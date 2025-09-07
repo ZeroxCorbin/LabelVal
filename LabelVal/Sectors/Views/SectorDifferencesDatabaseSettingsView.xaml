@@ -22,7 +22,7 @@
 
     <StackPanel>
 
-        <GroupBox Header="Grades">
+        <GroupBox Header="Grades" Style="{StaticResource MahApps.Styles.GroupBox}">
             <StackPanel>
                 <CheckBox Content="Compare Grade Value" IsChecked="{Binding GradeCompareSettings.CompareLetterValue, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
                 <DockPanel>
@@ -32,7 +32,7 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Graded Values">
+        <GroupBox Header="Graded Values" Style="{StaticResource MahApps.Styles.GroupBox}">
             <StackPanel>
                 <CheckBox Content="Compare Value" IsChecked="{Binding GradeValueCompareSettings.CompareValue, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
                 <DockPanel>
@@ -48,13 +48,13 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Pass/Fail">
+        <GroupBox Header="Pass/Fail" Style="{StaticResource MahApps.Styles.GroupBox}">
             <StackPanel>
                 <CheckBox Content="Compare" IsChecked="{Binding PassFailCompareSettings.Compare, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Pass/Fail Values">
+        <GroupBox Header="Pass/Fail Values" Style="{StaticResource MahApps.Styles.GroupBox}">
             <StackPanel>
                 <CheckBox Content="Compare Value" IsChecked="{Binding ValuePassFailCompareSettings.CompareValue, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
                 <DockPanel>
@@ -66,7 +66,7 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Value">
+        <GroupBox Header="Value" Style="{StaticResource MahApps.Styles.GroupBox}">
             <StackPanel>
                 <CheckBox Content="Compare Value" IsChecked="{Binding ValueDoubleCompareSettings.CompareValue, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
                 <DockPanel>
@@ -76,7 +76,7 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="GS1 Decode">
+        <GroupBox Header="GS1 Decode" Style="{StaticResource MahApps.Styles.GroupBox}">
             <StackPanel>
                 <CheckBox Content="Compare Pass/Fail" IsChecked="{Binding GS1DecodeCompareSettings.PassFail.Compare, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
                 <CheckBox Content="Compare Input" IsChecked="{Binding GS1DecodeCompareSettings.CompareInput, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
@@ -85,7 +85,7 @@
                 <CheckBox Content="Compare Errors" IsChecked="{Binding GS1DecodeCompareSettings.CompareError, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="Overall Grade">
+        <GroupBox Header="Overall Grade" Style="{StaticResource MahApps.Styles.GroupBox}">
             <StackPanel>
                 <CheckBox Content="Compare Grade" IsChecked="{Binding OverallGradeCompareSettings.GradeSettings.CompareLetterValue, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
                 <CheckBox Content="Compare Aperture" IsChecked="{Binding OverallGradeCompareSettings.CompareAperture, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
@@ -93,7 +93,7 @@
 
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="Strings">
+        <GroupBox Header="Strings" Style="{StaticResource MahApps.Styles.GroupBox}">
             <StackPanel>
                 <CheckBox Content="Compare String" IsChecked="{Binding ValueStringCompareSettings.CompareString, Source={x:Static classes:SectorDifferencesDatabaseSettings.Instance}}" />
             </StackPanel>

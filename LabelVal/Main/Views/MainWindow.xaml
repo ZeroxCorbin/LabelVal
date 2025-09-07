@@ -128,6 +128,7 @@
         <mah:FlyoutsControl>
             <mah:Flyout x:Name="ApplicationSettings" Position="Left">
                 <mah:Flyout.Header>
+
                     <StackPanel>
                         <Image Width="200" Source="/Assets/Images/label-val-logo.png" />
                         <StackPanel Margin="0,0,0,10" VerticalAlignment="Bottom">
@@ -151,17 +152,11 @@
 
                 <ScrollViewer>
 
-                    <StackPanel>
-                        <StackPanel Margin="3">
-                            <local:AppSettingsControlView DataContext="{Binding AppSettings}" />
-                        </StackPanel>
-
+                    <DockPanel>
                         <StackPanel Margin="10">
-                            <TextBlock Style="{StaticResource MaterialDesignTitleLargeTextBlock}" Text="Sector Output Settings" />
-
-                            <sectorOutput:SectorOutputSettings Margin="3" DataContext="{Binding SectorOutputSettings}" />
+                            <TextBlock Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Compare Settings" />
+                            <sectors:SectorDifferencesDatabaseSettingsView Margin="3" />
                         </StackPanel>
-
                         <StackPanel Margin="10">
                             <TextBlock Style="{StaticResource MaterialDesignTitleLargeTextBlock}" Text="Focused Parameters" />
 
@@ -172,13 +167,19 @@
                         </StackPanel>
 
 
-                        <StackPanel Margin="10">
-                            <TextBlock Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Compare Settings" />
-                            <sectors:SectorDifferencesDatabaseSettingsView Margin="3" />
+                        <StackPanel>
+                            <StackPanel Margin="3">
+                                <TextBlock Style="{StaticResource MaterialDesignTitleLargeTextBlock}" Text="UI Settings" />
+                                <local:AppSettingsControlView DataContext="{Binding AppSettings}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="10">
+                                <TextBlock Style="{StaticResource MaterialDesignTitleLargeTextBlock}" Text="Sector Output Settings" />
+                                <sectorOutput:SectorOutputSettings Margin="3" DataContext="{Binding SectorOutputSettings}" />
+                            </StackPanel>
                         </StackPanel>
 
-
-                    </StackPanel>
+                    </DockPanel>
                 </ScrollViewer>
             </mah:Flyout>
 

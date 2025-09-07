@@ -31,7 +31,7 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
     /// </summary>
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
-    public bool IsLoading { get; set; }
+    [ObservableProperty] bool _isLoading;
 
     /// <summary>
     /// Gets or sets the root entry for the user's image roll databases.
