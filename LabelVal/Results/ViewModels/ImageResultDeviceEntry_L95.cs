@@ -510,7 +510,7 @@ public partial class ImageResultDeviceEntry_L95
 
                 CurrentSectors.Add(new Sector(message.Template, message.Report, [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
             }
-            else if (GlobalAppSettings.Instance.IgnoreLvsNoResults)
+            else if (GlobalAppSettings.Instance.LvsIgnoreNoResults)
                 return;
 
             List<FullReport> temp = [];

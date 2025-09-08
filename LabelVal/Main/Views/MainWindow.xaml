@@ -150,24 +150,35 @@
 
                 </mah:Flyout.Header>
 
-                <ScrollViewer>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-                    <DockPanel>
+                    <ScrollViewer Grid.Column="0">
                         <StackPanel Margin="10">
                             <TextBlock Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Compare Settings" />
                             <sectors:SectorDifferencesDatabaseSettingsView Margin="3" />
                         </StackPanel>
+                    </ScrollViewer>
+
+                    <ScrollViewer Grid.Column="1">
                         <StackPanel Margin="10">
                             <TextBlock Style="{StaticResource MaterialDesignTitleLargeTextBlock}" Text="Focused Parameters" />
 
-                            <bar:EnumBrowserView
-                                MaxHeight="480"
-                                Margin="3"
-                                DataContext="{Binding EnumBrowserViewModel}" />
+                            <bar:EnumBrowserView Margin="3" DataContext="{Binding EnumBrowserViewModel}" />
                         </StackPanel>
+                    </ScrollViewer>
 
 
-                        <StackPanel>
+                    <ScrollViewer Grid.Column="2">
+                        <StackPanel Margin="10">
                             <StackPanel Margin="3">
                                 <TextBlock Style="{StaticResource MaterialDesignTitleLargeTextBlock}" Text="UI Settings" />
                                 <local:AppSettingsControlView DataContext="{Binding AppSettings}" />
@@ -178,9 +189,9 @@
                                 <sectorOutput:SectorOutputSettings Margin="3" DataContext="{Binding SectorOutputSettings}" />
                             </StackPanel>
                         </StackPanel>
+                    </ScrollViewer>
 
-                    </DockPanel>
-                </ScrollViewer>
+                </Grid>
             </mah:Flyout>
 
         </mah:FlyoutsControl>
@@ -217,60 +228,14 @@
                             LayoutUpdated="hamMenu_LayoutUpdated"
                             SelectedItem="{Binding SelectedMenuItem}">
 
-                            <!--<mah:HamburgerMenu.Style>
-                                <Style TargetType="mah:HamburgerMenu">
-                                    <Setter Property="DisplayMode" Value="CompactOverlay" />
-                                    <Setter Property="Width" Value="52" />
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding IsPaneOpen, RelativeSource={RelativeSource Self}}" Value="False" />
-                                                <Condition Binding="{Binding SelectedMenuItem, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="DisplayMode" Value="CompactInline" />
-                                            <Setter Property="Width" Value="auto" />
-                                        </MultiDataTrigger>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding IsPaneOpen, RelativeSource={RelativeSource Self}}" Value="True" />
-                                                <Condition Binding="{Binding SelectedMenuItem, Converter={StaticResource IsNullOrEmpty}}" Value="True" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="DisplayMode" Value="Inline" />
-                                            <Setter Property="Width" Value="auto" />
-                                        </MultiDataTrigger>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding IsPaneOpen, RelativeSource={RelativeSource Self}}" Value="True" />
-                                                <Condition Binding="{Binding SelectedMenuItem, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="DisplayMode" Value="Inline" />
-                                            <Setter Property="Width" Value="auto" />
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </mah:HamburgerMenu.Style>-->
-
                             <mah:HamburgerMenu.ContentTemplate>
                                 <DataTemplate>
-                                    <ContentControl Content="{Binding DataContext.SelectedMenuItem.Content, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" ContentTemplateSelector="{StaticResource ContentItemTemplateSelector}">
-                                        <!--<ContentControl.Style>
-                                            <Style TargetType="ContentControl">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding DataContext.SelectedMenuItem, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ContentControl.Style>-->
-                                    </ContentControl>
+                                    <ContentControl Content="{Binding DataContext.SelectedMenuItem.Content, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" ContentTemplateSelector="{StaticResource ContentItemTemplateSelector}" />
                                 </DataTemplate>
                             </mah:HamburgerMenu.ContentTemplate>
                         </mah:HamburgerMenu>
 
                         <DockPanel>
-
-                            <!--<ContentControl Content="{Binding Source=imageRollsContent}" />-->
-
                             <results:ImageResultsManager DataContext="{Binding ImageResultsManager}">
                                 <results:ImageResultsManager.Style>
                                     <Style TargetType="results:ImageResultsManager">
@@ -282,8 +247,6 @@
                                     </Style>
                                 </results:ImageResultsManager.Style>
                             </results:ImageResultsManager>
-
-
                         </DockPanel>
                     </DockPanel>
                 </md:DrawerHost>

@@ -3,13 +3,11 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Main.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -17,15 +15,32 @@ using V275_REST_Lib.Models;
 
 namespace LabelVal.V275.ViewModels;
 
+/// <summary>
+/// Manages the discovery and state of V275 verifier nodes.
+/// </summary>
 [JsonObject(MemberSerialization.OptIn)]
 public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRoll>>, IDisposable
 {
+    #region Properties
+
+    /// <summary>
+    /// Gets or sets a unique identifier for this NodeManager instance.
+    /// </summary>
     [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
 
+    /// <summary>
+    /// Gets or sets the parent V275Manager.
+    /// </summary>
     public V275Manager Manager { get; set; }
 
+    /// <summary>
+    /// Gets or sets the collection of discovered V275 nodes.
+    /// </summary>
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
 
+    /// <summary>
+    /// Gets or sets the host address for the V275 system.
+    /// </summary>
     [ObservableProperty][property: JsonProperty] private string host;
     partial void OnHostChanged(string value)
     {
@@ -33,6 +48,9 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             nd.Controller.Host = value;
     }
 
+    /// <summary>
+    /// Gets or sets the system port for the V275 system.
+    /// </summary>
     [ObservableProperty][property: JsonProperty] private uint systemPort;
     partial void OnSystemPortChanged(uint value)
     {
@@ -44,6 +62,10 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
                 nd.Controller.SystemPort = value;
         }
     }
+
+    /// <summary>
+    /// Gets or sets the system port as a string for UI binding and validation.
+    /// </summary>
     public string SystemPortString
     {
         get => SystemPort.ToString();
@@ -56,6 +78,9 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         }
     }
 
+    /// <summary>
+    /// Gets or sets the username for authentication.
+    /// </summary>
     [ObservableProperty][property: JsonProperty] private string username;
     partial void OnUsernameChanged(string value)
     {
@@ -63,6 +88,9 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             nd.Controller.Username = value;
     }
 
+    /// <summary>
+    /// Gets or sets the password for authentication.
+    /// </summary>
     [ObservableProperty][property: JsonProperty] private string password;
     partial void OnPasswordChanged(string value)
     {
@@ -70,6 +98,9 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             nd.Controller.Password = value;
     }
 
+    /// <summary>
+    /// Gets or sets the directory for simulator images.
+    /// </summary>
     [ObservableProperty][property: JsonProperty] private string simulatorImageDirectory;
     partial void OnSimulatorImageDirectoryChanged(string value)
     {
@@ -82,9 +113,21 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         }
     }
 
+    /// <summary>
+    /// Gets or sets the currently selected image roll.
+    /// </summary>
     [ObservableProperty] private ImageRoll selectedImageRoll;
+
     private readonly Timer _deviceDiscoveryTimer;
 
+    #endregion
+
+    #region Constructor
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NodeManager"/> class.
+    /// Sets default connection properties and starts the device discovery timer.
+    /// </summary>
     public NodeManager()
     {
         Host ??= "127.0.0.1";
@@ -97,24 +140,56 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
         SimulatorImageDirectory ??= GetSimulationDirectory();
 
+
         _deviceDiscoveryTimer = new Timer(10000);
         _deviceDiscoveryTimer.Elapsed += OnDeviceDiscoveryTimerElapsed;
         _deviceDiscoveryTimer.AutoReset = true;
-        _deviceDiscoveryTimer.Start();
+
+        if(GlobalAppSettings.Instance.V275AutoRefreshServers)
+            _deviceDiscoveryTimer.Start();
+
+        GlobalAppSettings.Instance.PropertyChanged += Instance_PropertyChanged;
     }
 
+    private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(GlobalAppSettings.V275AutoRefreshServers))
+        {
+            if (GlobalAppSettings.Instance.V275AutoRefreshServers)
+            {
+                if (!_deviceDiscoveryTimer.Enabled)
+                    _deviceDiscoveryTimer.Start();
+            }
+            else
+            {
+                if (_deviceDiscoveryTimer.Enabled)
+                    _deviceDiscoveryTimer.Stop();
+            }
+        }
+    }
+
+    #endregion
+
+    #region Device Discovery
+
+    /// <summary>
+    /// Periodically triggers the device discovery process.
+    /// </summary>
     private void OnDeviceDiscoveryTimerElapsed(object? sender, ElapsedEventArgs e)
     {
-        _deviceDiscoveryTimer.Interval = 30000;
+        _deviceDiscoveryTimer.Interval = 30000; // Subsequent checks are less frequent.
         _ = GetDevices();
     }
 
+    /// <summary>
+    /// Asynchronously discovers and populates the list of V275 nodes.
+    /// </summary>
     [RelayCommand]
     private async Task GetDevices()
     {
         if (!Application.Current.Dispatcher.CheckAccess())
         {
-            _ = Application.Current.Dispatcher.BeginInvoke(() => GetDevices());
+            _ = Application.Current.Dispatcher.BeginInvoke(GetDevices);
             return;
         }
 
@@ -128,7 +203,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             _deviceDiscoveryTimer.Stop();
 
             List<Node> lst = [];
-            foreach (var node in dev.nodes)
+            foreach (Devices.Node node in dev.nodes)
             {
                 if (lst.Any(n => n.Controller.Node.cameraMAC == node.cameraMAC))
                 {
@@ -152,7 +227,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
                 return;
             }
 
-            foreach (var node in srt)
+            foreach (Node node in srt)
                 Nodes.Add(node);
         }
         else
@@ -165,19 +240,39 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             Nodes.Clear();
         }
 
-        var sel = App.Settings.GetValue<Node>($"V275_{nameof(Manager.SelectedDevice)}");
-        foreach (var node in Nodes)
+        // Restore previously selected device if it's found in the new list.
+        Node sel = App.Settings.GetValue<Node>($"V275_{nameof(Manager.SelectedDevice)}");
+        if (sel != null)
         {
-            if (sel != null && node.Controller.Host == sel.Controller.Host && node.Controller.SystemPort == sel.Controller.SystemPort && node.Controller.NodeNumber == sel.Controller.NodeNumber)
-                Manager.SelectedDevice = node;
+            foreach (Node node in Nodes)
+            {
+                if (node.Controller.Host == sel.Controller.Host && node.Controller.SystemPort == sel.Controller.SystemPort && node.Controller.NodeNumber == sel.Controller.NodeNumber)
+                {
+                    Manager.SelectedDevice = node;
+                    break;
+                }
+            }
         }
     }
+
+    #endregion
+
+    #region Registry Helpers
+
+    /// <summary>
+    /// Retrieves the V275 service port number from the Windows Registry.
+    /// </summary>
+    /// <returns>The port number, or a default of 8080 if not found.</returns>
     private static uint GetPortNumber()
     {
         var res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "SystemServerPort", 8080);
-
         return res == null ? 8080 : Convert.ToUInt32(res);
     }
+
+    /// <summary>
+    /// Retrieves the V275 simulation image directory from the Windows Registry.
+    /// </summary>
+    /// <returns>The path to the simulation directory.</returns>
     private static string GetSimulationDirectory()
     {
         var res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "DataDirectory", "");
@@ -190,17 +285,38 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         return res.ToString();
     }
 
-    #region Receive Messages
-    //There is no point in reuesting the SeletedImageRoll at init, the user has not selected anything yet.
-    public void Receive(PropertyChangedMessage<ImageRoll> message) => SelectedImageRoll = message.NewValue;
+    #endregion
+
+    #region Message Handlers
+
+    /// <summary>
+    /// Receives property change messages for the selected <see cref="ImageRoll"/>.
+    /// </summary>
+    /// <param name="message">The message containing the new ImageRoll value.</param>
+    public void Receive(PropertyChangedMessage<ImageRoll> message) =>
+        // There is no point in requesting the SelectedImageRoll at init, the user has not selected anything yet.
+        SelectedImageRoll = message.NewValue;
+
     #endregion
 
     #region Dialogs
+
+    /// <summary>
+    /// Gets the default dialog coordinator instance.
+    /// </summary>
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
+
+    /// <summary>
+    /// Shows a simple dialog with a title, message, and an OK button.
+    /// </summary>
+    /// <param name="title">The title of the dialog.</param>
+    /// <param name="message">The message to display.</param>
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
+
     #endregion
 
     #region IDisposable
+
     private bool disposedValue;
 
     protected virtual void Dispose(bool disposing)
@@ -209,18 +325,26 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         {
             if (disposing)
             {
+                GlobalAppSettings.Instance.PropertyChanged -= Instance_PropertyChanged;
+
+                // Dispose managed state (managed objects).
                 _deviceDiscoveryTimer.Stop();
                 _deviceDiscoveryTimer.Elapsed -= OnDeviceDiscoveryTimerElapsed;
                 _deviceDiscoveryTimer.Dispose();
             }
+
+            // Free unmanaged resources (unmanaged objects) and override finalizer
+            // Set large fields to null
             disposedValue = true;
         }
     }
 
     public void Dispose()
     {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
+
     #endregion
 }

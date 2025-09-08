@@ -608,6 +608,7 @@
                         VerticalContentAlignment="Stretch"
                         Command="{Binding ProcessCommand}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        IsEnabled="{Binding ImageResultsManager.IsL95Working, Converter={StaticResource InvertBool}}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}">
 
                         <DockPanel>
@@ -820,7 +821,8 @@
                     VerticalContentAlignment="Stretch"
                     BorderBrush="{DynamicResource L95_Brush_Active}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    IsChecked="{Binding IsSelected}">
+                    IsChecked="{Binding IsSelected}"
+                    IsEnabled="{Binding ImageResultsManager.IsL95Working, Converter={StaticResource InvertBool}}">
                     <ToggleButton.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.ToggleButton}" TargetType="ToggleButton">
                             <Setter Property="ToolTip" Value="Redirect L95 results to this image roll." />

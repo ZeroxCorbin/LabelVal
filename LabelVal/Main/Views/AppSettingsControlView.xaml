@@ -36,17 +36,29 @@
                 <ToggleButton IsChecked="{Binding LaunchLvsOnConnect}" />
 
             </StackPanel>
+
+        </DockPanel>
+
+        <DockPanel>
             <StackPanel Margin="3">
                 <TextBlock
                     Margin="3"
                     HorizontalAlignment="Center"
                     Text="Ignore LVS Image&#x0a;on No Decode" />
 
-                <ToggleButton IsChecked="{Binding IgnoreLvsNoResults}"/>
+                <ToggleButton IsChecked="{Binding IgnoreLvsNoResults}" />
+
+            </StackPanel>
+            <StackPanel Margin="3">
+                <TextBlock
+                    Margin="3"
+                    HorizontalAlignment="Center"
+                    Text="Auto Detect V275 Nodes" />
+
+                <ToggleButton IsChecked="{Binding IgnoreLvsNoResults}" />
 
             </StackPanel>
         </DockPanel>
-
         <!--<StackPanel>
             <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="ORM Support Testing" />
 

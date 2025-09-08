@@ -89,7 +89,7 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
         else
         {
             _ = Controller.Connect(DatabasePath);
-            if (Controller.ProcessState == Win32_ProcessWatcherProcessState.Exited && AppSettings.LaunchLvsOnConnect)
+            if (Controller.ProcessState == Win32_ProcessWatcherProcessState.Exited && AppSettings.LvsLaunchOnConnect)
                 LaunchLvs();
         }
     }
