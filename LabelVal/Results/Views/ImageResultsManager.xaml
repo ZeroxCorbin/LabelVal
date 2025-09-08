@@ -1,4 +1,9 @@
-﻿<UserControl
+﻿<!--
+    This UserControl provides a comprehensive interface for managing and viewing image results.
+    It includes a toolbar for actions related to image rolls, device interactions, and result manipulation.
+    The main view consists of a scrollable list of image results with a thumbnail navigator and a side panel for viewing JSON data.
+-->
+<UserControl
     x:Class="LabelVal.Results.Views.ImageResultsManager"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -23,8 +28,10 @@
     Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
 
+    <!-- Resources section defining shared elements and styles for this control. -->
     <UserControl.Resources>
 
+        <!-- CollectionViewSource for sorting the image results entries by their source image order. -->
         <CollectionViewSource
             x:Key="CvsImageResultsEntries"
             IsLiveSortingRequested="True"
@@ -34,6 +41,7 @@
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
 
+        <!-- Resource for V275 device-specific buttons. This is dynamically loaded into the main toolbar. -->
         <DockPanel x:Key="V275Buttons">
 
             <!--  V275  -->
@@ -47,10 +55,12 @@
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Style.Triggers>
+                            <!-- Hides the button if the V275 handler is offline. -->
                             <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.Offline}">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
 
+                            <!-- ToolTips change based on the current V275 handler mode. -->
                             <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
                                 <Setter Property="ToolTip" Value="V275: Process the source image and detect sectors." />
                             </DataTrigger>
@@ -98,6 +108,7 @@
 
                         <Grid Background="{DynamicResource V275_Brush_Active}">
 
+                            <!-- Progress bar shown when the V275 device is busy. -->
                             <mah:MetroProgressBar
                                 Width="62"
                                 Height="6"
@@ -108,6 +119,7 @@
                                 IsIndeterminate="{Binding IsV275Working}"
                                 Visibility="{Binding IsV275Working, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
+                            <!-- Icons indicating the current mode (Camera/Simulator) and action (Detect/Restore/Trigger). -->
                             <!--  Camera  -->
                             <Grid
                                 Margin="0,6"
@@ -258,6 +270,7 @@
 
         </DockPanel>
 
+        <!-- Resource for V5 device-specific buttons. -->
         <DockPanel x:Key="V5Buttons">
 
             <!--  V5 Trigger  -->
@@ -481,6 +494,7 @@
 
         </DockPanel>
 
+        <!-- Resource for L95 device-specific buttons. -->
         <DockPanel x:Key="L95Buttons">
 
             <!--  L95 Trigger  -->
@@ -703,7 +717,7 @@
                 </Button>
             </Border>
 
-            <!--  95xx Redirect  -->
+            <!-- ToggleButton to redirect L95 results to the current image roll. -->
             <ToggleButton
                 Width="48"
                 Height="48"
@@ -744,6 +758,7 @@
                         </Setter>
                         <Style.Triggers>
 
+                            <!-- Visual state when L95 redirection is active. -->
                             <DataTrigger Binding="{Binding IsL95Selected}" Value="True">
                                 <Setter Property="ToolTip" Value="L95 results are being redirected to this image roll. Click to disable." />
                                 <Setter Property="Content">
@@ -796,8 +811,10 @@
 
     </UserControl.Resources>
 
+    <!-- Main layout container for the Image Results Manager. -->
     <DockPanel VerticalAlignment="Top">
 
+        <!-- Top toolbar area containing image roll information and controls. -->
         <DockPanel Margin="3,3,0,0" DockPanel.Dock="Top">
 
             <md:Card
@@ -808,6 +825,7 @@
 
                 <DockPanel>
 
+                    <!-- Left-side quick action panel for image roll settings. -->
                     <StackPanel>
 
                         <DockPanel Background="Teal">
@@ -823,6 +841,7 @@
 
                         <Border Style="{StaticResource imageBarHor}" />
 
+                        <!-- ListBox to select where new images are added (Top or Bottom). -->
                         <ListBox
                             Padding="3"
                             VerticalAlignment="Center"
@@ -843,6 +862,7 @@
                                 <Style BasedOn="{StaticResource MahApps.Styles.ListBox}" TargetType="{x:Type ListBox}">
                                     <Setter Property="Visibility" Value="Visible" />
                                     <Style.Triggers>
+                                        <!-- Collapsed if the image roll is locked. -->
                                         <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
@@ -858,7 +878,7 @@
 
                     <DockPanel>
 
-                        <!--  Image Roll Header  -->
+                        <!-- Header section displaying details of the currently selected image roll. -->
                         <DockPanel DockPanel.Dock="Top">
                             <DockPanel.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -972,6 +992,7 @@
 
                                 <Border Margin="3,0,0,0" Style="{StaticResource imageBar}" />
 
+                                <!--  Locked Status  -->
                                 <StackPanel Margin="6,0,0,0">
                                     <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Locked" />
 
@@ -999,6 +1020,7 @@
 
                                 <Border Margin="3,0,0,0" Style="{StaticResource imageBar}" />
 
+                                <!--  Roll Type (Database or Directory)  -->
                                 <StackPanel Margin="6,0,0,0">
                                     <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Roll Type" />
 
@@ -1049,11 +1071,12 @@
 
                         </DockPanel>
 
-                        <!--  Image Roll Control  -->
+                        <!-- Toolbar for controlling the image roll and results. -->
                         <DockPanel Margin="0,3,0,6">
 
                             <DockPanel HorizontalAlignment="Left">
 
+                                <!-- Button to add new images to the roll. Visible only when the roll is not locked. -->
                                 <Button
                                     Width="48"
                                     Margin="3,0,0,0"
@@ -1092,6 +1115,7 @@
 
                                 </Button>
 
+                                <!-- Device-specific buttons are loaded here from resources. -->
                                 <ContentControl Content="{StaticResource V275Buttons}" />
                                 <ContentControl Content="{StaticResource V5Buttons}" />
                                 <ContentControl Content="{StaticResource L95Buttons}" />
@@ -1111,7 +1135,7 @@
                                 </Border.Style>
                             </Border>
 
-                            <!--  Image Size  -->
+                            <!--  Image Size Slider -->
                             <DockPanel Margin="9,0,9,0" HorizontalAlignment="Right">
 
                                 <md:SmartHint
@@ -1156,7 +1180,7 @@
 
                             </DockPanel>
 
-                            <!--  Alarms  -->
+                            <!-- Toggle button to show or hide alarms for errors and warnings. -->
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock
                                     HorizontalAlignment="Center"
@@ -1200,7 +1224,7 @@
                                 </ToggleButton>
                             </StackPanel>
 
-                            <!--  Colums  -->
+                            <!-- Toggle button to switch between automatic and fixed dual-column layout for sectors. -->
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock
                                     HorizontalAlignment="Center"
@@ -1244,7 +1268,7 @@
                                 </ToggleButton>
                             </StackPanel>
 
-                            <!--  2D Grid  -->
+                            <!-- Toggle button to show or hide extended data for 2D grid sectors. -->
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock
                                     HorizontalAlignment="Center"
@@ -1298,6 +1322,7 @@
 
                             <Border Margin="0,0,0,0" Style="{StaticResource imageBar}" />
 
+                            <!-- Button to store all current results to the database. -->
                             <Button
                                 Width="48"
                                 Height="48"
@@ -1334,6 +1359,7 @@
                                 </DockPanel>
                             </Button>
 
+                            <!-- Button to clear all current results from the view. -->
                             <Button
                                 Width="48"
                                 Height="48"
@@ -1362,6 +1388,7 @@
 
                             <Border Margin="3,0,3,0" Style="{StaticResource imageBar}" />
 
+                            <!-- Button to copy all sector details to the clipboard as CSV. -->
                             <Button
                                 Width="48"
                                 Height="48"
@@ -1395,6 +1422,7 @@
                 </DockPanel>
             </md:Card>
 
+            <!-- Button to toggle the visibility of the right-side JSON viewer drawer. -->
             <md:Card HorizontalAlignment="Right" VerticalAlignment="Bottom">
                 <ToggleButton
                     x:Name="btnRightSideBar"
@@ -1416,10 +1444,12 @@
 
         </DockPanel>
 
+        <!-- Main content area, including the results list and the JSON viewer drawer. -->
         <DockPanel VerticalAlignment="Top" DockPanel.Dock="Top">
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}" />
 
+            <!-- DrawerHost that contains the main content and a slide-out right drawer for JSON data. -->
             <md:DrawerHost
                 x:Name="JsonDrawer"
                 md:DrawerHost.DrawerOpened="JsonDrawer_DrawerOpened"
@@ -1427,6 +1457,7 @@
                 <md:DrawerHost.Style>
                     <Style TargetType="md:DrawerHost">
                         <Style.Triggers>
+                            <!-- The drawer opens automatically when there is focused template or report data. -->
                             <DataTrigger Binding="{Binding FocusedTemplate, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                 <Setter Property="IsRightDrawerOpen" Value="True" />
                             </DataTrigger>
@@ -1437,10 +1468,12 @@
                     </Style>
                 </md:DrawerHost.Style>
 
+                <!-- Content for the right-side drawer: a TabControl with JSON viewers. -->
                 <md:DrawerHost.RightDrawerContent>
 
                     <TabControl>
 
+                        <!-- Tab for viewing the focused template JSON. -->
                         <TabItem x:Name="tiTemplate" Header="Template">
                             <TabItem.Style>
                                 <Style BasedOn="{StaticResource MaterialDesignTabItem}" TargetType="TabItem">
@@ -1459,6 +1492,7 @@
                                 ShowSaveButton="True" />
                         </TabItem>
 
+                        <!-- Tab for viewing the focused report JSON. -->
                         <TabItem x:Name="tiReport" Header="Report">
                             <TabItem.Style>
                                 <Style BasedOn="{StaticResource MaterialDesignTabItem}" TargetType="TabItem">
@@ -1483,8 +1517,10 @@
 
                 </md:DrawerHost.RightDrawerContent>
 
+                <!-- Main content area of the DrawerHost. -->
                 <DockPanel>
 
+                    <!-- Left-side panel for thumbnail navigation. -->
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -1507,6 +1543,7 @@
 
                         </md:Card>
 
+                        <!-- ListBox displaying thumbnails of the image results for quick navigation. -->
                         <ListBox
                             x:Name="ImageRollThumbnails"
                             Grid.Row="1"
@@ -1547,6 +1584,7 @@
                                         </Border>
                                     </Button>
                                     <DataTemplate.Triggers>
+                                        <!-- Highlights the thumbnail that is currently at the top of the viewport. -->
                                         <DataTrigger Binding="{Binding IsTopmost}" Value="True">
                                             <Setter TargetName="HighlightBorder" Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
                                         </DataTrigger>
@@ -1557,6 +1595,7 @@
                     </Grid>
 
 
+                    <!-- ScrollViewer for the main list of image results. -->
                     <ScrollViewer
                         x:Name="ImageResultsScrollViewer"
                         Margin="0"
@@ -1567,9 +1606,11 @@
                         Style="{StaticResource MahApps.Styles.ScrollViewer}"
                         VerticalScrollBarVisibility="Auto">
 
+                        <!-- ItemsControl to display the collection of image result entries. -->
                         <ItemsControl x:Name="ImageResultsItemsControl" ItemsSource="{Binding Source={StaticResource CvsImageResultsEntries}}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
+                                    <!-- Each item is rendered using the ImageResultEntry UserControl. -->
                                     <local:ImageResultEntry />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

@@ -664,17 +664,27 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
         {
             Logger.Info($"Saved image roll: {NewImageRoll.Name}");
 
-            // Use a copy to ensure the original NewImageRoll is not modified by other processes
-            ImageRoll savedRoll = NewImageRoll.CopyLite();
-            savedRoll.ImageRollsDatabase = SelectedUserDatabase;
+            //Get the current instance from the list, if it exists
+            ImageRoll savedRoll = UserImageRolls.FirstOrDefault(r => r.UID == NewImageRoll.UID);
+            if (savedRoll != null)
+            {
+                // Update existing instance
+                int index = UserImageRolls.IndexOf(savedRoll);
+                UserImageRolls[index].Name = NewImageRoll.Name;
+                UserImageRolls[index].SelectedApplicationStandard = NewImageRoll.SelectedApplicationStandard;
+                UserImageRolls[index].SelectedGS1Table = NewImageRoll.SelectedGS1Table;
+                UserImageRolls[index].SelectedGradingStandard = NewImageRoll.SelectedGradingStandard;
+                UserImageRolls[index].TargetDPI = NewImageRoll.TargetDPI;
+                UserImageRolls[index].IsLocked = NewImageRoll.IsLocked;
+            }
+            else
+            {
+                // Add new instance
+                savedRoll = NewImageRoll.CopyLite();
+                UserImageRolls.Add(savedRoll);
+            }   
 
             UpdateUserImageRollCache(savedRoll);
-
-            // If the currently selected roll was the one being edited, update it.
-            if (SelectedUserImageRoll != null && SelectedUserImageRoll.UID == savedRoll.UID)
-            {
-                SelectedUserImageRoll = savedRoll;
-            }
 
             FileFolderEntry file = GetFileFolderEntry(App.UserImageRollDefaultFile);
             if (file != null)
