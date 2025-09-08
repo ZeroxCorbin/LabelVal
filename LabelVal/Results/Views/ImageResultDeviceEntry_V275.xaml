@@ -297,7 +297,7 @@
                 <Button
                     Width="28"
                     HorizontalAlignment="Right"
-                    Click="CurrentSectorDetails_Click"
+                    Click="CurrentSectors_Click"
                     Content="{iconPacks:Modern Kind=Eye}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     ToolTip="Show all current sectors in a popup.&#x0a;Hold Shift and click to show the template and report JSON.">

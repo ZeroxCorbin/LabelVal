@@ -195,7 +195,7 @@ public partial class ImageResultsManager : UserControl
 
     private void ImageResultsScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
-        if (!_isLoaded && e.ExtentHeight > 0)
+        if ((!_isLoaded && e.ExtentHeight > 0) || _viewModel?.ImageResultsEntries.Any() != true)
         {
             _isLoaded = true;
             // Use Dispatcher to send message after rendering is complete

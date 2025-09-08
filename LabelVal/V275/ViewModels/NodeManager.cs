@@ -140,13 +140,14 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
         SimulatorImageDirectory ??= GetSimulationDirectory();
 
-
         _deviceDiscoveryTimer = new Timer(10000);
         _deviceDiscoveryTimer.Elapsed += OnDeviceDiscoveryTimerElapsed;
         _deviceDiscoveryTimer.AutoReset = true;
 
-        if(GlobalAppSettings.Instance.V275AutoRefreshServers)
+        if (GlobalAppSettings.Instance.V275AutoRefreshServers)
+        {
             _deviceDiscoveryTimer.Start();
+        }
 
         GlobalAppSettings.Instance.PropertyChanged += Instance_PropertyChanged;
     }
@@ -158,12 +159,16 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             if (GlobalAppSettings.Instance.V275AutoRefreshServers)
             {
                 if (!_deviceDiscoveryTimer.Enabled)
-                    _deviceDiscoveryTimer.Start();
+                {
+                    _ = GetDevices();
+                }
             }
             else
             {
                 if (_deviceDiscoveryTimer.Enabled)
+                {
                     _deviceDiscoveryTimer.Stop();
+                }
             }
         }
     }
@@ -233,7 +238,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         else
         {
             // If we fail to get devices, ensure the timer is running to try again.
-            if (!_deviceDiscoveryTimer.Enabled)
+            if (!_deviceDiscoveryTimer.Enabled && GlobalAppSettings.Instance.V275AutoRefreshServers)
             {
                 _deviceDiscoveryTimer.Start();
             }

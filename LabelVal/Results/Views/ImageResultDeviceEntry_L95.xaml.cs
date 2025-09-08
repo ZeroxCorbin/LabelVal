@@ -4,6 +4,7 @@ using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Views;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -79,10 +80,10 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            if (_viewModel.Result != null)
+            if (_viewModel?.Result?.Report != null)
             {
-                _viewModel.ImageResultsManager.FocusedTemplate = _viewModel.Result.Template;
-                _viewModel.ImageResultsManager.FocusedReport = _viewModel.Result.Report;
+                _viewModel.ImageResultsManager.FocusedTemplate = (JObject)_viewModel.Result.Report["AllReports"][0]["Template"];
+                _viewModel.ImageResultsManager.FocusedReport = (JObject)_viewModel.Result.Report["AllReports"][0]["Report"];
             }
         }
         else
@@ -97,14 +98,15 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
             pop.Popup.IsOpen = true;
         }
     }
-    private void CurrentSectorDetails_Click(object sender, RoutedEventArgs e)
+    private void CurrentSectors_Click(object sender, RoutedEventArgs e)
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-
-            _viewModel.ImageResultsManager.FocusedTemplate = _viewModel.CurrentTemplate;
-            _viewModel.ImageResultsManager.FocusedReport = _viewModel.CurrentReport;
-
+            if (_viewModel?.CurrentReport != null)
+            {
+                _viewModel.ImageResultsManager.FocusedTemplate = (JObject)_viewModel?.CurrentReport["AllReports"][0]["Template"];
+                _viewModel.ImageResultsManager.FocusedReport = (JObject)_viewModel?.CurrentReport["AllReports"][0]["Report"];
+            }
         }
         else
         {

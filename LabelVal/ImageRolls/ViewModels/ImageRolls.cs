@@ -69,18 +69,16 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
     partial void OnSelectedFixedImageRollChanged(ImageRoll value)
     {
         if (value != null)
+        {
+            if (IsLoading) return;
             SelectedUserImageRoll = null;
-        else
-            return;
 
-        if (IsLoading)
-            return;
+            App.ShowSplashScreen = true;
+            _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Fixed Image Roll...")); });
 
-        App.ShowSplashScreen = true;
-        _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Fixed Image Roll...")); });
-
-        SelectedImageRoll = value;
-        IsLoading = true;
+            SelectedImageRoll = value;
+            IsLoading = true;
+        }
     }
 
     /// <summary>
@@ -97,18 +95,16 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
     partial void OnSelectedUserImageRollChanged(ImageRoll value)
     {
         if (value != null)
+        {
+            if (IsLoading) return;
             SelectedFixedImageRoll = null;
-        else
-            return;
 
-        if (IsLoading)
-            return;
+            App.ShowSplashScreen = true;
+            _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Image Roll...")); });
 
-        App.ShowSplashScreen = true;
-        _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Image Roll...")); });
-
-        SelectedImageRoll = value;
-        IsLoading = true;
+            SelectedImageRoll = value;
+            IsLoading = true;
+        }
     }
 
     /// <summary>
@@ -491,12 +487,7 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
 
         // Update the image roll list in memory
         ImageRoll existingRoll = UserImageRolls.FirstOrDefault(r => r.UID == roll.UID);
-        if (existingRoll != null)
-        {
-            var index = UserImageRolls.IndexOf(existingRoll);
-            UserImageRolls[index] = roll;
-        }
-        else
+        if (existingRoll == null)
         {
             UserImageRolls.Add(roll);
         }

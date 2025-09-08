@@ -28,7 +28,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            foreach (var device in _viewModel.ImageResultEntry.ImageResultDeviceEntries)
+            foreach (ViewModels.IImageResultDeviceEntry device in _viewModel.ImageResultEntry.ImageResultDeviceEntries)
             {
                 if (device.FocusedCurrentSector != null)
                     device.FocusedCurrentSector.IsFocused = false;
@@ -47,7 +47,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
             switch ((string)((Button)sender).Tag)
             {
                 case "Stored":
-                    foreach (var device in _viewModel.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    foreach (ViewModels.IImageResultDeviceEntry device in _viewModel.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == _viewModel.Device))
                     {
                         if (device.FocusedStoredSector != null)
                             device.FocusedStoredSector.IsFocused = false;
@@ -57,7 +57,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
                     }
                     break;
                 case "Current":
-                    foreach (var device in _viewModel.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    foreach (ViewModels.IImageResultDeviceEntry device in _viewModel.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == _viewModel.Device))
                     {
                         if (device.FocusedCurrentSector != null)
                             device.FocusedCurrentSector.IsFocused = false;
@@ -97,7 +97,8 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
             pop.Popup.IsOpen = true;
         }
     }
-    private void CurrentSectorDetails_Click(object sender, RoutedEventArgs e)
+
+    private void CurrentSectors_Click(object sender, RoutedEventArgs e)
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
@@ -110,11 +111,12 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
             {
                 DataContext = _viewModel.CurrentSectors
             };
-
-            pop.Popup.PlacementTarget = (Button)sender;
+            pop.Popup.PlacementTarget = ScrollCurrentSectors;
+            pop.Popup.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
             pop.Popup.IsOpen = true;
         }
     }
+
     private void ScrollStoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
         if (e.VerticalChange != 0)
@@ -149,8 +151,8 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {
-        var parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        var sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
+        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
+        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
 
         if (sectorDetails != null)
         {
@@ -167,8 +169,8 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
     }
     private void btnCopyImage_Click(object sender, RoutedEventArgs e)
     {
-        var parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        var sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
+        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
+        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
 
         if (sectorDetails != null)
             CopyToClipboard(sectorDetails);
@@ -178,7 +180,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
         PngBitmapEncoder encoder = new();
         EncodeVisual(visual, encoder);
 
-        using var stream = System.IO.File.Create(fileName);
+        using System.IO.FileStream stream = System.IO.File.Create(fileName);
         encoder.Save(stream);
     }
     public void CopyToClipboard(FrameworkElement visual)

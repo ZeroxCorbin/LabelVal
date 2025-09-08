@@ -97,14 +97,12 @@ public partial class ImageResultDeviceEntry_V5 : UserControl
             pop.Popup.IsOpen = true;
         }
     }
-    private void CurrentSectorDetails_Click(object sender, RoutedEventArgs e)
+    private void CurrentSectors_Click(object sender, RoutedEventArgs e)
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-
             _viewModel.ImageResultsManager.FocusedTemplate = _viewModel.CurrentTemplate;
             _viewModel.ImageResultsManager.FocusedReport = _viewModel.CurrentReport;
-
         }
         else
         {
