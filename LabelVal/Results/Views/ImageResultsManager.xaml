@@ -530,10 +530,10 @@
                     Height="48"
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"
-                    IsEnabled="{Binding ImageResultsManager.IsL95Working, Converter={StaticResource InvertBool}}"
                     Command="{Binding AddDeviceImageCommand}"
                     CommandParameter="{x:Static vm:ImageResultEntryDevices.L95}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                    IsEnabled="{Binding IsL95Working, Converter={StaticResource InvertBool}}"
                     Style="{StaticResource MahApps.Styles.Button.Hamburger}">
 
                     <DockPanel>
@@ -710,12 +710,12 @@
                 Margin="3,0,0,0"
                 Padding="0"
                 VerticalAlignment="Center"
-                IsEnabled="{Binding ImageResultsManager.IsL95Working, Converter={StaticResource InvertBool}}"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Stretch"
                 BorderBrush="{DynamicResource L95_Brush_Active}"
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                IsChecked="{Binding IsL95Selected}">
+                IsChecked="{Binding IsL95Selected}"
+                IsEnabled="{Binding IsL95Working, Converter={StaticResource InvertBool}}">
                 <ToggleButton.Style>
                     <Style BasedOn="{StaticResource MahApps.Styles.ToggleButton}" TargetType="ToggleButton">
                         <Setter Property="ToolTip" Value="Redirect L95 results to this image roll." />
@@ -1480,39 +1480,6 @@
                         </TabItem>
 
                     </TabControl>
-                    <!--<DockPanel Width="auto">
-
-                        <DockPanel>
-                            <DockPanel.Style>
-                                <Style TargetType="DockPanel">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding FocusedTemplate, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DockPanel.Style>
-
-                            <json:JsonViewer JSON="{Binding FocusedTemplate}" ShowSaveButton="True" MinWidth="300"/>
-
-                        </DockPanel>
-                        <DockPanel>
-                            <DockPanel.Style>
-                                <Style TargetType="DockPanel">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding FocusedReport, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DockPanel.Style>
-                            <json:JsonViewer JSON="{Binding FocusedReport}" ShowSaveButton="True" MinWidth="300"/>
-                        </DockPanel>
-
-
-                    </DockPanel>-->
 
                 </md:DrawerHost.RightDrawerContent>
 

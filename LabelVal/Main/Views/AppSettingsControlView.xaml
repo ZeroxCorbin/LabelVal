@@ -33,7 +33,7 @@
                     HorizontalAlignment="Center"
                     Text="Launch LVS on Connect" />
 
-                <ToggleButton IsChecked="{Binding LaunchLvsOnConnect}" />
+                <ToggleButton IsChecked="{Binding LvsLaunchOnConnect}" />
 
             </StackPanel>
 
@@ -46,7 +46,7 @@
                     HorizontalAlignment="Center"
                     Text="Ignore LVS Image&#x0a;on No Decode" />
 
-                <ToggleButton IsChecked="{Binding IgnoreLvsNoResults}" />
+                <ToggleButton IsChecked="{Binding LvsIgnoreNoResults}" />
 
             </StackPanel>
             <StackPanel Margin="3">
@@ -55,23 +55,10 @@
                     HorizontalAlignment="Center"
                     Text="Auto Detect V275 Nodes" />
 
-                <ToggleButton IsChecked="{Binding IgnoreLvsNoResults}" />
+                <ToggleButton IsChecked="{Binding V275AutoRefreshServers}" />
 
             </StackPanel>
         </DockPanel>
-        <!--<StackPanel>
-            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="ORM Support Testing" />
-
-            <Button
-                x:Name="btnShowORMSettingsDialog"
-                Width="48"
-                HorizontalAlignment="Left"
-                Click="btnShowORMSettingsDialog_Click"
-                Style="{StaticResource MahApps.Styles.Button.Hamburger}">
-                <iconPacks:PackIconMaterial Kind="Cog" />
-            </Button>
-
-        </StackPanel>-->
 
     </StackPanel>
 </UserControl>

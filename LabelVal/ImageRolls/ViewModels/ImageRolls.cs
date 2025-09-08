@@ -75,6 +75,7 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
 
         if (IsLoading)
             return;
+
         App.ShowSplashScreen = true;
         _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Fixed Image Roll...")); });
 
@@ -102,6 +103,7 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
 
         if (IsLoading)
             return;
+
         App.ShowSplashScreen = true;
         _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Image Roll...")); });
 

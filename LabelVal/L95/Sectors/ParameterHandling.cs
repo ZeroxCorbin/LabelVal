@@ -73,7 +73,7 @@ namespace LabelVal.L95.Sectors
             var data = original.Replace("DPM", "");
             var spl = data.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
-            if(spl.Length != 3)
+            if(spl.Length < 3)
             {
                 Logger.Error($"Could not parse OverallGrade from: '{original}'");
                 return null;
