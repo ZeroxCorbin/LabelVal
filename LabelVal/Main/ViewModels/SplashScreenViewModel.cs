@@ -11,7 +11,7 @@ namespace LabelVal.Main.ViewModels;
 public partial class SplashScreenViewModel : ObservableRecipient, IRecipient<SplashScreenMessage>, IRecipient<CloseSplashScreenMessage>
 {
     [ObservableProperty]
-    private string _statusMessage = "Starting...";
+    private string _statusMessage = "Loading...";
 
     private readonly Queue<string> _messageQueue = new();
     private DispatcherTimer? _messageTimer;

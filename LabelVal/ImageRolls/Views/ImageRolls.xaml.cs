@@ -41,7 +41,7 @@ public partial class ImageRolls : UserControl
             if (ir != null && _viewModel.SelectedFixedImageRoll == null && _viewModel.SelectedUserImageRoll == null)
                 App.Settings.SetValue(nameof(ViewModels.ImageRolls.SelectedImageRoll), null);
           
-            if(ir == null || (ir.RollType == ImageRollTypes.Database && ir.ImageEntries.Count == 0))
+            if(ir == null || (ir.RollType == ImageRollTypes.Database && ir.ImageCount == 0))
                 _ = Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage(true))));
         };
 
