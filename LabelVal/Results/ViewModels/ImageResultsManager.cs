@@ -759,6 +759,10 @@ public partial class ImageResultsManager : ObservableRecipient,
         {
             if (res == null || res.Report == null) return;
 
+            if (res.Report.GetParameter<string>(Parameters.OverallGrade.GetPath(Devices.L95, Symbologies.DataMatrix)) == "Bar Code Not Detected"
+                && GlobalAppSettings.Instance.IgnoreLvsNoResults)
+                return; // Ignore reports where no barcode was detected
+
             var thumbnail = res.Template.GetParameter<byte[]>("Report.Thumbnail");
             if (SelectedImageRoll.IsLocked)
             {

@@ -334,6 +334,31 @@
                     </Button.Style>
                 </Button>
 
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+
+                    <Border Margin="3,0" Style="{StaticResource imageBar}" />
+
+                    <Button
+                        Width="28"
+                        Command="{Binding ClearCurrentCommand}"
+                        CommandParameter="{x:Static vm:ImageResultEntryDevices.L95}"
+                        Content="{iconPacks:MaterialDesign Kind=Clear}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        ToolTip="Clear the current sectors and image." />
+
+                </DockPanel>
+
             </DockPanel>
 
         </ResourceDictionary>

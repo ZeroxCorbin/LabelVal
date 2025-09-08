@@ -73,6 +73,12 @@ namespace LabelVal.L95.Sectors
             var data = original.Replace("DPM", "");
             var spl = data.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
+            if(spl.Length != 3)
+            {
+                Logger.Error($"Could not parse OverallGrade from: '{original}'");
+                return null;
+            }
+
             Grade grade = new(BarcodeVerification.lib.Common.Parameters.OverallGrade, Devices.L95, spl[0]);
             return new OverallGrade(Devices.L95, grade, original, spl[1], spl[2]);
         }

@@ -36,6 +36,15 @@
                 <ToggleButton IsChecked="{Binding LaunchLvsOnConnect}" />
 
             </StackPanel>
+            <StackPanel Margin="3">
+                <TextBlock
+                    Margin="3"
+                    HorizontalAlignment="Center"
+                    Text="Ignore LVS Image&#x0a;on No Decode" />
+
+                <ToggleButton IsChecked="{Binding IgnoreLvsNoResults}"/>
+
+            </StackPanel>
         </DockPanel>
 
         <!--<StackPanel>

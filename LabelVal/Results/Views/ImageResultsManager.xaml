@@ -765,7 +765,7 @@
                                                         Height="18"
                                                         Margin="3,0"
                                                         VerticalAlignment="Center"
-                                                        Kind="WatchVariant" />
+                                                        Kind="Headphones" />
                                                 </Grid>
 
                                                 <iconPacks:PackIconMaterial
