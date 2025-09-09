@@ -87,14 +87,7 @@ public partial class ImageResultDeviceEntry_V5 : UserControl
         }
         else
         {
-            PopupSectorsDetails pop = new()
-            {
-                DataContext = _viewModel.StoredSectors
-            };
-
-            pop.Popup.PlacementTarget = ScrollStoredSectors;
-            pop.Popup.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
-            pop.Popup.IsOpen = true;
+            _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(_viewModel.StoredSectors);
         }
     }
     private void CurrentSectors_Click(object sender, RoutedEventArgs e)
@@ -106,13 +99,7 @@ public partial class ImageResultDeviceEntry_V5 : UserControl
         }
         else
         {
-            PopupSectorsDetails pop = new()
-            {
-                DataContext = _viewModel.CurrentSectors
-            };
-
-            pop.Popup.PlacementTarget = (Button)sender;
-            pop.Popup.IsOpen = true;
+            _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
         }
     }
     private void ScrollStoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)

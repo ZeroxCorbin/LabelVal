@@ -46,6 +46,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     private readonly IKeyboardMouseEvents _globalHook;
     private bool _shiftPressed;
     private bool _isLoadingImages;
+    private readonly List<Window> _openSectorsWindows = new();
 
     #endregion
 
@@ -89,6 +90,8 @@ public partial class ImageResultsManager : ObservableRecipient,
     [ObservableProperty] private ImageRoll _selectedImageRoll;
     partial void OnSelectedImageRollChanged(ImageRoll oldValue, ImageRoll newValue)
     {
+        CloseAllSectorsDetailsWindows();
+
         if (oldValue != null)
         {
             oldValue.ImageEntries.CollectionChanged -= SelectedImageRoll_Images_CollectionChanged;
@@ -979,6 +982,38 @@ public partial class ImageResultsManager : ObservableRecipient,
     /// Shows a dialog for deleting an image with multiple options.
     /// </summary>
     public async Task<MessageDialogResult> AllImageCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, new MetroDialogSettings() { DefaultButtonFocus = MessageDialogResult.FirstAuxiliary, AffirmativeButtonText = "Image & Results", NegativeButtonText = "Image Only", FirstAuxiliaryButtonText = "Cancel" });
+
+    #endregion
+
+    #region Sectors Details Windows Management
+
+    /// <summary>
+    /// Displays a new sectors details window.
+    /// </summary>
+    /// <param name="sectors">The sectors data to display.</param>
+    public void ShowSectorsDetailsWindow(object sectors)
+    {
+        var win = new Views.SectorsDetailsWindow
+        {
+            DataContext = sectors,
+            Owner = Application.Current.MainWindow
+        };
+        win.Closed += (s, e) => _openSectorsWindows.Remove(win);
+        _openSectorsWindows.Add(win);
+        win.Show();
+    }
+
+    /// <summary>
+    /// Closes all open sectors details windows.
+    /// </summary>
+    public void CloseAllSectorsDetailsWindows()
+    {
+        foreach (var win in _openSectorsWindows.ToArray())
+        {
+            win.Close();
+        }
+        _openSectorsWindows.Clear();
+    }
 
     #endregion
 }

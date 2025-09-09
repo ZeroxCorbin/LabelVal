@@ -142,14 +142,14 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                
+
                 <!--  Sectors Only  -->
                 <Button
                     Width="28"
                     Click="StoredSectors_Click"
-                    Tag="json"
                     Content="{iconPacks:Material Kind=CodeJson}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                    Tag="json"
                     ToolTip="Show the template and report JSON.">
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
@@ -161,7 +161,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                
+
                 <!--  Image Only  -->
                 <DockPanel>
                     <DockPanel.Style>
@@ -330,15 +330,15 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                
+
                 <!--  Sectors Only  -->
                 <Button
                     Width="28"
-                    Tag="json"
                     HorizontalAlignment="Right"
                     Click="CurrentSectors_Click"
                     Content="{iconPacks:Material Kind=CodeJson}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                    Tag="json"
                     ToolTip="Show the template and report JSON.">
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">

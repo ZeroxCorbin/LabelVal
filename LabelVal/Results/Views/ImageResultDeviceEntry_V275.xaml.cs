@@ -87,14 +87,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
         }
         else
         {
-            PopupSectorsDetails pop = new()
-            {
-                DataContext = _viewModel.StoredSectors
-            };
-
-            pop.Popup.PlacementTarget = ScrollStoredSectors;
-            pop.Popup.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
-            pop.Popup.IsOpen = true;
+            _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(_viewModel.StoredSectors);
         }
     }
 
@@ -107,13 +100,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
         }
         else
         {
-            PopupSectorsDetails pop = new()
-            {
-                DataContext = _viewModel.CurrentSectors
-            };
-            pop.Popup.PlacementTarget = ScrollCurrentSectors;
-            pop.Popup.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
-            pop.Popup.IsOpen = true;
+            _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
         }
     }
 

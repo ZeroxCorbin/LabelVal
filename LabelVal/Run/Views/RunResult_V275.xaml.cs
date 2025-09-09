@@ -64,13 +64,7 @@ public partial class RunResult_V275 : UserControl
         }
         else
         {
-            PopupSectorsDetails pop = new()
-            {
-                DataContext = ((ViewModels.RunResult)DataContext).V275StoredSectors
-            };
-
-            pop.Popup.PlacementTarget = (Button)sender;
-            pop.Popup.IsOpen = true;
+            //_viewModel.ImageResultsManager.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
         }
     }
     private void V275CurrentSector_Click(object sender, RoutedEventArgs e)
@@ -88,13 +82,13 @@ public partial class RunResult_V275 : UserControl
         }
         else
         {
-            PopupSectorsDetails pop = new()
-            {
-                DataContext = ((ViewModels.RunResult)DataContext).V275CurrentSectors
-            };
+            //PopupSectorsDetails pop = new()
+            //{
+            //    DataContext = ((ViewModels.RunResult)DataContext).V275CurrentSectors
+            //};
 
-            pop.Popup.PlacementTarget = (Button)sender;
-            pop.Popup.IsOpen = true;
+            //pop.Popup.PlacementTarget = (Button)sender;
+            //pop.Popup.IsOpen = true;
         }
     }
 

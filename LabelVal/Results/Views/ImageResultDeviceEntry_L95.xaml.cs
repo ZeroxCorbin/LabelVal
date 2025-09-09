@@ -104,22 +104,11 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
                 {
                     ["Reports"] = JArray.FromObject(reports)
                 };
-
-
-                //_viewModel.ImageResultsManager.FocusedTemplate = (JObject)_viewModel.Result.Report["AllReports"][0]["Template"];
-                //_viewModel.ImageResultsManager.FocusedReport = (JObject)_viewModel.Result.Report["AllReports"][0]["Report"];
             }
         }
         else
         {
-            PopupSectorsDetails pop = new()
-            {
-                DataContext = _viewModel.StoredSectors
-            };
-
-            pop.Popup.PlacementTarget = ScrollStoredSectors;
-            pop.Popup.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
-            pop.Popup.IsOpen = true;
+            _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(_viewModel.StoredSectors);
         }
     }
     private void CurrentSectors_Click(object sender, RoutedEventArgs e)
@@ -128,19 +117,36 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
         {
             if (_viewModel?.CurrentReport != null)
             {
+                //Create an array of reports and an array of templates serilize them to the JObject
+                List<JObject> reports = new();
+                foreach (var group in _viewModel?.CurrentReport["AllReports"])
+                {
+                    reports.Add((JObject)group["Report"]);
+                }
+
+                List<JObject> templates = new();
+                foreach (var group in _viewModel?.CurrentReport["AllReports"])
+                {
+                    templates.Add((JObject)group["Template"]);
+                }
+
+                _viewModel.ImageResultsManager.FocusedTemplate = new JObject
+                {
+                    ["Templates"] = JArray.FromObject(templates)
+                };
+
+                _viewModel.ImageResultsManager.FocusedReport = new JObject
+                {
+                    ["Reports"] = JArray.FromObject(reports)
+                };
+
                 _viewModel.ImageResultsManager.FocusedTemplate = (JObject)_viewModel?.CurrentReport["AllReports"][0]["Template"];
                 _viewModel.ImageResultsManager.FocusedReport = (JObject)_viewModel?.CurrentReport["AllReports"][0]["Report"];
             }
         }
         else
         {
-            PopupSectorsDetails pop = new()
-            {
-                DataContext = _viewModel.CurrentSectors
-            };
-
-            pop.Popup.PlacementTarget = (Button)sender;
-            pop.Popup.IsOpen = true;
+            _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
         }
     }
     private void ScrollStoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)

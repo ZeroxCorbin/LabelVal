@@ -11,77 +11,13 @@
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
     mc:Ignorable="d">
 
-    <UserControl.Resources>
-        <CollectionViewSource x:Key="cvsStoredSectors" Source="{Binding}">
-            <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription Direction="Ascending" PropertyName="Report.CenterPoint.X" />
-                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
-    </UserControl.Resources>
+
 
     <Popup x:Name="Popup" StaysOpen="False">
         <Popup.Style>
             <Style TargetType="{x:Type Popup}" />
         </Popup.Style>
 
-        <GroupBox
-            Margin="3"
-            Padding="3"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-            md:ColorZoneAssist.Mode="Custom"
-            Style="{StaticResource MaterialDesignCardGroupBox}">
 
-            <GroupBox.Header>
-                <DockPanel Margin="-5">
-
-                    <Button
-                        Margin="6,0,3,0"
-                        Click="btnSaveImage_Click"
-                        Style="{StaticResource GroupHeaderCirlceButton}"
-                        ToolTip="Save as image.">
-                        <iconPacks:PackIconMaterial
-                            Width="14"
-                            Height="14"
-                            Kind="ContentSave" />
-                    </Button>
-
-                    <Button
-                        Click="btnCopyImage_Click"
-                        Style="{StaticResource GroupHeaderCirlceButton}"
-                        ToolTip="Copy image to clipboard as PNG.">
-                        <iconPacks:PackIconMaterial
-                            Width="14"
-                            Height="14"
-                            Kind="ContentCopy" />
-                    </Button>
-
-                </DockPanel>
-
-            </GroupBox.Header>
-
-            <DockPanel>
-
-                <ScrollViewer HorizontalScrollBarVisibility="Auto" Style="{StaticResource MahApps.Styles.ScrollViewer}">
-
-                    <ItemsControl x:Name="itemsControl" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsStoredSectors}}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel MaxWidth="1400" IsItemsHost="True" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <sectors:SectorDetails Foreground="{DynamicResource MahApps.Brushes.Text}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-
-            </DockPanel>
-        </GroupBox>
     </Popup>
 </UserControl>
