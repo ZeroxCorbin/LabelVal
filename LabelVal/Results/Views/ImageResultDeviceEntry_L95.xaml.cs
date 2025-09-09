@@ -78,12 +78,36 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
 
     private void StoredSectors_Click(object sender, RoutedEventArgs e)
     {
-        if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+        if (sender is Button b && b.Tag is string s && s.Equals("json"))
         {
             if (_viewModel?.Result?.Report != null)
             {
-                _viewModel.ImageResultsManager.FocusedTemplate = (JObject)_viewModel.Result.Report["AllReports"][0]["Template"];
-                _viewModel.ImageResultsManager.FocusedReport = (JObject)_viewModel.Result.Report["AllReports"][0]["Report"];
+                //Create an array of reports and an array of templates serilize them to the JObject
+                List<JObject> reports = new();
+                foreach (var group in _viewModel.Result.Report["AllReports"])
+                {
+                    reports.Add((JObject)group["Report"]);
+                }
+
+                List<JObject> templates = new();
+                foreach (var group in _viewModel.Result.Report["AllReports"])
+                {
+                    templates.Add((JObject)group["Template"]);
+                }
+
+                _viewModel.ImageResultsManager.FocusedTemplate = new JObject
+                {
+                    ["Templates"] = JArray.FromObject(templates)
+                };
+
+                _viewModel.ImageResultsManager.FocusedReport = new JObject
+                {
+                    ["Reports"] = JArray.FromObject(reports)
+                };
+
+
+                //_viewModel.ImageResultsManager.FocusedTemplate = (JObject)_viewModel.Result.Report["AllReports"][0]["Template"];
+                //_viewModel.ImageResultsManager.FocusedReport = (JObject)_viewModel.Result.Report["AllReports"][0]["Report"];
             }
         }
         else
@@ -100,7 +124,7 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
     }
     private void CurrentSectors_Click(object sender, RoutedEventArgs e)
     {
-        if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+        if (sender is Button b && b.Tag is string s && s.Equals("json"))
         {
             if (_viewModel?.CurrentReport != null)
             {

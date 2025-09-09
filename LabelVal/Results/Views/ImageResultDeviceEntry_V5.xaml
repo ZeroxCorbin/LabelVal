@@ -118,9 +118,9 @@
                 <Button
                     Width="28"
                     Click="StoredSectors_Click"
-                    Content="{iconPacks:Modern Kind=Eye}"
+                    Content="{iconPacks:Modern Kind=SectionExpandAll}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    ToolTip="Show all stored sectors in a popup.&#x0a;Hold Shift and click to show the template and report JSON.">
+                    ToolTip="Show all stored sectors in a popup.">
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Style.Triggers>
@@ -131,7 +131,26 @@
                         </Style>
                     </Button.Style>
                 </Button>
-
+                
+                <!--  Sectors Only  -->
+                <Button
+                    Width="28"
+                    Click="StoredSectors_Click"
+                    Tag="json"
+                    Content="{iconPacks:Material Kind=CodeJson}"
+                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                    ToolTip="Show the template and report JSON.">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                
                 <!--  Image Only  -->
                 <DockPanel>
                     <DockPanel.Style>
@@ -284,7 +303,8 @@
                     Width="28"
                     HorizontalAlignment="Right"
                     Click="CurrentSectors_Click"
-                    ToolTip="Show all current sectors in a popup.&#x0a;Hold Shift and click to show the template and report JSON.">
+                    Content="{iconPacks:Modern Kind=SectionExpandAll}"
+                    ToolTip="Show all current sectors in a popup.">
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Style.Triggers>
@@ -294,9 +314,27 @@
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
-                    <iconPacks:PackIconModern Kind="Eye" />
                 </Button>
-
+                
+                <!--  Sectors Only  -->
+                <Button
+                    Width="28"
+                    Tag="json"
+                    HorizontalAlignment="Right"
+                    Click="CurrentSectors_Click"
+                    Content="{iconPacks:Material Kind=CodeJson}"
+                    ToolTip="Show the template and report JSON.">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                
                 <DockPanel>
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">

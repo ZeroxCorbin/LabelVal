@@ -77,7 +77,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
 
     private void StoredSectors_Click(object sender, RoutedEventArgs e)
     {
-        if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+        if (sender is Button b && b.Tag is string s && s.Equals("json"))
         {
             if (_viewModel.Result != null)
             {
@@ -100,7 +100,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
 
     private void CurrentSectors_Click(object sender, RoutedEventArgs e)
     {
-        if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+        if (sender is Button b && b.Tag is string s && s.Equals("json"))
         {
             _viewModel.ImageResultsManager.FocusedTemplate = _viewModel.CurrentTemplate;
             _viewModel.ImageResultsManager.FocusedReport = _viewModel.CurrentReport;
