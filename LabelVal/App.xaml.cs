@@ -59,7 +59,8 @@ public partial class App : Application
 #if DEBUG
     public static string WorkingDir => Directory.GetCurrentDirectory();
 #else
-        public static string WorkingDir { get; set; } = System.IO.Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
+    public static string WorkingDir => Directory.GetCurrentDirectory();
+    //public static string WorkingDir { get; set; } = System.IO.Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
 #endif
 
     public static string Version { get; set; }
