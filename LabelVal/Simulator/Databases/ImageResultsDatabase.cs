@@ -1,11 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using LabelVal.Results.Databases;
 using LabelVal.Results.ViewModels;
 using Org.BouncyCastle.Tls;
 using SQLite;
 using System;
 using System.Collections.Generic;
 
-namespace LabelVal.Results.Databases;
+namespace LabelVal.Simulator.Databases;
 
 public class ImageResultsDatabase : ObservableObject, IDisposable
 {    public FileFolderEntry File { get; private set; }

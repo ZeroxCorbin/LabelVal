@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using NHibernate.Linq.Functions;
+using LabelVal.Simulator.Databases;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultsDatabases : ObservableRecipient
@@ -14,10 +15,10 @@ public partial class ImageResultsDatabases : ObservableRecipient
     [ObservableProperty] private FileFolderEntry fileRoot = App.Settings.GetValue<FileFolderEntry>("ImageResultsDatabases_FileRoot", new FileFolderEntry(App.ImageResultsDatabaseRoot), true);
     partial void OnFileRootChanged(FileFolderEntry value) => App.Settings.SetValue("ImageResultsDatabases_FileRoot", value);
 
-    public ObservableCollection<Databases.ImageResultsDatabase> Databases { get; } = [];
+    public ObservableCollection<ImageResultsDatabase> Databases { get; } = [];
 
-    [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageResultsDatabase selectedDatabase;
-    partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => App.Settings.SetValue("SelectedImageResultDatabaseFFE", value?.File);
+    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageResultsDatabase selectedDatabase;
+    partial void OnSelectedDatabaseChanged(ImageResultsDatabase value) => App.Settings.SetValue("SelectedImageResultDatabaseFFE", value?.File);
 
     public bool RightAlignOverflow
     {
@@ -36,7 +37,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
         UpdateImageResultsDatabasesList();
         SelectImageResultsDatabase();
 
-        WeakReferenceMessenger.Default.Register<RequestMessage<Databases.ImageResultsDatabase>>(
+        WeakReferenceMessenger.Default.Register<RequestMessage<ImageResultsDatabase>>(
             this,
             (recipient, message) =>
             {
@@ -140,7 +141,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
 
         if (Databases.Count == 0)
         {
-            Databases.ImageResultsDatabase file = new(new FileFolderEntry(Path.Combine(App.ImageResultsDatabaseRoot, "My First Database" + App.DatabaseExtension)));
+            ImageResultsDatabase file = new(new FileFolderEntry(Path.Combine(App.ImageResultsDatabaseRoot, "My First Database" + App.DatabaseExtension)));
             file.Close();
 
             FileRoot = EnumerateFolders(FileRoot);
@@ -167,7 +168,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
         {
             if (!Databases.Any(db => db.File.Path == file))
             {
-                Databases.ImageResultsDatabase newDatabase = new(new FileFolderEntry(file));
+                ImageResultsDatabase newDatabase = new(new FileFolderEntry(file));
                 Databases.Add(newDatabase);
             }
         }
@@ -203,7 +204,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
             return;
         }
 
-        Databases.ImageResultsDatabase file = new(new FileFolderEntry(Path.Combine(App.ImageResultsDatabaseRoot, res + App.DatabaseExtension)));
+        ImageResultsDatabase file = new(new FileFolderEntry(Path.Combine(App.ImageResultsDatabaseRoot, res + App.DatabaseExtension)));
         file.Close();
 
         UpdateImageResultsDatabasesList();
@@ -228,7 +229,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
     }
 
     [RelayCommand]
-    private async Task Delete(Databases.ImageResultsDatabase imageResultsDatabase)
+    private async Task Delete(ImageResultsDatabase imageResultsDatabase)
     {
         if (imageResultsDatabase == null)
             return;

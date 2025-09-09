@@ -11,6 +11,7 @@ using LabelVal.L95.ViewModels;
 using LabelVal.Main.ViewModels;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Extensions;
+using LabelVal.Simulator.Databases;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
@@ -34,7 +35,7 @@ namespace LabelVal.Results.ViewModels;
 public partial class ImageResultsManager : ObservableRecipient,
     IRecipient<PropertyChangedMessage<ImageRoll>>,
     IRecipient<PropertyChangedMessage<Node>>,
-    IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>,
+    IRecipient<PropertyChangedMessage<ImageResultsDatabase>>,
     IRecipient<PropertyChangedMessage<Scanner>>,
     IRecipient<PropertyChangedMessage<Verifier>>,
     IRecipient<PropertyChangedMessage<PrinterSettings>>,
@@ -108,7 +109,7 @@ public partial class ImageResultsManager : ObservableRecipient,
     /// <summary>
     /// Gets or sets the currently selected image results database.
     /// </summary>
-    [ObservableProperty] private Databases.ImageResultsDatabase _selectedDatabase;
+    [ObservableProperty] private ImageResultsDatabase _selectedDatabase;
 
     /// <summary>
     /// Gets or sets the topmost image result entry in the view.
@@ -309,9 +310,9 @@ public partial class ImageResultsManager : ObservableRecipient,
         if (ret2.HasReceivedResponse)
             Receive(new PropertyChangedMessage<PrinterSettings>("", "", null, ret2.Response));
 
-        var ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<Databases.ImageResultsDatabase>());
+        var ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageResultsDatabase>());
         if (ret4.HasReceivedResponse)
-            Receive(new PropertyChangedMessage<Databases.ImageResultsDatabase>("", "", null, ret4.Response));
+            Receive(new PropertyChangedMessage<ImageResultsDatabase>("", "", null, ret4.Response));
 
         var ret5 = WeakReferenceMessenger.Default.Send(new RequestMessage<Scanner>());
         if (ret5.HasReceivedResponse)
@@ -866,9 +867,9 @@ public partial class ImageResultsManager : ObservableRecipient,
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
 
     /// <summary>
-    /// Receives property changes for <see cref="Databases.ImageResultsDatabase"/> and updates the selection.
+    /// Receives property changes for <see cref="Simulator.Databases.ImageResultsDatabase"/> and updates the selection.
     /// </summary>
-    public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
+    public void Receive(PropertyChangedMessage<ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
 
     /// <summary>
     /// Receives property changes for <see cref="Node"/> (V275) and updates the selection.

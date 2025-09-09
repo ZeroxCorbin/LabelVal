@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using Lvs95xx.lib.Shared.LvsDatabases;
 using Lvs95xx.lib.Shared.Watchers;
 using System;
+using System.Threading.Tasks;
 using Watchers.lib.Process;
 using Watchers.lib.Registry;
 
@@ -74,11 +75,15 @@ public partial class ActiveWatchers : ObservableRecipient
         //        message.Reply(new Win32_ProcessWatcherMessage(_processWatcher.AppName, _processWatcher.MainWindowTitle, _processWatcher.Process, _processWatcher.State));
         //    });
 
-        _registryWatcher.OnRegistryChanged += (value) =>
+        Task.Run(() =>
         {
-            _ = WeakReferenceMessenger.Default.Send(new RegistryMessage(value));
-        };
-        _registryWatcher.Start(Microsoft.Win32.RegistryHive.LocalMachine, @"SOFTWARE\Microscan\LVS-95XX", "Database", updateOnStart: false);
+            _registryWatcher.OnRegistryChanged += (value) =>
+            {
+                _ = WeakReferenceMessenger.Default.Send(new RegistryMessage(value));
+            };
+            _registryWatcher.Start(Microsoft.Win32.RegistryHive.LocalMachine, @"SOFTWARE\Microscan\LVS-95XX", "Database", updateOnStart: false);
+        });
+
 
         //_processWatcher.OnProcessChanged += (appName, mainWindowTitle, state, process) =>
         //{

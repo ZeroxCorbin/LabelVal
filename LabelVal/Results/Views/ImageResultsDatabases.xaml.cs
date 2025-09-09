@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using LabelVal.Simulator.Databases;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace LabelVal.Results.Views;
@@ -11,7 +12,7 @@ public partial class ImageResultsDatabases : UserControl
 
     private void btnLockImageResultsDatabase_Click(object sender, System.Windows.RoutedEventArgs e)
     {
-        if(sender is Button button && button.DataContext is Databases.ImageResultsDatabase ir)
+        if(sender is Button button && button.DataContext is ImageResultsDatabase ir)
             ir.IsLocked = !ir.IsLocked;
     }
 

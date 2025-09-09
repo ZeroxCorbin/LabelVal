@@ -4,9 +4,9 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.Databases;
 using LabelVal.Main.ViewModels;
-using LabelVal.Results.Databases;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
+using LabelVal.Simulator.Databases;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
@@ -22,7 +22,7 @@ namespace LabelVal.Results.ViewModels;
 /// <summary>
 /// This is a viewmodel to support both the Image Roll and the Results database information.
 /// </summary>
-public partial class ImageResultEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>
+public partial class ImageResultEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageResultsDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     #region Delegates
     /// <summary>
@@ -110,7 +110,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     /// <see cref="SelectedDatabase"/>
     /// </summary>
     [ObservableProperty] private ImageResultsDatabase selectedDatabase;
-    partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value)
+    partial void OnSelectedDatabaseChanged(ImageResultsDatabase value)
     {
         foreach (var device in ImageResultDeviceEntries)
             device.GetStored();
@@ -492,7 +492,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     /// <summary>
     /// Receives property changed messages for the ImageResultsDatabase.
     /// </summary>
-    public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
+    public void Receive(PropertyChangedMessage<ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
     /// <summary>
     /// Receives property changed messages for the PrinterSettings.
     /// </summary>
