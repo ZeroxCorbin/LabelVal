@@ -547,6 +547,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
             return;
 
         ImageRolls.SaveUserImageRoll(this);
+        OnPropertyChanged(nameof(StandardGroup));
     }
 
     /// <summary>

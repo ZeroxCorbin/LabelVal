@@ -1,11 +1,11 @@
 ﻿<!--
-This UserControl defines the view for managing "Image Rolls".
-Image Rolls are collections of images used for barcode verification testing.
-The view is split into two main sections:
-1. User Image Rolls: Editable collections of images created by the user.
-2. Fixed Image Rolls: Read-only, pre-defined collections of images.
-
-The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
+    This UserControl defines the view for managing "Image Rolls".
+    Image Rolls are collections of images used for barcode verification testing.
+    The view is split into two main sections:
+    1. User Image Rolls: Editable collections of images created by the user.
+    2. Fixed Image Rolls: Read-only, pre-defined collections of images.
+    
+    The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
 -->
 <UserControl
     x:Class="LabelVal.ImageRolls.Views.ImageRolls"
@@ -31,10 +31,10 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
 
     <UserControl.Resources>
 
-        <!-- Converter to generate content for tab items. -->
+        <!--  Converter to generate content for tab items.  -->
         <converters:ContentGeneratorConverter x:Key="ContentGeneratorConverter" />
 
-        <!-- CollectionViewSource for Fixed Image Rolls. This provides sorting and grouping for the read-only image rolls. -->
+        <!--  CollectionViewSource for Fixed Image Rolls. This provides sorting and grouping for the read-only image rolls.  -->
         <CollectionViewSource x:Key="FixedImageRolls" Source="{Binding FixedImageRolls}">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription Direction="Ascending" PropertyName="SelectedApplicationStandard" />
@@ -48,7 +48,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
-        <!-- CollectionViewSource for User Image Rolls. This provides sorting and grouping for the user-created image rolls. -->
+        <!--  CollectionViewSource for User Image Rolls. This provides sorting and grouping for the user-created image rolls.  -->
         <CollectionViewSource x:Key="UserImageRolls" Source="{Binding UserImageRolls}">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription Direction="Ascending" PropertyName="SelectedApplicationStandard" />
@@ -62,7 +62,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
-        <!-- DataTemplate for individual items in the Image Roll ListViews. -->
+        <!--  DataTemplate for individual items in the Image Roll ListViews.  -->
         <DataTemplate x:Key="ImageRollItemTemplateListView" DataType="viewModels:ImageRollEntry">
 
             <DockPanel
@@ -75,7 +75,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                     </Style>
                 </DockPanel.Style>
 
-                <!-- Decorative borders for group styling. -->
+                <!--  Decorative borders for group styling.  -->
                 <Border
                     Margin="0,0,6,0"
                     Background="{DynamicResource MahApps.Brushes.Accent2}"
@@ -95,13 +95,13 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <!-- Icon representing an image roll. -->
+                    <!--  Icon representing an image roll.  -->
                     <iconPacks:PackIconMaterial
                         Margin="0,3,6,0"
                         VerticalAlignment="Center"
                         Kind="ImageMultiple" />
 
-                    <!-- Displays the number of images in the roll, hidden if zero. -->
+                    <!--  Displays the number of images in the roll, hidden if zero.  -->
                     <TextBlock Grid.Row="1" Text="{Binding ImageCount}">
                         <TextBlock.Style>
                             <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
@@ -127,12 +127,12 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
 
-                        <!-- 
-                        This section implements a text trimming effect for long image roll names.
-                        When the name overflows, a "..." hint appears. The text can be aligned left or right.
+                        <!--
+                            This section implements a text trimming effect for long image roll names.
+                            When the name overflows, a "..." hint appears. The text can be aligned left or right.
                         -->
 
-                        <!-- Overflow indicator for right-aligned text. -->
+                        <!--  Overflow indicator for right-aligned text.  -->
                         <md:SmartHint
                             Grid.Column="0"
                             Margin="3,0"
@@ -157,7 +157,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                             </md:SmartHint.Style>
                         </md:SmartHint>
 
-                        <!-- ScrollViewer to handle long names. FlowDirection is toggled for alignment. -->
+                        <!--  ScrollViewer to handle long names. FlowDirection is toggled for alignment.  -->
                         <ScrollViewer
                             x:Name="srcName4"
                             Grid.Column="1"
@@ -184,7 +184,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                                 </Style>
                             </ScrollViewer.Style>
 
-                            <!-- Displays the name of the image roll. -->
+                            <!--  Displays the name of the image roll.  -->
                             <TextBlock Text="{Binding Name}">
                                 <TextBlock.Style>
                                     <Style BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}" TargetType="TextBlock">
@@ -199,7 +199,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                             </TextBlock>
                         </ScrollViewer>
 
-                        <!-- Overflow indicator for left-aligned text. -->
+                        <!--  Overflow indicator for left-aligned text.  -->
                         <md:SmartHint
                             Grid.Column="2"
                             Margin="3,0"
@@ -224,7 +224,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                             </md:SmartHint.Style>
                         </md:SmartHint>
 
-                        <!-- Displays the GS1 Table number if applicable. -->
+                        <!--  Displays the GS1 Table number if applicable.  -->
                         <TextBlock
                             Grid.Column="3"
                             Margin="6,3"
@@ -242,13 +242,13 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                         </TextBlock>
                     </Grid>
 
-                    <!-- Panel for status icons at the bottom of the item. -->
+                    <!--  Panel for status icons at the bottom of the item.  -->
                     <DockPanel
                         Grid.Row="1"
                         Grid.Column="1"
                         HorizontalAlignment="Left">
 
-                        <!-- Displays the target DPI for the image roll. -->
+                        <!--  Displays the target DPI for the image roll.  -->
                         <TextBlock Margin="6,0" VerticalAlignment="Center">
                             <TextBlock.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -269,7 +269,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                             </TextBlock.Style>
                         </TextBlock>
 
-                        <!-- Icon indicating the sector type (shared or independent). -->
+                        <!--  Icon indicating the sector type (shared or independent).  -->
                         <iconPacks:PackIconMaterial
                             Margin="3"
                             HorizontalAlignment="Left"
@@ -289,7 +289,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                             </iconPacks:PackIconMaterial.Style>
                         </iconPacks:PackIconMaterial>
 
-                        <!-- Icon indicating if the image roll is locked or unlocked. -->
+                        <!--  Icon indicating if the image roll is locked or unlocked.  -->
                         <iconPacks:PackIconMaterial
                             Margin="3"
                             HorizontalAlignment="Left"
@@ -309,7 +309,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                             </iconPacks:PackIconMaterial.Style>
                         </iconPacks:PackIconMaterial>
 
-                        <!-- Icon indicating the storage type (database or directory). -->
+                        <!--  Icon indicating the storage type (database or directory).  -->
                         <iconPacks:PackIconMaterial
                             Margin="3"
                             HorizontalAlignment="Left"
@@ -335,7 +335,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
 
         </DataTemplate>
 
-        <!-- DataTemplate for the content of a Fixed Image Roll tab. It contains a ListView. -->
+        <!--  DataTemplate for the content of a Fixed Image Roll tab. It contains a ListView.  -->
         <DataTemplate x:Key="FixedIrListView">
 
             <ListView
@@ -355,7 +355,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
             </ListView>
         </DataTemplate>
 
-        <!-- DataTemplate for the content of a User Image Roll tab. It contains a ListView. -->
+        <!--  DataTemplate for the content of a User Image Roll tab. It contains a ListView.  -->
         <DataTemplate x:Key="UserIrListView">
 
             <ListView
@@ -378,13 +378,13 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
             </ListView>
         </DataTemplate>
 
-        <!-- DataTemplate for the header of the TabItems. It displays icons based on the group's standards. -->
+        <!--  DataTemplate for the header of the TabItems. It displays icons based on the group's standards.  -->
         <DataTemplate x:Key="ImageRollItemTemplate" DataType="{x:Type TabItem}">
 
             <DockPanel Name="dockBackground" Margin="-3,0">
                 <Grid Margin="6" Background="White">
 
-                    <!-- Main icon representing the grading standard (e.g., 1D, 2D, DPM). -->
+                    <!--  Main icon representing the grading standard (e.g., 1D, 2D, DPM).  -->
                     <Image Width="42" Height="42">
                         <Image.Style>
                             <Style TargetType="Image">
@@ -408,7 +408,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                         </Image.Style>
                     </Image>
 
-                    <!-- Overlay icon for the application standard (e.g., GS1). -->
+                    <!--  Overlay icon for the application standard (e.g., GS1).  -->
                     <Image
                         Width="32"
                         Height="32"
@@ -478,7 +478,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
 
             </DockPanel>
 
-            <!-- Highlights the selected tab. -->
+            <!--  Highlights the selected tab.  -->
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="True">
                     <Setter TargetName="dockBackground" Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
@@ -486,20 +486,20 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
             </DataTemplate.Triggers>
         </DataTemplate>
 
-        <!-- Style for the Fixed Image Roll TabItems. -->
+        <!--  Style for the Fixed Image Roll TabItems.  -->
         <Style
             x:Key="FixedImageRollIcs"
             BasedOn="{StaticResource MahApps.Styles.TabItem}"
             TargetType="TabItem">
 
-            <!-- This generates the content (the ListView) for the tab item when it's selected. -->
+            <!--  This generates the content (the ListView) for the tab item when it's selected.  -->
             <Setter Property="Content" Value="{Binding Converter={StaticResource ContentGeneratorConverter}, ConverterParameter={StaticResource FixedIrListView}}" />
 
             <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
             <Setter Property="BorderThickness" Value="1,1,1,0" />
             <Setter Property="Margin" Value="0" />
 
-            <!-- Sets tooltips for the tab headers based on the group name. -->
+            <!--  Sets tooltips for the tab headers based on the group name.  -->
             <Style.Triggers>
                 <!--<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="{x:Static bar_common:ApplicationStandards.GS1}">
                     <Setter Property="Background" Value="{DynamicResource MahApps.Colors.Accent3}"/>
@@ -527,20 +527,20 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
 
         </Style>
 
-        <!-- Style for the User Image Roll TabItems. -->
+        <!--  Style for the User Image Roll TabItems.  -->
         <Style
             x:Key="UserImageRollIcs"
             BasedOn="{StaticResource MahApps.Styles.TabItem}"
             TargetType="TabItem">
 
-            <!-- This generates the content (the ListView) for the tab item when it's selected. -->
+            <!--  This generates the content (the ListView) for the tab item when it's selected.  -->
             <Setter Property="Content" Value="{Binding Converter={StaticResource ContentGeneratorConverter}, ConverterParameter={StaticResource UserIrListView}}" />
 
             <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
             <Setter Property="BorderThickness" Value="1,1,1,0" />
             <Setter Property="Margin" Value="0" />
 
-            <!-- Sets tooltips for the tab headers based on the group name. -->
+            <!--  Sets tooltips for the tab headers based on the group name.  -->
             <Style.Triggers>
                 <!--<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="{x:Static bar_common:ApplicationStandards.GS1}">
                     <Setter Property="Background" Value="{DynamicResource MahApps.Colors.Accent3}"/>
@@ -571,20 +571,20 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
 
     </UserControl.Resources>
 
-    <!-- Main layout grid, dividing the view into User and Fixed Image Roll sections. -->
+    <!--  Main layout grid, dividing the view into User and Fixed Image Roll sections.  -->
     <Grid Margin="3,3,0,0" VerticalAlignment="Top">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- ===================================================================================== -->
-        <!-- User Image Rolls Section                                                              -->
-        <!-- This section allows users to create, edit, and manage their own image rolls.          -->
-        <!-- ===================================================================================== -->
+        <!--  =====================================================================================  -->
+        <!--  User Image Rolls Section  -->
+        <!--  This section allows users to create, edit, and manage their own image rolls.  -->
+        <!--  =====================================================================================  -->
         <DockPanel DockPanel.Dock="Top">
 
-            <!-- Card containing the header and action buttons for User Image Rolls. -->
+            <!--  Card containing the header and action buttons for User Image Rolls.  -->
             <md:Card
                 Margin="3,3,0,0"
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
@@ -609,7 +609,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
 
                         <Border DockPanel.Dock="Top" Style="{StaticResource imageBarHor}" />
 
-                        <!-- Dropdown for managing database sources. -->
+                        <!--  Dropdown for managing database sources.  -->
                         <mah:DropDownButton
                             Width="36"
                             BorderThickness="0"
@@ -635,7 +635,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                     <Border Style="{StaticResource imageBar}" />
 
                     <DockPanel>
-                        <!-- Header for the User Image Rolls section. -->
+                        <!--  Header for the User Image Rolls section.  -->
                         <DockPanel HorizontalAlignment="Left" DockPanel.Dock="Top">
                             <DockPanel.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -651,12 +651,13 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                             <Border Style="{StaticResource imageBarHor}" />
                         </DockPanel>
 
-                        <!-- Toolbar with action buttons (Add, Edit, Save, etc.). -->
+                        <!--  Toolbar with action buttons (Add, Edit, Save, etc.).  -->
                         <DockPanel Height="44">
 
-                            <!-- Add Button: Visible when not in edit/add mode. -->
+                            <!--  Add Button: Visible when not in edit/add mode.  -->
                             <Button
                                 Width="48"
+                                Margin="3,0,0,0"
                                 VerticalAlignment="Top"
                                 Command="{Binding AddCommand}"
                                 ToolTip="Add a new Image Roll to the current database.">
@@ -689,7 +690,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                                 </StackPanel>
                             </Button>
 
-                            <!-- Edit Button: Visible when an item is selected and not in add/edit mode. -->
+                            <!--  Edit Button: Visible when an item is selected and not in add/edit mode.  -->
                             <Button
                                 Width="48"
                                 VerticalAlignment="Top"
@@ -728,7 +729,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
 
                             </Button>
 
-                            <!-- Save Button: Visible when in add/edit mode. -->
+                            <!--  Save Button: Visible when in add/edit mode.  -->
                             <Button
                                 Width="48"
                                 VerticalAlignment="Top"
@@ -761,7 +762,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                                 </StackPanel>
                             </Button>
 
-                            <!-- Cancel Button: Visible when in add/edit mode. -->
+                            <!--  Cancel Button: Visible when in add/edit mode.  -->
                             <Button
                                 Width="48"
                                 VerticalAlignment="Top"
@@ -794,7 +795,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                                 </StackPanel>
                             </Button>
 
-                            <!-- Delete Button: Visible when in add/edit mode. -->
+                            <!--  Delete Button: Visible when in add/edit mode.  -->
                             <Button
                                 Width="48"
                                 VerticalAlignment="Top"
@@ -826,10 +827,10 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                                         Kind="Delete" />
                                 </StackPanel>
                             </Button>
-                            
+
                         </DockPanel>
 
-                        <!-- Toggle button to switch text alignment for long names in the list. -->
+                        <!--  Toggle button to switch text alignment for long names in the list.  -->
                         <ToggleButton
                             Margin="3,6"
                             HorizontalAlignment="Right"
@@ -851,9 +852,9 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                 <Border Style="{StaticResource groupLeft}" />
                 <Border Style="{StaticResource groupBottom}" />
 
-                <!-- 
-                DrawerHost that contains the editing UI for an image roll.
-                It appears from the top when a new image roll is being created or an existing one is edited.
+                <!--
+                    DrawerHost that contains the editing UI for an image roll.
+                    It appears from the top when a new image roll is being created or an existing one is edited.
                 -->
                 <md:DrawerHost
                     x:Name="DrwEditImageRoll"
@@ -870,12 +871,12 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                         </Style>
                     </md:DrawerHost.Style>
 
-                    <!-- The content of the drawer is the ImageRollEntryEdit user control. -->
+                    <!--  The content of the drawer is the ImageRollEntryEdit user control.  -->
                     <md:DrawerHost.TopDrawerContent>
                         <local:ImageRollEntryEdit DataContext="{Binding NewImageRoll}" />
                     </md:DrawerHost.TopDrawerContent>
 
-                    <!-- Tab control to display User Image Rolls, grouped by standard. -->
+                    <!--  Tab control to display User Image Rolls, grouped by standard.  -->
                     <mah:MetroTabControl
                         x:Name="TabCtlUserIr"
                         IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBool}}"
@@ -888,13 +889,13 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
             </DockPanel>
         </DockPanel>
 
-        <!-- ===================================================================================== -->
-        <!-- Fixed Image Rolls Section                                                             -->
-        <!-- This section displays read-only, system-provided image rolls.                         -->
-        <!-- ===================================================================================== -->
+        <!--  =====================================================================================  -->
+        <!--  Fixed Image Rolls Section  -->
+        <!--  This section displays read-only, system-provided image rolls.  -->
+        <!--  =====================================================================================  -->
         <DockPanel Grid.Row="1">
 
-            <!-- Card containing the header for Fixed Image Rolls. -->
+            <!--  Card containing the header for Fixed Image Rolls.  -->
             <md:Card
                 Height="48"
                 Margin="3,3,0,0"
@@ -904,7 +905,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
 
                 <DockPanel>
 
-                    <!-- Icon for the Fixed Image Rolls section. -->
+                    <!--  Icon for the Fixed Image Rolls section.  -->
                     <DockPanel Width="48" Height="48">
                         <StackPanel
                             Width="36"
@@ -937,7 +938,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                     <Border Style="{StaticResource imageBar}" />
 
                     <DockPanel>
-                        <!-- Header for the Fixed Image Rolls section. -->
+                        <!--  Header for the Fixed Image Rolls section.  -->
                         <DockPanel HorizontalAlignment="Left" DockPanel.Dock="Top">
                             <DockPanel.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -956,7 +957,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
 
                         <DockPanel>
 
-                            <!-- Hidden button for a developer feature (copying UID to clipboard). -->
+                            <!--  Hidden button for a developer feature (copying UID to clipboard).  -->
                             <Button
                                 Width="48"
                                 HorizontalAlignment="Left"
@@ -981,7 +982,7 @@ The UI uses MahApps.Metro and MaterialDesignInXAML for styling and controls.
                 <Border Style="{StaticResource groupLeft}" />
                 <Border Style="{StaticResource groupBottom}" />
 
-                <!-- Tab control to display Fixed Image Rolls, grouped by standard. -->
+                <!--  Tab control to display Fixed Image Rolls, grouped by standard.  -->
                 <mah:MetroTabControl
                     x:Name="TabCtlFixedIr"
                     IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBool}}"
