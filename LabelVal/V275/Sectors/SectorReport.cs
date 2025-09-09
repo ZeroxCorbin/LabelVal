@@ -81,7 +81,7 @@ public class SectorReport : ISectorReport
         _ = SetXdimAndUnits(report);
 
         //Set Aperture
-        _ = SetApeture(report);
+        //_ = SetApeture(report);
 
         _ = SetOverallGrade(report);
 
@@ -195,10 +195,10 @@ public class SectorReport : ISectorReport
         return true;
     }
 
-    private bool SetApeture(JObject report)
-    {
-        Aperture = report.GetParameter<double>(BarcodeVerification.lib.Common.Parameters.Aperture, Device, Symbology);
-        return true;
-    }
+    //private bool SetApeture(JObject report)
+    //{
+    //    Aperture = report.GetParameter<double>(BarcodeVerification.lib.Common.Parameters.Aperture, Device, Symbology);
+    //    return true;
+    //}
 
 }

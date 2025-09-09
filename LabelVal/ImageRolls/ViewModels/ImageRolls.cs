@@ -70,6 +70,9 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
     {
         if (value != null)
         {
+            if (SelectedImageRoll != null && SelectedImageRoll.UID == value.UID)
+                return;
+
             if (IsLoading) return;
             SelectedUserImageRoll = null;
 
@@ -96,6 +99,9 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
     {
         if (value != null)
         {
+            if(SelectedImageRoll != null && SelectedImageRoll.UID == value.UID)
+                return;
+
             if (IsLoading) return;
             SelectedFixedImageRoll = null;
 

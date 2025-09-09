@@ -75,7 +75,7 @@ public class SectorReport : ISectorReport
 
         _ = SetStandardAndTable(report);
         _ = SetXdimAndUnits(report);
-        _ = SetApeture(report);
+        //_ = SetApeture(report);
         _ = SetOverallGrade(report);
 
         //foreach (AvailableParameters parameter in Params.CommonParameters)
@@ -209,25 +209,25 @@ public class SectorReport : ISectorReport
         return true;
     }
 
-    private bool SetApeture(JObject report)
-    {
-        var aperture = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Aperture, Device, Symbology);
-        if (aperture != null)
-        {
-            //GetParameter returns: Reference number 12 (12 mil)
-            var split = aperture.Split('(', StringSplitOptions.RemoveEmptyEntries);
-            if (split.Length != 2)
-            {
-                Logger.Error($"Could not parse: '{aperture}' to get Aperture. {Device}");
-                return false;
-            }
-            Aperture = split[1].ParseDouble();
-        }
-        else
-        {
-            Logger.Error($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Aperture.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
-            return false;
-        }
-        return true;
-    }
+    //private bool SetApeture(JObject report)
+    //{
+    //    var aperture = report.GetParameter<string>(BarcodeVerification.lib.Common.Parameters.Aperture, Device, Symbology);
+    //    if (aperture != null)
+    //    {
+    //        //GetParameter returns: Reference number 12 (12 mil)
+    //        var split = aperture.Split('(', StringSplitOptions.RemoveEmptyEntries);
+    //        if (split.Length != 2)
+    //        {
+    //            Logger.Error($"Could not parse: '{aperture}' to get Aperture. {Device}");
+    //            return false;
+    //        }
+    //        Aperture = split[1].ParseDouble();
+    //    }
+    //    else
+    //    {
+    //        Logger.Error($"Could not find: '{BarcodeVerification.lib.Common.Parameters.Aperture.GetPath(Devices.L95, Symbology)}' in ReportData. {Device}");
+    //        return false;
+    //    }
+    //    return true;
+    //}
 }

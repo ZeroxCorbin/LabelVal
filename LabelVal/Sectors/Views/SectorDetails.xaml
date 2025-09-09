@@ -338,7 +338,7 @@
                         </Style>
                     </DockPanel.Style>
 
-                    <UniformGrid DockPanel.Dock="Top" Rows="1">
+                    <!--<UniformGrid DockPanel.Dock="Top" Rows="1">
                         <TextBox
                             Margin="3,0"
                             HorizontalAlignment="Center"
@@ -347,15 +347,15 @@
                             BorderThickness="0"
                             IsHitTestVisible="False"
                             Text="{Binding Report.Aperture, StringFormat=N1, Mode=OneTime}" />
-                        <!--<TextBox
+                        --><!--<TextBox
                             Margin="3,0"
                             HorizontalAlignment="Left"
                             md:TextFieldAssist.PrefixText="xDim"
                             md:TextFieldAssist.SuffixText="{Binding Report.Units, Converter={StaticResource EnumValueToDescription}}"
                             BorderThickness="0"
                             IsHitTestVisible="False"
-                            Text="{Binding Report.XDimension, StringFormat=N1, Mode=OneTime}" />-->
-                    </UniformGrid>
+                            Text="{Binding Report.XDimension, StringFormat=N1, Mode=OneTime}" />--><!--
+                    </UniformGrid>-->
 
                 </DockPanel>
 

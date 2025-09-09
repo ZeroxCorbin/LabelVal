@@ -32,16 +32,14 @@ public static class ListReportDataExtensions
         _ = writer.AppendLine($"Roll ID{delimiter}{rollID}{GetDelimiter(2)}");
         _ = writer.AppendLine($"Sector Name{delimiter}{sector.Template.Name}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Sector Username{delimiter}{sector.Template.Username}{GetDelimiter(3)}");
-        _ = writer.AppendLine($"Application Standard{delimiter}{sector.Report.ApplicationStandard.GetDescription()}{GetDelimiter(3)}");
+        _ = writer.AppendLine($"Application Standard{delimiter}{sector.Report.ApplicationStandard.GetDescription()}{GetDelimiter(3)}"); 
+        _ = writer.AppendLine($"GS1 Table{delimiter}{sector.Report.GS1Table.GetDescription()}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Grading Standard{delimiter}{sector.Report.GradingStandard.GetDescription()}{GetDelimiter(3)}");
         _ = writer.AppendLine($"{sector.Report.Symbology}{delimiter}\"{sector.Report.DecodeText.Replace("\r", "").Replace("\n", "")}\"{GetDelimiter(2)}{sector.Report.OverallGrade.Grade.LetterValue}{delimiter}{sector.Report.OverallGrade.Grade.Letter}");
         _ = writer.AppendLine(sector.Report.OverallGrade.ToDelimitedString(delimiter));
-        _ = writer.AppendLine($"X Dimension{delimiter}{sector.Report.XDimension}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Angle{delimiter}{sector.Report.AngleDeg}{GetDelimiter(3)}");
 
-        _ = writer.AppendLine($"GS1 Table{delimiter}{sector.Report.GS1Table.GetDescription()}{GetDelimiter(3)}");
-        _ = writer.AppendLine($"GS1 Results{delimiter}\"{sector.Report.GS1Results?.FormattedOut.Replace("\r", "").Replace("\n", "")}\"{GetDelimiter(3)}");
-
+        //_ = writer.AppendLine($"GS1 Results{delimiter}\"{sector.Report.GS1Results?.FormattedOut.Replace("\r", "").Replace("\n", "")}\"{GetDelimiter(3)}");
         _ = writer.AppendLine($"Has Error{delimiter}{(sector.IsWarning || sector.IsError ? "1" : "0")}{GetDelimiter(3)}");
            
 
@@ -70,7 +68,7 @@ public static class ListReportDataExtensions
         {
             foreach (Parameters param in Enum.GetValues(typeof(Parameters)))
             {
-                if(param == Parameters.Unknown)
+                if(param is Parameters.Unknown or BarcodeVerification.lib.Common.Parameters.OverallGrade or Parameters.GradingStandard or Parameters.ApplicationStandard or Parameters.GS1Table)
                     continue;
                 parameters.Add(param);
             }
