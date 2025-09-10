@@ -847,7 +847,7 @@
                             md:ListBoxAssist.CanUserToggleSelectedItem="True"
                             BorderThickness="0"
                             Focusable="False"
-                            SelectedValue="{Binding SelectedImageRoll.ImageAddPosition}"
+                            SelectedValue="{Binding ActiveImageRoll.ImageAddPosition}"
                             ToolTip="Select where to add new images.">
                             <ListBox.ItemContainerStyle>
                                 <Style BasedOn="{StaticResource MaterialDesignToolToggleListBoxItem}" TargetType="ListBoxItem">
@@ -862,7 +862,7 @@
                                     <Setter Property="Visibility" Value="Visible" />
                                     <Style.Triggers>
                                         <!--  Collapsed if the image roll is locked.  -->
-                                        <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="True">
+                                        <DataTrigger Binding="{Binding ActiveImageRoll.IsLocked}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -892,12 +892,12 @@
                                 <!--  Name  -->
                                 <StackPanel>
                                     <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Name" />
-                                    <TextBlock Margin="3,0" Text="{Binding SelectedImageRoll.Name}">
+                                    <TextBlock Margin="3,0" Text="{Binding ActiveImageRoll.Name}">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Visible" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding SelectedImageRoll.Name}" Value="">
+                                                    <DataTrigger Binding="{Binding ActiveImageRoll.Name}" Value="">
                                                         <Setter Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -909,16 +909,16 @@
                                 <!--  Standard  -->
                                 <StackPanel Margin="6,0,0,0">
                                     <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Standard" />
-                                    <TextBlock Margin="3,0" Text="{Binding SelectedImageRoll.SelectedApplicationStandard, Converter={StaticResource EnumValueToDescription}}" />
+                                    <TextBlock Margin="3,0" Text="{Binding ActiveImageRoll.SelectedApplicationStandard, Converter={StaticResource EnumValueToDescription}}" />
                                 </StackPanel>
 
                                 <!--  GS1 Table  -->
-                                <TextBlock VerticalAlignment="Bottom" Text="{Binding SelectedImageRoll.SelectedGS1Table, Converter={StaticResource EnumValueToDescription}, StringFormat={}: Table {0}}">
+                                <TextBlock VerticalAlignment="Bottom" Text="{Binding ActiveImageRoll.SelectedGS1Table, Converter={StaticResource EnumValueToDescription}, StringFormat={}: Table {0}}">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedImageRoll.SelectedApplicationStandard}" Value="{x:Static barCommon:ApplicationStandards.GS1}">
+                                                <DataTrigger Binding="{Binding ActiveImageRoll.SelectedApplicationStandard}" Value="{x:Static barCommon:ApplicationStandards.GS1}">
                                                     <Setter Property="Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -934,7 +934,7 @@
 
                                     <DockPanel>
 
-                                        <TextBlock Margin="6,0" Text="{Binding SelectedImageRoll.ImageType, Converter={StaticResource EnumValueToDescription}}" />
+                                        <TextBlock Margin="6,0" Text="{Binding ActiveImageRoll.ImageType, Converter={StaticResource EnumValueToDescription}}" />
 
                                         <iconPacks:PackIconMaterial HorizontalAlignment="Left" VerticalAlignment="Center">
                                             <iconPacks:PackIconMaterial.Style>
@@ -943,7 +943,7 @@
                                                     <Setter Property="ToolTip" Value="The source image will be used." />
 
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding SelectedImageRoll.ImageType}" Value="{x:Static imageRollEnums:ImageRollImageTypes.Stored}">
+                                                        <DataTrigger Binding="{Binding ActiveImageRoll.ImageType}" Value="{x:Static imageRollEnums:ImageRollImageTypes.Stored}">
                                                             <Setter Property="Kind" Value="StoreOutline" />
                                                             <Setter Property="ToolTip" Value="The stored image will be used." />
                                                         </DataTrigger>
@@ -963,7 +963,7 @@
 
                                     <DockPanel>
 
-                                        <TextBlock Margin="6,0" Text="{Binding SelectedImageRoll.SectorType, Converter={StaticResource EnumValueToDescription}}" />
+                                        <TextBlock Margin="6,0" Text="{Binding ActiveImageRoll.SectorType, Converter={StaticResource EnumValueToDescription}}" />
 
                                         <iconPacks:PackIconMaterial HorizontalAlignment="Left" VerticalAlignment="Center">
                                             <iconPacks:PackIconMaterial.Style>
@@ -974,7 +974,7 @@
                                                     <Setter Property="ToolTip" Value="The template sectors are shared." />
 
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding SelectedImageRoll.SectorType}" Value="{x:Static imageRollEnums:ImageRollSectorTypes.Dynamic}">
+                                                        <DataTrigger Binding="{Binding ActiveImageRoll.SectorType}" Value="{x:Static imageRollEnums:ImageRollSectorTypes.Dynamic}">
 
                                                             <Setter Property="Kind" Value="DataMatrixScan" />
 
@@ -996,7 +996,7 @@
                                     <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Locked" />
 
                                     <DockPanel>
-                                        <TextBlock Margin="6,0" Text="{Binding SelectedImageRoll.IsLocked, Converter={StaticResource EnumValueToDescription}}" />
+                                        <TextBlock Margin="6,0" Text="{Binding ActiveImageRoll.IsLocked, Converter={StaticResource EnumValueToDescription}}" />
 
                                         <iconPacks:PackIconMaterial HorizontalAlignment="Left" VerticalAlignment="Center">
                                             <iconPacks:PackIconMaterial.Style>
@@ -1005,7 +1005,7 @@
                                                     <Setter Property="ToolTip" Value="Image Roll is unlocked." />
 
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="True">
+                                                        <DataTrigger Binding="{Binding ActiveImageRoll.IsLocked}" Value="True">
                                                             <Setter Property="Kind" Value="Lock" />
                                                             <Setter Property="ToolTip" Value="Image Roll is locked." />
                                                         </DataTrigger>
@@ -1024,7 +1024,7 @@
                                     <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Roll Type" />
 
                                     <DockPanel>
-                                        <TextBlock Margin="6,0" Text="{Binding SelectedImageRoll.RollType, Converter={StaticResource EnumValueToDescription}}" />
+                                        <TextBlock Margin="6,0" Text="{Binding ActiveImageRoll.RollType, Converter={StaticResource EnumValueToDescription}}" />
 
                                         <iconPacks:PackIconMaterial HorizontalAlignment="Left" VerticalAlignment="Center">
                                             <iconPacks:PackIconMaterial.Style>
@@ -1033,7 +1033,7 @@
                                                     <Setter Property="ToolTip" Value="Images are stored in a database." />
 
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding SelectedImageRoll.RollType}" Value="Directory">
+                                                        <DataTrigger Binding="{Binding ActiveImageRoll.RollType}" Value="Directory">
                                                             <Setter Property="Kind" Value="Folder" />
                                                             <Setter Property="ToolTip" Value="Images are loaded from a directory. Read Only!" />
                                                         </DataTrigger>
@@ -1053,9 +1053,9 @@
                                     <TextBlock Margin="6,0" VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="TextBlock">
-                                                <Setter Property="Text" Value="{Binding SelectedImageRoll.TargetDPI, StringFormat={}{0} DPI}" />
+                                                <Setter Property="Text" Value="{Binding ActiveImageRoll.TargetDPI, StringFormat={}{0} DPI}" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding SelectedImageRoll.TargetDPI}" Value="0">
+                                                    <DataTrigger Binding="{Binding ActiveImageRoll.TargetDPI}" Value="0">
                                                         <Setter Property="Text" Value="Any DPI" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -1087,7 +1087,7 @@
                                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="False">
+                                                <DataTrigger Binding="{Binding ActiveImageRoll.IsLocked}" Value="False">
                                                     <Setter Property="Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -1126,7 +1126,7 @@
                                     <Style BasedOn="{StaticResource imageBar}" TargetType="{x:Type Border}">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="False">
+                                            <DataTrigger Binding="{Binding ActiveImageRoll.IsLocked}" Value="False">
                                                 <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                         </Style.Triggers>

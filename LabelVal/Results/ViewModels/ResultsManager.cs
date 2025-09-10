@@ -90,22 +90,22 @@ public partial class ResultsManager : ObservableRecipient,
     /// <summary>
     /// Gets or sets the currently selected image roll.
     /// </summary>
-    [ObservableProperty] private ImageRoll _selectedImageRoll;
-    partial void OnSelectedImageRollChanged(ImageRoll oldValue, ImageRoll newValue)
+    [ObservableProperty] private ImageRoll _activeImageRoll;
+    partial void OnActiveImageRollChanged(ImageRoll oldValue, ImageRoll newValue)
     {
         CloseAllSectorsDetailsWindows();
 
         if (oldValue != null)
         {
-            oldValue.ImageEntries.CollectionChanged -= SelectedImageRoll_Images_CollectionChanged;
-            oldValue.ImageMoved -= SelectedImageRoll_ImageMoved;
+            oldValue.ImageEntries.CollectionChanged -= ActiveImageRoll_Images_CollectionChanged;
+            oldValue.ImageMoved -= ActiveImageRoll_ImageMoved;
             oldValue.ImageEntries.Clear();
         }
 
         if (newValue != null)
         {
-            newValue.ImageEntries.CollectionChanged += SelectedImageRoll_Images_CollectionChanged;
-            newValue.ImageMoved += SelectedImageRoll_ImageMoved;
+            newValue.ImageEntries.CollectionChanged += ActiveImageRoll_Images_CollectionChanged;
+            newValue.ImageMoved += ActiveImageRoll_ImageMoved;
             _ = LoadResultssEntries();
         }
         else
@@ -328,7 +328,7 @@ public partial class ResultsManager : ObservableRecipient,
     /// </summary>
     public async Task LoadResultssEntries()
     {
-        if (SelectedImageRoll == null)
+        if (ActiveImageRoll == null)
             return;
 
         _isLoadingImages = true;
@@ -336,14 +336,14 @@ public partial class ResultsManager : ObservableRecipient,
         {
             await Application.Current.Dispatcher.InvokeAsync(() => ResultssEntries.Clear());
 
-            if (SelectedImageRoll.ImageEntries.Count == 0)
+            if (ActiveImageRoll.ImageEntries.Count == 0)
             {
-                await SelectedImageRoll.LoadImages(); // This will trigger CollectionChanged and populate ResultssEntries
+                await ActiveImageRoll.LoadImages(); // This will trigger CollectionChanged and populate ResultssEntries
             }
             else
             {
                 // Manually populate if the collection is already filled
-                var existingEntries = SelectedImageRoll.ImageEntries.OrderBy(i => i.Order).ToList();
+                var existingEntries = ActiveImageRoll.ImageEntries.OrderBy(i => i.Order).ToList();
                 foreach (var entry in existingEntries)
                 {
                     AddResultsEntry(entry);
@@ -360,7 +360,7 @@ public partial class ResultsManager : ObservableRecipient,
         {
             ResultsEntry entryToView = null;
             var sortedEntries = ResultssEntries.OrderBy(e => e.SourceImage.Order).ToList();
-            switch (SelectedImageRoll.ImageAddPosition)
+            switch (ActiveImageRoll.ImageAddPosition)
             {
                 case ImageAddPositions.Top:
                 case ImageAddPositions.Above:
@@ -383,7 +383,7 @@ public partial class ResultsManager : ObservableRecipient,
         }
     }
 
-    private void SelectedImageRoll_Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    private void ActiveImageRoll_Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         {
@@ -397,7 +397,7 @@ public partial class ResultsManager : ObservableRecipient,
         }
     }
 
-    private void SelectedImageRoll_ImageMoved(object sender, ImageEntry imageEntry)
+    private void ActiveImageRoll_ImageMoved(object sender, ImageEntry imageEntry)
     {
         var ire = ResultssEntries.FirstOrDefault(ir => ir.SourceImage.UID == imageEntry.UID);
         if (ire != null)
@@ -545,7 +545,7 @@ public partial class ResultsManager : ObservableRecipient,
     /// Adds a new image from a file.
     /// </summary>
     [RelayCommand]
-    private void AddImage() => AddImage(SelectedImageRoll.ImageAddPosition, null);
+    private void AddImage() => AddImage(ActiveImageRoll.ImageAddPosition, null);
 
     /// <summary>
     /// Adds an image acquired from a specified device.
@@ -559,7 +559,7 @@ public partial class ResultsManager : ObservableRecipient,
                 WorkingUpdate(device, true);
                 if (V275Handler is LabelHandlers.CameraDetect or LabelHandlers.SimulatorDetect)
                 {
-                    var label = new V275_REST_Lib.Controllers.Label(ProcessRepeat, null, V275Handler, SelectedImageRoll.SelectedGS1Table);
+                    var label = new V275_REST_Lib.Controllers.Label(ProcessRepeat, null, V275Handler, ActiveImageRoll.SelectedGS1Table);
                     await SelectedV275Node.Controller.ProcessLabel(0, label);
                 }
                 else
@@ -573,7 +573,7 @@ public partial class ResultsManager : ObservableRecipient,
                 WorkingUpdate(device, true);
                 if (V5Handler is LabelHandlers.CameraDetect or LabelHandlers.SimulatorDetect)
                 {
-                    var label = new V5_REST_Lib.Controllers.Label(ProcessRepeat, null, V5Handler, SelectedImageRoll.SelectedGS1Table);
+                    var label = new V5_REST_Lib.Controllers.Label(ProcessRepeat, null, V5Handler, ActiveImageRoll.SelectedGS1Table);
                     _ = await SelectedV5.Controller.ProcessLabel(label);
                 }
                 else
@@ -597,7 +597,7 @@ public partial class ResultsManager : ObservableRecipient,
     [RelayCommand]
     public async Task DeleteImage(ResultsEntry imageToDelete)
     {
-        if (SelectedImageRoll.IsLocked)
+        if (ActiveImageRoll.IsLocked)
         {
             Logger.Warning("The database is locked. Cannot delete image.");
             return;
@@ -616,12 +616,12 @@ public partial class ResultsManager : ObservableRecipient,
                     img.DeleteStored();
                 }
             }
-            SelectedImageRoll.DeleteImage(imageToDelete.SourceImage);
+            ActiveImageRoll.DeleteImage(imageToDelete.SourceImage);
         }
         else if (answer == MessageDialogResult.Negative)
         {
             // Remove the image from the ImageRoll
-            SelectedImageRoll.DeleteImage(imageToDelete.SourceImage);
+            ActiveImageRoll.DeleteImage(imageToDelete.SourceImage);
         }
     }
 
@@ -666,9 +666,9 @@ public partial class ResultsManager : ObservableRecipient,
             foreach (var device in img.ResultsDeviceEntries)
             {
                 if (device.StoredSectors.Count != 0)
-                    data += device.StoredSectors.GetSectorsReport($"{img.ResultssManager.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
+                    data += device.StoredSectors.GetSectorsReport($"{img.ResultssManager.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
                 if (device.CurrentSectors.Count != 0)
-                    data += device.CurrentSectors.GetSectorsReport($"{img.ResultssManager.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
+                    data += device.CurrentSectors.GetSectorsReport($"{img.ResultssManager.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
             }
         }
         Clipboard.SetText(data);
@@ -691,23 +691,23 @@ public partial class ResultsManager : ObservableRecipient,
         {
             if (res == null) return;
 
-            if (SelectedImageRoll.IsLocked)
+            if (ActiveImageRoll.IsLocked)
             {
-                var ire = new ImageEntry(SelectedImageRoll.UID, res.Image, SelectedImageRoll.TargetDPI);
-                if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
+                var ire = new ImageEntry(ActiveImageRoll.UID, res.Image, ActiveImageRoll.TargetDPI);
+                if (ActiveImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
                 {
                     Logger.Warning("The database is locked. Cannot add image.");
                     return;
                 }
             }
 
-            (var entry, var isNew) = SelectedImageRoll.GetImageEntry(res.Image);
+            (var entry, var isNew) = ActiveImageRoll.GetImageEntry(res.Image);
             if (entry == null) return;
 
             entry.NewData = res;
 
             if (isNew)
-                SelectedImageRoll.AddImage(SelectedImageRoll.ImageAddPosition, entry);
+                ActiveImageRoll.AddImage(ActiveImageRoll.ImageAddPosition, entry);
             else
                 AddResultsEntry(entry);
         }
@@ -724,23 +724,23 @@ public partial class ResultsManager : ObservableRecipient,
         {
             if (res == null) return;
 
-            if (SelectedImageRoll.IsLocked)
+            if (ActiveImageRoll.IsLocked)
             {
-                var ire = new ImageEntry(SelectedImageRoll.UID, res.Image, SelectedImageRoll.TargetDPI);
-                if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
+                var ire = new ImageEntry(ActiveImageRoll.UID, res.Image, ActiveImageRoll.TargetDPI);
+                if (ActiveImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
                 {
                     Logger.Warning("The database is locked. Cannot add image.");
                     return;
                 }
             }
 
-            (var entry, var isNew) = SelectedImageRoll.GetImageEntry(res.Image);
+            (var entry, var isNew) = ActiveImageRoll.GetImageEntry(res.Image);
             if (entry == null) return;
 
             entry.NewData = res;
 
             if (isNew)
-                SelectedImageRoll.AddImage(SelectedImageRoll.ImageAddPosition, entry);
+                ActiveImageRoll.AddImage(ActiveImageRoll.ImageAddPosition, entry);
             else
                 AddResultsEntry(entry);
         }
@@ -761,23 +761,23 @@ public partial class ResultsManager : ObservableRecipient,
                 return; // Ignore reports where no barcode was detected
 
             var thumbnail = res.Template.GetParameter<byte[]>("Report.Thumbnail");
-            if (SelectedImageRoll.IsLocked)
+            if (ActiveImageRoll.IsLocked)
             {
-                var ire = new ImageEntry(SelectedImageRoll.UID, thumbnail, SelectedImageRoll.TargetDPI);
-                if (SelectedImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
+                var ire = new ImageEntry(ActiveImageRoll.UID, thumbnail, ActiveImageRoll.TargetDPI);
+                if (ActiveImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
                 {
                     Logger.Warning("The database is locked. Cannot add image.");
                     return;
                 }
             }
 
-            (var entry, var isNew) = SelectedImageRoll.GetImageEntry(thumbnail);
+            (var entry, var isNew) = ActiveImageRoll.GetImageEntry(thumbnail);
             if (entry == null) return;
 
             entry.NewData = res;
 
             if (isNew)
-                SelectedImageRoll.AddImage(SelectedImageRoll.ImageAddPosition, entry);
+                ActiveImageRoll.AddImage(ActiveImageRoll.ImageAddPosition, entry);
             else
                 AddResultsEntry(entry);
         }
@@ -796,7 +796,7 @@ public partial class ResultsManager : ObservableRecipient,
         var newImages = PromptForNewImages();
         if (newImages != null && newImages.Count > 0)
         {
-            SelectedImageRoll.AddImages(position, newImages);
+            ActiveImageRoll.AddImages(position, newImages);
         }
     }
 
@@ -814,7 +814,7 @@ public partial class ResultsManager : ObservableRecipient,
             List<ImageEntry> newImages = [];
             foreach (var filePath in settings.SelectedFiles)
             {
-                (var entry, var isNew) = SelectedImageRoll.GetImageEntry(filePath);
+                (var entry, var isNew) = ActiveImageRoll.GetImageEntry(filePath);
                 if (entry != null && isNew)
                 {
                     newImages.Add(entry);
@@ -848,22 +848,22 @@ public partial class ResultsManager : ObservableRecipient,
     /// </summary>
     public void Receive(PropertyChangedMessage<ImageRoll> message)
     {
-        if (SelectedImageRoll != null)
+        if (ActiveImageRoll != null)
         {
-            SelectedImageRoll.PropertyChanged -= SelectedImageRoll_PropertyChanged;
-            SelectedImageRoll.ImageEntries.CollectionChanged -= SelectedImageRoll_Images_CollectionChanged;
+            ActiveImageRoll.PropertyChanged -= ActiveImageRoll_PropertyChanged;
+            ActiveImageRoll.ImageEntries.CollectionChanged -= ActiveImageRoll_Images_CollectionChanged;
         }
 
-        SelectedImageRoll = message.NewValue;
+        ActiveImageRoll = message.NewValue;
 
-        if (SelectedImageRoll != null)
+        if (ActiveImageRoll != null)
         {
-            SelectedImageRoll.PropertyChanged += SelectedImageRoll_PropertyChanged;
-            SelectedImageRoll.ImageEntries.CollectionChanged += SelectedImageRoll_Images_CollectionChanged;
+            ActiveImageRoll.PropertyChanged += ActiveImageRoll_PropertyChanged;
+            ActiveImageRoll.ImageEntries.CollectionChanged += ActiveImageRoll_Images_CollectionChanged;
         }
     }
 
-    private void SelectedImageRoll_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void ActiveImageRoll_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(ImageRoll.SectorType))
             foreach (var lab in ResultssEntries)

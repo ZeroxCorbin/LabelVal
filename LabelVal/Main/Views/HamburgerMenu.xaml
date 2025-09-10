@@ -87,7 +87,7 @@
 
     <!--  Image Rolls  -->
     <DataTemplate x:Key="ImageRollMenuItem">
-        <DockPanel DataContext="{Binding Content.SelectedImageRoll}">
+        <DockPanel DataContext="{Binding Content.ActiveImageRoll}">
 
             <DockPanel Width="48" Background="Teal">
 

@@ -177,7 +177,7 @@
                                             <Style TargetType="{x:Type Grid}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ResultssManager.SelectedImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Source}">
+                                                    <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Source}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -197,7 +197,7 @@
                                             <Style TargetType="{x:Type Grid}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ResultssManager.SelectedImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Stored}">
+                                                    <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Stored}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -433,7 +433,7 @@
                                             <Style TargetType="{x:Type Grid}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ResultssManager.SelectedImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Source}">
+                                                    <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Source}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -453,7 +453,7 @@
                                             <Style TargetType="{x:Type Grid}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ResultssManager.SelectedImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Stored}">
+                                                    <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Stored}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -690,7 +690,7 @@
                                             <Style TargetType="{x:Type Grid}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ResultssManager.SelectedImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Source}">
+                                                    <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Source}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -710,7 +710,7 @@
                                             <Style TargetType="{x:Type Grid}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ResultssManager.SelectedImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Stored}">
+                                                    <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Stored}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -1010,7 +1010,7 @@
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ResultssManager.SelectedImageRoll.IsLocked}" Value="True">
+                                <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.IsLocked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -1044,7 +1044,7 @@
                                             <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding ResultssManager.SelectedImageRoll.IsLocked}" Value="True">
+                                            <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.IsLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -1068,7 +1068,7 @@
                                             <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding ResultssManager.SelectedImageRoll.IsLocked}" Value="True">
+                                            <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.IsLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -1090,7 +1090,7 @@
                                 <Button.Style>
                                     <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ResultssManager.SelectedImageRoll.IsLocked}" Value="True">
+                                            <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.IsLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -1111,7 +1111,7 @@
                                 <Button.Style>
                                     <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ResultssManager.SelectedImageRoll.IsLocked}" Value="True">
+                                            <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.IsLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -1161,7 +1161,7 @@
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ResultssManager.SelectedImageRoll.IsLocked}" Value="True">
+                                <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.IsLocked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>

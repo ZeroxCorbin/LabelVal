@@ -18,7 +18,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
     [ObservableProperty] private Node _selectedV275Node;
     [ObservableProperty] private Scanner _selectedV5;
     [ObservableProperty] private Verifier _selectedL95;
-    [ObservableProperty] private ImageRoll _selectedImageRoll;
+    [ObservableProperty] private ImageRoll _activeImageRoll;
 
     public ObservableCollection<RunControl> RunControllers { get; } = [];
     public RunControl QuickRunController { get; } = new();
@@ -46,7 +46,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
 
         var ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRoll>());
         if (ret2.HasReceivedResponse)
-            SelectedImageRoll = ret2.Response;
+            ActiveImageRoll = ret2.Response;
 
         var ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<Scanner>());
         if (ret3.HasReceivedResponse)
@@ -60,18 +60,18 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
     [RelayCommand]
     private void StartStop()
     {
-        if (QuickRunController == null || SelectedImageRoll == null)
+        if (QuickRunController == null || ActiveImageRoll == null)
             return;
 
         if (QuickRunController.RunController.State == RunStates.Running)
         {
-            Logger.Info($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount}");
+            Logger.Info($"Stopping Run: {ActiveImageRoll.Name}; {LoopCount}");
             QuickRunController.RunController.Stop();
         }
         else
         {
-            Logger.Info($"Starting Run: {SelectedImageRoll.Name}; {LoopCount}");
-            QuickRunController.Update(LoopCount, Resultss.ResultssEntries, SelectedImageRoll, SelectedV275Node, SelectedV5, SelectedL95);
+            Logger.Info($"Starting Run: {ActiveImageRoll.Name}; {LoopCount}");
+            QuickRunController.Update(LoopCount, Resultss.ResultssEntries, ActiveImageRoll, SelectedV275Node, SelectedV5, SelectedL95);
             QuickRunController.StartStopCommand.Execute(null);
         }
     }
@@ -87,7 +87,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
 
     #region Receive Messages
     public void Receive(PropertyChangedMessage<Node> message) => SelectedV275Node = message.NewValue;
-    public void Receive(PropertyChangedMessage<ImageRoll> message) => SelectedImageRoll = message.NewValue;
+    public void Receive(PropertyChangedMessage<ImageRoll> message) => ActiveImageRoll = message.NewValue;
     public void Receive(PropertyChangedMessage<Scanner> message) => SelectedV5 = message.NewValue;
     public void Receive(PropertyChangedMessage<Verifier> message) => SelectedL95 = message.NewValue;
     #endregion

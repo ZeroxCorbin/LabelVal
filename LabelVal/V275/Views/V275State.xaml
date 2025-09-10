@@ -77,14 +77,14 @@
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding SelectedV275Node.State}" Value="Editing" />
-                                        <Condition Binding="{Binding SelectedImageRoll.IsGS1}" Value="True" />
+                                        <Condition Binding="{Binding ActiveImageRoll.IsGS1}" Value="True" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Background" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding SelectedV275Node.State}" Value="Running" />
-                                        <Condition Binding="{Binding SelectedImageRoll.IsGS1}" Value="False" />
+                                        <Condition Binding="{Binding ActiveImageRoll.IsGS1}" Value="False" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Background" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                 </MultiDataTrigger>
@@ -108,7 +108,7 @@
                                 <DataTrigger Binding="{Binding SelectedV275Node.State}" Value="Editing">
                                     <Setter Property="IsEnabled" Value="True" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding MainWindow.ResultssDatabase.SelectedImageRoll.IsGS1}" Value="True">
+                                <DataTrigger Binding="{Binding MainWindow.ResultssDatabase.ActiveImageRoll.IsGS1}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>

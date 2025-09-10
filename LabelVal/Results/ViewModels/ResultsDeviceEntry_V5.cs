@@ -186,12 +186,12 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
     /// Gets the appropriate label handler based on the current state and settings.
     /// </summary>
     public LabelHandlers Handler => ResultssManager?.SelectedV5?.Controller != null && ResultssManager.SelectedV5.Controller.IsConnected ? ResultssManager.SelectedV5.Controller.IsSimulator
-            ? ResultssManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+            ? ResultssManager.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
                     : LabelHandlers.SimulatorDetect
                 : LabelHandlers.SimulatorTrigger
-            : ResultssManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+            : ResultssManager.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.CameraRestore
                     : LabelHandlers.CameraDetect
@@ -238,7 +238,7 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
 
                 try
                 {
-                    tempSectors.AddRange(((JObject)toolResult).GetParameter<JArray>("results").Select(result => new V5.Sectors.Sector((JObject)result, row.Template, [ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.SelectedImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGS1Table, row.Template.GetParameter<string>("response.message"))).Cast<ISector>());
+                    tempSectors.AddRange(((JObject)toolResult).GetParameter<JArray>("results").Select(result => new V5.Sectors.Sector((JObject)result, row.Template, [ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table, row.Template.GetParameter<string>("response.message"))).Cast<ISector>());
                 }
                 catch (System.Exception ex)
                 {
@@ -308,13 +308,13 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
     public void Process()
     {
 
-        V5_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? ResultRow.Template : null, Handler, ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGS1Table);
+        V5_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? ResultRow.Template : null, Handler, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table);
 
         if (Handler is LabelHandlers.SimulatorRestore or LabelHandlers.SimulatorDetect or LabelHandlers.SimulatorTrigger)
         {
-            if (ResultsEntry.ResultssManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Source || (ResultRow?.SourceImage == null && ResultsEntry.ResultssManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored))
+            if (ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Source || (ResultRow?.SourceImage == null && ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored))
                 lab.Image = ResultsEntry.SourceImage.BitmapBytes;
-            else if (ResultsEntry.ResultssManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
+            else if (ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
                 lab.Image = ResultRow.Stored.ImageBytes;
         }
 
@@ -372,7 +372,7 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
                 {
                     try
                     {
-                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, CurrentTemplate, [ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.SelectedImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGS1Table, CurrentTemplate.GetParameter<string>("response.message")));
+                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, CurrentTemplate, [ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table, CurrentTemplate.GetParameter<string>("response.message")));
                     }
                     catch (System.Exception ex)
                     {

@@ -355,7 +355,7 @@ public partial class Controller : ObservableObject
         };
 
         //Start the V275 processing the image.
-        if (ire.ResultssManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
+        if (ire.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
            ((ResultsDeviceEntryV275) ire).ProcessCommand.Execute(Results.ViewModels.ResultsEntryImageTypes.V275Stored);
         else
             ((ResultsDeviceEntryV275)ire).ProcessCommand.Execute(Results.ViewModels.ResultsEntryImageTypes.Source);
@@ -427,7 +427,7 @@ public partial class Controller : ObservableObject
 
         if (V5.IsSimulator)
         {
-           if( ire.ResultssManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
+           if( ire.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
             {
                 if (!await V5.ChangeImage(ire.StoredImage.ImageBytes, false))
                 {
@@ -481,14 +481,14 @@ public partial class Controller : ObservableObject
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
-                ApplicationStandard = ire.ResultssManager.SelectedImageRoll.SelectedApplicationStandard.GetDescription(),
+                ApplicationStandard = ire.ResultssManager.ActiveImageRoll.SelectedApplicationStandard.GetDescription(),
             },
 
-            Image = ire.ResultssManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored ? ire.ResultsEntry.SourceImage.BitmapBytes : ire.StoredImage.BitmapBytes
+            Image = ire.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored ? ire.ResultsEntry.SourceImage.BitmapBytes : ire.StoredImage.BitmapBytes
         };
 
-        if (ire.ResultssManager.SelectedImageRoll.SelectedGS1Table != GS1Tables.Unknown)
-            lab.Config.Table = ((GS1Tables)ire.ResultssManager.SelectedImageRoll.SelectedGS1Table).GetTableName();
+        if (ire.ResultssManager.ActiveImageRoll.SelectedGS1Table != GS1Tables.Unknown)
+            lab.Config.Table = ((GS1Tables)ire.ResultssManager.ActiveImageRoll.SelectedGS1Table).GetTableName();
 
         var res = await L95.ProcessLabelAsync(lab);
         if (res == null)

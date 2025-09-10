@@ -124,7 +124,7 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
     /// <summary>
     /// Gets the currently selected Image Roll UID.
     /// </summary>
-    public string ImageRollUID => ResultssManager.SelectedImageRoll.UID;
+    public string ImageRollUID => ResultssManager.ActiveImageRoll.UID;
 
     /// <summary>
     /// Gets the Source image for this entry. This is the same Source image as the Image Roll Entry.

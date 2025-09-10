@@ -222,7 +222,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding Controller.State}" Value="Editing" />
-                                            <Condition Binding="{Binding SelectedImageRoll.SectorType}" Value="{x:Static imageRoll_enums:ImageRollSectorTypes.Dynamic}" />
+                                            <Condition Binding="{Binding ActiveImageRoll.SectorType}" Value="{x:Static imageRoll_enums:ImageRollSectorTypes.Dynamic}" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="BorderBrush" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                     </MultiDataTrigger>
@@ -230,7 +230,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding Controller.State}" Value="Running" />
-                                            <Condition Binding="{Binding SelectedImageRoll.SectorType}" Value="{x:Static imageRoll_enums:ImageRollSectorTypes.Fixed}" />
+                                            <Condition Binding="{Binding ActiveImageRoll.SectorType}" Value="{x:Static imageRoll_enums:ImageRollSectorTypes.Fixed}" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="BorderBrush" Value="{DynamicResource StatusGreen_Brush_Active}" />
                                     </MultiDataTrigger>

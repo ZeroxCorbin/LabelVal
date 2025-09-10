@@ -285,7 +285,7 @@ public partial class ResultsDeviceEntry_V275 : UserControl
     {
         if (sender is Button btn && btn.Tag is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
         {
-            Clipboard.SetText(sectors.GetSectorsReport($"{_viewModel.ResultssManager.SelectedImageRoll.Name}{(char)Sectors.Classes.SectorOutputSettings.CurrentDelimiter}{_viewModel.ResultsEntry.SourceImage.Order}", true));
+            Clipboard.SetText(sectors.GetSectorsReport($"{_viewModel.ResultssManager.ActiveImageRoll.Name}{(char)Sectors.Classes.SectorOutputSettings.CurrentDelimiter}{_viewModel.ResultsEntry.SourceImage.Order}", true));
         }
         else if (sender is Button btn2 && btn2.Tag is ImageEntry image)
         {

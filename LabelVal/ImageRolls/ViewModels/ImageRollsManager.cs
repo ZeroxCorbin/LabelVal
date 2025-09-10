@@ -70,7 +70,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
     {
         if (value != null)
         {
-            if (SelectedImageRoll != null && SelectedImageRoll.UID == value.UID)
+            if (ActiveImageRoll != null && ActiveImageRoll.UID == value.UID)
                 return;
 
             if (IsLoading) return;
@@ -79,13 +79,13 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             App.ShowSplashScreen = true;
             _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Fixed Image Roll...")); });
 
-            SelectedImageRoll = value;
+            ActiveImageRoll = value;
             IsLoading = true;
         }
         else
         {
             if (SelectedUserImageRoll == null)
-                SelectedImageRoll = null;
+                ActiveImageRoll = null;
         }
     }
 
@@ -98,13 +98,12 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
     /// The currently selected user image roll.
     /// <see cref="SelectedUserImageRoll"/>
     /// </summary>
-    [ObservableProperty]
-    private ImageRoll selectedUserImageRoll;
+    [ObservableProperty] private ImageRoll selectedUserImageRoll;
     partial void OnSelectedUserImageRollChanged(ImageRoll value)
     {
         if (value != null)
         {
-            if(SelectedImageRoll != null && SelectedImageRoll.UID == value.UID)
+            if(ActiveImageRoll != null && ActiveImageRoll.UID == value.UID)
                 return;
 
             if (IsLoading) return;
@@ -113,24 +112,24 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             App.ShowSplashScreen = true;
             _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Image Roll...")); });
 
-            SelectedImageRoll = value;
+            ActiveImageRoll = value;
             IsLoading = true;
         }
         else
         {
             if(SelectedFixedImageRoll == null)
-                SelectedImageRoll = null;
+                ActiveImageRoll = null;
         }
     }
 
     /// <summary>
     /// Gets or sets the currently selected image roll, which can be either a fixed or a user image roll.
-    /// <see cref="SelectedImageRoll"/>
+    /// <see cref="ActiveImageRoll"/>
     /// </summary>
-    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRoll selectedImageRoll;
-    partial void OnSelectedImageRollChanged(ImageRoll value)
+    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRoll activeImageRoll;
+    partial void OnActiveImageRollChanged(ImageRoll value)
     {
-        App.Settings.SetValue(nameof(SelectedImageRoll), value);
+        App.Settings.SetValue(nameof(ActiveImageRoll), value);
     }
 
     /// <summary>

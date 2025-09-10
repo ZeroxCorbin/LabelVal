@@ -19,7 +19,7 @@ public partial class RunControl : ObservableObject
     public Scanner V5 { get; private set; }
 public Verifier L95 { get; private set; }
 
-    public ImageRoll SelectedImageRoll { get; private set; }
+    public ImageRoll ActiveImageRoll { get; private set; }
 
     private int LoopCount { get; set; }
 
@@ -32,7 +32,7 @@ public Verifier L95 { get; private set; }
     {
         LoopCount = loopCount;
         ResultssEntries = imageResults;
-        SelectedImageRoll = imageRollEntry;
+        ActiveImageRoll = imageRollEntry;
         V275 = v275;
         V5 = v5;
         L95 = l95;
@@ -48,7 +48,7 @@ public Verifier L95 { get; private set; }
 
         LoopCount = loopCount;
         ResultssEntries = imageResults;
-        SelectedImageRoll = imageRollEntry;
+        ActiveImageRoll = imageRollEntry;
         V275 = v275;
         V5 = v5;
         L95 = l95;
@@ -57,18 +57,18 @@ public Verifier L95 { get; private set; }
     [RelayCommand]
     private void StartStop()
     {
-        if (RunController == null || SelectedImageRoll == null)
+        if (RunController == null || ActiveImageRoll == null)
             return;
 
         if (RunController.State == RunStates.Running)
         {
-            Logger.Info($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
+            Logger.Info($"Stopping Run: {ActiveImageRoll.Name}; {LoopCount.ToString()}");
             RunController.Stop();
         }
         else
         {
-            Logger.Info($"Starting Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
-            RunController.StartAsync(ResultssEntries, SelectedImageRoll, V275, V5?.Controller, L95?.Controller, LoopCount);
+            Logger.Info($"Starting Run: {ActiveImageRoll.Name}; {LoopCount.ToString()}");
+            RunController.StartAsync(ResultssEntries, ActiveImageRoll, V275, V5?.Controller, L95?.Controller, LoopCount);
         }
     }
 

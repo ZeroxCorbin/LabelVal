@@ -33,13 +33,13 @@ public partial class ImageRollsManager : UserControl
 
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-            ImageRoll ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRollsManager.SelectedImageRoll));
+            ImageRoll ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRollsManager.ActiveImageRoll));
 
             _viewModel.SelectedFixedImageRoll = ir != null ? _viewModel.FixedImageRolls.FirstOrDefault((roll) => roll.UID == ir.UID) : null;
             _viewModel.SelectedUserImageRoll = ir != null ? _viewModel.UserImageRolls.FirstOrDefault((roll) => roll.UID == ir.UID) : null;
 
             if (ir != null && _viewModel.SelectedFixedImageRoll == null && _viewModel.SelectedUserImageRoll == null)
-                App.Settings.SetValue(nameof(ViewModels.ImageRollsManager.SelectedImageRoll), null);
+                App.Settings.SetValue(nameof(ViewModels.ImageRollsManager.ActiveImageRoll), null);
           
             if(ir == null || (ir.RollType == ImageRollTypes.Database && ir.ImageCount == 0))
                 _ = Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage(true))));

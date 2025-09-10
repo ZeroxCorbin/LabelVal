@@ -152,12 +152,12 @@ public partial class ResultsDeviceEntry_L95
     /// Gets the appropriate label handler based on the current state of the L95 device and image roll settings.
     /// </summary>
     public LabelHandlers Handler => ResultssManager?.SelectedL95?.Controller != null && ResultssManager.SelectedL95.Controller.IsConnected && ResultssManager.SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running ? ResultssManager.SelectedL95.Controller.IsSimulator
-            ? ResultssManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+            ? ResultssManager.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
                     : LabelHandlers.SimulatorDetect
                 : LabelHandlers.SimulatorTrigger
-            : ResultssManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+            : ResultssManager.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.CameraRestore
                     : LabelHandlers.CameraDetect
@@ -237,7 +237,7 @@ public partial class ResultsDeviceEntry_L95
 
             List<Sectors.Interfaces.ISector> tempSectors = [];
             foreach (JToken rSec in row.Report.GetParameter<JArray>("AllReports"))
-                tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), [ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.SelectedImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
+                tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), [ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
 
             if (tempSectors.Count > 0)
             {
@@ -455,17 +455,17 @@ public partial class ResultsDeviceEntry_L95
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
-                ApplicationStandard = ResultsEntry.ResultssManager.SelectedImageRoll.SelectedApplicationStandard.GetDescription(),
+                ApplicationStandard = ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard.GetDescription(),
             },
             RepeatAvailable = ProcessFullReport,
         };
 
-        if (ResultsEntry.ResultssManager.SelectedImageRoll.SelectedApplicationStandard == ApplicationStandards.GS1)
-            lab.Config.Table = ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGS1Table.GetTableName();
+        if (ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard == ApplicationStandards.GS1)
+            lab.Config.Table = ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table.GetTableName();
 
-        if (ResultsEntry.ResultssManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
+        if (ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Source)
             lab.Image = ResultsEntry.SourceImage.BitmapBytes;
-        else if (ResultsEntry.ResultssManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
+        else if (ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
             lab.Image = ResultRow.Stored.BitmapBytes;
 
         IsWorking = true;
@@ -508,7 +508,7 @@ public partial class ResultsDeviceEntry_L95
                 if (replaceSectors)
                     CurrentSectors.Clear();
 
-                CurrentSectors.Add(new Sector(message.Template, message.Report, [ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.SelectedImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
+                CurrentSectors.Add(new Sector(message.Template, message.Report, [ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
             }
             else if (GlobalAppSettings.Instance.LvsIgnoreNoResults)
                 return;

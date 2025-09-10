@@ -55,7 +55,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     /// Gets or sets the currently selected image roll.
     /// </summary>
     [ObservableProperty]
-    private ImageRoll selectedImageRoll;
+    private ImageRoll activeImageRoll;
 
     /// <summary>
     /// Gets or sets a value indicating whether the template name is incorrect.
@@ -79,7 +79,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     /// <param name="imageRollEntry">The initial image roll entry.</param>
     public Node(string host, uint systemPort, uint nodeNumber, string username, string password, string dir, ImageRoll imageRollEntry)
     {
-        SelectedImageRoll = imageRollEntry;
+        ActiveImageRoll = imageRollEntry;
 
         Controller = new V275_REST_Lib.Controllers.Controller(host, systemPort, nodeNumber, username, password, dir);
         Controller.PropertyChanged += Controller_PropertyChanged;
@@ -103,7 +103,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     /// Receives property changed messages for <see cref="ImageRoll"/> and updates the selected image roll.
     /// </summary>
     /// <param name="message">The property changed message.</param>
-    public void Receive(PropertyChangedMessage<ImageRoll> message) => SelectedImageRoll = message.NewValue;
+    public void Receive(PropertyChangedMessage<ImageRoll> message) => ActiveImageRoll = message.NewValue;
 
     /// <summary>
     /// Checks if the controller's job name matches the selected image roll's template name.
@@ -115,15 +115,15 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         if (!Controller.IsLoggedIn)
             return;
 
-        if (Controller.JobName == "" || SelectedImageRoll == null)
+        if (Controller.JobName == "" || ActiveImageRoll == null)
         {
             IsWrongTemplateName = true;
             return;
         }
 
-        if (SelectedImageRoll.SelectedApplicationStandard != ApplicationStandards.GS1)
+        if (ActiveImageRoll.SelectedApplicationStandard != ApplicationStandards.GS1)
         {
-            if (Controller.JobName.ToLower().Equals(SelectedImageRoll.Name.ToLower()))
+            if (Controller.JobName.ToLower().Equals(ActiveImageRoll.Name.ToLower()))
                 return;
         }
         else
@@ -150,7 +150,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         _ = Application.Current.Dispatcher.BeginInvoke(() => Controller.ChangeJob(value.name));
     }
 
-    partial void OnSelectedImageRollChanged(ImageRoll value) => CheckTemplateName();
+    partial void OnActiveImageRollChanged(ImageRoll value) => CheckTemplateName();
 
     private void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {

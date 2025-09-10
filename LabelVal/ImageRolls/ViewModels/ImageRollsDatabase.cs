@@ -20,7 +20,7 @@ public partial class ImageRollsDatabases : ObservableRecipient, IDisposable
     public ObservableCollection<Databases.ImageRollsDatabase> Databases { get; } = [];
 
     [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageRollsDatabase selectedResultsDatabase;
-    partial void OnSelectedResultsDatabaseChanged(Databases.ImageRollsDatabase value) => App.Settings.SetValue("SelectedImageRollDatabaseFFE", value?.File);
+    partial void OnSelectedResultsDatabaseChanged(Databases.ImageRollsDatabase value) => App.Settings.SetValue("ActiveImageRollDatabaseFFE", value?.File);
 
     public bool RightAlignOverflow
     {
@@ -177,7 +177,7 @@ public partial class ImageRollsDatabases : ObservableRecipient, IDisposable
 
     private void SelectImageRollsDatabase()
     {
-        var val = App.Settings.GetValue<FileFolderEntry>("SelectedImageRollDatabaseFFE");
+        var val = App.Settings.GetValue<FileFolderEntry>("ActiveImageRollDatabaseFFE");
 
         if (val == null)
         {

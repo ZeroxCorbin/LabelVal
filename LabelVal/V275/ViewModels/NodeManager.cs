@@ -116,7 +116,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     /// <summary>
     /// Gets or sets the currently selected image roll.
     /// </summary>
-    [ObservableProperty] private ImageRoll selectedImageRoll;
+    [ObservableProperty] private ImageRoll activeImageRoll;
 
     private readonly Timer _deviceDiscoveryTimer;
 
@@ -200,7 +200,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
         Logger.Info("Loading V275 devices.");
 
-        Node system = new(Host, SystemPort, 0, Username, Password, SimulatorImageDirectory, SelectedImageRoll);
+        Node system = new(Host, SystemPort, 0, Username, Password, SimulatorImageDirectory, ActiveImageRoll);
 
         if ((await system.Controller.Commands.GetDevices()).Object is Devices dev)
         {
@@ -218,7 +218,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
                 Logger.Debug($"Adding Device MAC: {node.cameraMAC}");
 
-                Node newNode = new(Host, SystemPort, (uint)node.enumeration, Username, Password, SimulatorImageDirectory, SelectedImageRoll) { Manager = this };
+                Node newNode = new(Host, SystemPort, (uint)node.enumeration, Username, Password, SimulatorImageDirectory, ActiveImageRoll) { Manager = this };
                 newNode.Controller.Initialize();
                 lst.Add(newNode);
             }
@@ -299,8 +299,8 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     /// </summary>
     /// <param name="message">The message containing the new ImageRoll value.</param>
     public void Receive(PropertyChangedMessage<ImageRoll> message) =>
-        // There is no point in requesting the SelectedImageRoll at init, the user has not selected anything yet.
-        SelectedImageRoll = message.NewValue;
+        // There is no point in requesting the ActiveImageRoll at init, the user has not selected anything yet.
+        ActiveImageRoll = message.NewValue;
 
     #endregion
 

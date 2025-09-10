@@ -157,12 +157,12 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     /// Gets the appropriate label handler based on the current state and settings.
     /// </summary>
     public LabelHandlers Handler => ResultssManager?.SelectedV275Node?.Controller != null && ResultssManager.SelectedV275Node.Controller.IsLoggedIn_Control ? ResultssManager.SelectedV275Node.Controller.IsSimulator
-            ? ResultssManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+            ? ResultssManager.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
                     : LabelHandlers.SimulatorDetect
                 : LabelHandlers.SimulatorTrigger
-            : ResultssManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+            : ResultssManager.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.CameraRestore
                     : LabelHandlers.CameraDetect
@@ -228,7 +228,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
                             if (jSec["name"].ToString() == rSec["name"].ToString())
                             {
 
-                                tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, rSec, [ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.SelectedImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGS1Table, row.Template["jobVersion"].ToString()));
+                                tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, rSec, [ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table, row.Template["jobVersion"].ToString()));
 
                                 break;
                             }
@@ -309,11 +309,11 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
         IsWorking = true;
         IsFaulted = false;
 
-        V275_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? [.. ResultRow.Template["sectors"]] : null, Handler, ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGS1Table);
+        V275_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? [.. ResultRow.Template["sectors"]] : null, Handler, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table);
 
-        if (ResultsEntry.ResultssManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Source || Handler is LabelHandlers.CameraTrigger or LabelHandlers.CameraRestore or LabelHandlers.CameraDetect || (ResultRow?.Stored == null && ResultsEntry.ResultssManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored))
+        if (ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Source || Handler is LabelHandlers.CameraTrigger or LabelHandlers.CameraRestore or LabelHandlers.CameraDetect || (ResultRow?.Stored == null && ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored))
             lab.Image = ResultsEntry.SourceImage.BitmapBytes;
-        else if (ResultsEntry.ResultssManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
+        else if (ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
             lab.Image = ResultRow.Stored.ImageBytes;
 
         _ = ResultsEntry.ResultssManager.SelectedV275Node.Controller.IsSimulator
@@ -369,7 +369,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
                     {
                         if (templateSec["name"].ToString() == currentSect["name"].ToString())
                         {
-                            tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, [ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.SelectedImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGS1Table, report.Job["jobVersion"].ToString()));
+                            tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, [ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table, report.Job["jobVersion"].ToString()));
                             break;
                         }
                     }

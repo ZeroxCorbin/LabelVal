@@ -104,7 +104,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         }
     }
 
-    [ObservableProperty] private ImageRoll selectedImageRoll;
+    [ObservableProperty] private ImageRoll activeImageRoll;
 
     [ObservableProperty] private bool repeatTrigger;
 
@@ -225,7 +225,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             ScannerController_JobSlotsUpdate();
 
     }
-    public void Receive(PropertyChangedMessage<ImageRoll> message) => SelectedImageRoll = message.NewValue;
+    public void Receive(PropertyChangedMessage<ImageRoll> message) => ActiveImageRoll = message.NewValue;
 
     private async void ScannerController_ConfigUpdate()
     {
@@ -719,19 +719,19 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     [RelayCommand]
     private void AddToImageRoll()
     {
-        if (SelectedImageRoll == null)
+        if (ActiveImageRoll == null)
         {
             Logger.Warning("No image roll selected.");
             return;
         }
 
-        if (SelectedImageRoll.RollType == ImageRollTypes.Directory)
+        if (ActiveImageRoll.RollType == ImageRollTypes.Directory)
         {
             Logger.Warning("Cannot add to a directory based image roll.");
             return;
         }
 
-        if (SelectedImageRoll.IsLocked)
+        if (ActiveImageRoll.IsLocked)
         {
             Logger.Warning("Cannot add to a locked image roll.");
             return;
@@ -742,9 +742,9 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             Logger.Warning("No image to add.");
             return;
         }
-        var imagEntry = SelectedImageRoll.GetImageEntry(RawImage);
+        var imagEntry = ActiveImageRoll.GetImageEntry(RawImage);
 
-        SelectedImageRoll.AddImage(ImageAddPositions.Top, imagEntry.entry);
+        ActiveImageRoll.AddImage(ImageAddPositions.Top, imagEntry.entry);
     }
 
     private void Clear()
