@@ -150,48 +150,77 @@
 
                 </mah:Flyout.Header>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                <DockPanel>
 
-                    <ScrollViewer Grid.Column="0">
-                        <StackPanel Margin="10">
-                            <TextBlock Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Compare Settings" />
-                            <sectors:SectorDifferencesDatabaseSettingsView Margin="3" />
-                        </StackPanel>
-                    </ScrollViewer>
+                    <Grid Grid.Column="0" Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock
+                            Grid.Row="0"
+                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                            Text="Compare Settings" />
+                        
+                        <sectors:SectorDifferencesDatabaseSettingsView Grid.Row="1"/>
+                        
+                    </Grid>
 
-                    <ScrollViewer Grid.Column="1">
-                        <StackPanel Margin="10">
-                            <TextBlock Style="{StaticResource MaterialDesignTitleLargeTextBlock}" Text="Focused Parameters" />
+                    <Grid Grid.Column="1" Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
 
-                            <bar:EnumBrowserView Margin="3" DataContext="{Binding EnumBrowserViewModel}" />
-                        </StackPanel>
-                    </ScrollViewer>
+                        <TextBlock
+                            Grid.Row="0"
+                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                            Text="Focused Parameters" />
+
+                        <bar:EnumBrowserView
+                            Grid.Row="1"
+                            DataContext="{Binding EnumBrowserViewModel}" />
+
+                    </Grid>
+
+                    <StackPanel>
+                              <Grid Grid.Row="0" Grid.Column="2" Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                            Text="UI Settings" />
+
+                        <local:AppSettingsControlView Grid.Row="1" DataContext="{Binding AppSettings}" />
+
+                    </Grid>
+
+                    <Grid Grid.Row="1" Grid.Column="2" Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock
+                            Grid.Row="0"
+                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                            Text="Sector Output Settings" />
+                        
+                        <sectorOutput:SectorOutputSettings
+                            Grid.Row="1"
+                            DataContext="{Binding SectorOutputSettings}" />
+                        
+                    </Grid>              
+                    </StackPanel>
 
 
-                    <ScrollViewer Grid.Column="2">
-                        <StackPanel Margin="10">
-                            <StackPanel Margin="3">
-                                <TextBlock Style="{StaticResource MaterialDesignTitleLargeTextBlock}" Text="UI Settings" />
-                                <local:AppSettingsControlView DataContext="{Binding AppSettings}" />
-                            </StackPanel>
 
-                            <StackPanel Margin="10">
-                                <TextBlock Style="{StaticResource MaterialDesignTitleLargeTextBlock}" Text="Sector Output Settings" />
-                                <sectorOutput:SectorOutputSettings Margin="3" DataContext="{Binding SectorOutputSettings}" />
-                            </StackPanel>
-                        </StackPanel>
-                    </ScrollViewer>
-
-                </Grid>
+                </DockPanel>
             </mah:Flyout>
 
         </mah:FlyoutsControl>

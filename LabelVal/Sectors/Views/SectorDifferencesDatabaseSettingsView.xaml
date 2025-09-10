@@ -4,7 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:classes="clr-namespace:LabelVal.Sectors.Classes"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:LabelVal.Sectors.Views"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DataContext="{d:DesignInstance local:SectorDifferencesDatabaseSettingsView,
                                      IsDesignTimeCreatable=False}"
@@ -22,84 +24,116 @@
         </Style>
     </UserControl.Resources>
 
-    <StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!--  Toolbar  -->
+            <RowDefinition Height="*" />
+            <!--  Settings Groups  -->
+        </Grid.RowDefinitions>
 
-        <GroupBox Header="Grades" Style="{StaticResource MahApps.Styles.GroupBox}">
+        <ToolBar Grid.Row="0" ToolBarTray.IsLocked="True">
+            <Button
+                Width="36"
+                Margin="3,3,3,3"
+                Command="{Binding ViewModel.SaveToFileWithDialogCommand}"
+                Style="{StaticResource MahApps.Styles.Button.Hamburger}">
+                <iconPacks:PackIconMaterial
+                    Width="20"
+                    Height="20"
+                    Kind="ContentSave" />
+            </Button>
+
+            <Button
+                Width="36"
+                Margin="0,3,3,3"
+                Command="{Binding ViewModel.LoadFromFileWithDialogCommand}"
+                Style="{StaticResource MahApps.Styles.Button.Hamburger}">
+                <iconPacks:PackIconFontAwesome
+                    Width="20"
+                    Height="20"
+                    Kind="FolderOpenSolid" />
+            </Button>
+        </ToolBar>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel>
-                <CheckBox Content="Compare Grade Value" IsChecked="{Binding ViewModel.GradeCompareSettings.CompareLetterValue}" />
-                <DockPanel>
-                    <Label Content="Grade Value Tolerance" />
-                    <TextBox Text="{Binding ViewModel.GradeCompareSettings.LetterValueTolerance}" />
-                </DockPanel>
+                <GroupBox Header="Grades" Style="{StaticResource MahApps.Styles.GroupBox}">
+                    <StackPanel>
+                        <CheckBox Content="Compare Grade Value" IsChecked="{Binding ViewModel.GradeCompareSettings.CompareLetterValue}" />
+                        <DockPanel>
+                            <Label Content="Grade Value Tolerance" />
+                            <TextBox Text="{Binding ViewModel.GradeCompareSettings.LetterValueTolerance}" />
+                        </DockPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Graded Values" Style="{StaticResource MahApps.Styles.GroupBox}">
+                    <StackPanel>
+                        <CheckBox Content="Compare Value" IsChecked="{Binding ViewModel.GradeValueCompareSettings.CompareValue}" />
+                        <DockPanel>
+                            <Label Content="Value Tolerance" />
+                            <TextBox Text="{Binding ViewModel.GradeValueCompareSettings.ValueTolerance}" />
+                        </DockPanel>
+                        <CheckBox Content="Compare Grade Value" IsChecked="{Binding ViewModel.GradeValueCompareSettings.Grade.CompareLetterValue}" />
+                        <DockPanel>
+                            <Label Content="Grade Value Tolerance" />
+                            <TextBox Text="{Binding ViewModel.GradeValueCompareSettings.Grade.LetterValueTolerance}" />
+                        </DockPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Pass/Fail" Style="{StaticResource MahApps.Styles.GroupBox}">
+                    <StackPanel>
+                        <CheckBox Content="Compare" IsChecked="{Binding ViewModel.PassFailCompareSettings.Compare}" />
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Pass/Fail Values" Style="{StaticResource MahApps.Styles.GroupBox}">
+                    <StackPanel>
+                        <CheckBox Content="Compare Value" IsChecked="{Binding ViewModel.ValuePassFailCompareSettings.CompareValue}" />
+                        <DockPanel>
+                            <Label Content="Value Tolerance" />
+                            <TextBox Text="{Binding ViewModel.ValuePassFailCompareSettings.ValueTolerance}" />
+                        </DockPanel>
+                        <CheckBox Content="Compare Pass/Fail" IsChecked="{Binding ViewModel.ValuePassFailCompareSettings.PassFail.Compare}" />
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Value" Style="{StaticResource MahApps.Styles.GroupBox}">
+                    <StackPanel>
+                        <CheckBox Content="Compare Value" IsChecked="{Binding ViewModel.ValueDoubleCompareSettings.CompareValue}" />
+                        <DockPanel>
+                            <Label Content="Value Tolerance" />
+                            <TextBox Text="{Binding ViewModel.ValueDoubleCompareSettings.ValueTolerance}" />
+                        </DockPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="GS1 Decode" Style="{StaticResource MahApps.Styles.GroupBox}">
+                    <StackPanel>
+                        <CheckBox Content="Compare Pass/Fail" IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.PassFail.Compare}" />
+                        <CheckBox Content="Compare Input" IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareInput}" />
+                        <CheckBox Content="Compare Formatted Out" IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareFormattedOut}" />
+                        <CheckBox Content="Compare Fields" IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareFields}" />
+                        <CheckBox Content="Compare Errors" IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareError}" />
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Overall Grade" Style="{StaticResource MahApps.Styles.GroupBox}">
+                    <StackPanel>
+                        <CheckBox Content="Compare Grade" IsChecked="{Binding ViewModel.OverallGradeCompareSettings.GradeSettings.CompareLetterValue}" />
+                        <CheckBox Content="Compare Aperture" IsChecked="{Binding ViewModel.OverallGradeCompareSettings.CompareAperture}" />
+                        <CheckBox Content="Compare Wave Length" IsChecked="{Binding ViewModel.OverallGradeCompareSettings.CompareWaveLength}" />
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Strings" Style="{StaticResource MahApps.Styles.GroupBox}">
+                    <StackPanel>
+                        <CheckBox Content="Compare String" IsChecked="{Binding ViewModel.ValueStringCompareSettings.CompareString}" />
+                    </StackPanel>
+                </GroupBox>
             </StackPanel>
-        </GroupBox>
-
-        <GroupBox Header="Graded Values" Style="{StaticResource MahApps.Styles.GroupBox}">
-            <StackPanel>
-                <CheckBox Content="Compare Value" IsChecked="{Binding ViewModel.GradeValueCompareSettings.CompareValue}" />
-                <DockPanel>
-                    <Label Content="Value Tolerance" />
-                    <TextBox Text="{Binding ViewModel.GradeValueCompareSettings.ValueTolerance}" />
-                </DockPanel>
-                <CheckBox Content="Compare Grade Value" IsChecked="{Binding ViewModel.GradeValueCompareSettings.Grade.CompareLetterValue}" />
-                <DockPanel>
-                    <Label Content="Grade Value Tolerance" />
-                    <TextBox Text="{Binding ViewModel.GradeValueCompareSettings.Grade.LetterValueTolerance}" />
-                </DockPanel>
-
-            </StackPanel>
-        </GroupBox>
-
-        <GroupBox Header="Pass/Fail" Style="{StaticResource MahApps.Styles.GroupBox}">
-            <StackPanel>
-                <CheckBox Content="Compare" IsChecked="{Binding ViewModel.PassFailCompareSettings.Compare}" />
-            </StackPanel>
-        </GroupBox>
-
-        <GroupBox Header="Pass/Fail Values" Style="{StaticResource MahApps.Styles.GroupBox}">
-            <StackPanel>
-                <CheckBox Content="Compare Value" IsChecked="{Binding ViewModel.ValuePassFailCompareSettings.CompareValue}" />
-                <DockPanel>
-                    <Label Content="Value Tolerance" />
-                    <TextBox Text="{Binding ViewModel.ValuePassFailCompareSettings.ValueTolerance}" />
-                </DockPanel>
-                <CheckBox Content="Compare Pass/Fail" IsChecked="{Binding ViewModel.ValuePassFailCompareSettings.PassFail.Compare}" />
-
-            </StackPanel>
-        </GroupBox>
-
-        <GroupBox Header="Value" Style="{StaticResource MahApps.Styles.GroupBox}">
-            <StackPanel>
-                <CheckBox Content="Compare Value" IsChecked="{Binding ViewModel.ValueDoubleCompareSettings.CompareValue}" />
-                <DockPanel>
-                    <Label Content="Value Tolerance" />
-                    <TextBox Text="{Binding ViewModel.ValueDoubleCompareSettings.ValueTolerance}" />
-                </DockPanel>
-            </StackPanel>
-        </GroupBox>
-
-        <GroupBox Header="GS1 Decode" Style="{StaticResource MahApps.Styles.GroupBox}">
-            <StackPanel>
-                <CheckBox Content="Compare Pass/Fail" IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.PassFail.Compare}" />
-                <CheckBox Content="Compare Input" IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareInput}" />
-                <CheckBox Content="Compare Formatted Out" IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareFormattedOut}" />
-                <CheckBox Content="Compare Fields" IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareFields}" />
-                <CheckBox Content="Compare Errors" IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareError}" />
-            </StackPanel>
-        </GroupBox>
-        <GroupBox Header="Overall Grade" Style="{StaticResource MahApps.Styles.GroupBox}">
-            <StackPanel>
-                <CheckBox Content="Compare Grade" IsChecked="{Binding ViewModel.OverallGradeCompareSettings.GradeSettings.CompareLetterValue}" />
-                <CheckBox Content="Compare Aperture" IsChecked="{Binding ViewModel.OverallGradeCompareSettings.CompareAperture}" />
-                <CheckBox Content="Compare Wave Length" IsChecked="{Binding ViewModel.OverallGradeCompareSettings.CompareWaveLength}" />
-
-            </StackPanel>
-        </GroupBox>
-        <GroupBox Header="Strings" Style="{StaticResource MahApps.Styles.GroupBox}">
-            <StackPanel>
-                <CheckBox Content="Compare String" IsChecked="{Binding ViewModel.ValueStringCompareSettings.CompareString}" />
-            </StackPanel>
-        </GroupBox>
-    </StackPanel>
-
+        </ScrollViewer>
+    </Grid>
 </UserControl>

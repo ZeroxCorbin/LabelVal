@@ -11,10 +11,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
-    d:DataContext="{d:DesignInstance local:SectorsJsonWindow, IsDesignTimeCreatable=False}"
     Title="Sectors Details"
     Width="800"
     Height="600"
+    d:DataContext="{d:DesignInstance local:SectorsJsonWindow,
+                                     IsDesignTimeCreatable=False}"
     ResizeMode="CanResize"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
@@ -35,7 +36,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
+
         <json:JsonViewer
             Grid.Column="0"
             MinWidth="300"

@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.IO;
+using Microsoft.Win32;
+using CommunityToolkit.Mvvm.Input;
 
 namespace LabelVal.Sectors.Classes;
 
@@ -112,11 +114,13 @@ public partial class SectorDifferencesDatabaseSettings : ObservableObject
         App.Settings.SetValue(nameof(SectorDifferencesDatabaseSettings), this);
     }
 
+
     public void SaveToFile(string path)
     {
         var json = JsonConvert.SerializeObject(this, Formatting.Indented);
         File.WriteAllText(path, json);
     }
+
 
     public void LoadFromFile(string path)
     {
@@ -141,5 +145,36 @@ public partial class SectorDifferencesDatabaseSettings : ObservableObject
         OverallGradeCompareSettings = loaded.OverallGradeCompareSettings;
         ValueStringCompareSettings = loaded.ValueStringCompareSettings;
         MissingCompareSettings = loaded.MissingCompareSettings;
+    }
+
+    [RelayCommand]
+    // New: Save with file dialog
+    public void SaveToFileWithDialog()
+    {
+        var dialog = new SaveFileDialog
+        {
+            Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
+            DefaultExt = "json",
+            FileName = "SectorDifferencesDatabaseSettings.json"
+        };
+        if (dialog.ShowDialog() == true)
+        {
+            SaveToFile(dialog.FileName);
+        }
+    }
+
+    [RelayCommand]
+    // New: Load with file dialog
+    public void LoadFromFileWithDialog()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
+            DefaultExt = "json"
+        };
+        if (dialog.ShowDialog() == true)
+        {
+            LoadFromFile(dialog.FileName);
+        }
     }
 }
