@@ -95,15 +95,16 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
                     templates.Add((JObject)group["Template"]);
                 }
 
-                _viewModel.ImageResultsManager.FocusedTemplate = new JObject
+                var template = new JObject
                 {
                     ["Templates"] = JArray.FromObject(templates)
                 };
 
-                _viewModel.ImageResultsManager.FocusedReport = new JObject
+                var report = new JObject
                 {
                     ["Reports"] = JArray.FromObject(reports)
                 };
+                _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(template, report);
             }
         }
         else
@@ -130,18 +131,17 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
                     templates.Add((JObject)group["Template"]);
                 }
 
-                _viewModel.ImageResultsManager.FocusedTemplate = new JObject
+                var template = new JObject
                 {
                     ["Templates"] = JArray.FromObject(templates)
                 };
 
-                _viewModel.ImageResultsManager.FocusedReport = new JObject
+                var report = new JObject
                 {
                     ["Reports"] = JArray.FromObject(reports)
                 };
 
-                _viewModel.ImageResultsManager.FocusedTemplate = (JObject)_viewModel?.CurrentReport["AllReports"][0]["Template"];
-                _viewModel.ImageResultsManager.FocusedReport = (JObject)_viewModel?.CurrentReport["AllReports"][0]["Report"];
+                _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(template, report);
             }
         }
         else

@@ -1,11 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Main.Messages;
-using LabelVal.Results.ViewModels;
-using LabelVal.Utilities;
 using MahApps.Metro.Controls.Dialogs;
-using MaterialDesignThemes.Wpf;
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -56,20 +51,6 @@ public partial class ImageResultsManager : UserControl
         DataContextChanged -= OnDataContextChanged;
     }
 
-    private void btnRightSideBar_Click(object sender, RoutedEventArgs e)
-    {
-        JsonDrawer.IsRightDrawerOpen = !JsonDrawer.IsRightDrawerOpen;
-        btnRightSideBar.LayoutTransform = JsonDrawer.IsRightDrawerOpen ? new RotateTransform(0) : new RotateTransform(180);
-    }
-
-    private void JsonDrawer_DrawerOpened(object sender, DrawerOpenedEventArgs e)
-    {
-        if (_viewModel.FocusedTemplate != null)
-            tiTemplate.IsSelected = true;
-        else if (_viewModel.FocusedReport != null)
-            tiReport.IsSelected = true;
-    }
-
     private async void ImageResultsScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
     {
         e.Handled = true;
@@ -112,18 +93,18 @@ public partial class ImageResultsManager : UserControl
             var sortedEntries = itemsControl.Items.OfType<ViewModels.ImageResultEntry>().ToList();
             if (!sortedEntries.Any()) return;
 
-            var currentItem = _viewModel.TopmostItem ?? sortedEntries.FirstOrDefault();
+            ViewModels.ImageResultEntry currentItem = _viewModel.TopmostItem ?? sortedEntries.FirstOrDefault();
             if (currentItem == null) return;
 
             var currentIndex = sortedEntries.IndexOf(currentItem);
             if (currentIndex < 0)
             {
-                var currentVisualItem = FindBestCandidate(scrollViewer, itemsControl);
+                ViewModels.ImageResultEntry currentVisualItem = FindBestCandidate(scrollViewer, itemsControl);
                 currentIndex = currentVisualItem != null ? sortedEntries.IndexOf(currentVisualItem) : 0;
                 if (currentIndex < 0) currentIndex = 0;
             }
 
-            int nextIndex = currentIndex;
+            var nextIndex = currentIndex;
 
             if (scrollDown) // Scrolling down
             {
@@ -142,7 +123,7 @@ public partial class ImageResultsManager : UserControl
 
             if (nextIndex != currentIndex)
             {
-                var nextItem = sortedEntries[nextIndex];
+                ViewModels.ImageResultEntry nextItem = sortedEntries[nextIndex];
                 _viewModel.TopmostItem = nextItem;
                 nextItem.BringIntoViewHandler();
                 ImageRollThumbnails.SelectedItem = nextItem;
@@ -167,7 +148,7 @@ public partial class ImageResultsManager : UserControl
             if (item is not ViewModels.ImageResultEntry imageResultEntry) continue;
             if (itemsControl.ItemContainerGenerator.ContainerFromItem(item) is not FrameworkElement container) continue;
 
-            var transform = container.TransformToAncestor(scrollViewer);
+            GeneralTransform transform = container.TransformToAncestor(scrollViewer);
             var itemTop = transform.Transform(new Point(0, 0)).Y;
             var itemBottom = itemTop + container.ActualHeight;
 
@@ -199,10 +180,7 @@ public partial class ImageResultsManager : UserControl
         {
             _isLoaded = true;
             // Use Dispatcher to send message after rendering is complete
-            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new System.Action(() =>
-            {
-                WeakReferenceMessenger.Default.Send(new ImageResultsRenderedMessage());
-            }));
+            _ = Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new System.Action(() => WeakReferenceMessenger.Default.Send(new ImageResultsRenderedMessage())));
         }
 
         if (_isSnapping || _viewModel?.ImageResultsEntries.Any() != true)
@@ -212,7 +190,7 @@ public partial class ImageResultsManager : UserControl
         if (scrollViewer.Content is not ItemsControl itemsControl)
             return;
 
-        var bestCandidate = FindBestCandidate(scrollViewer, itemsControl);
+        ViewModels.ImageResultEntry bestCandidate = FindBestCandidate(scrollViewer, itemsControl);
 
         if (bestCandidate != null && _viewModel.TopmostItem != bestCandidate)
         {

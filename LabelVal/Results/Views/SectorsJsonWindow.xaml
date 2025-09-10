@@ -1,0 +1,55 @@
+<mah:MetroWindow
+    x:Class="LabelVal.Results.Views.SectorsJsonWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
+    xmlns:local="clr-namespace:LabelVal.Results.Views"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
+    d:DataContext="{d:DesignInstance local:SectorsJsonWindow, IsDesignTimeCreatable=False}"
+    Title="Sectors Details"
+    Width="800"
+    Height="600"
+    ResizeMode="CanResize"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+
+    <mah:MetroWindow.Resources>
+        <Style
+            x:Key="JsonMenuButtons"
+            BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}"
+            TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="6,3" />
+            <Setter Property="Width" Value="24" />
+            <Setter Property="Height" Value="24" />
+        </Style>
+    </mah:MetroWindow.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <json:JsonViewer
+            Grid.Column="0"
+            MinWidth="300"
+            ButtonStyle="{StaticResource JsonMenuButtons}"
+            Foreground="{DynamicResource MahApps.Brushes.Text}"
+            JSON="{Binding Templates}"
+            ShowSaveButton="True" />
+
+
+        <json:JsonViewer
+            Grid.Column="1"
+            MinWidth="300"
+            ButtonStyle="{StaticResource JsonMenuButtons}"
+            JSON="{Binding Reports}"
+            ShowSaveButton="True" />
+    </Grid>
+</mah:MetroWindow>

@@ -808,12 +808,6 @@
             </ToggleButton>
         </DockPanel>
 
-        <Style x:Key="JsonMenuButtons" TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-            <Setter Property="Margin" Value="6,3" />
-            <Setter Property="Width" Value="24" />
-            <Setter Property="Height" Value="24" />
-        </Style>
-
     </UserControl.Resources>
 
     <!--  Main layout container for the Image Results Manager.  -->
@@ -1427,26 +1421,6 @@
                 </DockPanel>
             </md:Card>
 
-            <!--  Button to toggle the visibility of the right-side JSON viewer drawer.  -->
-            <md:Card HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                <ToggleButton
-                    x:Name="btnRightSideBar"
-                    Width="48"
-                    Height="48"
-                    Margin="6,0"
-                    Click="btnRightSideBar_Click"
-                    Content="{iconPacks:Material Kind=ArrowCollapseLeft,
-                                                 Width=24,
-                                                 Height=24}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    Style="{StaticResource MaterialDesignHamburgerToggleButton}"
-                    ToolTip="Toggle the JSON viewer sidebar.">
-                    <ToggleButton.LayoutTransform>
-                        <RotateTransform Angle="180" />
-                    </ToggleButton.LayoutTransform>
-                </ToggleButton>
-            </md:Card>
-
         </DockPanel>
 
         <!--  Main content area, including the results list and the JSON viewer drawer.  -->
@@ -1454,176 +1428,106 @@
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}" />
 
-            <!--  DrawerHost that contains the main content and a slide-out right drawer for JSON data.  -->
-            <md:DrawerHost
-                x:Name="JsonDrawer"
-                md:DrawerHost.DrawerOpened="JsonDrawer_DrawerOpened"
-                OpenMode="Standard">
-                <md:DrawerHost.Style>
-                    <Style TargetType="md:DrawerHost">
-                        <Style.Triggers>
-                            <!--  The drawer opens automatically when there is focused template or report data.  -->
-                            <DataTrigger Binding="{Binding FocusedTemplate, Converter={StaticResource IsNullOrEmpty}}" Value="False">
-                                <Setter Property="IsRightDrawerOpen" Value="True" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding FocusedReport, Converter={StaticResource IsNullOrEmpty}}" Value="False">
-                                <Setter Property="IsRightDrawerOpen" Value="True" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </md:DrawerHost.Style>
+            <!--  Main content area.  -->
+            <DockPanel>
 
-                <!--  Content for the right-side drawer: a TabControl with JSON viewers.  -->
-                <md:DrawerHost.RightDrawerContent>
+                <!--  Left-side panel for thumbnail navigation.  -->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <md:Card
+                        Height="24"
+                        Margin="3,3,0,0"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                        DockPanel.Dock="Top"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                    <TabControl>
-
-                        <!--  Tab for viewing the focused report JSON.  -->
-                        <TabItem x:Name="tiReport" Header="Report">
-                            <TabItem.Style>
-                                <Style BasedOn="{StaticResource MaterialDesignTabItem}" TargetType="TabItem">
-                                    <Setter Property="IsEnabled" Value="True" />
-
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding FocusedReport, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                            <Setter Property="IsEnabled" Value="False" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TabItem.Style>
-                            <json:JsonViewer
-                                MinWidth="300"
-                                ButtonStyle="{StaticResource JsonMenuButtons}"
-                                Foreground="{DynamicResource MahApps.Brushes.Text}"
-                                JSON="{Binding FocusedReport}"
-                                ShowSaveButton="True" />
-                        </TabItem>
-                        
-                        <!--  Tab for viewing the focused template JSON.  -->
-                        <TabItem x:Name="tiTemplate" Header="Template">
-                            <TabItem.Style>
-                                <Style BasedOn="{StaticResource MaterialDesignTabItem}" TargetType="TabItem">
-                                    <Setter Property="IsEnabled" Value="True" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding FocusedTemplate, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                            <Setter Property="IsEnabled" Value="False" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TabItem.Style>
-                            <json:JsonViewer
-                                MinWidth="300"
-                                ButtonStyle="{StaticResource JsonMenuButtons}"
-                                JSON="{Binding FocusedTemplate}"
-                                ShowSaveButton="True" />
-                        </TabItem>
-                        
-                    </TabControl>
-
-                </md:DrawerHost.RightDrawerContent>
-
-                <!--  Main content area of the DrawerHost.  -->
-                <DockPanel>
-
-                    <!--  Left-side panel for thumbnail navigation.  -->
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <md:Card
-                            Height="24"
-                            Margin="3,3,0,0"
-                            HorizontalAlignment="Stretch"
-                            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                        <TextBlock
+                            Margin="6,0,6,3"
                             DockPanel.Dock="Top"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-                            <TextBlock
-                                Margin="6,0,6,3"
-                                DockPanel.Dock="Top"
-                                Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
-                                Text="Navigate" />
+                            Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                            Text="Navigate" />
 
 
-                        </md:Card>
+                    </md:Card>
 
-                        <!--  ListBox displaying thumbnails of the image results for quick navigation.  -->
-                        <ListBox
-                            x:Name="ImageRollThumbnails"
-                            Grid.Row="1"
-                            MaxWidth="120"
-                            DockPanel.Dock="Left"
-                            ItemsSource="{Binding Source={StaticResource CvsImageResultsEntries}}"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ScrollViewer.VerticalScrollBarVisibility="Auto"
-                            SelectedItem="{Binding TopmostItem, Mode=OneWay}"
-                            ToolTip="Click to navigate to an image.">
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel />
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem">
-                                    <Setter Property="Padding" Value="1" />
-                                    <Setter Property="Margin" Value="0" />
-                                </Style>
-                            </ListBox.ItemContainerStyle>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Button
-                                        Width="40"
-                                        Height="auto"
-                                        Padding="0"
-                                        Command="{Binding BringIntoViewHandlerCommand}"
-                                        Style="{StaticResource MahApps.Styles.Button.Chromeless}">
-                                        <Border x:Name="HighlightBorder" BorderThickness="2">
-                                            <StackPanel>
-                                                <Image Height="30" Source="{Binding SourceImage.ImageLow}" />
-                                                <TextBlock
-                                                    HorizontalAlignment="Center"
-                                                    FontSize="8"
-                                                    Text="{Binding SourceImage.Order}" />
-                                            </StackPanel>
-                                        </Border>
-                                    </Button>
-                                    <DataTemplate.Triggers>
-                                        <!--  Highlights the thumbnail that is currently at the top of the viewport.  -->
-                                        <DataTrigger Binding="{Binding IsTopmost}" Value="True">
-                                            <Setter TargetName="HighlightBorder" Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
-                                        </DataTrigger>
-                                    </DataTemplate.Triggers>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
+                    <!--  ListBox displaying thumbnails of the image results for quick navigation.  -->
+                    <ListBox
+                        x:Name="ImageRollThumbnails"
+                        Grid.Row="1"
+                        MaxWidth="120"
+                        DockPanel.Dock="Left"
+                        ItemsSource="{Binding Source={StaticResource CvsImageResultsEntries}}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        SelectedItem="{Binding TopmostItem, Mode=OneWay}"
+                        ToolTip="Click to navigate to an image.">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="1" />
+                                <Setter Property="Margin" Value="0" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Width="40"
+                                    Height="auto"
+                                    Padding="0"
+                                    Command="{Binding BringIntoViewHandlerCommand}"
+                                    Style="{StaticResource MahApps.Styles.Button.Chromeless}">
+                                    <Border x:Name="HighlightBorder" BorderThickness="2">
+                                        <StackPanel>
+                                            <Image Height="30" Source="{Binding SourceImage.ImageLow}" />
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                FontSize="8"
+                                                Text="{Binding SourceImage.Order}" />
+                                        </StackPanel>
+                                    </Border>
+                                </Button>
+                                <DataTemplate.Triggers>
+                                    <!--  Highlights the thumbnail that is currently at the top of the viewport.  -->
+                                    <DataTrigger Binding="{Binding IsTopmost}" Value="True">
+                                        <Setter TargetName="HighlightBorder" Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
 
 
-                    <!--  ScrollViewer for the main list of image results.  -->
-                    <ScrollViewer
-                        x:Name="ImageResultsScrollViewer"
-                        Margin="0"
-                        HorizontalScrollBarVisibility="Disabled"
-                        PreviewKeyDown="ImageResultsScrollViewer_PreviewKeyDown"
-                        PreviewMouseWheel="ImageResultsScrollViewer_PreviewMouseWheel"
-                        ScrollChanged="ImageResultsScrollViewer_ScrollChanged"
-                        Style="{StaticResource MahApps.Styles.ScrollViewer}"
-                        VerticalScrollBarVisibility="Auto">
+                <!--  ScrollViewer for the main list of image results.  -->
+                <ScrollViewer
+                    x:Name="ImageResultsScrollViewer"
+                    Margin="0"
+                    HorizontalScrollBarVisibility="Disabled"
+                    PreviewKeyDown="ImageResultsScrollViewer_PreviewKeyDown"
+                    PreviewMouseWheel="ImageResultsScrollViewer_PreviewMouseWheel"
+                    ScrollChanged="ImageResultsScrollViewer_ScrollChanged"
+                    Style="{StaticResource MahApps.Styles.ScrollViewer}"
+                    VerticalScrollBarVisibility="Auto">
 
-                        <!--  ItemsControl to display the collection of image result entries.  -->
-                        <ItemsControl x:Name="ImageResultsItemsControl" ItemsSource="{Binding Source={StaticResource CvsImageResultsEntries}}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <!--  Each item is rendered using the ImageResultEntry UserControl.  -->
-                                    <local:ImageResultEntry />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </DockPanel>
-            </md:DrawerHost>
-
+                    <!--  ItemsControl to display the collection of image result entries.  -->
+                    <ItemsControl x:Name="ImageResultsItemsControl" ItemsSource="{Binding Source={StaticResource CvsImageResultsEntries}}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!--  Each item is rendered using the ImageResultEntry UserControl.  -->
+                                <local:ImageResultEntry />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </DockPanel>
         </DockPanel>
     </DockPanel>
 </UserControl>

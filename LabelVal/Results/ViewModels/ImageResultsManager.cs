@@ -25,6 +25,7 @@ using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using V275_REST_Lib.Models;
 
 namespace LabelVal.Results.ViewModels;
 
@@ -763,7 +764,7 @@ public partial class ImageResultsManager : ObservableRecipient,
         {
             if (res == null || res.Report == null) return;
 
-            if (res.Report.GetParameter<string>(Parameters.OverallGrade.GetPath(Devices.L95, Symbologies.DataMatrix)) == "Bar Code Not Detected"
+            if (res.Report.GetParameter<string>(Parameters.OverallGrade.GetPath(BarcodeVerification.lib.Common.Devices.L95, BarcodeVerification.lib.Common.Symbologies.DataMatrix)) == "Bar Code Not Detected"
                 && GlobalAppSettings.Instance.LvsIgnoreNoResults)
                 return; // Ignore reports where no barcode was detected
 
@@ -985,7 +986,7 @@ public partial class ImageResultsManager : ObservableRecipient,
 
     #endregion
 
-    #region Sectors Details Windows Management
+    #region Sectors Windows Management
 
     /// <summary>
     /// Displays a new sectors details window.
@@ -996,6 +997,20 @@ public partial class ImageResultsManager : ObservableRecipient,
         var win = new Views.SectorsDetailsWindow
         {
             DataContext = sectors,
+            Owner = Application.Current.MainWindow
+        };
+        win.Closed += (s, e) => _openSectorsWindows.Remove(win);
+        _openSectorsWindows.Add(win);
+        win.Show();
+    }
+
+    public void ShowSectorsDetailsWindow(JObject templates, JObject reports)
+    {
+        var win = new Views.SectorsJsonWindow
+        {
+            Templates = templates,
+            Reports = reports,
+            Title = "Sectors JSON Data",
             Owner = Application.Current.MainWindow
         };
         win.Closed += (s, e) => _openSectorsWindows.Remove(win);

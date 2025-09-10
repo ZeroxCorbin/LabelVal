@@ -81,8 +81,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
         {
             if (_viewModel.Result != null)
             {
-                _viewModel.ImageResultsManager.FocusedTemplate = _viewModel.Result.Template;
-                _viewModel.ImageResultsManager.FocusedReport = _viewModel.Result.Report;
+                _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(_viewModel.Result.Template, _viewModel.Result.Report);
             }
         }
         else
@@ -95,8 +94,7 @@ public partial class ImageResultDeviceEntry_V275 : UserControl
     {
         if (sender is Button b && b.Tag is string s && s.Equals("json"))
         {
-            _viewModel.ImageResultsManager.FocusedTemplate = _viewModel.CurrentTemplate;
-            _viewModel.ImageResultsManager.FocusedReport = _viewModel.CurrentReport;
+            _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(_viewModel.CurrentTemplate, _viewModel.CurrentReport);
         }
         else
         {
