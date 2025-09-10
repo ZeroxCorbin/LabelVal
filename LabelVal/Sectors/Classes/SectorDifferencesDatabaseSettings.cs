@@ -1,136 +1,145 @@
 ﻿using BarcodeVerification.lib.ISO.ParameterTypes;
+using Newtonsoft.Json;
 using System.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.IO;
 
 namespace LabelVal.Sectors.Classes;
 
-public class SectorDifferencesDatabaseSettings
+public partial class SectorDifferencesDatabaseSettings : ObservableObject
 {
-    public static SectorDifferencesDatabaseSettings Instance { get; } = new();
+    [ObservableProperty]
+    private GradeValueCompareSettings gradeValueCompareSettings;
 
-    private GradeValueCompareSettings _gradeValueCompareSettings;
-    private GradeCompareSettings _gradeCompareSettings;
-    private ValuePassFailCompareSettings _valuePassFailCompareSettings;
-    private ValueDoubleCompareSettings _valueDoubleCompareSettings;
-    private PassFailCompareSettings _passFailCompareSettings;
-    private GS1DecodeCompareSettings _gs1DecodeCompareSettings;
-    private OverallGradeCompareSettings _overallGradeCompareSettings;
-    private ValueStringCompareSettings _valueStringCompareSettings;
-    private MissingCompareSettings _missingCompareSettings;
+    [ObservableProperty]
+    private GradeCompareSettings gradeCompareSettings;
 
-    public GradeValueCompareSettings GradeValueCompareSettings
+    [ObservableProperty]
+    private ValuePassFailCompareSettings valuePassFailCompareSettings;
+
+    [ObservableProperty]
+    private ValueDoubleCompareSettings valueDoubleCompareSettings;
+
+    [ObservableProperty]
+    private PassFailCompareSettings passFailCompareSettings;
+
+    [ObservableProperty]
+    private GS1DecodeCompareSettings gs1DecodeCompareSettings;
+
+    [ObservableProperty]
+    private OverallGradeCompareSettings overallGradeCompareSettings;
+
+    [ObservableProperty]
+    private ValueStringCompareSettings valueStringCompareSettings;
+
+    [ObservableProperty]
+    private MissingCompareSettings missingCompareSettings;
+
+    partial void OnGradeValueCompareSettingsChanged(GradeValueCompareSettings oldValue, GradeValueCompareSettings newValue)
     {
-        get
-        {
-            if (_gradeValueCompareSettings == null)
-            {
-                _gradeValueCompareSettings = App.Settings.GetValue(nameof(GradeValueCompareSettings), new GradeValueCompareSettings());
-                _gradeValueCompareSettings.PropertyChanged += (s, e) => App.Settings.SetValue(nameof(GradeValueCompareSettings), _gradeValueCompareSettings);
-            }
-            return _gradeValueCompareSettings;
-        }
+        if (oldValue != null)
+            oldValue.PropertyChanged -= Child_PropertyChanged;
+        if (newValue != null)
+            newValue.PropertyChanged += Child_PropertyChanged;
     }
 
-    public GradeCompareSettings GradeCompareSettings
+    partial void OnGradeCompareSettingsChanged(GradeCompareSettings oldValue, GradeCompareSettings newValue)
     {
-        get
-        {
-            if (_gradeCompareSettings == null)
-            {
-                _gradeCompareSettings = App.Settings.GetValue(nameof(GradeCompareSettings), new GradeCompareSettings());
-                _gradeCompareSettings.PropertyChanged += (s, e) => App.Settings.SetValue(nameof(GradeCompareSettings), _gradeCompareSettings);
-            }
-            return _gradeCompareSettings;
-        }
+        if (oldValue != null)
+            oldValue.PropertyChanged -= Child_PropertyChanged;
+        if (newValue != null)
+            newValue.PropertyChanged += Child_PropertyChanged;
     }
 
-    public ValuePassFailCompareSettings ValuePassFailCompareSettings
+    partial void OnValuePassFailCompareSettingsChanged(ValuePassFailCompareSettings oldValue, ValuePassFailCompareSettings newValue)
     {
-        get
-        {
-            if (_valuePassFailCompareSettings == null)
-            {
-                _valuePassFailCompareSettings = App.Settings.GetValue(nameof(ValuePassFailCompareSettings), new ValuePassFailCompareSettings());
-                _valuePassFailCompareSettings.PropertyChanged += (s, e) => App.Settings.SetValue(nameof(ValuePassFailCompareSettings), _valuePassFailCompareSettings);
-            }
-            return _valuePassFailCompareSettings;
-        }
+        if (oldValue != null)
+            oldValue.PropertyChanged -= Child_PropertyChanged;
+        if (newValue != null)
+            newValue.PropertyChanged += Child_PropertyChanged;
     }
 
-    public ValueDoubleCompareSettings ValueDoubleCompareSettings
+    partial void OnValueDoubleCompareSettingsChanged(ValueDoubleCompareSettings oldValue, ValueDoubleCompareSettings newValue)
     {
-        get
-        {
-            if (_valueDoubleCompareSettings == null)
-            {
-                _valueDoubleCompareSettings = App.Settings.GetValue(nameof(ValueDoubleCompareSettings), new ValueDoubleCompareSettings());
-                _valueDoubleCompareSettings.PropertyChanged += (s, e) => App.Settings.SetValue(nameof(ValueDoubleCompareSettings), _valueDoubleCompareSettings);
-            }
-            return _valueDoubleCompareSettings;
-        }
+        if (oldValue != null)
+            oldValue.PropertyChanged -= Child_PropertyChanged;
+        if (newValue != null)
+            newValue.PropertyChanged += Child_PropertyChanged;
     }
 
-    public PassFailCompareSettings PassFailCompareSettings
+    partial void OnPassFailCompareSettingsChanged(PassFailCompareSettings oldValue, PassFailCompareSettings newValue)
     {
-        get
-        {
-            if (_passFailCompareSettings == null)
-            {
-                _passFailCompareSettings = App.Settings.GetValue(nameof(PassFailCompareSettings), new PassFailCompareSettings());
-                _passFailCompareSettings.PropertyChanged += (s, e) => App.Settings.SetValue(nameof(PassFailCompareSettings), _passFailCompareSettings);
-            }
-            return _passFailCompareSettings;
-        }
+        if (oldValue != null)
+            oldValue.PropertyChanged -= Child_PropertyChanged;
+        if (newValue != null)
+            newValue.PropertyChanged += Child_PropertyChanged;
     }
 
-    public GS1DecodeCompareSettings GS1DecodeCompareSettings
+    partial void OnGs1DecodeCompareSettingsChanged(GS1DecodeCompareSettings oldValue, GS1DecodeCompareSettings newValue)
     {
-        get
-        {
-            if (_gs1DecodeCompareSettings == null)
-            {
-                _gs1DecodeCompareSettings = App.Settings.GetValue(nameof(GS1DecodeCompareSettings), new GS1DecodeCompareSettings());
-                _gs1DecodeCompareSettings.PropertyChanged += (s, e) => App.Settings.SetValue(nameof(GS1DecodeCompareSettings), _gs1DecodeCompareSettings);
-            }
-            return _gs1DecodeCompareSettings;
-        }
+        if (oldValue != null)
+            oldValue.PropertyChanged -= Child_PropertyChanged;
+        if (newValue != null)
+            newValue.PropertyChanged += Child_PropertyChanged;
     }
 
-    public OverallGradeCompareSettings OverallGradeCompareSettings
+    partial void OnOverallGradeCompareSettingsChanged(OverallGradeCompareSettings oldValue, OverallGradeCompareSettings newValue)
     {
-        get
-        {
-            if (_overallGradeCompareSettings == null)
-            {
-                _overallGradeCompareSettings = App.Settings.GetValue(nameof(OverallGradeCompareSettings), new OverallGradeCompareSettings());
-                _overallGradeCompareSettings.PropertyChanged += (s, e) => App.Settings.SetValue(nameof(OverallGradeCompareSettings), _overallGradeCompareSettings);
-            }
-            return _overallGradeCompareSettings;
-        }
+        if (oldValue != null)
+            oldValue.PropertyChanged -= Child_PropertyChanged;
+        if (newValue != null)
+            newValue.PropertyChanged += Child_PropertyChanged;
     }
 
-    public ValueStringCompareSettings ValueStringCompareSettings
+    partial void OnValueStringCompareSettingsChanged(ValueStringCompareSettings oldValue, ValueStringCompareSettings newValue)
     {
-        get
-        {
-            if (_valueStringCompareSettings == null)
-            {
-                _valueStringCompareSettings = App.Settings.GetValue(nameof(ValueStringCompareSettings), new ValueStringCompareSettings());
-                _valueStringCompareSettings.PropertyChanged += (s, e) => App.Settings.SetValue(nameof(ValueStringCompareSettings), _valueStringCompareSettings);
-            }
-            return _valueStringCompareSettings;
-        }
+        if (oldValue != null)
+            oldValue.PropertyChanged -= Child_PropertyChanged;
+        if (newValue != null)
+            newValue.PropertyChanged += Child_PropertyChanged;
     }
 
-    public MissingCompareSettings MissingCompareSettings
+    partial void OnMissingCompareSettingsChanged(MissingCompareSettings oldValue, MissingCompareSettings newValue)
     {
-        get
+        if (oldValue != null)
+            oldValue.PropertyChanged -= Child_PropertyChanged;
+        if (newValue != null)
+            newValue.PropertyChanged += Child_PropertyChanged;
+    }
+
+    private void Child_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        App.Settings.SetValue(nameof(SectorDifferencesDatabaseSettings), this);
+    }
+
+    public void SaveToFile(string path)
+    {
+        var json = JsonConvert.SerializeObject(this, Formatting.Indented);
+        File.WriteAllText(path, json);
+    }
+
+    public void LoadFromFile(string path)
+    {
+        SectorDifferencesDatabaseSettings loaded;
+        if (!File.Exists(path))
         {
-            if (_missingCompareSettings == null)
-            {
-                _missingCompareSettings = App.Settings.GetValue(nameof(MissingCompareSettings), new MissingCompareSettings());
-                _missingCompareSettings.PropertyChanged += (s, e) => App.Settings.SetValue(nameof(MissingCompareSettings), _missingCompareSettings);
-            }
-            return _missingCompareSettings;
+            loaded = new SectorDifferencesDatabaseSettings();
         }
+        else
+        {
+            var json = File.ReadAllText(path);
+            loaded = JsonConvert.DeserializeObject<SectorDifferencesDatabaseSettings>(json)
+                     ?? new SectorDifferencesDatabaseSettings();
+        }
+
+        GradeValueCompareSettings = loaded.GradeValueCompareSettings;
+        GradeCompareSettings = loaded.GradeCompareSettings;
+        ValuePassFailCompareSettings = loaded.ValuePassFailCompareSettings;
+        ValueDoubleCompareSettings = loaded.ValueDoubleCompareSettings;
+        PassFailCompareSettings = loaded.PassFailCompareSettings;
+        Gs1DecodeCompareSettings = loaded.Gs1DecodeCompareSettings;
+        OverallGradeCompareSettings = loaded.OverallGradeCompareSettings;
+        ValueStringCompareSettings = loaded.ValueStringCompareSettings;
+        MissingCompareSettings = loaded.MissingCompareSettings;
     }
 }

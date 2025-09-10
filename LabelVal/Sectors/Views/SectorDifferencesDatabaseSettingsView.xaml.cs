@@ -1,28 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
 
-namespace LabelVal.Sectors.Views
+namespace LabelVal.Sectors.Views;
+
+/// <summary>
+/// Interaction logic for CompareSettingsControlView.xaml
+/// </summary>
+public partial class SectorDifferencesDatabaseSettingsView : UserControl
 {
-    /// <summary>
-    /// Interaction logic for CompareSettingsControlView.xaml
-    /// </summary>
-    public partial class SectorDifferencesDatabaseSettingsView : UserControl
+    public Classes.SectorDifferencesDatabaseSettings ViewModel { get; }
+    public SectorDifferencesDatabaseSettingsView()
     {
-        public SectorDifferencesDatabaseSettingsView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+        ViewModel = App.GetService<Classes.SectorDifferencesDatabaseSettings>();
+        Loaded += (s, e) => DataContext = this;
     }
 }

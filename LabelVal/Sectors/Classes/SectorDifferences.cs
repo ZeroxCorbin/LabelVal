@@ -8,7 +8,7 @@ namespace LabelVal.Sectors.Classes;
 
 public class SectorDifferences
 {
-    public static SectorDifferencesDatabaseSettings Settings => SectorDifferencesDatabaseSettings.Instance;
+    public static SectorDifferencesDatabaseSettings Settings => App.GetService<SectorDifferencesDatabaseSettings>();
 
     public string Name { get; set; }
     public string Username { get; set; }
@@ -62,7 +62,7 @@ public class SectorDifferences
             ValuePassFail => settings.ValuePassFailCompareSettings,
             ValueDouble => settings.ValueDoubleCompareSettings,
             PassFail => settings.PassFailCompareSettings,
-            GS1Decode => settings.GS1DecodeCompareSettings,
+            GS1Decode => settings.Gs1DecodeCompareSettings,
             ValueString => settings.ValueStringCompareSettings,
             Missing missing => settings.MissingCompareSettings,
             _ => null,

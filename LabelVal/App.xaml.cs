@@ -3,9 +3,13 @@ using BarcodeVerification.lib.GS1;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Main.Messages;
 using LabelVal.Main.Views;
+using LabelVal.Sectors.Classes;
 using LibSimpleDatabase;
 using Lvs95xx.Producer.Watchers;
 using MaterialDesignThemes.Wpf;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Drawing;
@@ -30,11 +34,32 @@ public enum ColorBlindnessType
     Monochrome
 }
 
+
 /// <summary>
 ///     Interaction logic for App.xaml
 /// </summary>
 public partial class App : Application
 {
+    private static readonly IHost _host = Host
+    .CreateDefaultBuilder()
+    .ConfigureAppConfiguration(c =>
+    {
+        if (Assembly.GetEntryAssembly()?.Location is string loc)
+            if (Path.GetDirectoryName(loc) is string dir)
+                c.SetBasePath(dir);
+    })
+    .ConfigureServices((context, services) =>
+    {
+
+        _ = services.AddSingleton<SectorDifferencesDatabaseSettings>(provider =>
+        {
+            return App.Settings.GetValue<SectorDifferencesDatabaseSettings>(nameof(SectorDifferencesDatabaseSettings), new(), true) ?? new SectorDifferencesDatabaseSettings();
+        });
+
+}).Build();
+
+    public static T GetService<T>() where T : notnull => _host.Services.GetRequiredService<T>();
+
     public static SimpleDatabase Settings { get; private set; }
 
     public static GS1Encoder GS1Encoder = new();
@@ -140,8 +165,11 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        _host.Start();
+
         base.OnStartup(e);
 
+       
         DisplaySplashScreen();
 
         // Wait until the splash screen is created and its dispatcher is running
