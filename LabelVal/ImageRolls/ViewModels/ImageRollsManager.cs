@@ -404,6 +404,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             Logger.Info("Loading user image rolls from cache.");
             _ = Application.Current.Dispatcher.Invoke(DispatcherPriority.Render, () => _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage(message: "Loading Image Rolls from Cache...")));
             List<ImageRoll> cachedRolls = App.Settings.GetValue("UserImageRolls_Cache", new List<ImageRoll>());
+            
             UserImageRolls.Clear();
             foreach (ImageRoll roll in cachedRolls)
             {
@@ -729,7 +730,6 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         if (NewImageRoll.ImageRollsDatabase.DeleteAllImages(NewImageRoll.UID))
         {
             Logger.Info($"Deleted all Image Roll Images {NewImageRoll.UID}");
-
         }
         else
             Logger.Error($"Failed to delete all Image Roll Images {NewImageRoll.UID}");

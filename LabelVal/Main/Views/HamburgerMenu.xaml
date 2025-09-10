@@ -107,7 +107,7 @@
                 Margin="3"
                 HorizontalAlignment="Stretch"
                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                Visibility="{Binding .,Converter={StaticResource IsNullOrEmptyVisibility}}">
+                Visibility="{Binding ., Converter={StaticResource IsNullOrEmptyVisibility}}">
 
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">
