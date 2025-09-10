@@ -94,7 +94,7 @@ public partial class MainWindow : ObservableRecipient
     public Printer.ViewModels.PrinterDetails PrinterDetails { get; }
 
     // Image Rolls Section
-    public ImageRolls.ViewModels.ImageRolls ImageRolls { get; }
+    public ImageRolls.ViewModels.ImageRollsManager ImageRolls { get; }
     public Results.ViewModels.ImageResultsManager ImageResultsManager { get; }
 
     // Scanner Section
@@ -191,7 +191,7 @@ public partial class MainWindow : ObservableRecipient
         ScannerManager = new V5.ViewModels.ScannerManager();
         VerifierManager = new L95.ViewModels.VerifierManager();
 
-        ImageRolls = new ImageRolls.ViewModels.ImageRolls();
+        ImageRolls = new ImageRolls.ViewModels.ImageRollsManager();
         ImageResultsDatabases = new Results.ViewModels.ImageResultsDatabases();
         ImageResultsManager = new Results.ViewModels.ImageResultsManager();
 

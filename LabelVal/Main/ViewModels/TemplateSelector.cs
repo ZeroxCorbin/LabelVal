@@ -52,7 +52,7 @@ namespace LabelVal.Main.ViewModels
                 {
                     return Run;
                 }
-                else if (hmi.Content is ImageRolls.ViewModels.ImageRolls)
+                else if (hmi.Content is ImageRolls.ViewModels.ImageRollsManager)
                 {
                     return ImageRolls;
                 }

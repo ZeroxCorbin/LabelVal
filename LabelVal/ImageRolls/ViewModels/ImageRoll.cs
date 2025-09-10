@@ -134,7 +134,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// </summary>
     [SQLite.Ignore] public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
-    [SQLite.Ignore] public ImageRolls ImageRolls { get; set; }
+    [SQLite.Ignore] public ImageRollsManager ImageRolls { get; set; }
 
     /// <summary>
     /// The unique identifier for the ImageRoll. This is also called the RollID.
@@ -271,7 +271,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// </summary>
     public ImageRoll() { }
 
-    public ImageRoll(ImageRolls imageRolls)
+    public ImageRoll(ImageRollsManager imageRolls)
     {
         ImageRolls = imageRolls;
         App.Settings.PropertyChanged += Settings_PropertyChanged;

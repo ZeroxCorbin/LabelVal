@@ -22,7 +22,7 @@ namespace LabelVal.ImageRolls.ViewModels;
 /// ViewModel for managing both fixed (asset-based) and user-created image rolls.
 /// This class handles loading, creating, editing, and deleting image rolls and their associated databases.
 /// </summary>
-public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<ImageResultsRenderedMessage>
+public partial class ImageRollsManager : ObservableRecipient, IDisposable, IRecipient<ImageResultsRenderedMessage>
 {
     #region Properties
 
@@ -152,9 +152,9 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
     #region Constructor and Initialization
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ImageRolls"/> class.
+    /// Initializes a new instance of the <see cref="ImageRollsManager"/> class.
     /// </summary>
-    public ImageRolls()
+    public ImageRollsManager()
     {
         if (!Directory.Exists(FileRoot.Path))
             FileRoot = new FileFolderEntry(App.UserImageRollsRoot);

@@ -157,14 +157,14 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        
+
                         <TextBlock
                             Grid.Row="0"
                             Style="{StaticResource MaterialDesignHeadline5TextBlock}"
                             Text="Compare Settings" />
-                        
-                        <sectors:SectorDifferencesDatabaseSettingsView Grid.Row="1"/>
-                        
+
+                        <sectors:SectorDifferencesDatabaseSettingsView Grid.Row="1" />
+
                     </Grid>
 
                     <Grid Grid.Column="1" Margin="10">
@@ -178,44 +178,46 @@
                             Style="{StaticResource MaterialDesignHeadline5TextBlock}"
                             Text="Focused Parameters" />
 
-                        <bar:EnumBrowserView
-                            Grid.Row="1"
-                            DataContext="{Binding EnumBrowserViewModel}" />
+                        <bar:EnumBrowserView Grid.Row="1" DataContext="{Binding EnumBrowserViewModel}" />
 
                     </Grid>
 
                     <StackPanel>
-                              <Grid Grid.Row="0" Grid.Column="2" Margin="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-
-                        <TextBlock
+                        <Grid
                             Grid.Row="0"
-                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
-                            Text="UI Settings" />
+                            Grid.Column="2"
+                            Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
 
-                        <local:AppSettingsControlView Grid.Row="1" DataContext="{Binding AppSettings}" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                                Text="UI Settings" />
 
-                    </Grid>
+                            <local:AppSettingsControlView Grid.Row="1" DataContext="{Binding AppSettings}" />
 
-                    <Grid Grid.Row="1" Grid.Column="2" Margin="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        
-                        <TextBlock
-                            Grid.Row="0"
-                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
-                            Text="Sector Output Settings" />
-                        
-                        <sectorOutput:SectorOutputSettings
+                        </Grid>
+
+                        <Grid
                             Grid.Row="1"
-                            DataContext="{Binding SectorOutputSettings}" />
-                        
-                    </Grid>              
+                            Grid.Column="2"
+                            Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock
+                                Grid.Row="0"
+                                Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                                Text="Sector Output Settings" />
+
+                            <sectorOutput:SectorOutputSettings Grid.Row="1" DataContext="{Binding SectorOutputSettings}" />
+
+                        </Grid>
                     </StackPanel>
 
 

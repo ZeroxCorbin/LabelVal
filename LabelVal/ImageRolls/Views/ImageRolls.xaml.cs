@@ -13,7 +13,7 @@ namespace LabelVal.ImageRolls.Views;
 
 public partial class ImageRolls : UserControl
 {
-    private ViewModels.ImageRolls _viewModel;
+    private ViewModels.ImageRollsManager _viewModel;
     private readonly SelectionService _selectionService = new();
 
     public ImageRolls()
@@ -27,19 +27,19 @@ public partial class ImageRolls : UserControl
                 _viewModel.PropertyChanged -= ViewModel_PropertyChanged;
             }
 
-            _viewModel = e.NewValue as ViewModels.ImageRolls;
+            _viewModel = e.NewValue as ViewModels.ImageRollsManager;
             if (_viewModel == null)
                 return;
 
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-            ImageRoll ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRolls.SelectedImageRoll));
+            ImageRoll ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRollsManager.SelectedImageRoll));
 
             _viewModel.SelectedFixedImageRoll = ir != null ? _viewModel.FixedImageRolls.FirstOrDefault((roll) => roll.UID == ir.UID) : null;
             _viewModel.SelectedUserImageRoll = ir != null ? _viewModel.UserImageRolls.FirstOrDefault((roll) => roll.UID == ir.UID) : null;
 
             if (ir != null && _viewModel.SelectedFixedImageRoll == null && _viewModel.SelectedUserImageRoll == null)
-                App.Settings.SetValue(nameof(ViewModels.ImageRolls.SelectedImageRoll), null);
+                App.Settings.SetValue(nameof(ViewModels.ImageRollsManager.SelectedImageRoll), null);
           
             if(ir == null || (ir.RollType == ImageRollTypes.Database && ir.ImageCount == 0))
                 _ = Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage(true))));
@@ -73,7 +73,7 @@ public partial class ImageRolls : UserControl
 
     private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ViewModels.ImageRolls.RefreshView))
+        if (e.PropertyName == nameof(ViewModels.ImageRollsManager.RefreshView))
         {
             Refresh();
         }
@@ -122,7 +122,7 @@ public partial class ImageRolls : UserControl
 
         if (Utilities.VisualTreeHelp.GetVisualParent<TabControl>(lst) is not TabControl tab) return;
 
-        ((ViewModels.ImageRolls)tab.DataContext).SelectedUserImageRoll = ir;
+        ((ViewModels.ImageRollsManager)tab.DataContext).SelectedUserImageRoll = ir;
     }
 
     private void ListViewFixed_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -143,7 +143,7 @@ public partial class ImageRolls : UserControl
 
         if (Utilities.VisualTreeHelp.GetVisualParent<TabControl>(lst) is not TabControl tab) return;
 
-        ((ViewModels.ImageRolls)tab.DataContext).SelectedFixedImageRoll = ir;
+        ((ViewModels.ImageRollsManager)tab.DataContext).SelectedFixedImageRoll = ir;
     }
 
     public void Refresh() { if (FindResource("UserImageRolls") is CollectionViewSource cvs) { cvs.View?.Refresh(); } }
