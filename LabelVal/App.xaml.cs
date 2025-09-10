@@ -164,15 +164,14 @@ public partial class App : Application
     }
 
     protected override void OnStartup(StartupEventArgs e)
-    {
+    {  
+        DisplaySplashScreen();
+        
         _host.Start();
 
         base.OnStartup(e);
 
-       
-        DisplaySplashScreen();
-
-        // Wait until the splash screen is created and its dispatcher is running
+               // Wait until the splash screen is created and its dispatcher is running
         _splashScreenReady.WaitOne();
 
         UpdateSplashScreen("Loading settings...");
