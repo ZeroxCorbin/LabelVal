@@ -24,7 +24,7 @@ public partial class Controller : ObservableObject
     [ObservableProperty] private bool updateUI = true;
     public ObservableCollection<Results.ViewModels.ResultsEntry> ResultsEntries { get; private set; }
 
-    private ResultsDatabase ResultsDatabase { get; set; }
+    private Databases.ResultsDatabase ResultsDatabase { get; set; }
     public RunEntry RunEntry { get; private set; }
     private string RunUID => RunEntry.UID;
 
@@ -111,7 +111,7 @@ public partial class Controller : ObservableObject
         return true;
     }
 
-    private bool OpenDatabase() => (ResultsDatabase = new ResultsDatabase().Open($"{App.RunsRoot}\\RunResults.sqlite")) != null;
+    private bool OpenDatabase() => (ResultsDatabase = new Databases.ResultsDatabase().Open($"{App.RunsRoot}\\RunResults.sqlite")) != null;
     private bool UpdateRunEntry()
     {
         RunEntry.GradingStandard = ImageRollEntry.SelectedGradingStandard;

@@ -57,7 +57,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="ImageRollsContent">
-        <imageRolls:ImageRolls />
+        <imageRolls:ImageRollsManager />
     </DataTemplate>
 
     <DataTemplate x:Key="LabelBuilderContent">
@@ -106,11 +106,13 @@
             <DockPanel
                 Margin="3"
                 HorizontalAlignment="Stretch"
-                Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                Visibility="{Binding .,Converter={StaticResource IsNullOrEmptyVisibility}}">
 
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">
                         <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
+
                     </Style>
                 </DockPanel.Style>
 
@@ -354,7 +356,7 @@
     </DataTemplate>
 
     <!--  Results Databases  -->
-    <DataTemplate x:Key="ImageRdMenuItem" DataType="{x:Type resultsVm:ResultssDatabases}">
+    <DataTemplate x:Key="ImageRdMenuItem" DataType="{x:Type resultsVm:ResultsDatabasesViewModel}">
         <!--  DataContext must be set to Content here.  -->
         <DockPanel DataContext="{Binding Content}">
 

@@ -11,12 +11,12 @@ using System.Windows.Threading;
 
 namespace LabelVal.ImageRolls.Views;
 
-public partial class ImageRolls : UserControl
+public partial class ImageRollsManager : UserControl
 {
     private ViewModels.ImageRollsManager _viewModel;
     private readonly SelectionService _selectionService = new();
 
-    public ImageRolls()
+    public ImageRollsManager()
     {
         InitializeComponent();
 

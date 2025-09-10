@@ -44,7 +44,7 @@ namespace LabelVal.Main.ViewModels
                 {
                     return Printer;
                 }
-                else if (hmi.Content is Results.ViewModels.ResultssDatabases)
+                else if (hmi.Content is Results.ViewModels.ResultsDatabasesViewModel)
                 {
                     return ResultssDatabases;
                 }

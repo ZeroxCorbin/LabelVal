@@ -8,10 +8,11 @@ using Gma.System.MouseKeyHook;
 using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.L95.ViewModels;
+using LabelVal.Main.Messages;
 using LabelVal.Main.ViewModels;
+using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Extensions;
-using LabelVal.Simulator.Databases;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
@@ -36,11 +37,12 @@ namespace LabelVal.Results.ViewModels;
 public partial class ResultssManager : ObservableRecipient,
     IRecipient<PropertyChangedMessage<ImageRoll>>,
     IRecipient<PropertyChangedMessage<Node>>,
-    IRecipient<PropertyChangedMessage<ResultssDatabase>>,
+    IRecipient<PropertyChangedMessage<ResultsDatabase>>,
     IRecipient<PropertyChangedMessage<Scanner>>,
     IRecipient<PropertyChangedMessage<Verifier>>,
     IRecipient<PropertyChangedMessage<PrinterSettings>>,
-    IRecipient<PropertyChangedMessage<FullReport>>
+    IRecipient<PropertyChangedMessage<FullReport>>,
+    IRecipient<DeleteResultsForRollMessage>
 {
     #region Fields
 
@@ -113,7 +115,7 @@ public partial class ResultssManager : ObservableRecipient,
     /// <summary>
     /// Gets or sets the currently selected image results database.
     /// </summary>
-    [ObservableProperty] private ResultssDatabase _selectedResultsDatabase;
+    [ObservableProperty] private ResultsDatabase _selectedResultsDatabase;
 
     /// <summary>
     /// Gets or sets the topmost image result entry in the view.
@@ -304,9 +306,9 @@ public partial class ResultssManager : ObservableRecipient,
         if (ret2.HasReceivedResponse)
             Receive(new PropertyChangedMessage<PrinterSettings>("", "", null, ret2.Response));
 
-        var ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<ResultssDatabase>());
+        var ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<ResultsDatabase>());
         if (ret4.HasReceivedResponse)
-            Receive(new PropertyChangedMessage<ResultssDatabase>("", "", null, ret4.Response));
+            Receive(new PropertyChangedMessage<ResultsDatabase>("", "", null, ret4.Response));
 
         var ret5 = WeakReferenceMessenger.Default.Send(new RequestMessage<Scanner>());
         if (ret5.HasReceivedResponse)
@@ -824,6 +826,19 @@ public partial class ResultssManager : ObservableRecipient,
         return null;
     }
 
+    private void DeleteAllResultsForDatabase(string rollUid)
+    {
+        if (SelectedResultsDatabase == null || string.IsNullOrEmpty(rollUid))
+            return;
+
+        // Remove all ResultsEntry objects matching the roll UID
+        var entriesToRemove = ResultssEntries.Where(e => e.ImageRollUID == rollUid).ToList();
+        foreach (var entry in entriesToRemove)
+            ResultssEntries.Remove(entry); // Remove from UI
+
+        SelectedResultsDatabase.DeleteAllResultsByRollUid(rollUid);
+    }
+
     #endregion
 
     #region Message Handlers (Receive)
@@ -861,9 +876,11 @@ public partial class ResultssManager : ObservableRecipient,
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
 
     /// <summary>
-    /// Receives property changes for <see cref="Simulator.Databases.ResultssDatabase"/> and updates the selection.
+    /// Receives property changes for <see cref="Databases.ResultsDatabase"/> and updates the selection.
     /// </summary>
-    public void Receive(PropertyChangedMessage<ResultssDatabase> message) => SelectedResultsDatabase = message.NewValue;
+    public void Receive(PropertyChangedMessage<ResultsDatabase> message) => SelectedResultsDatabase = message.NewValue;
+
+    public void Receive(DeleteResultsForRollMessage message) => DeleteAllResultsForDatabase(message.Value);
 
     /// <summary>
     /// Receives property changes for <see cref="Node"/> (V275) and updates the selection.

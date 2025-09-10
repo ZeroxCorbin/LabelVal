@@ -729,6 +729,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         if (NewImageRoll.ImageRollsDatabase.DeleteAllImages(NewImageRoll.UID))
         {
             Logger.Info($"Deleted all Image Roll Images {NewImageRoll.UID}");
+
         }
         else
             Logger.Error($"Failed to delete all Image Roll Images {NewImageRoll.UID}");
@@ -739,6 +740,9 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         }
         else
             Logger.Error($"Failed to delete Image Roll: {NewImageRoll.UID}");
+
+        // Notify ResultssManager to delete results for this roll UID
+        WeakReferenceMessenger.Default.Send(new DeleteResultsForRollMessage(NewImageRoll.UID));
 
         LoadUserImageRollsList();
 

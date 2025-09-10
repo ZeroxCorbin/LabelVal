@@ -108,7 +108,7 @@ public partial class MainWindow : ObservableRecipient
     public L95.ViewModels.VerifierManager VerifierManager { get; }
 
     // Results Section
-    public Results.ViewModels.ResultssDatabases ResultssDatabases { get; }
+    public Results.ViewModels.ResultsDatabasesViewModel ResultssDatabases { get; }
 
     // Enum Browser
     public EnumBrowserViewModel EnumBrowserViewModel { get; }
@@ -192,7 +192,7 @@ public partial class MainWindow : ObservableRecipient
         VerifierManager = new L95.ViewModels.VerifierManager();
 
         ImageRolls = new ImageRolls.ViewModels.ImageRollsManager();
-        ResultssDatabases = new Results.ViewModels.ResultssDatabases();
+        ResultssDatabases = new Results.ViewModels.ResultsDatabasesViewModel();
         ResultssManager = new Results.ViewModels.ResultssManager();
 
         RunManager = new Run.ViewModels.RunManager(ResultssManager);

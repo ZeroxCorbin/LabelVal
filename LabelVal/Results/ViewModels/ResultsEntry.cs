@@ -4,9 +4,9 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.Databases;
 using LabelVal.Main.ViewModels;
+using LabelVal.Results.Databases;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
-using LabelVal.Simulator.Databases;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
@@ -22,7 +22,7 @@ namespace LabelVal.Results.ViewModels;
 /// <summary>
 /// This is a viewmodel to support both the Image Roll and the Results database information.
 /// </summary>
-public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<ResultssDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>
+public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<ResultsDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     #region Delegates
     /// <summary>
@@ -109,8 +109,8 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
     /// When it changes, the results rows for each device are updated.
     /// <see cref="SelectedResultsDatabase"/>
     /// </summary>
-    [ObservableProperty] private ResultssDatabase selectedResultsDatabase;
-    partial void OnSelectedResultsDatabaseChanged(ResultssDatabase value)
+    [ObservableProperty] private ResultsDatabase selectedResultsDatabase;
+    partial void OnSelectedResultsDatabaseChanged(ResultsDatabase value)
     {
         foreach (var device in ResultsDeviceEntries)
             device.GetStored();
@@ -466,7 +466,7 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
         _ = WeakReferenceMessenger.Default.Send(mes2);
         SelectedPrinter = mes2.Response;
 
-        RequestMessage<ResultssDatabase> mes4 = new();
+        RequestMessage<ResultsDatabase> mes4 = new();
         _ = WeakReferenceMessenger.Default.Send(mes4);
         SelectedResultsDatabase = mes4.Response;
     }
@@ -492,7 +492,7 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
     /// <summary>
     /// Receives property changed messages for the ResultssDatabase.
     /// </summary>
-    public void Receive(PropertyChangedMessage<ResultssDatabase> message) => SelectedResultsDatabase = message.NewValue;
+    public void Receive(PropertyChangedMessage<ResultsDatabase> message) => SelectedResultsDatabase = message.NewValue;
     /// <summary>
     /// Receives property changed messages for the PrinterSettings.
     /// </summary>

@@ -12,7 +12,7 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     Dialog:DialogParticipation.Register="{Binding}"
-    d:DataContext="{d:DesignInstance Type=ViewModels:ResultssDatabases}"
+    d:DataContext="{d:DesignInstance Type=ViewModels:ResultsDatabasesViewModel}"
     mc:Ignorable="d">
 
     <DockPanel
