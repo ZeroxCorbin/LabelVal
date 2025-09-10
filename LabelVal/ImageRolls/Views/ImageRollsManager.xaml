@@ -346,6 +346,9 @@
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 SelectedItem="{Binding DataContext.SelectedFixedImageRoll, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 SelectionChanged="ListViewFixed_SelectionChanged"
+                                VirtualizingPanel.IsVirtualizing="False"
+                VirtualizingPanel.IsVirtualizingWhenGrouping="False"
+                VirtualizingPanel.VirtualizationMode="Recycling"
                 Style="{StaticResource MahApps.Styles.ListView}">
 
                 <ListView.ItemContainerStyle>

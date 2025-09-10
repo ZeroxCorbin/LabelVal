@@ -47,6 +47,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="ImageRolls\Databases\StandardsDatabase.cs" />
+		<Compile Remove="ImageRolls\Services\ListViewSelectionBehavior.cs" />
 		<Compile Remove="ImageViewer3D\ViewModels\ImageOverlayTesting.cs" />
 		<Compile Remove="ImageViewer3D\ViewModels\ImageViewer3D_IndividualMeshs.cs" />
 		<Compile Remove="ImageViewer3D\ViewModels\ImageViewer3D_Instancing.cs" />

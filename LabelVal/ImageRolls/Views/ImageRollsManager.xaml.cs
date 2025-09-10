@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace LabelVal.ImageRolls.Views;
@@ -77,6 +78,7 @@ public partial class ImageRollsManager : UserControl
         {
             Refresh();
         }
+
     }
 
     private void UserControl_Unloaded(object sender, RoutedEventArgs e)
@@ -120,9 +122,7 @@ public partial class ImageRollsManager : UserControl
             return;
         }
 
-        if (Utilities.VisualTreeHelp.GetVisualParent<TabControl>(lst) is not TabControl tab) return;
-
-        ((ViewModels.ImageRollsManager)tab.DataContext).SelectedUserImageRoll = ir;
+        _viewModel.SelectedUserImageRoll = ir;
     }
 
     private void ListViewFixed_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -141,9 +141,7 @@ public partial class ImageRollsManager : UserControl
             return;
         }
 
-        if (Utilities.VisualTreeHelp.GetVisualParent<TabControl>(lst) is not TabControl tab) return;
-
-        ((ViewModels.ImageRollsManager)tab.DataContext).SelectedFixedImageRoll = ir;
+        _viewModel.SelectedFixedImageRoll = ir;
     }
 
     public void Refresh() { if (FindResource("UserImageRolls") is CollectionViewSource cvs) { cvs.View?.Refresh(); } }
@@ -154,4 +152,64 @@ public partial class ImageRollsManager : UserControl
         UseShellExecute = true,
         Verb = "open"
     });
+
+    private ListView FindListViewInTemplate(DependencyObject parent)
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+            if (child is ListView lv)
+                return lv;
+            var result = FindListViewInTemplate(child);
+            if (result != null)
+                return result;
+        }
+        return null;
+    }
+
+    private ListView FindUserImageRollsListView()
+    {
+        for (int i = 0; i < TabCtlUserIr.Items.Count; i++)
+        {
+            var tabItem = TabCtlUserIr.ItemContainerGenerator.ContainerFromIndex(i) as TabItem;
+            if (tabItem != null)
+            {
+                var contentPresenter = FindVisualChild<ContentPresenter>(tabItem);
+                if (contentPresenter != null)
+                {
+                    var listView = FindVisualChild<ListView>(contentPresenter);
+                    if (listView != null)
+                    {
+                        // Optionally check if ItemsSource is a CollectionViewGroup
+                        if (listView.ItemsSource is CollectionViewGroup group &&
+                            group.Items.Count > 0 &&
+                            group.Items[0].GetType().Name.Contains("ImageRoll"))
+                        {
+                            return listView;
+                        }
+                        // Or just return the first ListView found
+                        return listView;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    // Generic visual tree search helper
+    private T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+    {
+        if (parent == null) return null;
+        int count = VisualTreeHelper.GetChildrenCount(parent);
+        for (int i = 0; i < count; i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+            if (child is T tChild)
+                return tChild;
+            var result = FindVisualChild<T>(child);
+            if (result != null)
+                return result;
+        }
+        return null;
+    }
 }
