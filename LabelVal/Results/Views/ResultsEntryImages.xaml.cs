@@ -10,11 +10,11 @@ using System.Windows.Media;
 namespace LabelVal.Results.Views;
 
 /// <summary>
-/// Interaction logic for (ResultsEntry_Images.xaml
+/// Interaction logic for (ResultsEntryImages.xaml
 /// </summary>
-public partial class ResultsEntry_Images : UserControl
+public partial class ResultsEntryImages : UserControl
 {
-    public ResultsEntry_Images() => InitializeComponent();
+    public ResultsEntryImages() => InitializeComponent();
     private void SourceImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed && !(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))

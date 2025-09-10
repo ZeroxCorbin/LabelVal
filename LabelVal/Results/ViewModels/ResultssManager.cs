@@ -133,16 +133,6 @@ public partial class ResultssManager : ObservableRecipient,
     }
 
     /// <summary>
-    /// Gets or sets the focused template JSON object.
-    /// </summary>
-    [ObservableProperty] private JObject _focusedTemplate;
-
-    /// <summary>
-    /// Gets or sets the focused report JSON object.
-    /// </summary>
-    [ObservableProperty] private JObject _focusedReport;
-
-    /// <summary>
     /// Gets or sets the selected V275 device node.
     /// </summary>
     [ObservableProperty] private Node _selectedV275Node;

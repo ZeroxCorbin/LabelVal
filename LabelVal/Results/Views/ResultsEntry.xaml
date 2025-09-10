@@ -1176,7 +1176,7 @@
 
         <DockPanel>
 
-            <local:ResultsEntry_Images Margin="3,0,0,0" DataContext="{Binding}" />
+            <local:ResultsEntryImages Margin="3,0,0,0" DataContext="{Binding}" />
 
             <ItemsControl ItemTemplateSelector="{StaticResource ResultsDeviceEntryTemplateSelector}" ItemsSource="{Binding ResultsDeviceEntries}">
                 <ItemsControl.ItemsPanel>

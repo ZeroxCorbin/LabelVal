@@ -751,25 +751,6 @@
 
             <Border Style="{StaticResource imageBar}" />
 
-            <!--  Show the label name if no node is selected.  -->
-            <DockPanel>
-                <DockPanel.Style>
-                    <Style TargetType="DockPanel">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </DockPanel.Style>
-
-                <TextBlock
-                    Margin="10,0,0,0"
-                    VerticalAlignment="Center"
-                    Text="{Binding Label}" />
-            </DockPanel>
-
             <DockPanel>
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">
@@ -854,25 +835,6 @@
             </Grid>
 
             <Border Style="{StaticResource imageBar}" />
-
-            <!--  Show the label name if not node is selected.  -->
-            <DockPanel>
-                <DockPanel.Style>
-                    <Style TargetType="DockPanel">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </DockPanel.Style>
-
-                <TextBlock
-                    Margin="10,0,0,0"
-                    VerticalAlignment="Center"
-                    Text="{Binding Label}" />
-            </DockPanel>
 
             <DockPanel DockPanel.Dock="Top">
                 <DockPanel.Style>
@@ -1001,25 +963,6 @@
             </Grid>
 
             <Border Style="{StaticResource imageBar}" />
-
-            <DockPanel>
-                <DockPanel.Style>
-                    <Style TargetType="DockPanel">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </DockPanel.Style>
-
-                <TextBlock
-                    Margin="10,0,0,0"
-                    VerticalAlignment="Center"
-                    Text="{Binding Label}" />
-
-            </DockPanel>
 
             <DockPanel DockPanel.Dock="Top">
                 <DockPanel.Style>
