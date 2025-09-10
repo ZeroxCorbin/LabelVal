@@ -79,7 +79,7 @@
                                             <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                            <DataTrigger Binding="{Binding SelectedResultsDatabase.IsLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>

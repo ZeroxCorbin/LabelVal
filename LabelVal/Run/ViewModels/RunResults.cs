@@ -15,7 +15,7 @@ public partial class RunResults : ObservableRecipient, IRecipient<PropertyChange
 
     public RunResults() => IsActive = true;
 
-    //if the selected run entry is changed. all CurrentResultsGroup and StoredResultsGroup entries should be loaded for the new SelectedDatabase.
+    //if the selected run entry is changed. all CurrentResultsGroup and StoredResultsGroup entries should be loaded for the new SelectedResultsDatabase.
     //The loaded entries should be added to the ResultssEntries as new RunResult objects.
     partial void OnSelectedRunEntryChanged(RunEntry value)
     {

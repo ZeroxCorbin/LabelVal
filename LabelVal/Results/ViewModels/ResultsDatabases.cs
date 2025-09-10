@@ -17,8 +17,8 @@ public partial class ResultssDatabases : ObservableRecipient
 
     public ObservableCollection<ResultssDatabase> Databases { get; } = [];
 
-    [ObservableProperty][NotifyPropertyChangedRecipients] private ResultssDatabase selectedDatabase;
-    partial void OnSelectedDatabaseChanged(ResultssDatabase value) => App.Settings.SetValue("SelectedResultsDatabaseFFE", value?.File);
+    [ObservableProperty][NotifyPropertyChangedRecipients] private ResultssDatabase selectedResultsDatabase;
+    partial void OnSelectedResultsDatabaseChanged(ResultssDatabase value) => App.Settings.SetValue("SelectedResultsDatabaseFFE", value?.File);
 
     public bool RightAlignOverflow
     {
@@ -41,7 +41,7 @@ public partial class ResultssDatabases : ObservableRecipient
             this,
             (recipient, message) =>
             {
-                message.Reply(SelectedDatabase);
+                message.Reply(SelectedResultsDatabase);
             });
 
         App.Settings.PropertyChanged += Settings_PropertyChanged;
@@ -181,15 +181,15 @@ public partial class ResultssDatabases : ObservableRecipient
         if (val == null)
         {
             if (Databases.Count > 0)
-                SelectedDatabase = Databases.First();
+                SelectedResultsDatabase = Databases.First();
             return;
         }
 
         var res = Databases.Where((a) => a.File.Path == val.Path);
         if (res.Any())
-            SelectedDatabase = res.FirstOrDefault();
+            SelectedResultsDatabase = res.FirstOrDefault();
         else if (Databases.Count > 0)
-            SelectedDatabase = Databases.First();
+            SelectedResultsDatabase = Databases.First();
     }
 
     [RelayCommand]
@@ -213,7 +213,7 @@ public partial class ResultssDatabases : ObservableRecipient
     [RelayCommand]
     private void LockResultssDatabase()
     {
-        if (SelectedDatabase.IsPermLocked)
+        if (SelectedResultsDatabase.IsPermLocked)
             return;
 
         //if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
@@ -223,7 +223,7 @@ public partial class ResultssDatabases : ObservableRecipient
         //}
         //else
         //{
-        SelectedDatabase.IsLocked = !SelectedDatabase.IsLocked;
+        SelectedResultsDatabase.IsLocked = !SelectedResultsDatabase.IsLocked;
         //}
 
     }
@@ -249,8 +249,8 @@ public partial class ResultssDatabases : ObservableRecipient
         {
             File.Delete(imageResultsDatabase.File.Path);
 
-            if (SelectedDatabase == imageResultsDatabase)
-                SelectedDatabase = null;
+            if (SelectedResultsDatabase == imageResultsDatabase)
+                SelectedResultsDatabase = null;
 
             FileRoot = EnumerateFolders(FileRoot);
         }

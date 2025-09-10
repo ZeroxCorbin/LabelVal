@@ -196,7 +196,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
             return;
         }
 
-        if (ResultsEntry.SelectedDatabase == null)
+        if (ResultsEntry.SelectedResultsDatabase == null)
         {
             Logger.Error("No image results database selected.");
             return;
@@ -206,7 +206,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
 
         try
         {
-            var row = ResultsEntry.SelectedDatabase.Select_Result(Device, ResultsEntry.ImageRollUID, ResultsEntry.SourceImageUID, ResultsEntry.ImageRollUID);
+            var row = ResultsEntry.SelectedResultsDatabase.Select_Result(Device, ResultsEntry.ImageRollUID, ResultsEntry.SourceImageUID, ResultsEntry.ImageRollUID);
 
             if (row == null)
             {
@@ -237,7 +237,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
                     catch (System.Exception ex)
                     {
                         Logger.Error(ex);
-                        Logger.Error($"Error while loading stored results from: {ResultsEntry.SelectedDatabase.File.Name}");
+                        Logger.Error($"Error while loading stored results from: {ResultsEntry.SelectedResultsDatabase.File.Name}");
                     }
                 }
             }
@@ -257,7 +257,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
         catch (System.Exception ex)
         {
             Logger.Error(ex);
-            Logger.Error($"Error while loading stored results from: {ResultsEntry.SelectedDatabase.File.Name}");
+            Logger.Error($"Error while loading stored results from: {ResultsEntry.SelectedResultsDatabase.File.Name}");
         }
     }
 
@@ -272,7 +272,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
             Logger.Error("No sectors to store.");
             return;
         }
-        if (ResultsEntry.SelectedDatabase == null)
+        if (ResultsEntry.SelectedResultsDatabase == null)
         {
             Logger.Error("No image results database selected.");
             return;
@@ -293,8 +293,8 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
             Stored = CurrentImage
         };
 
-        if (ResultsEntry.SelectedDatabase.InsertOrReplace_Result(res) == null)
-            Logger.Error($"Error while storing results to: {ResultsEntry.SelectedDatabase.File.Name}");
+        if (ResultsEntry.SelectedResultsDatabase.InsertOrReplace_Result(res) == null)
+            Logger.Error($"Error while storing results to: {ResultsEntry.SelectedResultsDatabase.File.Name}");
 
         GetStored();
         ClearCurrent();
@@ -438,7 +438,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     {
         if (await ResultsEntry.OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
-            _ = ResultsEntry.SelectedDatabase.Delete_Result(Device, ResultsEntry.ImageRollUID, ResultsEntry.SourceImageUID, ResultsEntry.ImageRollUID);
+            _ = ResultsEntry.SelectedResultsDatabase.Delete_Result(Device, ResultsEntry.ImageRollUID, ResultsEntry.SourceImageUID, ResultsEntry.ImageRollUID);
             GetStored();
             GetSectorDiff();
         }

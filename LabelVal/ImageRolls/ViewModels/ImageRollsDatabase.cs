@@ -19,8 +19,8 @@ public partial class ImageRollsDatabases : ObservableRecipient, IDisposable
 
     public ObservableCollection<Databases.ImageRollsDatabase> Databases { get; } = [];
 
-    [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageRollsDatabase selectedDatabase;
-    partial void OnSelectedDatabaseChanged(Databases.ImageRollsDatabase value) => App.Settings.SetValue("SelectedImageRollDatabaseFFE", value?.File);
+    [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageRollsDatabase selectedResultsDatabase;
+    partial void OnSelectedResultsDatabaseChanged(Databases.ImageRollsDatabase value) => App.Settings.SetValue("SelectedImageRollDatabaseFFE", value?.File);
 
     public bool RightAlignOverflow
     {
@@ -42,7 +42,7 @@ public partial class ImageRollsDatabases : ObservableRecipient, IDisposable
             this,
             (recipient, message) =>
             {
-                message.Reply(SelectedDatabase);
+                message.Reply(SelectedResultsDatabase);
             });
 
         App.Settings.PropertyChanged += Settings_PropertyChanged;
@@ -182,15 +182,15 @@ public partial class ImageRollsDatabases : ObservableRecipient, IDisposable
         if (val == null)
         {
             if (Databases.Count > 0)
-                SelectedDatabase = Databases.First();
+                SelectedResultsDatabase = Databases.First();
             return;
         }
 
         var res = Databases.Where((a) => a.File.Path == val.Path);
         if (res.Any())
-            SelectedDatabase = res.FirstOrDefault();
+            SelectedResultsDatabase = res.FirstOrDefault();
         else if (Databases.Count > 0)
-            SelectedDatabase = Databases.First();
+            SelectedResultsDatabase = Databases.First();
     }
 
     [RelayCommand]
@@ -226,8 +226,8 @@ public partial class ImageRollsDatabases : ObservableRecipient, IDisposable
         {
             File.Delete(imageRollsDatabase.File.Path);
 
-            if (SelectedDatabase == imageRollsDatabase)
-                SelectedDatabase = null;
+            if (SelectedResultsDatabase == imageRollsDatabase)
+                SelectedResultsDatabase = null;
 
             FileRoot = EnumerateFolders(FileRoot);
         }

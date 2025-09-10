@@ -107,10 +107,10 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
     /// This is the database where all of the Results are stored.
     /// It can be changed by sending a <see cref="PropertyChangedMessage{ResultssDatabase}"/>
     /// When it changes, the results rows for each device are updated.
-    /// <see cref="SelectedDatabase"/>
+    /// <see cref="SelectedResultsDatabase"/>
     /// </summary>
-    [ObservableProperty] private ResultssDatabase selectedDatabase;
-    partial void OnSelectedDatabaseChanged(ResultssDatabase value)
+    [ObservableProperty] private ResultssDatabase selectedResultsDatabase;
+    partial void OnSelectedResultsDatabaseChanged(ResultssDatabase value)
     {
         foreach (var device in ResultsDeviceEntries)
             device.GetStored();
@@ -278,7 +278,7 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
     {
         if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
-            _ = SelectedDatabase.Delete_Result(device, ImageRollUID, SourceImageUID, ImageRollUID);
+            _ = SelectedResultsDatabase.Delete_Result(device, ImageRollUID, SourceImageUID, ImageRollUID);
             var dev = ResultsDeviceEntries.FirstOrDefault(x => x.Device == device);
             if (dev == null)
             {
@@ -321,9 +321,9 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
     /// </summary>
     public void DeleteStored()
     {
-        _ = SelectedDatabase.Delete_Result(ResultsEntryDevices.L95, ImageRollUID, SourceImageUID, ImageRollUID);
-        _ = SelectedDatabase.Delete_Result(ResultsEntryDevices.V275, ImageRollUID, SourceImageUID, ImageRollUID);
-        _ = SelectedDatabase.Delete_Result(ResultsEntryDevices.V5, ImageRollUID, SourceImageUID, ImageRollUID);
+        _ = SelectedResultsDatabase.Delete_Result(ResultsEntryDevices.L95, ImageRollUID, SourceImageUID, ImageRollUID);
+        _ = SelectedResultsDatabase.Delete_Result(ResultsEntryDevices.V275, ImageRollUID, SourceImageUID, ImageRollUID);
+        _ = SelectedResultsDatabase.Delete_Result(ResultsEntryDevices.V5, ImageRollUID, SourceImageUID, ImageRollUID);
     }
 
     /// <summary>
@@ -468,7 +468,7 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
 
         RequestMessage<ResultssDatabase> mes4 = new();
         _ = WeakReferenceMessenger.Default.Send(mes4);
-        SelectedDatabase = mes4.Response;
+        SelectedResultsDatabase = mes4.Response;
     }
 
     /// <summary>
@@ -492,7 +492,7 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
     /// <summary>
     /// Receives property changed messages for the ResultssDatabase.
     /// </summary>
-    public void Receive(PropertyChangedMessage<ResultssDatabase> message) => SelectedDatabase = message.NewValue;
+    public void Receive(PropertyChangedMessage<ResultssDatabase> message) => SelectedResultsDatabase = message.NewValue;
     /// <summary>
     /// Receives property changed messages for the PrinterSettings.
     /// </summary>

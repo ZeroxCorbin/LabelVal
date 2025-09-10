@@ -139,7 +139,7 @@
                 Margin="3,3,0,0"
                 ItemsSource="{Binding Databases}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                SelectedItem="{Binding SelectedDatabase}"
+                SelectedItem="{Binding SelectedResultsDatabase}"
                 Style="{StaticResource MahApps.Styles.ListBox}">
 
                 <ListView.ItemContainerStyle>

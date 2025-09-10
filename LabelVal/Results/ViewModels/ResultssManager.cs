@@ -113,7 +113,7 @@ public partial class ResultssManager : ObservableRecipient,
     /// <summary>
     /// Gets or sets the currently selected image results database.
     /// </summary>
-    [ObservableProperty] private ResultssDatabase _selectedDatabase;
+    [ObservableProperty] private ResultssDatabase _selectedResultsDatabase;
 
     /// <summary>
     /// Gets or sets the topmost image result entry in the view.
@@ -863,7 +863,7 @@ public partial class ResultssManager : ObservableRecipient,
     /// <summary>
     /// Receives property changes for <see cref="Simulator.Databases.ResultssDatabase"/> and updates the selection.
     /// </summary>
-    public void Receive(PropertyChangedMessage<ResultssDatabase> message) => SelectedDatabase = message.NewValue;
+    public void Receive(PropertyChangedMessage<ResultssDatabase> message) => SelectedResultsDatabase = message.NewValue;
 
     /// <summary>
     /// Receives property changes for <see cref="Node"/> (V275) and updates the selection.

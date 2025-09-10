@@ -217,7 +217,7 @@ public partial class ResultsDeviceEntry_L95
             return;
         }
 
-        if (ResultsEntry.SelectedDatabase == null)
+        if (ResultsEntry.SelectedResultsDatabase == null)
         {
             Logger.Error("No image results database selected.");
             return;
@@ -227,7 +227,7 @@ public partial class ResultsDeviceEntry_L95
 
         try
         {
-            Result row = ResultsEntry.SelectedDatabase.Select_Result(Device, ResultsEntry.ImageRollUID, ResultsEntry.SourceImageUID, ResultsEntry.ImageRollUID);
+            Result row = ResultsEntry.SelectedResultsDatabase.Select_Result(Device, ResultsEntry.ImageRollUID, ResultsEntry.SourceImageUID, ResultsEntry.ImageRollUID);
 
             if (row == null)
             {
@@ -254,7 +254,7 @@ public partial class ResultsDeviceEntry_L95
         catch (Exception ex)
         {
             Logger.Error(ex);
-            Logger.Error($"Error while loading stored results from: {ResultsEntry.SelectedDatabase.File.Name}");
+            Logger.Error($"Error while loading stored results from: {ResultsEntry.SelectedResultsDatabase.File.Name}");
         }
     }
 
@@ -270,7 +270,7 @@ public partial class ResultsDeviceEntry_L95
             return;
         }
 
-        if (ResultsEntry.SelectedDatabase == null)
+        if (ResultsEntry.SelectedResultsDatabase == null)
         {
             Logger.Error("No image results database selected.");
             return;
@@ -295,7 +295,7 @@ public partial class ResultsDeviceEntry_L95
             ["AllReports"] = JArray.FromObject(temp)
         };
 
-        _ = ResultsEntry.SelectedDatabase.InsertOrReplace_Result(new Databases.Result
+        _ = ResultsEntry.SelectedResultsDatabase.InsertOrReplace_Result(new Databases.Result
         {
             Device = Device,
             ImageRollUID = ResultsEntry.ImageRollUID,
@@ -322,7 +322,7 @@ public partial class ResultsDeviceEntry_L95
             return;
         }
 
-        if (ResultsEntry.SelectedDatabase == null)
+        if (ResultsEntry.SelectedResultsDatabase == null)
         {
             Logger.Error("No image results database selected.");
             return;
@@ -334,8 +334,8 @@ public partial class ResultsDeviceEntry_L95
 
         Result res = GetCurrentReport();
 
-        if (ResultsEntry.SelectedDatabase.InsertOrReplace_Result(res) == null)
-            Logger.Error($"Error while storing results to: {ResultsEntry.SelectedDatabase.File.Name}");
+        if (ResultsEntry.SelectedResultsDatabase.InsertOrReplace_Result(res) == null)
+            Logger.Error($"Error while storing results to: {ResultsEntry.SelectedResultsDatabase.File.Name}");
 
         GetStored();
         ClearCurrent();
@@ -365,7 +365,7 @@ public partial class ResultsDeviceEntry_L95
 
         //    temp.Add(new FullReport(((L95.Sectors.Sector)L95CurrentSectorSelected).Template.Original, ((L95.Sectors.Sector)L95CurrentSectorSelected).Report.Original));
 
-        //    _ = SelectedDatabase.InsertOrReplace_L95Result(new Databases.L95Result
+        //    _ = SelectedResultsDatabase.InsertOrReplace_L95Result(new Databases.L95Result
         //    {
         //        ImageRollUID = ImageRollUID,
         //        RunUID = ImageRollUID,
@@ -400,7 +400,7 @@ public partial class ResultsDeviceEntry_L95
 
         //        temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
 
-        //    _ = SelectedDatabase.InsertOrReplace_L95Result(new Databases.L95Result
+        //    _ = SelectedResultsDatabase.InsertOrReplace_L95Result(new Databases.L95Result
         //    {
         //        ImageRollUID = ImageRollUID,
         //        RunUID = ImageRollUID,
@@ -612,7 +612,7 @@ public partial class ResultsDeviceEntry_L95
     {
         if (await ResultsEntry.OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
-            _ = ResultsEntry.SelectedDatabase.Delete_Result(Device, ResultsEntry.ImageRollUID, ResultsEntry.SourceImageUID, ResultsEntry.ImageRollUID);
+            _ = ResultsEntry.SelectedResultsDatabase.Delete_Result(Device, ResultsEntry.ImageRollUID, ResultsEntry.SourceImageUID, ResultsEntry.ImageRollUID);
             GetStored();
             GetSectorDiff();
         }

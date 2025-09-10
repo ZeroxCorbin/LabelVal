@@ -160,7 +160,7 @@
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ResultssManager.SelectedDatabase.IsLocked}" Value="True">
+                                <DataTrigger Binding="{Binding ResultssManager.SelectedResultsDatabase.IsLocked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -223,7 +223,7 @@
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ResultssManager.SelectedDatabase.IsLocked}" Value="True">
+                                <DataTrigger Binding="{Binding ResultssManager.SelectedResultsDatabase.IsLocked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">

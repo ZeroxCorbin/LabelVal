@@ -1334,7 +1334,7 @@
                                     <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                                         <Setter Property="Visibility" Value="Visible" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                            <DataTrigger Binding="{Binding SelectedResultsDatabase.IsLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>

@@ -414,9 +414,9 @@
                         TextWrapping="Wrap">
                         <TextBlock.Style>
                             <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
-                                <Setter Property="Text" Value="{Binding SelectedDatabase.File.Name}" />
+                                <Setter Property="Text" Value="{Binding SelectedResultsDatabase.File.Name}" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedDatabase, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                    <DataTrigger Binding="{Binding SelectedResultsDatabase, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                         <Setter Property="Text" Value="NO DATABASE SELECTED" />
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -487,7 +487,7 @@
                             </ScrollViewer.Style>
 
 
-                            <TextBlock Text="{Binding SelectedDatabase.File.Name}">
+                            <TextBlock Text="{Binding SelectedResultsDatabase.File.Name}">
                                 <TextBlock.Style>
                                     <Style BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}" TargetType="TextBlock">
                                         <Setter Property="FlowDirection" Value="LeftToRight" />
@@ -543,12 +543,12 @@
 
                                     <Style.Triggers>
 
-                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                        <DataTrigger Binding="{Binding SelectedResultsDatabase.IsLocked}" Value="True">
                                             <Setter Property="Kind" Value="Lock" />
                                             <Setter Property="ToolTip" Value="Database is locked." />
                                         </DataTrigger>
 
-                                        <DataTrigger Binding="{Binding SelectedDatabase.IsPermLocked}" Value="True">
+                                        <DataTrigger Binding="{Binding SelectedResultsDatabase.IsPermLocked}" Value="True">
                                             <Setter Property="Kind" Value="DatabaseLock" />
                                             <Setter Property="ToolTip" Value="Database is premanently locked." />
                                         </DataTrigger>

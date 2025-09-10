@@ -198,7 +198,7 @@
                             <sectorOutput:SectorOutputSettings Grid.Row="1" DataContext="{Binding SectorOutputSettings}" />
 
                         </Grid>
-                        
+
                         <Grid Margin="10">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -215,7 +215,7 @@
                         </Grid>
 
                     </StackPanel>
-                    
+
                 </DockPanel>
             </mah:Flyout>
 
