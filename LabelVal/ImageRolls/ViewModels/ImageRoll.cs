@@ -531,7 +531,12 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// Creates a lightweight copy of the image roll using JSON serialization.
     /// </summary>
     /// <returns>A new <see cref="ImageRoll"/> instance with the same property values.</returns>
-    public ImageRoll CopyLite() => JsonConvert.DeserializeObject<ImageRoll>(JsonConvert.SerializeObject(this));
+    public ImageRoll CopyLite()
+    {
+        var roll = JsonConvert.DeserializeObject<ImageRoll>(JsonConvert.SerializeObject(this));
+        roll.ImageRollsDatabase = ImageRollsDatabase;
+        return roll;
+    }
 
     #endregion
 

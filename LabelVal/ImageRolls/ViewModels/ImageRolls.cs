@@ -82,6 +82,11 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
             SelectedImageRoll = value;
             IsLoading = true;
         }
+        else
+        {
+            if (SelectedUserImageRoll == null)
+                SelectedImageRoll = null;
+        }
     }
 
     /// <summary>
@@ -110,6 +115,11 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
 
             SelectedImageRoll = value;
             IsLoading = true;
+        }
+        else
+        {
+            if(SelectedFixedImageRoll == null)
+                SelectedImageRoll = null;
         }
     }
 
@@ -710,31 +720,29 @@ public partial class ImageRolls : ObservableRecipient, IDisposable, IRecipient<I
     [RelayCommand]
     public async Task Delete()
     {
-        if (UserDatabases == null || SelectedUserImageRoll == null)
+        if (UserDatabases == null || NewImageRoll == null)
             return;
 
-        if (await OkCancelDialog("Delete Image Roll?", $"Are you sure you want to delete image roll {SelectedUserImageRoll.Name} and images and results?") != MessageDialogResult.Affirmative)
+        if (await OkCancelDialog("Delete Image Roll and all Stored Images adn related Result Entries?", $"Are you sure you want to delete image roll {NewImageRoll.Name}?") != MessageDialogResult.Affirmative)
             return;
 
-        foreach (ImageEntry img in SelectedUserImageRoll.ImageEntries)
+        if (NewImageRoll.ImageRollsDatabase.DeleteAllImages(NewImageRoll.UID))
         {
-
-            if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImage(SelectedUserImageRoll.UID, img.UID))
-                Logger.Info($"Deleted image: {img.UID}");
-            else
-                Logger.Error($"Failed to delete image: {img.UID}");
-        }
-
-        if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImageRoll(NewImageRoll.UID))
-        {
-            Logger.Info($"Deleted image roll: {NewImageRoll.UID}");
-
-            LoadUserImageRollsList();
-            NewImageRoll = null;
-            SelectedUserImageRoll = null;
+            Logger.Info($"Deleted all Image Roll Images {NewImageRoll.UID}");
         }
         else
-            Logger.Error($"Failed to delete image roll: {NewImageRoll.UID}");
+            Logger.Error($"Failed to delete all Image Roll Images {NewImageRoll.UID}");
+
+        if (NewImageRoll.ImageRollsDatabase.DeleteImageRoll(NewImageRoll.UID))
+        {
+            Logger.Info($"Deleted Image Roll {NewImageRoll.UID}");
+        }
+        else
+            Logger.Error($"Failed to delete Image Roll: {NewImageRoll.UID}");
+
+        LoadUserImageRollsList();
+
+        NewImageRoll = null;
     }
 
     /// <summary>

@@ -176,7 +176,7 @@ public partial class ImageResultsManager : UserControl
 
     private void ImageResultsScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
-        if ((!_isLoaded && e.ExtentHeight > 0) || (_viewModel.SelectedImageRoll.RollType == ImageRolls.ViewModels.ImageRollTypes.Database && _viewModel.SelectedImageRoll.ImageCount == 0))
+        if ((!_isLoaded && e.ExtentHeight > 0) || _viewModel.SelectedImageRoll != null && (_viewModel.SelectedImageRoll.RollType == ImageRolls.ViewModels.ImageRollTypes.Database && _viewModel.SelectedImageRoll.ImageCount == 0))
         {
             _isLoaded = true;
             // Use Dispatcher to send message after rendering is complete

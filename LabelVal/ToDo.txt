@@ -34,7 +34,7 @@ Save the compare settings in the job/run entry.
 
 Click on the (I)nfo button and see a timedate stamp of when the current.
 
-Popups need to be flyouts.
+Complete: Popups need to be flyouts.
 
 V5 color of the bounding box.
 
@@ -47,5 +47,10 @@ Change the standard in the 95xx softwarae before processing the imge.
 seems to be an issue when moving an image down.
 Deleted a Curernt 95xx sector gave me an Dialog not registered.
 
+Complete: Put an activity indicator on the splash screen. Even if it does'nt do anything.
+
+Complete: Import and export Compare seetings. Focused parameters as well.
+
+Complete: Make the eye not have to shift click.
 
 
