@@ -15,10 +15,17 @@
     d:DataContext="{d:DesignInstance Type=viewModels:GlobalAppSettings}"
     mc:Ignorable="d">
 
-    <StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-        <DockPanel>
-            <StackPanel Margin="3">
+        <!--<StackPanel Grid.Row="0" Grid.Column="0" Margin="3" HorizontalAlignment="Center">
                 <TextBlock
                     Margin="3"
                     HorizontalAlignment="Center"
@@ -26,39 +33,52 @@
 
                 <ToggleButton IsChecked="{Binding ShowButtonText}" />
 
-            </StackPanel>
-            <StackPanel Margin="3">
-                <TextBlock
-                    Margin="3"
-                    HorizontalAlignment="Center"
-                    Text="Launch LVS on Connect" />
+            </StackPanel>-->
 
-                <ToggleButton IsChecked="{Binding LvsLaunchOnConnect}" />
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="3"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom">
+            <TextBlock
+                Margin="3"
+                HorizontalAlignment="Center"
+                Text="Launch LVS on Connect" />
 
-            </StackPanel>
+            <ToggleButton IsChecked="{Binding LvsLaunchOnConnect}" />
 
-        </DockPanel>
+        </StackPanel>
 
-        <DockPanel>
-            <StackPanel Margin="3">
-                <TextBlock
-                    Margin="3"
-                    HorizontalAlignment="Center"
-                    Text="Ignore LVS Image&#x0a;on No Decode" />
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="3"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom">
+            <TextBlock
+                Margin="3"
+                HorizontalAlignment="Center"
+                Text="Ignore LVS Image&#x0a;on No Decode" />
 
-                <ToggleButton IsChecked="{Binding LvsIgnoreNoResults}" />
+            <ToggleButton IsChecked="{Binding LvsIgnoreNoResults}" />
 
-            </StackPanel>
-            <StackPanel Margin="3">
-                <TextBlock
-                    Margin="3"
-                    HorizontalAlignment="Center"
-                    Text="Auto Detect V275 Nodes" />
+        </StackPanel>
 
-                <ToggleButton IsChecked="{Binding V275AutoRefreshServers}" />
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="3"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom">
+            <TextBlock
+                Margin="3"
+                HorizontalAlignment="Center"
+                Text="Auto Detect V275 Nodes" />
 
-            </StackPanel>
-        </DockPanel>
+            <ToggleButton IsChecked="{Binding V275AutoRefreshServers}" />
 
-    </StackPanel>
+        </StackPanel>
+
+    </Grid>
 </UserControl>
