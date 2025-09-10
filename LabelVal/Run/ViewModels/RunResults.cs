@@ -15,25 +15,25 @@ public partial class RunResults : ObservableRecipient, IRecipient<PropertyChange
 
     public RunResults() => IsActive = true;
 
-    //if the selected run entry is changed. all CurrentImageResultGroup and StoredImageResultGroup entries should be loaded for the new SelectedDatabase.
-    //The loaded entries should be added to the ImageResultsEntries as new RunResult objects.
+    //if the selected run entry is changed. all CurrentResultsGroup and StoredResultsGroup entries should be loaded for the new SelectedDatabase.
+    //The loaded entries should be added to the ResultssEntries as new RunResult objects.
     partial void OnSelectedRunEntryChanged(RunEntry value)
     {
         RunResultsList.Clear();
 
         if (value == null) return;
         if (SelectedRunEntry == null) return;
-        //var vals = SelectedRunEntry.RunDatabase.SelectAllStoredImageResultGroups(value.UID);
-        foreach (var stored in SelectedRunEntry.ResultsDatabase.SelectAllImageResultGroups(value.UID))
+        //var vals = SelectedRunEntry.RunDatabase.SelectAllStoredResultsGroups(value.UID);
+        foreach (var stored in SelectedRunEntry.ResultsDatabase.SelectAllResultsGroups(value.UID))
         {
-            //Logger.Debug($"Loading StoredImageResultGroup {stored.RunUID} {stored.SourceImageUID}");
+            //Logger.Debug($"Loading StoredResultsGroup {stored.RunUID} {stored.SourceImageUID}");
 
-            //var current = SelectedRunEntry.RunDatabase.SelectCurrentImageResultGroup(stored.RunUID, stored.SourceImageUID, stored.Order);
+            //var current = SelectedRunEntry.RunDatabase.SelectCurrentResultsGroup(stored.RunUID, stored.SourceImageUID, stored.Order);
 
             //if (current != null)
             //    RunResultsList.Add(new RunResult(current, stored, value));
             //else
-            //    Logger.Error($"CurrentImageResultGroup not found for {stored.RunUID} and {stored.SourceImageUID}");
+            //    Logger.Error($"CurrentResultsGroup not found for {stored.RunUID} and {stored.SourceImageUID}");
         }
 
     }

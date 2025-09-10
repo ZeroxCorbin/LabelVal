@@ -17,7 +17,7 @@ public partial class Result : ObservableObject
     public string RunUID { get; set; }
 
     [Indexed(Name = "CompositeKey", Order = 4, Unique = true)]
-    public ImageResultEntryDevices Device { get; set; }
+    public ResultsEntryDevices Device { get; set; }
 
     /// <see cref="SourceImage"/>
     [ObservableProperty] private string sourceImage;

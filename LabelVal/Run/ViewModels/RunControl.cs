@@ -13,7 +13,7 @@ public partial class RunControl : ObservableObject
 {
     public Controller.Controller RunController { get; } = new();
 
-    public ObservableCollection<ImageResultEntry> ImageResultsEntries { get; private set; }
+    public ObservableCollection<ResultsEntry> ResultssEntries { get; private set; }
 
     public Node V275 { get; private set; }
     public Scanner V5 { get; private set; }
@@ -28,17 +28,17 @@ public Verifier L95 { get; private set; }
     /// </summary>
     public RunControl() { }
 
-    public RunControl(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRoll imageRollEntry, Node v275, Scanner v5, Verifier l95)
+    public RunControl(int loopCount, ObservableCollection<ResultsEntry> imageResults, ImageRoll imageRollEntry, Node v275, Scanner v5, Verifier l95)
     {
         LoopCount = loopCount;
-        ImageResultsEntries = imageResults;
+        ResultssEntries = imageResults;
         SelectedImageRoll = imageRollEntry;
         V275 = v275;
         V5 = v5;
         L95 = l95;
     }
 
-    public void Update(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRoll imageRollEntry, Node v275, Scanner v5, Verifier l95)
+    public void Update(int loopCount, ObservableCollection<ResultsEntry> imageResults, ImageRoll imageRollEntry, Node v275, Scanner v5, Verifier l95)
     {
         if (RunController.State == RunStates.Running)
         {
@@ -47,7 +47,7 @@ public Verifier L95 { get; private set; }
         }
 
         LoopCount = loopCount;
-        ImageResultsEntries = imageResults;
+        ResultssEntries = imageResults;
         SelectedImageRoll = imageRollEntry;
         V275 = v275;
         V5 = v5;
@@ -68,7 +68,7 @@ public Verifier L95 { get; private set; }
         else
         {
             Logger.Info($"Starting Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
-            RunController.StartAsync(ImageResultsEntries, SelectedImageRoll, V275, V5?.Controller, L95?.Controller, LoopCount);
+            RunController.StartAsync(ResultssEntries, SelectedImageRoll, V275, V5?.Controller, L95?.Controller, LoopCount);
         }
     }
 

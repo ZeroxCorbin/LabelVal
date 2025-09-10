@@ -37,7 +37,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="ImageRdContent">
-        <results:ImageResultsDatabases />
+        <results:ResultssDatabases />
     </DataTemplate>
 
     <DataTemplate x:Key="RunContent">
@@ -354,7 +354,7 @@
     </DataTemplate>
 
     <!--  Results Databases  -->
-    <DataTemplate x:Key="ImageRdMenuItem" DataType="{x:Type resultsVm:ImageResultsDatabases}">
+    <DataTemplate x:Key="ImageRdMenuItem" DataType="{x:Type resultsVm:ResultssDatabases}">
         <!--  DataContext must be set to Content here.  -->
         <DockPanel DataContext="{Binding Content}">
 
@@ -1042,22 +1042,22 @@
 
     <viewModels:TemplateSelector
         x:Key="MenuItemTemplateSelector"
-        ImageResultsDatabases="{StaticResource ImageRdMenuItem}"
         ImageRolls="{StaticResource ImageRollMenuItem}"
         L96XX="{StaticResource L95MenuItem}"
         LabelBuilder="{StaticResource LabelBuilderMenuItem}"
         Printer="{StaticResource PrinterMenuItem}"
+        ResultssDatabases="{StaticResource ImageRdMenuItem}"
         Run="{StaticResource RunMenuItem}"
         V275="{StaticResource V275MenuItem}"
         V5="{StaticResource V5MenuItem}" />
 
     <viewModels:TemplateSelector
         x:Key="ContentItemTemplateSelector"
-        ImageResultsDatabases="{StaticResource ImageRdContent}"
         ImageRolls="{StaticResource ImageRollsContent}"
         L96XX="{StaticResource L95Content}"
         LabelBuilder="{StaticResource LabelBuilderContent}"
         Printer="{StaticResource PrinterContent}"
+        ResultssDatabases="{StaticResource ImageRdContent}"
         Run="{StaticResource RunContent}"
         V275="{StaticResource V275Content}"
         V5="{StaticResource V5Content}" />

@@ -29,18 +29,18 @@ public partial class Sector : UserControl
     public string GroupName { get; private set; }
 
 
-    private Results.ViewModels.IImageResultDeviceEntry ImageResultEntry { get; set; }
+    private Results.ViewModels.IResultsDeviceEntry ResultsEntry { get; set; }
 
     private PopupGS1DecodeText popGS1DecodeText = new();
 
     public bool IsSectorFocused => GroupName switch
     {
-        "v275Stored" => ImageResultEntry.FocusedStoredSector != null,
-        "v275Current" => ImageResultEntry.FocusedCurrentSector != null,
-        "v5Stored" => ImageResultEntry.FocusedStoredSector != null,
-        "v5Current" => ImageResultEntry.FocusedCurrentSector != null,
-        "l95Stored" => ImageResultEntry.FocusedStoredSector != null,
-        "l95Current" => ImageResultEntry.FocusedCurrentSector != null,
+        "v275Stored" => ResultsEntry.FocusedStoredSector != null,
+        "v275Current" => ResultsEntry.FocusedCurrentSector != null,
+        "v5Stored" => ResultsEntry.FocusedStoredSector != null,
+        "v5Current" => ResultsEntry.FocusedCurrentSector != null,
+        "l95Stored" => ResultsEntry.FocusedStoredSector != null,
+        "l95Current" => ResultsEntry.FocusedCurrentSector != null,
         _ => false,
     };
 
@@ -71,7 +71,7 @@ public partial class Sector : UserControl
         if (list != null)
         {
             GroupName = list.Tag.ToString();
-            ImageResultEntry = (Results.ViewModels.IImageResultDeviceEntry)list.DataContext;
+            ResultsEntry = (Results.ViewModels.IResultsDeviceEntry)list.DataContext;
         }
         else
         {
@@ -79,7 +79,7 @@ public partial class Sector : UserControl
             if (itmc != null)
             {
                 GroupName = itmc.Tag.ToString();
-                ImageResultEntry = (Results.ViewModels.IImageResultDeviceEntry)itmc.DataContext;
+                ResultsEntry = (Results.ViewModels.IResultsDeviceEntry)itmc.DataContext;
             }
         }
     }
@@ -99,7 +99,7 @@ public partial class Sector : UserControl
     }
     private void ShowAllLikeSectors()
     {
-        var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry>(this);
+        var ire = Utilities.VisualTreeHelp.GetVisualParent<ResultsEntry>(this);
         if (ire != null)
         {
             var sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
@@ -115,76 +115,76 @@ public partial class Sector : UserControl
 
     public void ShowSectorDetails()
     {
-        if (ImageResultEntry == null)
+        if (ResultsEntry == null)
             return;
 
         //This lets us know which sector is being focused on
         switch (GroupName)
         {
             case "v275Stored":
-               var devices =  ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.V275);
+               var devices =  ResultsEntry.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == Results.ViewModels.ResultsEntryDevices.V275);
                 foreach (var device in devices)
                 {
                     if (device.FocusedStoredSector != null)
                         device.FocusedStoredSector.IsFocused = false;
                     device.FocusedStoredSector = (ISector)this.DataContext;
                     device.FocusedStoredSector.IsFocused = true;
-                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshStoredOverlay());
+                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IResultsDeviceEntry)device).RefreshStoredOverlay());
                 }
                 break;
             case "v275Current":
-                devices = ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.V275);
+                devices = ResultsEntry.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == Results.ViewModels.ResultsEntryDevices.V275);
                 foreach (var device in devices)
                 {
                     if (device.FocusedCurrentSector != null)
                         device.FocusedCurrentSector.IsFocused = false;
                     device.FocusedCurrentSector = (ISector)this.DataContext;
                     device.FocusedCurrentSector.IsFocused = true;
-                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshCurrentOverlay());
+                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IResultsDeviceEntry)device).RefreshCurrentOverlay());
                 }
                 break;
             case "v5Stored":
-                devices = ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.V5);
+                devices = ResultsEntry.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == Results.ViewModels.ResultsEntryDevices.V5);
                 foreach (var device in devices)
                 {
                     if (device.FocusedStoredSector != null)
                         device.FocusedStoredSector.IsFocused = false;
                     device.FocusedStoredSector = (ISector)this.DataContext;
                     device.FocusedStoredSector.IsFocused = true;
-                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshStoredOverlay());
+                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IResultsDeviceEntry)device).RefreshStoredOverlay());
                 }
                 break;
             case "v5Current":
-                devices = ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.V5);
+                devices = ResultsEntry.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == Results.ViewModels.ResultsEntryDevices.V5);
                 foreach (var device in devices)
                 {
                     if (device.FocusedCurrentSector != null)
                         device.FocusedCurrentSector.IsFocused = false;
                     device.FocusedCurrentSector = (ISector)this.DataContext;
                     device.FocusedCurrentSector.IsFocused = true;
-                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshCurrentOverlay());
+                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IResultsDeviceEntry)device).RefreshCurrentOverlay());
                 }
                 break;
             case "l95Stored":
-                devices = ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.L95);
+                devices = ResultsEntry.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == Results.ViewModels.ResultsEntryDevices.L95);
                 foreach (var device in devices)
                 {
                     if (device.FocusedStoredSector != null)
                         device.FocusedStoredSector.IsFocused = false;
                     device.FocusedStoredSector = (ISector)this.DataContext;
                     device.FocusedStoredSector.IsFocused = true;
-                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshStoredOverlay());
+                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IResultsDeviceEntry)device).RefreshStoredOverlay());
                 }
                 break;
             case "l95Current":
-                devices = ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.L95);
+                devices = ResultsEntry.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == Results.ViewModels.ResultsEntryDevices.L95);
                 foreach (var device in devices)
                 {
                     if (device.FocusedCurrentSector != null)
                         device.FocusedCurrentSector.IsFocused = false;
                     device.FocusedCurrentSector = (ISector)this.DataContext;
                     device.FocusedCurrentSector.IsFocused = true;
-                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshCurrentOverlay());
+                    Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IResultsDeviceEntry)device).RefreshCurrentOverlay());
                 }
                 break;
         }

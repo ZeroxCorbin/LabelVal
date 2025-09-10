@@ -9,15 +9,15 @@ namespace LabelVal.Results.Views;
 /// <summary>
 /// Interaction logic for LabelControlView.xaml
 /// </summary>
-public partial class ImageResultEntry : UserControl
+public partial class ResultsEntry : UserControl
 {
-    public ImageResultEntry() => InitializeComponent();
+    public ResultsEntry() => InitializeComponent();
 
-    private ViewModels.ImageResultEntry viewModel;
+    private ViewModels.ResultsEntry viewModel;
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
-        viewModel = (ViewModels.ImageResultEntry)DataContext;
+        viewModel = (ViewModels.ResultsEntry)DataContext;
         viewModel.BringIntoView += ViewModel_BringIntoView;
 
 
@@ -61,26 +61,26 @@ public partial class ImageResultEntry : UserControl
     private void btnMoveImage_Click(object sender, RoutedEventArgs e)
     {
         popMove.IsOpen = false;
-        var viewModel = (ViewModels.ImageResultEntry)DataContext;
+        var viewModel = (ViewModels.ResultsEntry)DataContext;
         if (((Button)sender).Tag is string s)
             switch (s)
             {
                 case "top":
-                    viewModel.ImageResultsManager.SelectedImageRoll.MoveImageTop(viewModel.SourceImage);
+                    viewModel.ResultssManager.SelectedImageRoll.MoveImageTop(viewModel.SourceImage);
                     break;
                 case "up":
-                    viewModel.ImageResultsManager.SelectedImageRoll.MoveImageUp(viewModel.SourceImage);
+                    viewModel.ResultssManager.SelectedImageRoll.MoveImageUp(viewModel.SourceImage);
                     break;
                 case "down":
-                    viewModel.ImageResultsManager.SelectedImageRoll.MoveImageDown(viewModel.SourceImage);
+                    viewModel.ResultssManager.SelectedImageRoll.MoveImageDown(viewModel.SourceImage);
                     break;
                 case "bottom":
-                    viewModel.ImageResultsManager.SelectedImageRoll.MoveImageBottom(viewModel.SourceImage);
+                    viewModel.ResultssManager.SelectedImageRoll.MoveImageBottom(viewModel.SourceImage);
                     break;
             }
 
         BringIntoView();
     }
 
-    private void btnShowDetailsToggle(object sender, RoutedEventArgs e) => ((ViewModels.ImageResultEntry)DataContext).ShowDetails = !((ViewModels.ImageResultEntry)DataContext).ShowDetails;
+    private void btnShowDetailsToggle(object sender, RoutedEventArgs e) => ((ViewModels.ResultsEntry)DataContext).ShowDetails = !((ViewModels.ResultsEntry)DataContext).ShowDetails;
 }

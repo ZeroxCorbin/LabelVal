@@ -16,7 +16,7 @@ namespace LabelVal.Main.ViewModels
         public DataTemplate V275 { get; set; }
         public DataTemplate V5 { get; set; }
         public DataTemplate L96XX { get; set; }
-        public DataTemplate ImageResultsDatabases { get; set; }
+        public DataTemplate ResultssDatabases { get; set; }
         public DataTemplate ImageRolls { get; set; }
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
@@ -44,9 +44,9 @@ namespace LabelVal.Main.ViewModels
                 {
                     return Printer;
                 }
-                else if (hmi.Content is Results.ViewModels.ImageResultsDatabases)
+                else if (hmi.Content is Results.ViewModels.ResultssDatabases)
                 {
-                    return ImageResultsDatabases;
+                    return ResultssDatabases;
                 }
                 else if (hmi.Content is Run.ViewModels.RunManager)
                 {

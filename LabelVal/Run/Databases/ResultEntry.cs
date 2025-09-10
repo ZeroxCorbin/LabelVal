@@ -16,7 +16,7 @@ public enum DeviceTypes
 
 [JsonConverter(typeof(StringEnumConverter))]
 [StoreAsText]
-public enum ImageResultTypes
+public enum ResultsTypes
 {
     Stored,
     Current,
@@ -37,7 +37,7 @@ public partial class ResultEntry : ObservableObject
     partial void OnL95ResultChanged(Result value) { _results = JsonConvert.SerializeObject(value); DeviceType = DeviceTypes.L95; }
 
     public DeviceTypes DeviceType { get; set; }
-    public ImageResultTypes ResultType { get; set; }
+    public ResultsTypes ResultType { get; set; }
 
     public string RunUID { get; set; }
     public string ImageRollUID { get; set; }
@@ -63,7 +63,7 @@ public partial class ResultEntry : ObservableObject
         }
     }
 
-    public ResultEntry(object results, ImageResultTypes type) 
+    public ResultEntry(object results, ResultsTypes type) 
     {
         ResultType = type;
 

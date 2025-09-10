@@ -20,7 +20,7 @@ namespace LabelVal.Results.ViewModels;
 /// </summary>
 [SQLite.StoreAsText]
 [JsonConverter(typeof(StringEnumConverter))]
-public enum ImageResultEntryDevices
+public enum ResultsEntryDevices
 {
     /// <summary>
     /// V275 device.
@@ -45,7 +45,7 @@ public enum ImageResultEntryDevices
 /// </summary>
 [SQLite.StoreAsText]
 [JsonConverter(typeof(StringEnumConverter))]
-public enum ImageResultEntryImageTypes
+public enum ResultsEntryImageTypes
 {
     /// <summary>
     /// The original source image.
@@ -89,21 +89,21 @@ public enum ImageResultEntryImageTypes
 /// Defines the contract for a device-specific entry in the image results.
 /// This interface manages the state and operations for images and sectors from a particular device.
 /// </summary>
-public interface IImageResultDeviceEntry
+public interface IResultsDeviceEntry
 {
     /// <summary>
     /// Gets the device type for this entry.
     /// </summary>
-    ImageResultEntryDevices Device { get; }
+    ResultsEntryDevices Device { get; }
 
     /// <summary>
     /// Gets the manager for all image results.
     /// </summary>
-    ImageResultsManager ImageResultsManager { get; }
+    ResultssManager ResultssManager { get; }
     /// <summary>
     /// Gets the parent image result entry.
     /// </summary>
-    ImageResultEntry ImageResultEntry { get; }
+    ResultsEntry ResultsEntry { get; }
 
     /// <summary>
     /// Gets the result data associated with this entry.
@@ -314,7 +314,7 @@ public interface IImageResultDeviceEntry
         if (showExtended)
             drwGroup.Children.Add(GetModuleGrid(sectors));
 
-        // drwGroup.Transform = new RotateTransform(ImageResults.SelectedV5.RotateImage ? 180 : 0);
+        // drwGroup.Transform = new RotateTransform(Resultss.SelectedV5.RotateImage ? 180 : 0);
 
         DrawingImage geometryImage = new(drwGroup);
         geometryImage.Freeze();

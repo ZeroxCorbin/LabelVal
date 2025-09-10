@@ -14,7 +14,7 @@ namespace LabelVal.Run.ViewModels;
 
 public partial class RunManager : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>, IRecipient<PropertyChangedMessage<Scanner>>, IRecipient<PropertyChangedMessage<Verifier>>, IRecipient<PropertyChangedMessage<ImageRoll>>
 {
-    private ImageResultsManager ImageResults { get; }
+    private ResultssManager Resultss { get; }
     [ObservableProperty] private Node _selectedV275Node;
     [ObservableProperty] private Scanner _selectedV5;
     [ObservableProperty] private Verifier _selectedL95;
@@ -30,9 +30,9 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
     [ObservableProperty] private int _loopCount = App.Settings.GetValue(nameof(LoopCount), 1, true);
     partial void OnLoopCountChanged(int value) { App.Settings.SetValue(nameof(LoopCount), value); }
 
-    public RunManager(ImageResultsManager imageResults)
+    public RunManager(ResultssManager imageResults)
     {
-        ImageResults = imageResults;
+        Resultss = imageResults;
 
         ReceiveAll();
         IsActive = true;
@@ -71,7 +71,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
         else
         {
             Logger.Info($"Starting Run: {SelectedImageRoll.Name}; {LoopCount}");
-            QuickRunController.Update(LoopCount, ImageResults.ImageResultsEntries, SelectedImageRoll, SelectedV275Node, SelectedV5, SelectedL95);
+            QuickRunController.Update(LoopCount, Resultss.ResultssEntries, SelectedImageRoll, SelectedV275Node, SelectedV5, SelectedL95);
             QuickRunController.StartStopCommand.Execute(null);
         }
     }

@@ -66,8 +66,8 @@
 		<Compile Remove="Run\Views\RunControl.xaml.cs" />
 		<Compile Remove="Utilities\BitmapHeaderViewer.cs" />
 		<Compile Remove="Utilities\ImageSharpUtilities.cs" />
-		<Compile Remove="V275\ViewModels\ImageResultEntry.cs" />
-		<Compile Remove="V275\ViewModels\ImageResults.cs" />
+		<Compile Remove="V275\ViewModels\ResultsEntry.cs" />
+		<Compile Remove="V275\ViewModels\Resultss.cs" />
 		<Compile Remove="V275\ViewModels\SectorDifferences.cs" />
 		<Compile Remove="V275\ViewModels\Sectors.cs" />
 	</ItemGroup>

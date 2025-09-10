@@ -27,21 +27,21 @@ namespace LabelVal.Results.ViewModels;
 /// Represents a device-specific entry for an L95 device within the image results view.
 /// This class manages the state, data, and operations related to image verification results from an L95 device.
 /// </summary>
-public partial class ImageResultDeviceEntry_L95
-    : ObservableRecipient, IImageResultDeviceEntry, IRecipient<PropertyChangedMessage<FullReport>>, IDisposable
+public partial class ResultsDeviceEntry_L95
+    : ObservableRecipient, IResultsDeviceEntry, IRecipient<PropertyChangedMessage<FullReport>>, IDisposable
 {
     /// <summary>
-    /// Gets the parent <see cref="ImageResultEntry"/> that this device entry belongs to.
+    /// Gets the parent <see cref="ResultsEntry"/> that this device entry belongs to.
     /// </summary>
-    public ImageResultEntry ImageResultEntry { get; }
+    public ResultsEntry ResultsEntry { get; }
     /// <summary>
     /// Gets the manager for image results, providing access to shared data and services.
     /// </summary>
-    public ImageResultsManager ImageResultsManager => ImageResultEntry.ImageResultsManager;
+    public ResultssManager ResultssManager => ResultsEntry.ResultssManager;
     /// <summary>
     /// Gets the device type for this entry, which is L95.
     /// </summary>
-    public ImageResultEntryDevices Device { get; } = ImageResultEntryDevices.L95;
+    public ResultsEntryDevices Device { get; } = ResultsEntryDevices.L95;
 
     /// <summary>
     /// Gets or sets the database result record associated with this entry.
@@ -122,7 +122,7 @@ public partial class ImageResultDeviceEntry_L95
     [ObservableProperty] private bool isWorking = false;
     partial void OnIsWorkingChanged(bool value)
     {
-        ImageResultsManager.WorkingUpdate(Device, value);
+        ResultssManager.WorkingUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotWorking));
     }
     /// <summary>
@@ -138,7 +138,7 @@ public partial class ImageResultDeviceEntry_L95
     [ObservableProperty] private bool isFaulted = false;
     partial void OnIsFaultedChanged(bool value)
     {
-        ImageResultsManager.FaultedUpdate(Device, value);
+        ResultssManager.FaultedUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotFaulted));
     }
     /// <summary>
@@ -151,13 +151,13 @@ public partial class ImageResultDeviceEntry_L95
     /// <summary>
     /// Gets the appropriate label handler based on the current state of the L95 device and image roll settings.
     /// </summary>
-    public LabelHandlers Handler => ImageResultsManager?.SelectedL95?.Controller != null && ImageResultsManager.SelectedL95.Controller.IsConnected && ImageResultsManager.SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running ? ImageResultsManager.SelectedL95.Controller.IsSimulator
-            ? ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+    public LabelHandlers Handler => ResultssManager?.SelectedL95?.Controller != null && ResultssManager.SelectedL95.Controller.IsConnected && ResultssManager.SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running ? ResultssManager.SelectedL95.Controller.IsSimulator
+            ? ResultssManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
                     : LabelHandlers.SimulatorDetect
                 : LabelHandlers.SimulatorTrigger
-            : ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+            : ResultssManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.CameraRestore
                     : LabelHandlers.CameraDetect
@@ -173,15 +173,15 @@ public partial class ImageResultDeviceEntry_L95
     /// Gets or sets a value indicating whether this device entry is selected in the UI.
     /// </summary>
     [ObservableProperty] private bool isSelected = false;
-    partial void OnIsSelectedChanging(bool value) { if (value) ImageResultEntry.ImageResultsManager.ResetSelected(Device); }
+    partial void OnIsSelectedChanging(bool value) { if (value) ResultsEntry.ResultssManager.ResetSelected(Device); }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ImageResultDeviceEntry_L95"/> class.
+    /// Initializes a new instance of the <see cref="ResultsDeviceEntry_L95"/> class.
     /// </summary>
     /// <param name="imageResultsEntry">The parent image result entry.</param>
-    public ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEntry)
+    public ResultsDeviceEntry_L95(ResultsEntry imageResultsEntry)
     {
-        ImageResultEntry = imageResultsEntry;
+        ResultsEntry = imageResultsEntry;
 
         _IsWorkingTimer.AutoReset = false;
         _IsWorkingTimer.Elapsed += _IsWorkingTimer_Elapsed;
@@ -217,7 +217,7 @@ public partial class ImageResultDeviceEntry_L95
             return;
         }
 
-        if (ImageResultEntry.SelectedDatabase == null)
+        if (ResultsEntry.SelectedDatabase == null)
         {
             Logger.Error("No image results database selected.");
             return;
@@ -227,7 +227,7 @@ public partial class ImageResultDeviceEntry_L95
 
         try
         {
-            Result row = ImageResultEntry.SelectedDatabase.Select_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
+            Result row = ResultsEntry.SelectedDatabase.Select_Result(Device, ResultsEntry.ImageRollUID, ResultsEntry.SourceImageUID, ResultsEntry.ImageRollUID);
 
             if (row == null)
             {
@@ -237,11 +237,11 @@ public partial class ImageResultDeviceEntry_L95
 
             List<Sectors.Interfaces.ISector> tempSectors = [];
             foreach (JToken rSec in row.Report.GetParameter<JArray>("AllReports"))
-                tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
+                tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), [ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.SelectedImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
 
             if (tempSectors.Count > 0)
             {
-                tempSectors = ImageResultEntry.SortList3(tempSectors);
+                tempSectors = ResultsEntry.SortList3(tempSectors);
 
                 foreach (ISector sec in tempSectors)
                     StoredSectors.Add(sec);
@@ -254,7 +254,7 @@ public partial class ImageResultDeviceEntry_L95
         catch (Exception ex)
         {
             Logger.Error(ex);
-            Logger.Error($"Error while loading stored results from: {ImageResultEntry.SelectedDatabase.File.Name}");
+            Logger.Error($"Error while loading stored results from: {ResultsEntry.SelectedDatabase.File.Name}");
         }
     }
 
@@ -270,7 +270,7 @@ public partial class ImageResultDeviceEntry_L95
             return;
         }
 
-        if (ImageResultEntry.SelectedDatabase == null)
+        if (ResultsEntry.SelectedDatabase == null)
         {
             Logger.Error("No image results database selected.");
             return;
@@ -279,7 +279,7 @@ public partial class ImageResultDeviceEntry_L95
         ISector old = StoredSectors.FirstOrDefault(x => x.Template.Name == CurrentSelectedSector.Template.Name);
         if (old != null)
         {
-            if (await ImageResultEntry.OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+            if (await ResultsEntry.OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
         }
 
@@ -295,12 +295,12 @@ public partial class ImageResultDeviceEntry_L95
             ["AllReports"] = JArray.FromObject(temp)
         };
 
-        _ = ImageResultEntry.SelectedDatabase.InsertOrReplace_Result(new Databases.Result
+        _ = ResultsEntry.SelectedDatabase.InsertOrReplace_Result(new Databases.Result
         {
             Device = Device,
-            ImageRollUID = ImageResultEntry.ImageRollUID,
-            SourceImageUID = ImageResultEntry.SourceImageUID,
-            RunUID = ImageResultEntry.ImageRollUID,
+            ImageRollUID = ResultsEntry.ImageRollUID,
+            SourceImageUID = ResultsEntry.SourceImageUID,
+            RunUID = ResultsEntry.ImageRollUID,
 
             Template = CurrentTemplate,
             Report = report,
@@ -322,25 +322,25 @@ public partial class ImageResultDeviceEntry_L95
             return;
         }
 
-        if (ImageResultEntry.SelectedDatabase == null)
+        if (ResultsEntry.SelectedDatabase == null)
         {
             Logger.Error("No image results database selected.");
             return;
         }
 
         if (StoredSectors.Count > 0)
-            if (await ImageResultEntry.OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+            if (await ResultsEntry.OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
 
         Result res = GetCurrentReport();
 
-        if (ImageResultEntry.SelectedDatabase.InsertOrReplace_Result(res) == null)
-            Logger.Error($"Error while storing results to: {ImageResultEntry.SelectedDatabase.File.Name}");
+        if (ResultsEntry.SelectedDatabase.InsertOrReplace_Result(res) == null)
+            Logger.Error($"Error while storing results to: {ResultsEntry.SelectedDatabase.File.Name}");
 
         GetStored();
         ClearCurrent();
 
-        //        else if (device == ImageResultEntryDevices.L95)
+        //        else if (device == ResultsEntryDevices.L95)
         //{
 
         //    if (L95CurrentSectorSelected == null)
@@ -379,7 +379,7 @@ public partial class ImageResultDeviceEntry_L95
 
         //    L95GetStored();
         //}
-        //else if (device == ImageResultEntryDevices.L95All)
+        //else if (device == ResultsEntryDevices.L95All)
         //{
 
         //    if (L95CurrentSectors.Count == 0)
@@ -431,9 +431,9 @@ public partial class ImageResultDeviceEntry_L95
         var res = new Databases.Result
         {
             Device = Device,
-            ImageRollUID = ImageResultEntry.ImageRollUID,
-            SourceImageUID = ImageResultEntry.SourceImageUID,
-            RunUID = ImageResultEntry.ImageRollUID,
+            ImageRollUID = ResultsEntry.ImageRollUID,
+            SourceImageUID = ResultsEntry.SourceImageUID,
+            RunUID = ResultsEntry.ImageRollUID,
 
             Template = CurrentTemplate,
             Report = report,
@@ -455,23 +455,23 @@ public partial class ImageResultDeviceEntry_L95
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
-                ApplicationStandard = ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard.GetDescription(),
+                ApplicationStandard = ResultsEntry.ResultssManager.SelectedImageRoll.SelectedApplicationStandard.GetDescription(),
             },
             RepeatAvailable = ProcessFullReport,
         };
 
-        if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard == ApplicationStandards.GS1)
-            lab.Config.Table = ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table.GetTableName();
+        if (ResultsEntry.ResultssManager.SelectedImageRoll.SelectedApplicationStandard == ApplicationStandards.GS1)
+            lab.Config.Table = ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGS1Table.GetTableName();
 
-        if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
-            lab.Image = ImageResultEntry.SourceImage.BitmapBytes;
-        else if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
+        if (ResultsEntry.ResultssManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
+            lab.Image = ResultsEntry.SourceImage.BitmapBytes;
+        else if (ResultsEntry.ResultssManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
             lab.Image = ResultRow.Stored.BitmapBytes;
 
         IsWorking = true;
         IsFaulted = false;
 
-        _ = Task.Run(() => ImageResultEntry.ImageResultsManager.SelectedL95.Controller.ProcessLabelAsync(lab));
+        _ = Task.Run(() => ResultsEntry.ResultssManager.SelectedL95.Controller.ProcessLabelAsync(lab));
     }
     /// <summary>
     /// Processes the full report received from the L95 device.
@@ -500,7 +500,7 @@ public partial class ImageResultDeviceEntry_L95
                 System.Drawing.Point center = new(message.Template.GetParameter<int>("Report.X1") + (message.Template.GetParameter<int>("Report.SizeX") / 2), message.Template.GetParameter<int>("Report.Y1") + (message.Template.GetParameter<int>("Report.SizeY") / 2));
 
                 string name = null;
-                if ((name = ImageResultEntry.GetName(center)) == null)
+                if ((name = ResultsEntry.GetName(center)) == null)
                     name ??= $"Verify_{CurrentSectors.Count + 1}";
 
                 _ = message.Template.SetParameter<string>("Name", name);
@@ -508,7 +508,7 @@ public partial class ImageResultDeviceEntry_L95
                 if (replaceSectors)
                     CurrentSectors.Clear();
 
-                CurrentSectors.Add(new Sector(message.Template, message.Report, [ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGradingStandard], ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedApplicationStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
+                CurrentSectors.Add(new Sector(message.Template, message.Report, [ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.SelectedImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.SelectedImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
             }
             else if (GlobalAppSettings.Instance.LvsIgnoreNoResults)
                 return;
@@ -528,14 +528,14 @@ public partial class ImageResultDeviceEntry_L95
 
             if (tempSectors.Count > 0)
             {
-                tempSectors = ImageResultEntry.SortList3(tempSectors);
+                tempSectors = ResultsEntry.SortList3(tempSectors);
                 SortObservableCollectionByList(tempSectors, CurrentSectors);
             }
 
             GetSectorDiff();
 
 
-            CurrentImage = new ImageEntry(ImageResultEntry.ImageRollUID, message.Template.GetParameter<byte[]>("Report.Thumbnail"), 0);
+            CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, message.Template.GetParameter<byte[]>("Report.Thumbnail"), 0);
             RefreshCurrentOverlay();
 
             IsFaulted = false;
@@ -548,7 +548,7 @@ public partial class ImageResultDeviceEntry_L95
         finally
         {
             IsWorking = false;
-            Application.Current.Dispatcher.Invoke(ImageResultEntry.BringIntoViewHandler);
+            Application.Current.Dispatcher.Invoke(ResultsEntry.BringIntoViewHandler);
         }
     }
 
@@ -581,7 +581,7 @@ public partial class ImageResultDeviceEntry_L95
         else
         {
             GetSectorDiff();
-            CurrentImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
+            CurrentImageOverlay = IResultsDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
         }
     }
 
@@ -610,9 +610,9 @@ public partial class ImageResultDeviceEntry_L95
     [RelayCommand]
     public async Task ClearStored()
     {
-        if (await ImageResultEntry.OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
+        if (await ResultsEntry.OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
-            _ = ImageResultEntry.SelectedDatabase.Delete_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
+            _ = ResultsEntry.SelectedDatabase.Delete_Result(Device, ResultsEntry.ImageRollUID, ResultsEntry.SourceImageUID, ResultsEntry.ImageRollUID);
             GetStored();
             GetSectorDiff();
         }
@@ -704,7 +704,7 @@ public partial class ImageResultDeviceEntry_L95
     }
 
     /// <summary>
-    /// This is exposed through the interface to allow for the ImageResultsManager to call this method.
+    /// This is exposed through the interface to allow for the ResultssManager to call this method.
     /// </summary>
     public void RefreshOverlays()
     {
@@ -715,11 +715,11 @@ public partial class ImageResultDeviceEntry_L95
     /// <summary>
     /// Refreshes the overlay for the stored image.
     /// </summary>
-    public void RefreshStoredOverlay() => StoredImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(StoredImage, StoredSectors);
+    public void RefreshStoredOverlay() => StoredImageOverlay = IResultsDeviceEntry.CreateSectorsImageOverlay(StoredImage, StoredSectors);
     /// <summary>
     /// Refreshes the overlay for the current image.
     /// </summary>
-    public void RefreshCurrentOverlay() => CurrentImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
+    public void RefreshCurrentOverlay() => CurrentImageOverlay = IResultsDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
 
     /// <summary>
     /// Sorts an <see cref="ObservableCollection{ISector}"/> to match the order of a <see cref="List{ISector}"/>.
@@ -740,7 +740,7 @@ public partial class ImageResultDeviceEntry_L95
     }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the <see cref="ImageResultDeviceEntry_L95"/> and optionally releases the managed resources.
+    /// Releases the unmanaged resources used by the <see cref="ResultsDeviceEntry_L95"/> and optionally releases the managed resources.
     /// </summary>
     public void Dispose()
     {

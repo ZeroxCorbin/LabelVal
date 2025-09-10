@@ -59,14 +59,14 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
 
     public RunEntry RunEntry { get; }
 
-    public int Order => CurrentImageResultGroup.Order;
-    public int Loop => CurrentImageResultGroup.TotalLoops;
+    public int Order => CurrentResultsGroup.Order;
+    public int Loop => CurrentResultsGroup.TotalLoops;
     public bool HasDiff => V275DiffSectors.Count > 0 || V5DiffSectors.Count > 0 || L95DiffSectors.Count > 0;
 
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
 
-    public ResultEntry CurrentImageResultGroup { get; }
-    public ResultEntry StoredImageResultGroup { get; }
+    public ResultEntry CurrentResultsGroup { get; }
+    public ResultEntry StoredResultsGroup { get; }
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
 
@@ -95,8 +95,8 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
 
     public RunResult(ResultEntry current, ResultEntry stored, RunEntry runEntry)
     {
-        CurrentImageResultGroup = current;
-        StoredImageResultGroup = stored;
+        CurrentResultsGroup = current;
+        StoredResultsGroup = stored;
         RunEntry = runEntry;
 
         V275LoadStored();

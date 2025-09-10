@@ -10,15 +10,15 @@ using System.Windows.Media;
 namespace LabelVal.Results.Views;
 
 /// <summary>
-/// Interaction logic for ImageResultsManager.xaml
+/// Interaction logic for (ResultssManager.xaml
 /// </summary>
-public partial class ImageResultsManager : UserControl
+public partial class ResultssManager : UserControl
 {
-    private ViewModels.ImageResultsManager _viewModel;
+    private ViewModels.ResultssManager _viewModel;
     private bool _isSnapping;
     private bool _isLoaded;
 
-    public ImageResultsManager()
+    public ResultssManager()
     {
         InitializeComponent();
         DataContextChanged += OnDataContextChanged;
@@ -26,18 +26,18 @@ public partial class ImageResultsManager : UserControl
 
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (e.OldValue is ViewModels.ImageResultsManager oldVm)
+        if (e.OldValue is ViewModels.ResultssManager oldVm)
         {
-            oldVm.ImageResultsEntries.CollectionChanged -= OnImageResultsEntriesChanged;
+            oldVm.ResultssEntries.CollectionChanged -= OnResultssEntriesChanged;
         }
-        if (e.NewValue is ViewModels.ImageResultsManager newVm)
+        if (e.NewValue is ViewModels.ResultssManager newVm)
         {
-            newVm.ImageResultsEntries.CollectionChanged += OnImageResultsEntriesChanged;
+            newVm.ResultssEntries.CollectionChanged += OnResultssEntriesChanged;
             _viewModel = newVm;
         }
     }
 
-    private void OnImageResultsEntriesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    private void OnResultssEntriesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
         {
@@ -51,13 +51,13 @@ public partial class ImageResultsManager : UserControl
         DataContextChanged -= OnDataContextChanged;
     }
 
-    private async void ImageResultsScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    private async void ResultssScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
     {
         e.Handled = true;
         await SnapScroll(e.Delta < 0);
     }
 
-    private async void ImageResultsScrollViewer_PreviewKeyDown(object sender, KeyEventArgs e)
+    private async void ResultssScrollViewer_PreviewKeyDown(object sender, KeyEventArgs e)
     {
         switch (e.Key)
         {
@@ -76,12 +76,12 @@ public partial class ImageResultsManager : UserControl
 
     private async Task SnapScroll(bool scrollDown)
     {
-        if (_viewModel?.ImageResultsEntries.Any() != true || _isSnapping)
+        if (_viewModel?.ResultssEntries.Any() != true || _isSnapping)
         {
             return;
         }
 
-        if (ImageResultsScrollViewer is not ScrollViewer scrollViewer || scrollViewer.Content is not ItemsControl itemsControl)
+        if (ResultssScrollViewer is not ScrollViewer scrollViewer || scrollViewer.Content is not ItemsControl itemsControl)
         {
             return;
         }
@@ -90,16 +90,16 @@ public partial class ImageResultsManager : UserControl
 
         try
         {
-            var sortedEntries = itemsControl.Items.OfType<ViewModels.ImageResultEntry>().ToList();
+            var sortedEntries = itemsControl.Items.OfType<ViewModels.ResultsEntry>().ToList();
             if (!sortedEntries.Any()) return;
 
-            ViewModels.ImageResultEntry currentItem = _viewModel.TopmostItem ?? sortedEntries.FirstOrDefault();
+            ViewModels.ResultsEntry currentItem = _viewModel.TopmostItem ?? sortedEntries.FirstOrDefault();
             if (currentItem == null) return;
 
             var currentIndex = sortedEntries.IndexOf(currentItem);
             if (currentIndex < 0)
             {
-                ViewModels.ImageResultEntry currentVisualItem = FindBestCandidate(scrollViewer, itemsControl);
+                ViewModels.ResultsEntry currentVisualItem = FindBestCandidate(scrollViewer, itemsControl);
                 currentIndex = currentVisualItem != null ? sortedEntries.IndexOf(currentVisualItem) : 0;
                 if (currentIndex < 0) currentIndex = 0;
             }
@@ -123,7 +123,7 @@ public partial class ImageResultsManager : UserControl
 
             if (nextIndex != currentIndex)
             {
-                ViewModels.ImageResultEntry nextItem = sortedEntries[nextIndex];
+                ViewModels.ResultsEntry nextItem = sortedEntries[nextIndex];
                 _viewModel.TopmostItem = nextItem;
                 nextItem.BringIntoViewHandler();
                 ImageRollThumbnails.SelectedItem = nextItem;
@@ -137,15 +137,15 @@ public partial class ImageResultsManager : UserControl
         }
     }
 
-    private ViewModels.ImageResultEntry FindBestCandidate(ScrollViewer scrollViewer, ItemsControl itemsControl)
+    private ViewModels.ResultsEntry FindBestCandidate(ScrollViewer scrollViewer, ItemsControl itemsControl)
     {
         const double scrollTolerance = 1.0;
-        ViewModels.ImageResultEntry bestCandidate = null;
+        ViewModels.ResultsEntry bestCandidate = null;
 
-        var visibleItems = new List<(ViewModels.ImageResultEntry item, double top)>();
+        var visibleItems = new List<(ViewModels.ResultsEntry item, double top)>();
         foreach (var item in itemsControl.Items)
         {
-            if (item is not ViewModels.ImageResultEntry imageResultEntry) continue;
+            if (item is not ViewModels.ResultsEntry imageResultEntry) continue;
             if (itemsControl.ItemContainerGenerator.ContainerFromItem(item) is not FrameworkElement container) continue;
 
             GeneralTransform transform = container.TransformToAncestor(scrollViewer);
@@ -174,23 +174,23 @@ public partial class ImageResultsManager : UserControl
         return bestCandidate;
     }
 
-    private void ImageResultsScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+    private void ResultssScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
         if ((!_isLoaded && e.ExtentHeight > 0) || _viewModel.SelectedImageRoll != null && (_viewModel.SelectedImageRoll.RollType == ImageRolls.ViewModels.ImageRollTypes.Database && _viewModel.SelectedImageRoll.ImageCount == 0))
         {
             _isLoaded = true;
             // Use Dispatcher to send message after rendering is complete
-            _ = Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new System.Action(() => WeakReferenceMessenger.Default.Send(new ImageResultsRenderedMessage())));
+            _ = Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new System.Action(() => WeakReferenceMessenger.Default.Send(new ResultssRenderedMessage())));
         }
 
-        if (_isSnapping || _viewModel?.ImageResultsEntries.Any() != true)
+        if (_isSnapping || _viewModel?.ResultssEntries.Any() != true)
             return;
 
         var scrollViewer = (ScrollViewer)sender;
         if (scrollViewer.Content is not ItemsControl itemsControl)
             return;
 
-        ViewModels.ImageResultEntry bestCandidate = FindBestCandidate(scrollViewer, itemsControl);
+        ViewModels.ResultsEntry bestCandidate = FindBestCandidate(scrollViewer, itemsControl);
 
         if (bestCandidate != null && _viewModel.TopmostItem != bestCandidate)
         {

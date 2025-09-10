@@ -44,10 +44,10 @@ public partial class ResultsDatabase : IDisposable
     public int InsertOrReplace(ResultEntry irg) => Connection.InsertOrReplace(irg);
     public int Insert(ResultEntry irg) => Connection.Insert(irg);
 
-    public bool ExistsImageResultGroup(string runUID) => Connection.Table<ResultEntry>().Where(v => v.RunUID == runUID).Count() > 0;
-    public ResultEntry SelectImageResultGroup(string runUID, string imageUID, int order) => Connection.Table<ResultEntry>().Where(v => v.RunUID == runUID && v.SourceImageUID == imageUID && v.Order == order ).FirstOrDefault();
-    public List<ResultEntry> SelectAllImageResultGroups(string runUID) => [.. Connection.Table<ResultEntry>().Where(v => v.RunUID == runUID)];
-    public int DeleteImageResultGroup(string runUID) => Connection.Table<ResultEntry>().Delete(v => v.RunUID == runUID);
+    public bool ExistsResultsGroup(string runUID) => Connection.Table<ResultEntry>().Where(v => v.RunUID == runUID).Count() > 0;
+    public ResultEntry SelectResultsGroup(string runUID, string imageUID, int order) => Connection.Table<ResultEntry>().Where(v => v.RunUID == runUID && v.SourceImageUID == imageUID && v.Order == order ).FirstOrDefault();
+    public List<ResultEntry> SelectAllResultsGroups(string runUID) => [.. Connection.Table<ResultEntry>().Where(v => v.RunUID == runUID)];
+    public int DeleteResultsGroup(string runUID) => Connection.Table<ResultEntry>().Delete(v => v.RunUID == runUID);
 
     protected virtual void Dispose(bool disposing)
     {

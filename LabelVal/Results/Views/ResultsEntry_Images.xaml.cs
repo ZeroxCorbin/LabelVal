@@ -10,17 +10,17 @@ using System.Windows.Media;
 namespace LabelVal.Results.Views;
 
 /// <summary>
-/// Interaction logic for ImageResultEntry_Images.xaml
+/// Interaction logic for (ResultsEntry_Images.xaml
 /// </summary>
-public partial class ImageResultEntry_Images : UserControl
+public partial class ResultsEntry_Images : UserControl
 {
-    public ImageResultEntry_Images() => InitializeComponent();
+    public ResultsEntry_Images() => InitializeComponent();
     private void SourceImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed && !(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
-            ShowImage(((ViewModels.ImageResultEntry)DataContext).SourceImage, ((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource ? ((ViewModels.ImageResultEntry)DataContext).CreatePrinterAreaOverlay(false) : null);
+            ShowImage(((ViewModels.ResultsEntry)DataContext).SourceImage, ((ViewModels.ResultsEntry)DataContext).ShowPrinterAreaOverSource ? ((ViewModels.ResultsEntry)DataContext).CreatePrinterAreaOverlay(false) : null);
         else if (e.LeftButton == MouseButtonState.Pressed)
-            Show3DImage(((ViewModels.ImageResultEntry)DataContext).SourceImage.ImageBytes);
+            Show3DImage(((ViewModels.ResultsEntry)DataContext).SourceImage.ImageBytes);
     }
     private void SourceImage_ContextMenuOpening(object sender, ContextMenuEventArgs e)
     {
@@ -60,6 +60,6 @@ public partial class ImageResultEntry_Images : UserControl
 
     }
 
-    private void btnShowPrinterAreaOverSourceToggle(object sender, RoutedEventArgs e) => ((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource = !((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource;
+    private void btnShowPrinterAreaOverSourceToggle(object sender, RoutedEventArgs e) => ((ViewModels.ResultsEntry)DataContext).ShowPrinterAreaOverSource = !((ViewModels.ResultsEntry)DataContext).ShowPrinterAreaOverSource;
 
 }

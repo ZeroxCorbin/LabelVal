@@ -8,12 +8,12 @@ using System.Collections.Generic;
 
 namespace LabelVal.Simulator.Databases;
 
-public class ImageResultsDatabase : ObservableObject, IDisposable
+public class ResultssDatabase : ObservableObject, IDisposable
 {    public FileFolderEntry File { get; private set; }
     private SQLiteConnection Connection { get; set; }
 
-    public ImageResultsDatabase() { }
-    public ImageResultsDatabase(FileFolderEntry fileEntry)
+    public ResultssDatabase() { }
+    public ResultssDatabase(FileFolderEntry fileEntry)
     {
         File = fileEntry;
         Open();
@@ -48,10 +48,10 @@ public class ImageResultsDatabase : ObservableObject, IDisposable
         else
             return Connection?.Insert(result);
     }
-    public bool Exists_Result(ImageResultEntryDevices device, string imageRollUID, string imageUID, string runUID) => Connection?.Table<Result>().Where(v => v.Device == device && v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID).Count() > 0;
-    public Result Select_Result(ImageResultEntryDevices device, string imageRollUID, string imageUID, string runUID) => Connection?.Table<Result>().Where(v => v.Device == device && v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID).FirstOrDefault();
+    public bool Exists_Result(ResultsEntryDevices device, string imageRollUID, string imageUID, string runUID) => Connection?.Table<Result>().Where(v => v.Device == device && v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID).Count() > 0;
+    public Result Select_Result(ResultsEntryDevices device, string imageRollUID, string imageUID, string runUID) => Connection?.Table<Result>().Where(v => v.Device == device && v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID).FirstOrDefault();
     public List<Result> SelectAll_Result() => Connection?.Query<Result>("select * from Result");
-    public int? Delete_Result(ImageResultEntryDevices device, string imageRollUID, string imageUID, string runUID) => Connection?.Table<Result>().Delete(v => v.Device == device && v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID);
+    public int? Delete_Result(ResultsEntryDevices device, string imageRollUID, string imageUID, string runUID) => Connection?.Table<Result>().Delete(v => v.Device == device && v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID);
 
     //public int? InsertOrReplace_V275Result(V275Result result)
     //{

@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="LabelVal.Results.Views.ImageResultDeviceEntry_V275"
+    x:Class="LabelVal.Results.Views.ResultsDeviceEntry_V275"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
@@ -15,7 +15,7 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels"
-    d:DataContext="{d:DesignInstance Type=vm:ImageResultDeviceEntryV275,
+    d:DataContext="{d:DesignInstance Type=vm:ResultsDeviceEntryV275,
                                      IsDesignTimeCreatable=False}"
     mc:Ignorable="d">
 
@@ -59,7 +59,7 @@
 
                     <Button
                         Width="28"
-                        Command="{Binding ImageResultEntry.SaveCommand}"
+                        Command="{Binding ResultsEntry.SaveCommand}"
                         CommandParameter="{Binding StoredImage.BitmapBytes}"
                         Content="{iconPacks:Material Kind=ContentSave}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
@@ -74,16 +74,16 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedV275Node, Mode=OneWay}" Value="{x:Null}">
+                                <DataTrigger Binding="{Binding ResultssManager.SelectedV275Node, Mode=OneWay}" Value="{x:Null}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn_Control}" Value="False">
+                                <DataTrigger Binding="{Binding ResultssManager.SelectedV275Node.Controller.IsLoggedIn_Control}" Value="False">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.State}" Value="Running">
+                                <DataTrigger Binding="{Binding ResultssManager.SelectedV275Node.Controller.State}" Value="Running">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.State}" Value="Idle">
+                                <DataTrigger Binding="{Binding ResultssManager.SelectedV275Node.Controller.State}" Value="Idle">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
@@ -171,7 +171,7 @@
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedDatabase.IsLocked}" Value="True">
+                                <DataTrigger Binding="{Binding ResultssManager.SelectedDatabase.IsLocked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -183,7 +183,7 @@
                     <Button
                         Width="28"
                         Command="{Binding ClearStoredCommand}"
-                        CommandParameter="{x:Static vm:ImageResultEntryDevices.V275}"
+                        CommandParameter="{x:Static vm:ResultsEntryDevices.V275}"
                         Content="{iconPacks:Modern Kind=Delete}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -212,7 +212,7 @@
 
                     <Button
                         Width="28"
-                        Command="{Binding ImageResultEntry.SaveCommand}"
+                        Command="{Binding ResultsEntry.SaveCommand}"
                         CommandParameter="{Binding CurrentImage.BitmapBytes}"
                         Content="{iconPacks:Material Kind=ContentSave}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
@@ -225,7 +225,7 @@
                 <Button
                     Width="28"
                     Command="{Binding StoreCommand}"
-                    CommandParameter="{x:Static vm:ImageResultEntryDevices.V275}"
+                    CommandParameter="{x:Static vm:ResultsEntryDevices.V275}"
                     Content="{iconPacks:Material Kind=StorePlusOutline}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     ToolTip="Store the current sectors and image to the database.">
@@ -234,7 +234,7 @@
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ImageResultEntry.SelectedDatabase.IsLocked}" Value="True">
+                                <DataTrigger Binding="{Binding ResultsEntry.SelectedDatabase.IsLocked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
@@ -257,10 +257,10 @@
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn_Monitor}" Value="True">
+                                <DataTrigger Binding="{Binding ResultssManager.SelectedV275Node.Controller.IsLoggedIn_Monitor}" Value="True">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn_Control}" Value="True">
+                                <DataTrigger Binding="{Binding ResultssManager.SelectedV275Node.Controller.IsLoggedIn_Control}" Value="True">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                                 <MultiDataTrigger>
@@ -369,7 +369,7 @@
                     <Button
                         Width="28"
                         Command="{Binding ClearCurrentCommand}"
-                        CommandParameter="{x:Static vm:ImageResultEntryDevices.V275}"
+                        CommandParameter="{x:Static vm:ResultsEntryDevices.V275}"
                         Content="{iconPacks:MaterialDesign Kind=Clear}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -462,8 +462,8 @@
                         Background="Black">
 
                         <Grid
-                            MaxWidth="{Binding ImageResultEntry.ImagesMaxHeight}"
-                            MaxHeight="{Binding ImageResultEntry.ImagesMaxHeight}"
+                            MaxWidth="{Binding ResultsEntry.ImagesMaxHeight}"
+                            MaxHeight="{Binding ResultsEntry.ImagesMaxHeight}"
                             Margin="3"
                             MouseDown="StoredImage_MouseDown"
                             ToolTip="Click to open a larger view of the image.&#x0a;Hold Shift and click to open a 3D view of the image.">
@@ -580,7 +580,7 @@
                                 <Button
                                     Width="28"
                                     Command="{Binding FocusedStoredSector.CopyToClipBoardCommand}"
-                                    CommandParameter="{Binding ImageResultEntry.SourceImage.Order}"
+                                    CommandParameter="{Binding ResultsEntry.SourceImage.Order}"
                                     Content="{iconPacks:Material Kind=ContentCopy}"
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -640,19 +640,19 @@
                                                 <Style TargetType="WrapPanel">
                                                     <Setter Property="ItemWidth" Value="200" />
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="400">
+                                                        <DataTrigger Binding="{Binding ResultsEntry.ImagesMaxHeight}" Value="400">
                                                             <Setter Property="MaxWidth" Value="400" />
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="300">
+                                                        <DataTrigger Binding="{Binding ResultsEntry.ImagesMaxHeight}" Value="300">
                                                             <Setter Property="MaxWidth" Value="400" />
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="200">
+                                                        <DataTrigger Binding="{Binding ResultsEntry.ImagesMaxHeight}" Value="200">
                                                             <Setter Property="MaxWidth" Value="200" />
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="100">
+                                                        <DataTrigger Binding="{Binding ResultsEntry.ImagesMaxHeight}" Value="100">
                                                             <Setter Property="MaxWidth" Value="200" />
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ImageResultEntry.DualSectorColumns}" Value="True">
+                                                        <DataTrigger Binding="{Binding ResultsEntry.DualSectorColumns}" Value="True">
                                                             <Setter Property="MaxWidth" Value="400" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -691,17 +691,17 @@
                                             <Style TargetType="sectors:SectorDetails">
                                                 <Setter Property="Width" Value="200" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding DataContext.ImageResultEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
+                                                    <DataTrigger Binding="{Binding DataContext.ResultsEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                         <Setter Property="Width" Value="auto" />
                                                     </DataTrigger>
 
-                                                    <DataTrigger Binding="{Binding DataContext.ImageResultEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
+                                                    <DataTrigger Binding="{Binding DataContext.ResultsEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                         <Setter Property="Width" Value="auto" />
                                                     </DataTrigger>
 
-                                                    <DataTrigger Binding="{Binding DataContext.ImageResultEntry.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
+                                                    <DataTrigger Binding="{Binding DataContext.ResultsEntry.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                         <Setter Property="Width" Value="auto" />
                                                     </DataTrigger>
@@ -727,7 +727,7 @@
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding ImageResultEntry.ShowDetails}" Value="True" />
+                                    <Condition Binding="{Binding ResultsEntry.ShowDetails}" Value="True" />
                                     <Condition Binding="{Binding ResultRow, Converter={StaticResource IsNotNull}}" Value="true" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="Visibility" Value="Visible" />
@@ -787,8 +787,8 @@
                         Background="Black">
 
                         <Grid
-                            MaxWidth="{Binding ImageResultEntry.ImagesMaxHeight}"
-                            MaxHeight="{Binding ImageResultEntry.ImagesMaxHeight}"
+                            MaxWidth="{Binding ResultsEntry.ImagesMaxHeight}"
+                            MaxHeight="{Binding ResultsEntry.ImagesMaxHeight}"
                             Margin="3"
                             MouseDown="CurrentImage_MouseDown"
                             ToolTip="Click to open a larger view of the image.&#x0a;Hold Shift and click to open a 3D view of the image.">
@@ -894,7 +894,7 @@
                                 <Button
                                     Width="28"
                                     Command="{Binding FocusedCurrentSector.CopyToClipBoardCommand}"
-                                    CommandParameter="{Binding ImageResultEntry.SourceImage.Order}"
+                                    CommandParameter="{Binding ResultsEntry.SourceImage.Order}"
                                     Content="{iconPacks:Material Kind=ContentCopy}"
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -954,23 +954,23 @@
                                                 <Style TargetType="WrapPanel">
                                                     <Setter Property="ItemWidth" Value="200" />
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="400">
+                                                        <DataTrigger Binding="{Binding ResultsEntry.ImagesMaxHeight}" Value="400">
                                                             <Setter Property="MaxWidth" Value="400" />
                                                         </DataTrigger>
 
-                                                        <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="300">
+                                                        <DataTrigger Binding="{Binding ResultsEntry.ImagesMaxHeight}" Value="300">
                                                             <Setter Property="MaxWidth" Value="400" />
                                                         </DataTrigger>
 
-                                                        <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="200">
+                                                        <DataTrigger Binding="{Binding ResultsEntry.ImagesMaxHeight}" Value="200">
                                                             <Setter Property="MaxWidth" Value="210" />
                                                         </DataTrigger>
 
-                                                        <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="100">
+                                                        <DataTrigger Binding="{Binding ResultsEntry.ImagesMaxHeight}" Value="100">
                                                             <Setter Property="MaxWidth" Value="210" />
                                                         </DataTrigger>
 
-                                                        <DataTrigger Binding="{Binding ImageResultEntry.DualSectorColumns}" Value="True">
+                                                        <DataTrigger Binding="{Binding ResultsEntry.DualSectorColumns}" Value="True">
                                                             <Setter Property="MaxWidth" Value="420" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -1011,17 +1011,17 @@
                                                 <Style TargetType="sectors:SectorDetails">
                                                     <Setter Property="Width" Value="200" />
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding DataContext.ImageResultEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
+                                                        <DataTrigger Binding="{Binding DataContext.ResultsEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
                                                             <Setter Property="MaxWidth" Value="400" />
                                                             <Setter Property="Width" Value="auto" />
                                                         </DataTrigger>
 
-                                                        <DataTrigger Binding="{Binding DataContext.ImageResultEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
+                                                        <DataTrigger Binding="{Binding DataContext.ResultsEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
                                                             <Setter Property="MaxWidth" Value="400" />
                                                             <Setter Property="Width" Value="auto" />
                                                         </DataTrigger>
 
-                                                        <DataTrigger Binding="{Binding DataContext.ImageResultEntry.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
+                                                        <DataTrigger Binding="{Binding DataContext.ResultsEntry.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
                                                             <Setter Property="MaxWidth" Value="400" />
                                                             <Setter Property="Width" Value="auto" />
                                                         </DataTrigger>
@@ -1116,7 +1116,7 @@
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding ImageResultEntry.ShowDetails}" Value="True" />
+                                    <Condition Binding="{Binding ResultsEntry.ShowDetails}" Value="True" />
                                     <Condition Binding="{Binding Path=DataContext.CurrentImage, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource IsNotNull}}" Value="True" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="Visibility" Value="Visible" />

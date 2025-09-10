@@ -95,7 +95,7 @@ public partial class MainWindow : ObservableRecipient
 
     // Image Rolls Section
     public ImageRolls.ViewModels.ImageRollsManager ImageRolls { get; }
-    public Results.ViewModels.ImageResultsManager ImageResultsManager { get; }
+    public Results.ViewModels.ResultssManager ResultssManager { get; }
 
     // Scanner Section
     public V5.ViewModels.ScannerManager ScannerManager { get; }
@@ -108,7 +108,7 @@ public partial class MainWindow : ObservableRecipient
     public L95.ViewModels.VerifierManager VerifierManager { get; }
 
     // Results Section
-    public Results.ViewModels.ImageResultsDatabases ImageResultsDatabases { get; }
+    public Results.ViewModels.ResultssDatabases ResultssDatabases { get; }
 
     // Enum Browser
     public EnumBrowserViewModel EnumBrowserViewModel { get; }
@@ -192,10 +192,10 @@ public partial class MainWindow : ObservableRecipient
         VerifierManager = new L95.ViewModels.VerifierManager();
 
         ImageRolls = new ImageRolls.ViewModels.ImageRollsManager();
-        ImageResultsDatabases = new Results.ViewModels.ImageResultsDatabases();
-        ImageResultsManager = new Results.ViewModels.ImageResultsManager();
+        ResultssDatabases = new Results.ViewModels.ResultssDatabases();
+        ResultssManager = new Results.ViewModels.ResultssManager();
 
-        RunManager = new Run.ViewModels.RunManager(ImageResultsManager);
+        RunManager = new Run.ViewModels.RunManager(ResultssManager);
 
         LabelBuilderViewModel = new LabelBuilder.ViewModels.LabelBuilderViewModel();
 
@@ -203,7 +203,7 @@ public partial class MainWindow : ObservableRecipient
         MenuItems =
         [
             new HamburgerMenuItem { Label = "ImageRolls", Content = ImageRolls },
-            new HamburgerMenuItem { Label = "Results", Content = ImageResultsDatabases },
+            new HamburgerMenuItem { Label = "Results", Content = ResultssDatabases },
             new HamburgerMenuItem { Label = "Printer", Content = Printer, IsNotSelectable = true },
             new HamburgerMenuItem { Label = "Run", Content = RunManager },
             new HamburgerMenuItem { Label = "Label", Content = LabelBuilderViewModel },

@@ -477,7 +477,7 @@
 
                         <Button.Style>
                             <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
-                                <Setter Property="CommandParameter" Value="{x:Static results:ImageResultEntryImageTypes.V275Stored}" />
+                                <Setter Property="CommandParameter" Value="{x:Static results:ResultsEntryImageTypes.V275Stored}" />
                                 <Setter Property="ToolTip" Value="Save the stored image." />
                                 <Setter Property="Visibility" Value="Visible" />
 
@@ -854,7 +854,7 @@
 
                         <Button.Style>
                             <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
-                                <Setter Property="CommandParameter" Value="{x:Static results:ImageResultEntryImageTypes.V275Stored}" />
+                                <Setter Property="CommandParameter" Value="{x:Static results:ResultsEntryImageTypes.V275Stored}" />
                                 <Setter Property="ToolTip" Value="Save the stored image." />
                                 <Setter Property="Visibility" Value="Visible" />
 
@@ -1227,7 +1227,7 @@
                     <Button Command="{Binding SaveCommand}">
                         <Button.Style>
                             <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
-                                <Setter Property="CommandParameter" Value="{x:Static results:ImageResultEntryImageTypes.V5Stored}" />
+                                <Setter Property="CommandParameter" Value="{x:Static results:ResultsEntryImageTypes.V5Stored}" />
                                 <Setter Property="ToolTip" Value="Save the stored image." />
                                 <Setter Property="Visibility" Value="Visible" />
 
@@ -1602,7 +1602,7 @@
                     <Button Command="{Binding SaveCommand}">
                         <Button.Style>
                             <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
-                                <Setter Property="CommandParameter" Value="{x:Static results:ImageResultEntryImageTypes.V5Stored}" />
+                                <Setter Property="CommandParameter" Value="{x:Static results:ResultsEntryImageTypes.V5Stored}" />
                                 <Setter Property="ToolTip" Value="Save the stored image." />
                                 <Setter Property="Visibility" Value="Visible" />
 

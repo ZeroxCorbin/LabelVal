@@ -4,7 +4,6 @@ using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Views;
 using MahApps.Metro.Controls.Dialogs;
-using Newtonsoft.Json.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,23 +12,23 @@ using System.Windows.Media.Imaging;
 
 namespace LabelVal.Results.Views;
 /// <summary>
-/// Interaction logic for (ImageResultDeviceEntry_L95.xaml
+/// Interaction logic for (ResultsDeviceEntry_V275.xaml
 /// </summary>
-public partial class ImageResultDeviceEntry_L95 : UserControl
+public partial class ResultsDeviceEntry_V275 : UserControl
 {
-    private ViewModels.IImageResultDeviceEntry _viewModel;
-    public ImageResultDeviceEntry_L95()
+    private ViewModels.IResultsDeviceEntry _viewModel;
+    public ResultsDeviceEntry_V275()
     {
         InitializeComponent();
 
-        DataContextChanged += (e, s) => _viewModel = (ViewModels.IImageResultDeviceEntry)DataContext;
+        DataContextChanged += (e, s) => _viewModel = (ViewModels.IResultsDeviceEntry)DataContext;
     }
 
     private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            foreach (var device in _viewModel.ImageResultEntry.ImageResultDeviceEntries)
+            foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries)
             {
                 if (device.FocusedCurrentSector != null)
                     device.FocusedCurrentSector.IsFocused = false;
@@ -48,7 +47,7 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
             switch ((string)((Button)sender).Tag)
             {
                 case "Stored":
-                    foreach (var device in _viewModel.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
                     {
                         if (device.FocusedStoredSector != null)
                             device.FocusedStoredSector.IsFocused = false;
@@ -58,7 +57,7 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
                     }
                     break;
                 case "Current":
-                    foreach (var device in _viewModel.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
                     {
                         if (device.FocusedCurrentSector != null)
                             device.FocusedCurrentSector.IsFocused = false;
@@ -80,75 +79,29 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
     {
         if (sender is Button b && b.Tag is string s && s.Equals("json"))
         {
-            if (_viewModel?.Result?.Report != null)
+            if (_viewModel.Result != null)
             {
-                //Create an array of reports and an array of templates serilize them to the JObject
-                List<JObject> reports = new();
-                foreach (var group in _viewModel.Result.Report["AllReports"])
-                {
-                    reports.Add((JObject)group["Report"]);
-                }
-
-                List<JObject> templates = new();
-                foreach (var group in _viewModel.Result.Report["AllReports"])
-                {
-                    templates.Add((JObject)group["Template"]);
-                }
-
-                var template = new JObject
-                {
-                    ["Templates"] = JArray.FromObject(templates)
-                };
-
-                var report = new JObject
-                {
-                    ["Reports"] = JArray.FromObject(reports)
-                };
-                _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(template, report);
+                _viewModel.ResultssManager.ShowSectorsDetailsWindow(_viewModel.Result.Template, _viewModel.Result.Report);
             }
         }
         else
         {
-            _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(_viewModel.StoredSectors);
+            _viewModel.ResultssManager.ShowSectorsDetailsWindow(_viewModel.StoredSectors);
         }
     }
+
     private void CurrentSectors_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button b && b.Tag is string s && s.Equals("json"))
         {
-            if (_viewModel?.CurrentReport != null)
-            {
-                //Create an array of reports and an array of templates serilize them to the JObject
-                List<JObject> reports = new();
-                foreach (var group in _viewModel?.CurrentReport["AllReports"])
-                {
-                    reports.Add((JObject)group["Report"]);
-                }
-
-                List<JObject> templates = new();
-                foreach (var group in _viewModel?.CurrentReport["AllReports"])
-                {
-                    templates.Add((JObject)group["Template"]);
-                }
-
-                var template = new JObject
-                {
-                    ["Templates"] = JArray.FromObject(templates)
-                };
-
-                var report = new JObject
-                {
-                    ["Reports"] = JArray.FromObject(reports)
-                };
-
-                _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(template, report);
-            }
+            _viewModel.ResultssManager.ShowSectorsDetailsWindow(_viewModel.CurrentTemplate, _viewModel.CurrentReport);
         }
         else
         {
-            _viewModel.ImageResultsManager.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
+            _viewModel.ResultssManager.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
         }
     }
+
     private void ScrollStoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
         if (e.VerticalChange != 0)
@@ -183,8 +136,8 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {
-        var parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        var sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
+        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
+        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
 
         if (sectorDetails != null)
         {
@@ -201,8 +154,8 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
     }
     private void btnCopyImage_Click(object sender, RoutedEventArgs e)
     {
-        var parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        var sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
+        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
+        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
 
         if (sectorDetails != null)
             CopyToClipboard(sectorDetails);
@@ -212,7 +165,7 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
         PngBitmapEncoder encoder = new();
         EncodeVisual(visual, encoder);
 
-        using var stream = System.IO.File.Create(fileName);
+        using System.IO.FileStream stream = System.IO.File.Create(fileName);
         encoder.Save(stream);
     }
     public void CopyToClipboard(FrameworkElement visual)
@@ -241,16 +194,16 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
     private void StoredImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed && !(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
-            _ = ShowImage(((ViewModels.IImageResultDeviceEntry)DataContext).StoredImage, ((ViewModels.IImageResultDeviceEntry)DataContext).StoredImageOverlay);
+            _ = ShowImage(((ViewModels.IResultsDeviceEntry)DataContext).StoredImage, ((ViewModels.IResultsDeviceEntry)DataContext).StoredImageOverlay);
         else if (e.LeftButton == MouseButtonState.Pressed)
-            Show3DImage(((ViewModels.IImageResultDeviceEntry)DataContext).StoredImage.ImageBytes);
+            Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).StoredImage.ImageBytes);
     }
     private void CurrentImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed && !(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
-            _ = ShowImage(((ViewModels.IImageResultDeviceEntry)DataContext).CurrentImage, ((ViewModels.IImageResultDeviceEntry)DataContext).CurrentImageOverlay);
+            _ = ShowImage(((ViewModels.IResultsDeviceEntry)DataContext).CurrentImage, ((ViewModels.IResultsDeviceEntry)DataContext).CurrentImageOverlay);
         else if (e.LeftButton == MouseButtonState.Pressed)
-            Show3DImage(((ViewModels.IImageResultDeviceEntry)DataContext).CurrentImage.ImageBytes);
+            Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).CurrentImage.ImageBytes);
     }
 
     private bool ShowImage(ImageEntry image, DrawingImage overlay)
@@ -277,7 +230,7 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
                 sector.IsMouseOver = true;
 
-            if (DataContext is ViewModels.IImageResultDeviceEntry ire)
+            if (DataContext is ViewModels.IResultsDeviceEntry ire)
                 _ = Application.Current.Dispatcher.BeginInvoke(() => ire.RefreshCurrentOverlay());
         }
     }
@@ -332,7 +285,7 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
     {
         if (sender is Button btn && btn.Tag is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
         {
-            Clipboard.SetText(sectors.GetSectorsReport($"{_viewModel.ImageResultsManager.SelectedImageRoll.Name}{(char)Sectors.Classes.SectorOutputSettings.CurrentDelimiter}{_viewModel.ImageResultEntry.SourceImage.Order}", true));
+            Clipboard.SetText(sectors.GetSectorsReport($"{_viewModel.ResultssManager.SelectedImageRoll.Name}{(char)Sectors.Classes.SectorOutputSettings.CurrentDelimiter}{_viewModel.ResultsEntry.SourceImage.Order}", true));
         }
         else if (sender is Button btn2 && btn2.Tag is ImageEntry image)
         {

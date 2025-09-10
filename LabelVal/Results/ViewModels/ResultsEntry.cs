@@ -22,7 +22,7 @@ namespace LabelVal.Results.ViewModels;
 /// <summary>
 /// This is a viewmodel to support both the Image Roll and the Results database information.
 /// </summary>
-public partial class ImageResultEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageResultsDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>
+public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<ResultssDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     #region Delegates
     /// <summary>
@@ -33,7 +33,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     /// Delegate for the DeleteImage event.
     /// </summary>
     /// <param name="imageResults">The image result entry to delete.</param>
-    public delegate void DeleteImageDelegate(ImageResultEntry imageResults);
+    public delegate void DeleteImageDelegate(ResultsEntry imageResults);
     #endregion
 
     #region Events
@@ -65,7 +65,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     [ObservableProperty] private bool showExtendedData = App.Settings.GetValue<bool>(nameof(ShowExtendedData));
     partial void OnShowExtendedDataChanged(bool value)
     {
-        foreach (var device in ImageResultDeviceEntries)
+        foreach (var device in ResultsDeviceEntries)
             device.RefreshOverlays();
     }
 
@@ -105,26 +105,26 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     #region Data Properties
     /// <summary>
     /// This is the database where all of the Results are stored.
-    /// It can be changed by sending a <see cref="PropertyChangedMessage{ImageResultsDatabase}"/>
+    /// It can be changed by sending a <see cref="PropertyChangedMessage{ResultssDatabase}"/>
     /// When it changes, the results rows for each device are updated.
     /// <see cref="SelectedDatabase"/>
     /// </summary>
-    [ObservableProperty] private ImageResultsDatabase selectedDatabase;
-    partial void OnSelectedDatabaseChanged(ImageResultsDatabase value)
+    [ObservableProperty] private ResultssDatabase selectedDatabase;
+    partial void OnSelectedDatabaseChanged(ResultssDatabase value)
     {
-        foreach (var device in ImageResultDeviceEntries)
+        foreach (var device in ResultsDeviceEntries)
             device.GetStored();
     }
 
     /// <summary>
     /// Gets the manager for Image Rolls and Devices.
     /// </summary>
-    public ImageResultsManager ImageResultsManager { get; }
+    public ResultssManager ResultssManager { get; }
 
     /// <summary>
     /// Gets the currently selected Image Roll UID.
     /// </summary>
-    public string ImageRollUID => ImageResultsManager.SelectedImageRoll.UID;
+    public string ImageRollUID => ResultssManager.SelectedImageRoll.UID;
 
     /// <summary>
     /// Gets the Source image for this entry. This is the same Source image as the Image Roll Entry.
@@ -138,7 +138,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     /// <summary>
     /// Gets the collection of device-specific image result entries.
     /// </summary>
-    public ObservableCollection<IImageResultDeviceEntry> ImageResultDeviceEntries { get; }
+    public ObservableCollection<IResultsDeviceEntry> ResultsDeviceEntries { get; }
     #endregion
 
     #region Printer Properties
@@ -162,20 +162,20 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
 
     #region Constructor and Finalizer
     /// <summary>
-    /// Initializes a new instance of the <see cref="ImageResultEntry"/> class.
+    /// Initializes a new instance of the <see cref="ResultsEntry"/> class.
     /// </summary>
     /// <param name="sourceImage">The source image entry.</param>
     /// <param name="imageResults">The image results manager.</param>
-    public ImageResultEntry(ImageEntry sourceImage, ImageResultsManager imageResults)
+    public ResultsEntry(ImageEntry sourceImage, ResultssManager imageResults)
     {
-        ImageResultsManager = imageResults;
+        ResultssManager = imageResults;
         SourceImage = sourceImage;
 
-        ImageResultDeviceEntries =
+        ResultsDeviceEntries =
         [
-            new ImageResultDeviceEntryV275(this),
-            new ImageResultDeviceEntry_V5(this),
-            new ImageResultDeviceEntry_L95(this),
+            new ResultsDeviceEntryV275(this),
+            new ResultsDeviceEntry_V5(this),
+            new ResultsDeviceEntry_L95(this),
         ];
 
         IsActive = true;
@@ -194,9 +194,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     }
 
     /// <summary>
-    /// Finalizes an instance of the <see cref="ImageResultEntry"/> class.
+    /// Finalizes an instance of the <see cref="ResultsEntry"/> class.
     /// </summary>
-    ~ImageResultEntry()
+    ~ResultsEntry()
     {
         App.Settings.PropertyChanged -= _settingsPropertyChangedHandler;
     }
@@ -240,9 +240,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     /// </summary>
     /// <param name="device">The device to store results for.</param>
     [RelayCommand]
-    private void Store(ImageResultEntryDevices device)
+    private void Store(ResultsEntryDevices device)
     {
-        var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+        var dev = ResultsDeviceEntries.FirstOrDefault(x => x.Device == device);
         if (dev == null)
         {
             Logger.Error($"Device not found: {device}");
@@ -257,9 +257,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     /// </summary>
     /// <param name="device">The device to process the image with.</param>
     [RelayCommand]
-    private void Process(ImageResultEntryDevices device)
+    private void Process(ResultsEntryDevices device)
     {
-        var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+        var dev = ResultsDeviceEntries.FirstOrDefault(x => x.Device == device);
         if (dev == null)
         {
             Logger.Error($"Device not found: {device}");
@@ -274,12 +274,12 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     /// </summary>
     /// <param name="device">The device whose stored sectors will be cleared.</param>
     [RelayCommand]
-    private async Task ClearStored(ImageResultEntryDevices device)
+    private async Task ClearStored(ResultsEntryDevices device)
     {
         if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
             _ = SelectedDatabase.Delete_Result(device, ImageRollUID, SourceImageUID, ImageRollUID);
-            var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+            var dev = ResultsDeviceEntries.FirstOrDefault(x => x.Device == device);
             if (dev == null)
             {
                 Logger.Error($"Device not found: {device}");
@@ -295,9 +295,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     /// </summary>
     /// <param name="device">The device whose current sectors will be cleared.</param>
     [RelayCommand]
-    private void ClearCurrent(ImageResultEntryDevices device)
+    private void ClearCurrent(ResultsEntryDevices device)
     {
-        var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+        var dev = ResultsDeviceEntries.FirstOrDefault(x => x.Device == device);
         if (dev == null)
         {
             Logger.Error($"Device not found: {device}");
@@ -321,9 +321,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     /// </summary>
     public void DeleteStored()
     {
-        _ = SelectedDatabase.Delete_Result(ImageResultEntryDevices.L95, ImageRollUID, SourceImageUID, ImageRollUID);
-        _ = SelectedDatabase.Delete_Result(ImageResultEntryDevices.V275, ImageRollUID, SourceImageUID, ImageRollUID);
-        _ = SelectedDatabase.Delete_Result(ImageResultEntryDevices.V5, ImageRollUID, SourceImageUID, ImageRollUID);
+        _ = SelectedDatabase.Delete_Result(ResultsEntryDevices.L95, ImageRollUID, SourceImageUID, ImageRollUID);
+        _ = SelectedDatabase.Delete_Result(ResultsEntryDevices.V275, ImageRollUID, SourceImageUID, ImageRollUID);
+        _ = SelectedDatabase.Delete_Result(ResultsEntryDevices.V5, ImageRollUID, SourceImageUID, ImageRollUID);
     }
 
     /// <summary>
@@ -334,7 +334,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     public string? GetName(System.Drawing.Point center)
     {
         string name = null;
-        foreach (var dev in ImageResultDeviceEntries)
+        foreach (var dev in ResultsDeviceEntries)
         {
             //Check the Report center points
             foreach (var sec in dev.StoredSectors)
@@ -386,16 +386,16 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     /// Triggers a handler update for a specific device or all devices.
     /// </summary>
     /// <param name="device">The device to update. Use 'All' to update all devices.</param>
-    public void HandlerUpdate(ImageResultEntryDevices device)
+    public void HandlerUpdate(ResultsEntryDevices device)
     {
-        if (device == ImageResultEntryDevices.All)
+        if (device == ResultsEntryDevices.All)
         {
-            foreach (var dev in ImageResultDeviceEntries)
+            foreach (var dev in ResultsDeviceEntries)
                 dev.HandlerUpdate();
         }
         else
         {
-            var dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+            var dev = ResultsDeviceEntries.FirstOrDefault(x => x.Device == device);
             if (dev == null)
             {
                 Logger.Error($"Device not found: {device}");
@@ -466,7 +466,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         _ = WeakReferenceMessenger.Default.Send(mes2);
         SelectedPrinter = mes2.Response;
 
-        RequestMessage<ImageResultsDatabase> mes4 = new();
+        RequestMessage<ResultssDatabase> mes4 = new();
         _ = WeakReferenceMessenger.Default.Send(mes4);
         SelectedDatabase = mes4.Response;
     }
@@ -490,9 +490,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
 
     #region Message Handlers
     /// <summary>
-    /// Receives property changed messages for the ImageResultsDatabase.
+    /// Receives property changed messages for the ResultssDatabase.
     /// </summary>
-    public void Receive(PropertyChangedMessage<ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
+    public void Receive(PropertyChangedMessage<ResultssDatabase> message) => SelectedDatabase = message.NewValue;
     /// <summary>
     /// Receives property changed messages for the PrinterSettings.
     /// </summary>

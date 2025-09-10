@@ -10,15 +10,15 @@ using NHibernate.Linq.Functions;
 using LabelVal.Simulator.Databases;
 
 namespace LabelVal.Results.ViewModels;
-public partial class ImageResultsDatabases : ObservableRecipient
+public partial class ResultssDatabases : ObservableRecipient
 {
-    [ObservableProperty] private FileFolderEntry fileRoot = App.Settings.GetValue<FileFolderEntry>("ImageResultsDatabases_FileRoot", new FileFolderEntry(App.ImageResultsDatabaseRoot), true);
-    partial void OnFileRootChanged(FileFolderEntry value) => App.Settings.SetValue("ImageResultsDatabases_FileRoot", value);
+    [ObservableProperty] private FileFolderEntry fileRoot = App.Settings.GetValue<FileFolderEntry>("ResultssDatabases_FileRoot", new FileFolderEntry(App.ResultssDatabaseRoot), true);
+    partial void OnFileRootChanged(FileFolderEntry value) => App.Settings.SetValue("ResultssDatabases_FileRoot", value);
 
-    public ObservableCollection<ImageResultsDatabase> Databases { get; } = [];
+    public ObservableCollection<ResultssDatabase> Databases { get; } = [];
 
-    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageResultsDatabase selectedDatabase;
-    partial void OnSelectedDatabaseChanged(ImageResultsDatabase value) => App.Settings.SetValue("SelectedImageResultDatabaseFFE", value?.File);
+    [ObservableProperty][NotifyPropertyChangedRecipients] private ResultssDatabase selectedDatabase;
+    partial void OnSelectedDatabaseChanged(ResultssDatabase value) => App.Settings.SetValue("SelectedResultsDatabaseFFE", value?.File);
 
     public bool RightAlignOverflow
     {
@@ -27,17 +27,17 @@ public partial class ImageResultsDatabases : ObservableRecipient
     }
 
 
-    public ImageResultsDatabases()
+    public ResultssDatabases()
     {
         if (!Directory.Exists(FileRoot.Path))
-            FileRoot = new FileFolderEntry(App.ImageResultsDatabaseRoot);
+            FileRoot = new FileFolderEntry(App.ResultssDatabaseRoot);
 
         UpdateFileFolderEvents(FileRoot);
 
-        UpdateImageResultsDatabasesList();
-        SelectImageResultsDatabase();
+        UpdateResultssDatabasesList();
+        SelectResultssDatabase();
 
-        WeakReferenceMessenger.Default.Register<RequestMessage<ImageResultsDatabase>>(
+        WeakReferenceMessenger.Default.Register<RequestMessage<ResultssDatabase>>(
             this,
             (recipient, message) =>
             {
@@ -94,7 +94,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
             if (e.PropertyName == "IsSelected")
             {
                 UpdateDatabases(FileRoot);
-                App.Settings.SetValue("ImageResultsDatabases_FileRoot", FileRoot);
+                App.Settings.SetValue("ResultssDatabases_FileRoot", FileRoot);
             }
         };
         return ffe;
@@ -106,7 +106,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
             if (e.PropertyName == "IsSelected")
             {
                 UpdateDatabases(FileRoot);
-                App.Settings.SetValue("ImageResultsDatabases_FileRoot", FileRoot);
+                App.Settings.SetValue("ResultssDatabases_FileRoot", FileRoot);
             }
         };
 
@@ -132,16 +132,16 @@ public partial class ImageResultsDatabases : ObservableRecipient
         return selectedFiles;
     }
 
-    private void UpdateImageResultsDatabasesList()
+    private void UpdateResultssDatabasesList()
     {
-        Logger.Info($"Loading Image Results databases from file system. {App.ImageResultsDatabaseRoot}");
+        Logger.Info($"Loading Image Results databases from file system. {App.ResultssDatabaseRoot}");
 
         FileRoot = EnumerateFolders(FileRoot);
         UpdateDatabases(FileRoot);
 
         if (Databases.Count == 0)
         {
-            ImageResultsDatabase file = new(new FileFolderEntry(Path.Combine(App.ImageResultsDatabaseRoot, "My First Database" + App.DatabaseExtension)));
+            ResultssDatabase file = new(new FileFolderEntry(Path.Combine(App.ResultssDatabaseRoot, "My First Database" + App.DatabaseExtension)));
             file.Close();
 
             FileRoot = EnumerateFolders(FileRoot);
@@ -168,15 +168,15 @@ public partial class ImageResultsDatabases : ObservableRecipient
         {
             if (!Databases.Any(db => db.File.Path == file))
             {
-                ImageResultsDatabase newDatabase = new(new FileFolderEntry(file));
+                ResultssDatabase newDatabase = new(new FileFolderEntry(file));
                 Databases.Add(newDatabase);
             }
         }
     }
 
-    private void SelectImageResultsDatabase()
+    private void SelectResultssDatabase()
     {
-        var val = App.Settings.GetValue<FileFolderEntry>("SelectedImageResultDatabaseFFE");
+        var val = App.Settings.GetValue<FileFolderEntry>("SelectedResultsDatabaseFFE");
 
         if (val == null)
         {
@@ -193,7 +193,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
     }
 
     [RelayCommand]
-    private async Task CreateImageResultsDatabase()
+    private async Task CreateResultssDatabase()
     {
         var res = await GetStringDialog("New Standards Database", "What is the name of the new database?");
         if (res == null) return;
@@ -204,22 +204,22 @@ public partial class ImageResultsDatabases : ObservableRecipient
             return;
         }
 
-        ImageResultsDatabase file = new(new FileFolderEntry(Path.Combine(App.ImageResultsDatabaseRoot, res + App.DatabaseExtension)));
+        ResultssDatabase file = new(new FileFolderEntry(Path.Combine(App.ResultssDatabaseRoot, res + App.DatabaseExtension)));
         file.Close();
 
-        UpdateImageResultsDatabasesList();
+        UpdateResultssDatabasesList();
     }
 
     [RelayCommand]
-    private void LockImageResultsDatabase()
+    private void LockResultssDatabase()
     {
         if (SelectedDatabase.IsPermLocked)
             return;
 
         //if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
         //{
-        //    ImageResultsDatabase.DeleteLockTable(false);
-        //    ImageResultsDatabase.CreateLockTable(true);
+        //    ResultssDatabase.DeleteLockTable(false);
+        //    ResultssDatabase.CreateLockTable(true);
         //}
         //else
         //{
@@ -229,7 +229,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
     }
 
     [RelayCommand]
-    private async Task Delete(ImageResultsDatabase imageResultsDatabase)
+    private async Task Delete(ResultssDatabase imageResultsDatabase)
     {
         if (imageResultsDatabase == null)
             return;

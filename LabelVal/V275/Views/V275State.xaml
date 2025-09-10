@@ -108,7 +108,7 @@
                                 <DataTrigger Binding="{Binding SelectedV275Node.State}" Value="Editing">
                                     <Setter Property="IsEnabled" Value="True" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding MainWindow.ImageResultsDatabase.SelectedImageRoll.IsGS1}" Value="True">
+                                <DataTrigger Binding="{Binding MainWindow.ResultssDatabase.SelectedImageRoll.IsGS1}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>

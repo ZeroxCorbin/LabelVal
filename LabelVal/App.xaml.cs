@@ -96,11 +96,11 @@ public partial class App : Application
 
     public static string SettingsDatabaseName => $"ApplicationSettings{DatabaseExtension}";
 
-    public static string ImageResultsDatabaseDefaultName => "ImageResultsDatabase";
+    public static string ResultssDatabaseDefaultName => "ResultssDatabase";
 
-    //public static string AssetsImageResultsDatabasesRoot => $@"{Directory.GetCurrentDirectory()}\Assets\ImageResultsDatabases";
+    //public static string AssetsResultssDatabasesRoot => $@"{Directory.GetCurrentDirectory()}\Assets\ResultssDatabases";
 
-    public static string ImageResultsDatabaseRoot => $@"{UserDataDirectory}\Image Results";
+    public static string ResultssDatabaseRoot => $@"{UserDataDirectory}\Image Results";
 
     public static string AssetsImageRollsRoot => $@"{Directory.GetCurrentDirectory()}\Assets\Image Rolls";
     public static string UserImageRollsRoot => $"{UserDataDirectory}\\Image Rolls";
@@ -124,8 +124,8 @@ public partial class App : Application
         if (!Directory.Exists(UserDataDirectory))
             _ = Directory.CreateDirectory(UserDataDirectory);
 
-        if (!Directory.Exists(ImageResultsDatabaseRoot))
-            _ = Directory.CreateDirectory(ImageResultsDatabaseRoot);
+        if (!Directory.Exists(ResultssDatabaseRoot))
+            _ = Directory.CreateDirectory(ResultssDatabaseRoot);
 
         if (!Directory.Exists(UserImageRollsRoot))
             _ = Directory.CreateDirectory(UserImageRollsRoot);

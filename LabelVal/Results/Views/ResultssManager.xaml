@@ -4,7 +4,7 @@
     The main view consists of a scrollable list of image results with a thumbnail navigator and a side panel for viewing JSON data.
 -->
 <UserControl
-    x:Class="LabelVal.Results.Views.ImageResultsManager"
+    x:Class="LabelVal.Results.Views.ResultssManager"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:barCommon="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
@@ -23,7 +23,7 @@
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Classes"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels"
-    d:DataContext="{d:DesignInstance Type=vm:ImageResultsManager}"
+    d:DataContext="{d:DesignInstance Type=vm:ResultssManager}"
     dialog:DialogParticipation.Register="{Binding}"
     Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
@@ -33,9 +33,9 @@
 
         <!--  CollectionViewSource for sorting the image results entries by their source image order.  -->
         <CollectionViewSource
-            x:Key="CvsImageResultsEntries"
+            x:Key="CvsResultssEntries"
             IsLiveSortingRequested="True"
-            Source="{Binding ImageResultsEntries}">
+            Source="{Binding ResultssEntries}">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription Direction="Ascending" PropertyName="SourceImage.Order" />
             </CollectionViewSource.SortDescriptions>
@@ -94,7 +94,7 @@
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"
                     Command="{Binding AddDeviceImageCommand}"
-                    CommandParameter="{x:Static vm:ImageResultEntryDevices.V275}"
+                    CommandParameter="{x:Static vm:ResultsEntryDevices.V275}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     Style="{StaticResource MahApps.Styles.Button.Hamburger}">
 
@@ -321,7 +321,7 @@
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"
                     Command="{Binding AddDeviceImageCommand}"
-                    CommandParameter="{x:Static vm:ImageResultEntryDevices.V5}"
+                    CommandParameter="{x:Static vm:ResultsEntryDevices.V5}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     Style="{StaticResource MahApps.Styles.Button.Hamburger}">
 
@@ -545,7 +545,7 @@
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"
                     Command="{Binding AddDeviceImageCommand}"
-                    CommandParameter="{x:Static vm:ImageResultEntryDevices.L95}"
+                    CommandParameter="{x:Static vm:ResultsEntryDevices.L95}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     IsEnabled="{Binding IsL95Working, Converter={StaticResource InvertBool}}"
                     Style="{StaticResource MahApps.Styles.Button.Hamburger}">
@@ -1460,7 +1460,7 @@
                         Grid.Row="1"
                         MaxWidth="120"
                         DockPanel.Dock="Left"
-                        ItemsSource="{Binding Source={StaticResource CvsImageResultsEntries}}"
+                        ItemsSource="{Binding Source={StaticResource CvsResultssEntries}}"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         ScrollViewer.VerticalScrollBarVisibility="Auto"
                         SelectedItem="{Binding TopmostItem, Mode=OneWay}"
@@ -1508,21 +1508,21 @@
 
                 <!--  ScrollViewer for the main list of image results.  -->
                 <ScrollViewer
-                    x:Name="ImageResultsScrollViewer"
+                    x:Name="ResultssScrollViewer"
                     Margin="0"
                     HorizontalScrollBarVisibility="Disabled"
-                    PreviewKeyDown="ImageResultsScrollViewer_PreviewKeyDown"
-                    PreviewMouseWheel="ImageResultsScrollViewer_PreviewMouseWheel"
-                    ScrollChanged="ImageResultsScrollViewer_ScrollChanged"
+                    PreviewKeyDown="ResultssScrollViewer_PreviewKeyDown"
+                    PreviewMouseWheel="ResultssScrollViewer_PreviewMouseWheel"
+                    ScrollChanged="ResultssScrollViewer_ScrollChanged"
                     Style="{StaticResource MahApps.Styles.ScrollViewer}"
                     VerticalScrollBarVisibility="Auto">
 
                     <!--  ItemsControl to display the collection of image result entries.  -->
-                    <ItemsControl x:Name="ImageResultsItemsControl" ItemsSource="{Binding Source={StaticResource CvsImageResultsEntries}}">
+                    <ItemsControl x:Name="ResultssItemsControl" ItemsSource="{Binding Source={StaticResource CvsResultssEntries}}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <!--  Each item is rendered using the ImageResultEntry UserControl.  -->
-                                <local:ImageResultEntry />
+                                <!--  Each item is rendered using the ResultsEntry UserControl.  -->
+                                <local:ResultsEntry />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

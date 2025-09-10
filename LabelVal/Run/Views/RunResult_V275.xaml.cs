@@ -57,14 +57,14 @@ public partial class RunResult_V275 : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            if (((ViewModels.RunResult)DataContext).StoredImageResultGroup.V275Result != null)
+            if (((ViewModels.RunResult)DataContext).StoredResultsGroup.V275Result != null)
             {
 
             }
         }
         else
         {
-            //_viewModel.ImageResultsManager.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
+            //_viewModel.ResultssManager.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
         }
     }
     private void V275CurrentSector_Click(object sender, RoutedEventArgs e)
@@ -72,9 +72,9 @@ public partial class RunResult_V275 : UserControl
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
             //PopupJSONViewer pop = new();
-            //pop.Viewer1.JSON = ((ViewModels.RunResult)DataContext).CurrentImageResultGroup.V275Result.Template;
+            //pop.Viewer1.JSON = ((ViewModels.RunResult)DataContext).CurrentResultsGroup.V275Result.Template;
             //pop.Viewer1.Title = "Template";
-            //pop.Viewer2.JSON = ((ViewModels.RunResult)DataContext).CurrentImageResultGroup.V275Result.Report;
+            //pop.Viewer2.JSON = ((ViewModels.RunResult)DataContext).CurrentResultsGroup.V275Result.Report;
             //pop.Viewer2.Title = "Report";
 
             //pop.Popup.PlacementTarget = (Button)sender;
