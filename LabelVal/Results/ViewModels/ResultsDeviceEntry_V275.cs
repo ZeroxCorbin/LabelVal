@@ -33,7 +33,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     /// <summary>
     /// Gets the manager for all image results.
     /// </summary>
-    public ResultssManager ResultssManager => ResultsEntry.ResultssManager;
+    public ResultsManager ResultssManager => ResultsEntry.ResultssManager;
 
     /// <summary>
     /// Gets the device type for this entry.

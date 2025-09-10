@@ -99,7 +99,7 @@ public interface IResultsDeviceEntry
     /// <summary>
     /// Gets the manager for all image results.
     /// </summary>
-    ResultssManager ResultssManager { get; }
+    ResultsManager ResultssManager { get; }
     /// <summary>
     /// Gets the parent image result entry.
     /// </summary>

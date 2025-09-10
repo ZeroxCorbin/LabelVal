@@ -34,7 +34,7 @@ namespace LabelVal.Results.ViewModels;
 /// This is the ViewModel for the Image Results Manager.
 /// It manages the display and interaction with image results from various devices.
 /// </summary>
-public partial class ResultssManager : ObservableRecipient,
+public partial class ResultsManager : ObservableRecipient,
     IRecipient<PropertyChangedMessage<ImageRoll>>,
     IRecipient<PropertyChangedMessage<Node>>,
     IRecipient<PropertyChangedMessage<ResultsDatabase>>,
@@ -249,9 +249,9 @@ public partial class ResultssManager : ObservableRecipient,
     #region Constructor and Destructor
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ResultssManager"/> class.
+    /// Initializes a new instance of the <see cref="ResultsManager"/> class.
     /// </summary>
-    public ResultssManager()
+    public ResultsManager()
     {
         _globalHook = Hook.GlobalEvents();
         _globalHook.KeyDown += _globalHook_KeyDown;
@@ -262,9 +262,9 @@ public partial class ResultssManager : ObservableRecipient,
     }
 
     /// <summary>
-    /// Finalizes an instance of the <see cref="ResultssManager"/> class.
+    /// Finalizes an instance of the <see cref="ResultsManager"/> class.
     /// </summary>
-    ~ResultssManager()
+    ~ResultsManager()
     {
         _globalHook.KeyDown -= _globalHook_KeyDown;
         _globalHook.KeyUp -= _globalHook_KeyUp;

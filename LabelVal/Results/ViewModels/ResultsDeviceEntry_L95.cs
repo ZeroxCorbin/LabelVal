@@ -37,7 +37,7 @@ public partial class ResultsDeviceEntry_L95
     /// <summary>
     /// Gets the manager for image results, providing access to shared data and services.
     /// </summary>
-    public ResultssManager ResultssManager => ResultsEntry.ResultssManager;
+    public ResultsManager ResultssManager => ResultsEntry.ResultssManager;
     /// <summary>
     /// Gets the device type for this entry, which is L95.
     /// </summary>

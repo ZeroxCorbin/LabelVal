@@ -14,7 +14,7 @@ namespace LabelVal.Results.Views;
 /// </summary>
 public partial class ResultssManager : UserControl
 {
-    private ViewModels.ResultssManager _viewModel;
+    private ViewModels.ResultsManager _viewModel;
     private bool _isSnapping;
     private bool _isLoaded;
 
@@ -26,11 +26,11 @@ public partial class ResultssManager : UserControl
 
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (e.OldValue is ViewModels.ResultssManager oldVm)
+        if (e.OldValue is ViewModels.ResultsManager oldVm)
         {
             oldVm.ResultssEntries.CollectionChanged -= OnResultssEntriesChanged;
         }
-        if (e.NewValue is ViewModels.ResultssManager newVm)
+        if (e.NewValue is ViewModels.ResultsManager newVm)
         {
             newVm.ResultssEntries.CollectionChanged += OnResultssEntriesChanged;
             _viewModel = newVm;

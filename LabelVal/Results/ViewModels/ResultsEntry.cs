@@ -119,7 +119,7 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
     /// <summary>
     /// Gets the manager for Image Rolls and Devices.
     /// </summary>
-    public ResultssManager ResultssManager { get; }
+    public ResultsManager ResultssManager { get; }
 
     /// <summary>
     /// Gets the currently selected Image Roll UID.
@@ -166,7 +166,7 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
     /// </summary>
     /// <param name="sourceImage">The source image entry.</param>
     /// <param name="imageResults">The image results manager.</param>
-    public ResultsEntry(ImageEntry sourceImage, ResultssManager imageResults)
+    public ResultsEntry(ImageEntry sourceImage, ResultsManager imageResults)
     {
         ResultssManager = imageResults;
         SourceImage = sourceImage;
