@@ -8,6 +8,7 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace LabelVal.ImageRolls.ViewModels;
@@ -32,6 +33,7 @@ public partial class ImageEntry : ObservableObject
 
     private string name;
     private BitmapImage _image;
+    private PixelFormat _imagePixelFormat;
 
     #endregion
 
@@ -150,7 +152,14 @@ public partial class ImageEntry : ObservableObject
             if (OriginalImage != null)
             {
                 ImageLow = BitmapHelpers.CreateBitmapImage(OriginalImage, decodePixelWidth: 200);
-                (ImageWidth, ImageHeight) = BitmapHelpers.GetImageDimensions(OriginalImage);
+                using var stream = new MemoryStream(OriginalImage);
+                (var width, var height, var dpiX, var dpiY, var format, var bitDepth) = BitmapHelpers.GetImageMetadata(stream);
+                ImageWidth = width;
+                ImageHeight = height;
+                ImageDpiX = dpiX;
+                ImageDpiY = dpiY;
+                ImagePixelFormat = format;
+                ImageBitDepth = bitDepth;
                 ImageTotalPixels = (long)ImageWidth * (long)ImageHeight;
             }
         }
@@ -167,24 +176,30 @@ public partial class ImageEntry : ObservableObject
     /// </summary>
     [ObservableProperty]
     private double imageDpiX;
+    partial void OnImageDpiXChanged(double value) => OnPropertyChanged(nameof(ImageInchesWidth));
 
     /// <summary>
     /// Gets or sets the DPI of the image along the Y-axis.
     /// </summary>
     [ObservableProperty]
     private double imageDpiY;
+    partial void OnImageDpiYChanged(double value) => OnPropertyChanged(nameof(ImageInchesHeight));
 
     /// <summary>
     /// The width of the image in pixels.
     /// </summary>
-    [JsonProperty]
-    public double ImageWidth;
+    [ObservableProperty]
+    [property: JsonProperty]
+    private double imageWidth;
+    partial void OnImageWidthChanged(double value) => OnPropertyChanged(nameof(ImageInchesWidth));
 
     /// <summary>
     /// The height of the image in pixels.
     /// </summary>
-    [JsonProperty]
-    public double ImageHeight;
+    [ObservableProperty]
+    [property: JsonProperty]
+    private double imageHeight;
+    partial void OnImageHeightChanged(double value) => OnPropertyChanged(nameof(ImageInchesHeight));
 
     /// <summary>
     /// Gets the width of the image in inches.
@@ -201,20 +216,51 @@ public partial class ImageEntry : ObservableObject
     /// <summary>
     /// The total number of pixels in the image.
     /// </summary>
-    [JsonProperty]
-    public long ImageTotalPixels;
+    [ObservableProperty]
+    [property: JsonProperty]
+    private long imageTotalPixels;
 
     /// <summary>
     /// The bit depth of the image.
     /// </summary>
-    [JsonProperty]
-    public int ImageBitDepth;
+    [ObservableProperty]
+    [property: JsonProperty]
+    private int imageBitDepth;
 
     /// <summary>
-    /// The pixel format of the image.
+    /// The pixel format of the image, not stored in the database directly.
     /// </summary>
-    [JsonProperty]
-    public System.Windows.Media.PixelFormat ImagePixelFormat;
+    [Ignore]
+    [JsonIgnore]
+    public PixelFormat ImagePixelFormat
+    {
+        get => _imagePixelFormat;
+        set
+        {
+            if (SetProperty(ref _imagePixelFormat, value))
+            {
+                ImagePixelFormatString = value.ToString();
+            }
+        }
+    }
+
+    /// <summary>
+    /// The string representation of the image's pixel format for serialization.
+    /// </summary>
+    [JsonProperty("ImagePixelFormat")]
+    public string ImagePixelFormatString
+    {
+        get => ImagePixelFormat.ToString();
+        set
+        {
+            if (string.IsNullOrEmpty(value)) return;
+            var converter = new PixelFormatConverter();
+            if (converter.ConvertFromString(value) is PixelFormat pf)
+            {
+                ImagePixelFormat = pf;
+            }
+        }
+    }
 
     #region Printer Specific Properties
 
@@ -272,6 +318,7 @@ public partial class ImageEntry : ObservableObject
     /// Initializes a new instance of the <see cref="ImageEntry"/> class.
     /// Required for deserialization.
     /// </summary>
+    [JsonConstructor]
     public ImageEntry() { }
 
     /// <summary>
@@ -284,11 +331,8 @@ public partial class ImageEntry : ObservableObject
         RollUID = rollUID;
         Path = path;
         Name = System.IO.Path.GetFileNameWithoutExtension(path);
-        OriginalImage = File.ReadAllBytes(path);
+        ImageBytes = File.ReadAllBytes(path); // Use property to trigger setter logic
         UID = GetUID(OriginalImage);
-        ImageLow = BitmapHelpers.LoadBitmapImage(path, 200);
-        (ImageWidth, ImageHeight) = BitmapHelpers.GetImageDimensions(OriginalImage);
-        ImageTotalPixels = (long)ImageWidth * (long)ImageHeight;
     }
 
     /// <summary>
@@ -301,14 +345,17 @@ public partial class ImageEntry : ObservableObject
     public ImageEntry(string rollUID, byte[] image, int imageDpi = 0, string comment = null)
     {
         RollUID = rollUID;
-        OriginalImage = image;
+        ImageBytes = image; // Use property to trigger setter logic
         UID = GetUID(OriginalImage);
-        ImageLow = BitmapHelpers.CreateBitmapImage(OriginalImage, decodePixelWidth: 200);
-        (ImageWidth, ImageHeight) = BitmapHelpers.GetImageDimensions(OriginalImage);
-        ImageTotalPixels = (long)ImageWidth * (long)ImageHeight;
+
         Comment = comment;
-        if (imageDpi > 0)
+        // Only override DPI if it wasn't found in the metadata (i.e., it's 0 or the default 96)
+        // and a valid DPI has been passed to the constructor.
+        if (imageDpi > 0 && (ImageDpiX <= 0 || ImageDpiX == 96))
+        {
             ImageDpiX = imageDpi;
+            ImageDpiY = imageDpi; // Assume square pixels if only one DPI value is given
+        }
     }
 
     #endregion
@@ -338,7 +385,7 @@ public partial class ImageEntry : ObservableObject
         DeviationWidthPercent = ImageWidth / PrinterPixelWidth;
         DeviationHeightPercent = ImageHeight / PrinterPixelHeight;
 
-        //V52ImageTotalPixelDeviation = ImageTotalPixels - GlobalAppSettings.Instance.V5TotalPixels;
+        // V52ImageTotalPixelDeviation = ImageTotalPixels - GlobalAppSettings.Instance.V5TotalPixels;
         Printer2ImageTotalPixelDeviation = ImageTotalPixels - PrinterTotalPixels;
     }
 }

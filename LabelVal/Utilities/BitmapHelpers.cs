@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace LabelVal.Utilities;
@@ -73,9 +74,21 @@ public static class BitmapHelpers
 
         using (var stream = new MemoryStream(imageData))
         {
-            var decoder = BitmapDecoder.Create(stream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.Default);
-            return (decoder.Frames[0].PixelWidth, decoder.Frames[0].PixelHeight);
+            var (width, height, _, _, _, _) = GetImageMetadata(stream);
+            return (width, height);
         }
+    }
+
+    /// <summary>
+    /// Gets comprehensive metadata for an image from a stream.
+    /// </summary>
+    /// <param name="stream">The stream containing the image data.</param>
+    /// <returns>A tuple with the image's metadata.</returns>
+    public static (int Width, int Height, double DpiX, double DpiY, PixelFormat Format, int BitDepth) GetImageMetadata(Stream stream)
+    {
+        var decoder = BitmapDecoder.Create(stream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.Default);
+        var frame = decoder.Frames[0];
+        return (frame.PixelWidth, frame.PixelHeight, frame.DpiX, frame.DpiY, frame.Format, frame.Format.BitsPerPixel);
     }
 
     /// <summary>

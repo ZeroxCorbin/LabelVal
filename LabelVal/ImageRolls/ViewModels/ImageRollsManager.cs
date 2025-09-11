@@ -398,6 +398,9 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
     /// </summary>
     private void LoadUserImageRollsList()
     {
+        // TODO: Remove this line after running the application once to re-enable caching.
+        //App.Settings.SetValue("UserImageRolls_CacheMetadata", new Dictionary<string, DateTime>());
+
         var selectedDbFiles = UserDatabases.Where(db => db.File.IsSelected).ToList();
         var currentMetadata = selectedDbFiles.ToDictionary(db => db.File.Path, db => File.GetLastWriteTimeUtc(db.File.Path));
         Dictionary<string, DateTime> cachedMetadata = App.Settings.GetValue("UserImageRolls_CacheMetadata", new Dictionary<string, DateTime>());
