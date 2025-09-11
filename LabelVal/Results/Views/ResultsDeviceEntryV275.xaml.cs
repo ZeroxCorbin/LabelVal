@@ -298,13 +298,9 @@ public partial class ResultsDeviceEntry_V275 : UserControl
         }
     }
 
-    private void Show3DViewerCurrent(object sender, RoutedEventArgs e)
-    {
-        Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).CurrentImage.ImageBytes);
-    }
+    private void Show3DViewerCurrent(object sender, RoutedEventArgs e) => Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).CurrentImage.ImageBytes);
+    private void Show3DViewerStored(object sender, RoutedEventArgs e) => Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).StoredImage.ImageBytes);
 
-    private void Show3DViewerStored(object sender, RoutedEventArgs e)
-    {
-Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).StoredImage.ImageBytes);
-    }
+    private void Show2DViewerStored(object sender, RoutedEventArgs e) => _ = ShowImage(((ViewModels.IResultsDeviceEntry)DataContext).StoredImage, ((ViewModels.IResultsDeviceEntry)DataContext).StoredImageOverlay);
+    private void Show2DViewerCurrent(object sender, RoutedEventArgs e) => _ = ShowImage(((ViewModels.IResultsDeviceEntry)DataContext).CurrentImage, ((ViewModels.IResultsDeviceEntry)DataContext).CurrentImageOverlay);
 }

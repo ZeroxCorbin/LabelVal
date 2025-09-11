@@ -1,5 +1,4 @@
 ﻿using LabelVal.Dialogs;
-using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Extensions;
@@ -30,7 +29,7 @@ public partial class ResultsDeviceEntry_L95 : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            foreach (var device in _viewModel.ResultsEntry.ResultsDeviceEntries)
+            foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries)
             {
                 if (device.FocusedCurrentSector != null)
                     device.FocusedCurrentSector.IsFocused = false;
@@ -49,7 +48,7 @@ public partial class ResultsDeviceEntry_L95 : UserControl
             switch ((string)((Button)sender).Tag)
             {
                 case "Stored":
-                    foreach (var device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
                     {
                         if (device.FocusedStoredSector != null)
                             device.FocusedStoredSector.IsFocused = false;
@@ -59,7 +58,7 @@ public partial class ResultsDeviceEntry_L95 : UserControl
                     }
                     break;
                 case "Current":
-                    foreach (var device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
                     {
                         if (device.FocusedCurrentSector != null)
                             device.FocusedCurrentSector.IsFocused = false;
@@ -84,14 +83,14 @@ public partial class ResultsDeviceEntry_L95 : UserControl
             if (_viewModel?.Result?.Report != null)
             {
                 //Create an array of reports and an array of templates serilize them to the JObject
-                List<JObject> reports = new();
-                foreach (var group in _viewModel.Result.Report["AllReports"])
+                List<JObject> reports = [];
+                foreach (JToken group in _viewModel.Result.Report["AllReports"])
                 {
                     reports.Add((JObject)group["Report"]);
                 }
 
-                List<JObject> templates = new();
-                foreach (var group in _viewModel.Result.Report["AllReports"])
+                List<JObject> templates = [];
+                foreach (JToken group in _viewModel.Result.Report["AllReports"])
                 {
                     templates.Add((JObject)group["Template"]);
                 }
@@ -120,14 +119,14 @@ public partial class ResultsDeviceEntry_L95 : UserControl
             if (_viewModel?.CurrentReport != null)
             {
                 //Create an array of reports and an array of templates serilize them to the JObject
-                List<JObject> reports = new();
-                foreach (var group in _viewModel?.CurrentReport["AllReports"])
+                List<JObject> reports = [];
+                foreach (JToken group in _viewModel?.CurrentReport["AllReports"])
                 {
                     reports.Add((JObject)group["Report"]);
                 }
 
-                List<JObject> templates = new();
-                foreach (var group in _viewModel?.CurrentReport["AllReports"])
+                List<JObject> templates = [];
+                foreach (JToken group in _viewModel?.CurrentReport["AllReports"])
                 {
                     templates.Add((JObject)group["Template"]);
                 }
@@ -184,8 +183,8 @@ public partial class ResultsDeviceEntry_L95 : UserControl
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {
-        var parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        var sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
+        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
+        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
 
         if (sectorDetails != null)
         {
@@ -202,8 +201,8 @@ public partial class ResultsDeviceEntry_L95 : UserControl
     }
     private void btnCopyImage_Click(object sender, RoutedEventArgs e)
     {
-        var parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        var sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
+        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
+        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
 
         if (sectorDetails != null)
             CopyToClipboard(sectorDetails);
@@ -213,7 +212,7 @@ public partial class ResultsDeviceEntry_L95 : UserControl
         PngBitmapEncoder encoder = new();
         EncodeVisual(visual, encoder);
 
-        using var stream = System.IO.File.Create(fileName);
+        using System.IO.FileStream stream = System.IO.File.Create(fileName);
         encoder.Save(stream);
     }
     public void CopyToClipboard(FrameworkElement visual)
@@ -346,13 +345,9 @@ public partial class ResultsDeviceEntry_L95 : UserControl
         }
     }
 
-    private void Show3DViewerCurrent(object sender, RoutedEventArgs e)
-    {
-Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).CurrentImage.ImageBytes);
-    }
+    private void Show3DViewerCurrent(object sender, RoutedEventArgs e) => Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).CurrentImage.ImageBytes);
+    private void Show3DViewerStored(object sender, RoutedEventArgs e) => Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).StoredImage.ImageBytes);
 
-    private void Show3DViewerStored(object sender, RoutedEventArgs e)
-    {
-Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).StoredImage.ImageBytes);
-    }
+    private void Show2DViewerStored(object sender, RoutedEventArgs e) => _ = ShowImage(((ViewModels.IResultsDeviceEntry)DataContext).StoredImage, ((ViewModels.IResultsDeviceEntry)DataContext).StoredImageOverlay);
+    private void Show2DViewerCurrent(object sender, RoutedEventArgs e) => _ = ShowImage(((ViewModels.IResultsDeviceEntry)DataContext).CurrentImage, ((ViewModels.IResultsDeviceEntry)DataContext).CurrentImageOverlay);
 }

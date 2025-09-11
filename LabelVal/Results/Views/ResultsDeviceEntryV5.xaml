@@ -455,16 +455,31 @@
                 </DockPanel>
 
                 <StackPanel HorizontalAlignment="Left">
+
+                    <!--  Show 2D  -->
+                    <Button
+                        Width="28"
+                        Height="28"
+                        Margin="0,3"
+                        Click="Show2DViewerStored"
+                        CommandParameter="{Binding SourceImage.BitmapBytes}"
+                        Content="{iconPacks:Material Kind=Video2d}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        ToolTip="Open the image in the 2D viewer." />
+
                     <!--  Show 3D  -->
                     <Button
-                            Width="28"
-                            Height="28"
-                            Click="Show3DViewerStored"
-                            CommandParameter="{Binding SourceImage.BitmapBytes}"
-                            Content="{iconPacks:Material Kind=Video3d}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            ToolTip="Save the image." />
+                        Width="28"
+                        Height="28"
+                        Margin="0,3"
+                        Click="Show3DViewerStored"
+                        CommandParameter="{Binding SourceImage.BitmapBytes}"
+                        Content="{iconPacks:Material Kind=Video3d}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        ToolTip="Open the image in the 3D viewer." />
+
                 </StackPanel>
 
             </DockPanel>
@@ -781,16 +796,30 @@
                 </DockPanel>
 
                 <StackPanel HorizontalAlignment="Left">
+
+                    <!--  Show 2D  -->
+                    <Button
+                        Width="28"
+                        Height="28"
+                        Margin="0,3"
+                        Click="Show2DViewerCurrent"
+                        CommandParameter="{Binding SourceImage.BitmapBytes}"
+                        Content="{iconPacks:Material Kind=Video2d}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        ToolTip="Open the image in the 2D viewer." />
+
                     <!--  Show 3D  -->
                     <Button
-                            Width="28"
-                            Height="28"
-                            Click="Show3DViewerCurrent"
-                            CommandParameter="{Binding SourceImage.BitmapBytes}"
-                            Content="{iconPacks:Material Kind=Video3d}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            ToolTip="Save the image." />
+                        Width="28"
+                        Height="28"
+                        Margin="0,3"
+                        Click="Show3DViewerCurrent"
+                        CommandParameter="{Binding SourceImage.BitmapBytes}"
+                        Content="{iconPacks:Material Kind=Video3d}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        ToolTip="Open the image in the 3D viewer." />
                 </StackPanel>
 
             </DockPanel>

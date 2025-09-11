@@ -1,13 +1,10 @@
-using BarcodeVerification.lib.Common;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
 using SQLite;
-using System.ComponentModel;
 using System.Drawing.Printing;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -153,7 +150,7 @@ public partial class ImageEntry : ObservableObject
             {
                 ImageLow = BitmapHelpers.CreateBitmapImage(OriginalImage, decodePixelWidth: 200);
                 using var stream = new MemoryStream(OriginalImage);
-                (var width, var height, var dpiX, var dpiY, var format, var bitDepth) = BitmapHelpers.GetImageMetadata(stream);
+                (var width, var height, var dpiX, var dpiY, PixelFormat format, var bitDepth) = BitmapHelpers.GetImageMetadata(stream);
                 ImageWidth = width;
                 ImageHeight = height;
                 ImageDpiX = dpiX;
@@ -333,6 +330,10 @@ public partial class ImageEntry : ObservableObject
         Name = System.IO.Path.GetFileNameWithoutExtension(path);
         ImageBytes = File.ReadAllBytes(path); // Use property to trigger setter logic
         UID = GetUID(OriginalImage);
+
+        var cmt = Path.Replace(System.IO.Path.GetExtension(Path), ".txt");
+        if (File.Exists(cmt))
+            Comment = File.ReadAllText(cmt);
     }
 
     /// <summary>
