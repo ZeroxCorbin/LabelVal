@@ -5,7 +5,6 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Gma.System.MouseKeyHook;
-using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.L95.ViewModels;
 using LabelVal.Main.Messages;
@@ -13,20 +12,17 @@ using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Extensions;
+using LabelVal.Sectors.Output;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
 using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using V275_REST_Lib.Models;
 
 namespace LabelVal.Results.ViewModels;
 
@@ -49,7 +45,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     private readonly IKeyboardMouseEvents _globalHook;
     private bool _shiftPressed;
     private bool _isLoadingImages;
-    private readonly List<Window> _openSectorsWindows = new();
+    private readonly List<Window> _openSectorsWindows = [];
 
     #endregion
 
@@ -302,19 +298,19 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     /// </summary>
     private void ReceiveAll()
     {
-        var ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
+        RequestMessage<PrinterSettings> ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
         if (ret2.HasReceivedResponse)
             Receive(new PropertyChangedMessage<PrinterSettings>("", "", null, ret2.Response));
 
-        var ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<ResultsDatabase>());
+        RequestMessage<ResultsDatabase> ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<ResultsDatabase>());
         if (ret4.HasReceivedResponse)
             Receive(new PropertyChangedMessage<ResultsDatabase>("", "", null, ret4.Response));
 
-        var ret5 = WeakReferenceMessenger.Default.Send(new RequestMessage<Scanner>());
+        RequestMessage<Scanner> ret5 = WeakReferenceMessenger.Default.Send(new RequestMessage<Scanner>());
         if (ret5.HasReceivedResponse)
             Receive(new PropertyChangedMessage<Scanner>("", "", null, ret5.Response));
 
-        var ret6 = WeakReferenceMessenger.Default.Send(new RequestMessage<Verifier>());
+        RequestMessage<Verifier> ret6 = WeakReferenceMessenger.Default.Send(new RequestMessage<Verifier>());
         if (ret6.HasReceivedResponse)
             Receive(new PropertyChangedMessage<Verifier>("", "", null, ret6.Response));
     }
@@ -334,7 +330,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         _isLoadingImages = true;
         try
         {
-            await Application.Current.Dispatcher.InvokeAsync(() => ResultssEntries.Clear());
+            await Application.Current.Dispatcher.InvokeAsync(ResultssEntries.Clear);
 
             if (ActiveImageRoll.ImageEntries.Count == 0)
             {
@@ -344,7 +340,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
             {
                 // Manually populate if the collection is already filled
                 var existingEntries = ActiveImageRoll.ImageEntries.OrderBy(i => i.Order).ToList();
-                foreach (var entry in existingEntries)
+                foreach (ImageEntry entry in existingEntries)
                 {
                     AddResultsEntry(entry);
                 }
@@ -360,25 +356,14 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         {
             ResultsEntry entryToView = null;
             var sortedEntries = ResultssEntries.OrderBy(e => e.SourceImage.Order).ToList();
-            switch (ActiveImageRoll.ImageAddPosition)
+            entryToView = ActiveImageRoll.ImageAddPosition switch
             {
-                case ImageAddPositions.Top:
-                case ImageAddPositions.Above:
-                    entryToView = sortedEntries.FirstOrDefault();
-                    break;
-                case ImageAddPositions.Bottom:
-                case ImageAddPositions.Below:
-                default:
-                    entryToView = sortedEntries.LastOrDefault();
-                    break;
-            }
-
+                ImageAddPositions.Top or ImageAddPositions.Above => sortedEntries.FirstOrDefault(),
+                _ => sortedEntries.LastOrDefault(),
+            };
             if (entryToView != null)
             {
-                _ = Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    entryToView.BringIntoViewHandler();
-                }), System.Windows.Threading.DispatcherPriority.ContextIdle);
+                _ = Application.Current.Dispatcher.BeginInvoke(new Action(() => entryToView.BringIntoViewHandler()), System.Windows.Threading.DispatcherPriority.ContextIdle);
             }
         }
     }
@@ -387,28 +372,25 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     {
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         {
-            foreach (var itm in e.NewItems.Cast<ImageEntry>())
+            foreach (ImageEntry itm in e.NewItems.Cast<ImageEntry>())
                 AddResultsEntry(itm);
         }
         else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
         {
-            foreach (var itm in e.OldItems.Cast<ImageEntry>())
+            foreach (ImageEntry itm in e.OldItems.Cast<ImageEntry>())
                 RemoveResultsEntry(itm);
         }
     }
 
     private void ActiveImageRoll_ImageMoved(object sender, ImageEntry imageEntry)
     {
-        var ire = ResultssEntries.FirstOrDefault(ir => ir.SourceImage.UID == imageEntry.UID);
-        if (ire != null)
-        {
-            ire.BringIntoViewHandler();
-        }
+        ResultsEntry ire = ResultssEntries.FirstOrDefault(ir => ir.SourceImage.UID == imageEntry.UID);
+        ire?.BringIntoViewHandler();
     }
 
     private void AddResultsEntry(ImageEntry img)
     {
-        var ire = ResultssEntries.FirstOrDefault(ir => ir.SourceImage.UID == img.UID);
+        ResultsEntry ire = ResultssEntries.FirstOrDefault(ir => ir.SourceImage.UID == img.UID);
         if (ire == null)
         {
             ire = new ResultsEntry(img, this);
@@ -451,16 +433,13 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
 
         if (!_isLoadingImages)
         {
-            _ = Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-            {
-                ire.BringIntoViewHandler();
-            }), System.Windows.Threading.DispatcherPriority.ContextIdle);
+            _ = Application.Current.Dispatcher.BeginInvoke(new Action(() => ire.BringIntoViewHandler()), System.Windows.Threading.DispatcherPriority.ContextIdle);
         }
     }
 
     private void RemoveResultsEntry(ImageEntry img)
     {
-        var itm = ResultssEntries.FirstOrDefault(ir => ir.SourceImage == img);
+        ResultsEntry itm = ResultssEntries.FirstOrDefault(ir => ir.SourceImage == img);
         if (itm != null)
         {
             _ = ResultssEntries.Remove(itm);
@@ -517,9 +496,9 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     /// <param name="device">The device whose selection to reset.</param>
     public void ResetSelected(ResultsEntryDevices device)
     {
-        foreach (var lab in ResultssEntries)
+        foreach (ResultsEntry lab in ResultssEntries)
         {
-            var dev = lab.ResultsDeviceEntries.FirstOrDefault(d => d.Device == device);
+            IResultsDeviceEntry dev = lab.ResultsDeviceEntries.FirstOrDefault(d => d.Device == device);
             if (dev != null)
                 dev.IsSelected = false; ;
         }
@@ -564,7 +543,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
                 }
                 else
                 {
-                    var res = await SelectedV275Node.Controller.ReadTask(-1);
+                    V275_REST_Lib.Controllers.FullReport res = await SelectedV275Node.Controller.ReadTask(-1);
                     ProcessFullReport(res);
                 }
                 break;
@@ -578,14 +557,14 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
                 }
                 else
                 {
-                    var res1 = await SelectedV5.Controller.Trigger_Wait_Return(true);
+                    V5_REST_Lib.Controllers.FullReport res1 = await SelectedV5.Controller.Trigger_Wait_Return(true);
                     ProcessFullReport(res1);
                 }
                 break;
 
             case ResultsEntryDevices.L95:
                 WorkingUpdate(device, true);
-                var res2 = SelectedL95.Controller.GetFullReport(-1);
+                FullReport res2 = SelectedL95.Controller.GetFullReport(-1);
                 ProcessFullReport(res2);
                 break;
         }
@@ -603,13 +582,13 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
             return;
         }
 
-        var answer = await AllImageCancelDialog("Delete Image & Remove Results", $"Are you sure you want to delete this image from the Image Roll?\r\nThis can not be undone!");
+        MessageDialogResult answer = await AllImageCancelDialog("Delete Image & Remove Results", $"Are you sure you want to delete this image from the Image Roll?\r\nThis can not be undone!");
         if (answer == MessageDialogResult.FirstAuxiliary)
             return;
         else if (answer == MessageDialogResult.Affirmative)
         {
             // Remove the image from the ImageRoll and remove all result entries
-            foreach (var img in ResultssEntries)
+            foreach (ResultsEntry img in ResultssEntries)
             {
                 if (img.SourceImage.UID == imageToDelete.SourceImage.UID)
                 {
@@ -631,7 +610,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     [RelayCommand]
     private void StoreAllCurrentResults()
     {
-        foreach (var img in ResultssEntries)
+        foreach (ResultsEntry img in ResultssEntries)
         {
             img.StoreCommand.Execute(ResultsEntryDevices.V275);
             img.StoreCommand.Execute(ResultsEntryDevices.V5);
@@ -645,7 +624,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     [RelayCommand]
     private void ClearAllCurrentResults()
     {
-        foreach (var img in ResultssEntries)
+        foreach (ResultsEntry img in ResultssEntries)
         {
             img.ClearCurrentCommand.Execute(ResultsEntryDevices.V275);
             img.ClearCurrentCommand.Execute(ResultsEntryDevices.V5);
@@ -657,21 +636,69 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     /// Copies all sector data to the clipboard.
     /// </summary>
     [RelayCommand]
-    private void CopyAllSectorsToClipboard()
+    private void CopyAllSectorsToClipboard(string type)
     {
         var data = "";
-        var sorted = ResultssEntries.OrderBy(i => i.SourceImage.Order);
-        foreach (var img in sorted)
+        if (SectorOutputSettings.CurrentOutputType == SectorOutputType.JSON)
         {
-            foreach (var device in img.ResultsDeviceEntries)
+            data = GetJsonReport(type);
+        }
+        else if (SectorOutputSettings.CurrentOutputType == SectorOutputType.Delimited)
+        {
+            data = GetDelimetedReport(type);
+        }
+
+        Clipboard.SetText(data);
+    }
+
+    private string GetJsonReport(string type)
+    {
+        IOrderedEnumerable<ResultsEntry> sorted = ResultssEntries.OrderBy(i => i.SourceImage.Order);
+
+        JObject baseObject = new();
+        foreach (ResultsEntry img in sorted)
+        {
+            baseObject["Order"] = img.SourceImage.Order;
+            baseObject["ImageRollName"] = img.ResultsManagerView.ActiveImageRoll.Name;
+            
+            JArray deviceArray = new();
+            foreach (IResultsDeviceEntry device in img.ResultsDeviceEntries)
             {
-                if (device.StoredSectors.Count != 0)
-                    data += device.StoredSectors.GetSectorsReport($"{img.ResultsManagerView.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
-                if (device.CurrentSectors.Count != 0)
-                    data += device.CurrentSectors.GetSectorsReport($"{img.ResultsManagerView.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
+                if( device.StoredSectors.Count == 0 && device.CurrentSectors.Count == 0)
+                    continue;
+
+                JObject deviceObject = new();
+                deviceObject["Device"] = device.Device.ToString();
+
+                if (type == "source" && device.StoredSectors.Count != 0)
+                    deviceObject["Stored"] = device.StoredSectors.GetJsonSectorsReport($"{img.ResultsManagerView.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}");
+
+                else if (type == "current" && device.CurrentSectors.Count != 0)
+                    deviceObject["Current"] = device.CurrentSectors.GetJsonSectorsReport($"{img.ResultsManagerView.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}");
+
+                deviceArray.Add(deviceObject);
+            }
+            baseObject["Results"] = deviceArray;
+        }
+        return baseObject.ToString();
+    }
+
+    private string GetDelimetedReport(string type)
+    {
+        var data = "";
+        IOrderedEnumerable<ResultsEntry> sorted = ResultssEntries.OrderBy(i => i.SourceImage.Order);
+        foreach (ResultsEntry img in sorted)
+        {
+            foreach (IResultsDeviceEntry device in img.ResultsDeviceEntries)
+            {
+                if (type == "source" && device.StoredSectors.Count != 0)
+                    data += device.StoredSectors.GetDelimetedSectorsReport($"{img.ResultsManagerView.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
+
+                else if (type == "current" && device.CurrentSectors.Count != 0)
+                    data += device.CurrentSectors.GetDelimetedSectorsReport($"{img.ResultsManagerView.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
             }
         }
-        Clipboard.SetText(data);
+        return data;
     }
 
     #endregion
@@ -701,7 +728,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
                 }
             }
 
-            (var entry, var isNew) = ActiveImageRoll.GetImageEntry(res.Image);
+            (ImageEntry entry, var isNew) = ActiveImageRoll.GetImageEntry(res.Image);
             if (entry == null) return;
 
             entry.NewData = res;
@@ -734,7 +761,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
                 }
             }
 
-            (var entry, var isNew) = ActiveImageRoll.GetImageEntry(res.Image);
+            (ImageEntry entry, var isNew) = ActiveImageRoll.GetImageEntry(res.Image);
             if (entry == null) return;
 
             entry.NewData = res;
@@ -771,7 +798,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
                 }
             }
 
-            (var entry, var isNew) = ActiveImageRoll.GetImageEntry(thumbnail);
+            (ImageEntry entry, var isNew) = ActiveImageRoll.GetImageEntry(thumbnail);
             if (entry == null) return;
 
             entry.NewData = res;
@@ -793,7 +820,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
 
     private void AddImage(ImageAddPositions position, ResultsEntry imageResult)
     {
-        var newImages = PromptForNewImages();
+        List<ImageEntry> newImages = PromptForNewImages();
         if (newImages != null && newImages.Count > 0)
         {
             ActiveImageRoll.AddImages(position, newImages);
@@ -814,7 +841,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
             List<ImageEntry> newImages = [];
             foreach (var filePath in settings.SelectedFiles)
             {
-                (var entry, var isNew) = ActiveImageRoll.GetImageEntry(filePath);
+                (ImageEntry entry, var isNew) = ActiveImageRoll.GetImageEntry(filePath);
                 if (entry != null && isNew)
                 {
                     newImages.Add(entry);
@@ -833,10 +860,10 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
 
         // Remove all ResultsEntry objects matching the roll UID
         var entriesToRemove = ResultssEntries.Where(e => e.ImageRollUID == rollUid).ToList();
-        foreach (var entry in entriesToRemove)
-            ResultssEntries.Remove(entry); // Remove from UI
+        foreach (ResultsEntry entry in entriesToRemove)
+            _ = ResultssEntries.Remove(entry); // Remove from UI
 
-        SelectedResultsDatabase.DeleteAllResultsByRollUid(rollUid);
+        _ = SelectedResultsDatabase.DeleteAllResultsByRollUid(rollUid);
     }
 
     #endregion
@@ -866,7 +893,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     private void ActiveImageRoll_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(ImageRoll.SectorType))
-            foreach (var lab in ResultssEntries)
+            foreach (ResultsEntry lab in ResultssEntries)
                 lab.HandlerUpdate(ResultsEntryDevices.All);
     }
 
@@ -895,7 +922,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         if (SelectedV275Node?.Controller != null)
             SelectedV275Node.Controller.PropertyChanged += V275Controller_PropertyChanged;
 
-        foreach (var lab in ResultssEntries)
+        foreach (ResultsEntry lab in ResultssEntries)
             lab.HandlerUpdate(ResultsEntryDevices.V275);
 
         HandlerUpdate();
@@ -905,7 +932,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     {
         if (e.PropertyName is nameof(Node.Controller.IsSimulator) or nameof(Node.Controller.IsLoggedIn_Control))
         {
-            foreach (var lab in ResultssEntries)
+            foreach (ResultsEntry lab in ResultssEntries)
                 lab.HandlerUpdate(ResultsEntryDevices.V275);
 
             HandlerUpdate();
@@ -925,7 +952,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         if (SelectedV5?.Controller != null)
             SelectedV5.Controller.PropertyChanged += V5Controller_PropertyChanged;
 
-        foreach (var lab in ResultssEntries)
+        foreach (ResultsEntry lab in ResultssEntries)
             lab.HandlerUpdate(ResultsEntryDevices.V5);
 
         HandlerUpdate();
@@ -935,7 +962,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     {
         if (e.PropertyName is nameof(V5_REST_Lib.Controllers.Controller.IsSimulator) or nameof(V5_REST_Lib.Controllers.Controller.IsConnected))
         {
-            foreach (var lab in ResultssEntries)
+            foreach (ResultsEntry lab in ResultssEntries)
                 lab.HandlerUpdate(ResultsEntryDevices.V5);
 
             HandlerUpdate();
@@ -955,7 +982,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         if (SelectedL95?.Controller != null)
             SelectedL95.Controller.PropertyChanged += L95Controller_PropertyChanged;
 
-        foreach (var lab in ResultssEntries)
+        foreach (ResultsEntry lab in ResultssEntries)
             lab.HandlerUpdate(ResultsEntryDevices.L95);
 
         HandlerUpdate();
@@ -965,7 +992,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     {
         if (e.PropertyName is nameof(Lvs95xx.lib.Core.Controllers.Controller.IsSimulator) or nameof(Lvs95xx.lib.Core.Controllers.Controller.IsConnected) or nameof(Lvs95xx.lib.Core.Controllers.Controller.ProcessState))
         {
-            foreach (var lab in ResultssEntries)
+            foreach (ResultsEntry lab in ResultssEntries)
                 lab.HandlerUpdate(ResultsEntryDevices.L95);
 
             HandlerUpdate();
@@ -1030,7 +1057,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     /// </summary>
     public void CloseAllSectorsDetailsWindows()
     {
-        foreach (var win in _openSectorsWindows.ToArray())
+        foreach (Window win in _openSectorsWindows.ToArray())
         {
             win.Close();
         }

@@ -1394,6 +1394,7 @@
                                 HorizontalAlignment="Left"
                                 VerticalContentAlignment="Stretch"
                                 Command="{Binding CopyAllSectorsToClipboardCommand}"
+                                CommandParameter="source"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 ToolTip="Copy all current sector details to the clipboard as CSV.">
@@ -1403,7 +1404,36 @@
                                         HorizontalAlignment="Center"
                                         DockPanel.Dock="Top"
                                         Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                                        Text="Copy Sect."
+                                        Text="Stored"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                    <iconPacks:PackIconModern
+                                        Width="24"
+                                        Height="24"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Kind="PageCopy" />
+                                </DockPanel>
+                            </Button>
+
+                            <!--  Button to copy all sector details to the clipboard as CSV.  -->
+                            <Button
+                                Width="48"
+                                Height="48"
+                                HorizontalAlignment="Left"
+                                VerticalContentAlignment="Stretch"
+                                Command="{Binding CopyAllSectorsToClipboardCommand}"
+                                CommandParameter="current"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="Copy all current sector details to the clipboard as CSV.">
+
+                                <DockPanel>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        DockPanel.Dock="Top"
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Text="Current"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                     <iconPacks:PackIconModern

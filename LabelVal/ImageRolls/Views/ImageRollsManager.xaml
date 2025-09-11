@@ -170,7 +170,7 @@
                                 <Style BasedOn="{StaticResource MaterialDesignScrollViewer}" TargetType="ScrollViewer">
                                     <Setter Property="FlowDirection" Value="LeftToRight" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding RightAlignOverflow}" Value="True">
+                                        <DataTrigger Binding="{Binding ImageRollsManager.RightAlignOverflow}" Value="True">
                                             <Setter Property="FlowDirection" Value="RightToLeft" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -183,7 +183,7 @@
                                     <Style BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}" TargetType="TextBlock">
                                         <Setter Property="FlowDirection" Value="LeftToRight" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding RightAlignOverflow}" Value="True">
+                                            <DataTrigger Binding="{Binding ImageRollsManager.RightAlignOverflow}" Value="True">
                                                 <Setter Property="FlowDirection" Value="RightToLeft" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -204,7 +204,7 @@
                                     <Style.Triggers>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding RightAlignOverflow}" Value="False" />
+                                                <Condition Binding="{Binding ImageRollsManager.RightAlignOverflow}" Value="False" />
                                                 <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=srcName4}" Value="Visible" />
                                             </MultiDataTrigger.Conditions>
                                             <MultiDataTrigger.Setters>

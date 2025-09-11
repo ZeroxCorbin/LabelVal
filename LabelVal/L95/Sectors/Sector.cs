@@ -124,7 +124,7 @@ public partial class Sector : ObservableObject, ISector, IDisposable
     }
 
     [RelayCommand]
-    private void CopyToClipBoard(int rollID) => this.GetSectorReport(rollID.ToString(), true);
+    private void CopyToClipBoard(int rollID) => this.GetDelimetedSectorReport(rollID.ToString(), true);
 
     private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {

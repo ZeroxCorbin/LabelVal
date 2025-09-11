@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Sectors.Classes;
+using LabelVal.Sectors.Output;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
@@ -205,7 +206,7 @@ public partial class MainWindow : ObservableRecipient
             new HamburgerMenuItem { Label = "ImageRolls", Content = ImageRolls },
             new HamburgerMenuItem { Label = "Results", Content = ResultssDatabases },
             new HamburgerMenuItem { Label = "Printer", Content = Printer, IsNotSelectable = true },
-            new HamburgerMenuItem { Label = "Run", Content = RunManager },
+            //new HamburgerMenuItem { Label = "Run", Content = RunManager },
             new HamburgerMenuItem { Label = "Label", Content = LabelBuilderViewModel },
             new HamburgerMenuItem { Label = "V275", Content = V275Manager },
             new HamburgerMenuItem { Label = "V5", Content = ScannerManager },

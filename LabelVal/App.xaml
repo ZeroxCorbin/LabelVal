@@ -9,7 +9,7 @@
     xmlns:local="clr-namespace:LabelVal"
     xmlns:logging="clr-namespace:Logging.lib;assembly=Logging.lib"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-    xmlns:sectorOutput="clr-namespace:LabelVal.Sectors.Classes"
+    xmlns:sectorOutput="clr-namespace:LabelVal.Sectors.Output"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:watchers="clr-namespace:Watchers.lib.Process;assembly=Watchers.lib">
