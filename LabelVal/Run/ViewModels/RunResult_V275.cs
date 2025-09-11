@@ -194,7 +194,7 @@ public partial class RunResult
 
     }
 
-    private DrawingImage V275CreateSectorsImageOverlay(JObject template, bool isDetailed, JObject report, ImageRolls.Databases.ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
+    private DrawingImage V275CreateSectorsImageOverlay(JObject template, bool isDetailed, JObject report, ImageRolls.ViewModels.ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
     {
         DrawingGroup drwGroup = new();
 

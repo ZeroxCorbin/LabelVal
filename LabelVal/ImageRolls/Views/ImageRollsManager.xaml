@@ -103,7 +103,10 @@
                         Kind="ImageMultiple" />
 
                     <!--  Displays the number of images in the roll, hidden if zero.  -->
-                    <TextBlock Grid.Row="1" Text="{Binding ImageCount}" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                    <TextBlock
+                        Grid.Row="1"
+                        Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                        Text="{Binding ImageCount}" />
 
                     <Grid
                         Grid.Column="1"

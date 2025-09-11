@@ -1,5 +1,6 @@
 ﻿using LabelVal.Dialogs;
 using LabelVal.ImageRolls.Databases;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Views;

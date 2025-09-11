@@ -46,6 +46,7 @@
 	  <Page Remove="Sectors\Messages\**" />
 	</ItemGroup>
 	<ItemGroup>
+		<Compile Remove="ImageRolls\Databases\ImageEntry.cs" />
 		<Compile Remove="ImageRolls\Databases\StandardsDatabase.cs" />
 		<Compile Remove="ImageRolls\Services\ListViewSelectionBehavior.cs" />
 		<Compile Remove="ImageViewer3D\ViewModels\ImageOverlayTesting.cs" />

@@ -1,5 +1,6 @@
 ﻿using BarcodeVerification.lib.Common;
 using LabelVal.ImageRolls.Databases;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;

@@ -1,5 +1,6 @@
 ﻿using LabelVal.Dialogs;
 using LabelVal.ImageRolls.Databases;
+using LabelVal.ImageRolls.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
 using System.Windows.Controls;
