@@ -24,7 +24,8 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
-    d:DataContext="{d:DesignInstance Type=viewModels:ImageRollsManager}"
+    d:DataContext="{d:DesignInstance Type=viewModels:ImageRollsManager,
+                                     IsDesignTimeCreatable=False}"
     dialog:DialogParticipation.Register="{Binding}"
     Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
@@ -102,18 +103,7 @@
                         Kind="ImageMultiple" />
 
                     <!--  Displays the number of images in the roll, hidden if zero.  -->
-                    <TextBlock Grid.Row="1" Text="{Binding ImageCount}">
-                        <TextBlock.Style>
-                            <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ImageCount}" Value="0">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                    <TextBlock Grid.Row="1" Text="{Binding ImageCount}" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
 
                     <Grid
                         Grid.Column="1"
@@ -346,10 +336,10 @@
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 SelectedItem="{Binding DataContext.SelectedFixedImageRoll, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 SelectionChanged="ListViewFixed_SelectionChanged"
-                                VirtualizingPanel.IsVirtualizing="False"
+                Style="{StaticResource MahApps.Styles.ListView}"
+                VirtualizingPanel.IsVirtualizing="False"
                 VirtualizingPanel.IsVirtualizingWhenGrouping="False"
-                VirtualizingPanel.VirtualizationMode="Recycling"
-                Style="{StaticResource MahApps.Styles.ListView}">
+                VirtualizingPanel.VirtualizationMode="Recycling">
 
                 <ListView.ItemContainerStyle>
                     <Style BasedOn="{StaticResource MahApps.Styles.ListViewItem}" TargetType="ListViewItem" />

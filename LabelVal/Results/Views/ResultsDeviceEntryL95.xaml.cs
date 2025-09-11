@@ -104,12 +104,12 @@ public partial class ResultsDeviceEntry_L95 : UserControl
                 {
                     ["Reports"] = JArray.FromObject(reports)
                 };
-                _viewModel.ResultssManager.ShowSectorsDetailsWindow(template, report);
+                _viewModel.ResultsManagerView.ShowSectorsDetailsWindow(template, report);
             }
         }
         else
         {
-            _viewModel.ResultssManager.ShowSectorsDetailsWindow(_viewModel.StoredSectors);
+            _viewModel.ResultsManagerView.ShowSectorsDetailsWindow(_viewModel.StoredSectors);
         }
     }
     private void CurrentSectors_Click(object sender, RoutedEventArgs e)
@@ -141,12 +141,12 @@ public partial class ResultsDeviceEntry_L95 : UserControl
                     ["Reports"] = JArray.FromObject(reports)
                 };
 
-                _viewModel.ResultssManager.ShowSectorsDetailsWindow(template, report);
+                _viewModel.ResultsManagerView.ShowSectorsDetailsWindow(template, report);
             }
         }
         else
         {
-            _viewModel.ResultssManager.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
+            _viewModel.ResultsManagerView.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
         }
     }
     private void ScrollStoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -332,7 +332,7 @@ public partial class ResultsDeviceEntry_L95 : UserControl
     {
         if (sender is Button btn && btn.Tag is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
         {
-            Clipboard.SetText(sectors.GetSectorsReport($"{_viewModel.ResultssManager.ActiveImageRoll.Name}{(char)Sectors.Classes.SectorOutputSettings.CurrentDelimiter}{_viewModel.ResultsEntry.SourceImage.Order}", true));
+            Clipboard.SetText(sectors.GetSectorsReport($"{_viewModel.ResultsManagerView.ActiveImageRoll.Name}{(char)Sectors.Classes.SectorOutputSettings.CurrentDelimiter}{_viewModel.ResultsEntry.SourceImage.Order}", true));
         }
         else if (sender is Button btn2 && btn2.Tag is ImageEntry image)
         {

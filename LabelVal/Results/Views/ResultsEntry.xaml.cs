@@ -66,16 +66,16 @@ public partial class ResultsEntry : UserControl
             switch (s)
             {
                 case "top":
-                    viewModel.ResultssManager.ActiveImageRoll.MoveImageTop(viewModel.SourceImage);
+                    viewModel.ResultsManagerView.ActiveImageRoll.MoveImageTop(viewModel.SourceImage);
                     break;
                 case "up":
-                    viewModel.ResultssManager.ActiveImageRoll.MoveImageUp(viewModel.SourceImage);
+                    viewModel.ResultsManagerView.ActiveImageRoll.MoveImageUp(viewModel.SourceImage);
                     break;
                 case "down":
-                    viewModel.ResultssManager.ActiveImageRoll.MoveImageDown(viewModel.SourceImage);
+                    viewModel.ResultsManagerView.ActiveImageRoll.MoveImageDown(viewModel.SourceImage);
                     break;
                 case "bottom":
-                    viewModel.ResultssManager.ActiveImageRoll.MoveImageBottom(viewModel.SourceImage);
+                    viewModel.ResultsManagerView.ActiveImageRoll.MoveImageBottom(viewModel.SourceImage);
                     break;
             }
 

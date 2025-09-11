@@ -261,17 +261,17 @@
                         </mah:HamburgerMenu>
 
                         <DockPanel>
-                            <results:ResultssManager DataContext="{Binding ResultssManager}">
-                                <results:ResultssManager.Style>
-                                    <Style TargetType="results:ResultssManager">
+                            <results:ResultsManagerView DataContext="{Binding ResultsManagerView}">
+                                <results:ResultsManagerView.Style>
+                                    <Style TargetType="results:ResultsManagerView">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding ActiveImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </results:ResultssManager.Style>
-                            </results:ResultssManager>
+                                </results:ResultsManagerView.Style>
+                            </results:ResultsManagerView>
                         </DockPanel>
                     </DockPanel>
                 </md:DrawerHost>

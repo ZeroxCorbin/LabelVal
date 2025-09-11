@@ -34,7 +34,7 @@ namespace LabelVal.Results.ViewModels;
 /// This is the ViewModel for the Image Results Manager.
 /// It manages the display and interaction with image results from various devices.
 /// </summary>
-public partial class ResultsManager : ObservableRecipient,
+public partial class ResultsManagerViewModel : ObservableRecipient,
     IRecipient<PropertyChangedMessage<ImageRoll>>,
     IRecipient<PropertyChangedMessage<Node>>,
     IRecipient<PropertyChangedMessage<ResultsDatabase>>,
@@ -249,9 +249,9 @@ public partial class ResultsManager : ObservableRecipient,
     #region Constructor and Destructor
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ResultsManager"/> class.
+    /// Initializes a new instance of the <see cref="ResultsManagerViewModel"/> class.
     /// </summary>
-    public ResultsManager()
+    public ResultsManagerViewModel()
     {
         _globalHook = Hook.GlobalEvents();
         _globalHook.KeyDown += _globalHook_KeyDown;
@@ -262,9 +262,9 @@ public partial class ResultsManager : ObservableRecipient,
     }
 
     /// <summary>
-    /// Finalizes an instance of the <see cref="ResultsManager"/> class.
+    /// Finalizes an instance of the <see cref="ResultsManagerViewModel"/> class.
     /// </summary>
-    ~ResultsManager()
+    ~ResultsManagerViewModel()
     {
         _globalHook.KeyDown -= _globalHook_KeyDown;
         _globalHook.KeyUp -= _globalHook_KeyUp;
@@ -666,9 +666,9 @@ public partial class ResultsManager : ObservableRecipient,
             foreach (var device in img.ResultsDeviceEntries)
             {
                 if (device.StoredSectors.Count != 0)
-                    data += device.StoredSectors.GetSectorsReport($"{img.ResultssManager.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
+                    data += device.StoredSectors.GetSectorsReport($"{img.ResultsManagerView.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
                 if (device.CurrentSectors.Count != 0)
-                    data += device.CurrentSectors.GetSectorsReport($"{img.ResultssManager.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
+                    data += device.CurrentSectors.GetSectorsReport($"{img.ResultsManagerView.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
             }
         }
         Clipboard.SetText(data);

@@ -213,8 +213,7 @@ public partial class App : Application
             var mainWindow = new MainWindow();
             this.MainWindow = mainWindow;
 
-
-            mainWindow.Show();
+            mainWindow.Show();            
 
         }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
     }

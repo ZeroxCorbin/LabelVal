@@ -37,7 +37,7 @@ public partial class ResultsDeviceEntry_L95
     /// <summary>
     /// Gets the manager for image results, providing access to shared data and services.
     /// </summary>
-    public ResultsManager ResultssManager => ResultsEntry.ResultssManager;
+    public ResultsManagerViewModel ResultsManagerView => ResultsEntry.ResultsManagerView;
     /// <summary>
     /// Gets the device type for this entry, which is L95.
     /// </summary>
@@ -122,7 +122,7 @@ public partial class ResultsDeviceEntry_L95
     [ObservableProperty] private bool isWorking = false;
     partial void OnIsWorkingChanged(bool value)
     {
-        ResultssManager.WorkingUpdate(Device, value);
+        ResultsManagerView.WorkingUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotWorking));
     }
     /// <summary>
@@ -138,7 +138,7 @@ public partial class ResultsDeviceEntry_L95
     [ObservableProperty] private bool isFaulted = false;
     partial void OnIsFaultedChanged(bool value)
     {
-        ResultssManager.FaultedUpdate(Device, value);
+        ResultsManagerView.FaultedUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotFaulted));
     }
     /// <summary>
@@ -151,13 +151,13 @@ public partial class ResultsDeviceEntry_L95
     /// <summary>
     /// Gets the appropriate label handler based on the current state of the L95 device and image roll settings.
     /// </summary>
-    public LabelHandlers Handler => ResultssManager?.SelectedL95?.Controller != null && ResultssManager.SelectedL95.Controller.IsConnected && ResultssManager.SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running ? ResultssManager.SelectedL95.Controller.IsSimulator
-            ? ResultssManager.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+    public LabelHandlers Handler => ResultsManagerView?.SelectedL95?.Controller != null && ResultsManagerView.SelectedL95.Controller.IsConnected && ResultsManagerView.SelectedL95.Controller.ProcessState == Watchers.lib.Process.Win32_ProcessWatcherProcessState.Running ? ResultsManagerView.SelectedL95.Controller.IsSimulator
+            ? ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
                     : LabelHandlers.SimulatorDetect
                 : LabelHandlers.SimulatorTrigger
-            : ResultssManager.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+            : ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.CameraRestore
                     : LabelHandlers.CameraDetect
@@ -173,7 +173,7 @@ public partial class ResultsDeviceEntry_L95
     /// Gets or sets a value indicating whether this device entry is selected in the UI.
     /// </summary>
     [ObservableProperty] private bool isSelected = false;
-    partial void OnIsSelectedChanging(bool value) { if (value) ResultsEntry.ResultssManager.ResetSelected(Device); }
+    partial void OnIsSelectedChanging(bool value) { if (value) ResultsEntry.ResultsManagerView.ResetSelected(Device); }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResultsDeviceEntry_L95"/> class.
@@ -237,7 +237,7 @@ public partial class ResultsDeviceEntry_L95
 
             List<Sectors.Interfaces.ISector> tempSectors = [];
             foreach (JToken rSec in row.Report.GetParameter<JArray>("AllReports"))
-                tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), [ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
+                tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
 
             if (tempSectors.Count > 0)
             {
@@ -455,23 +455,23 @@ public partial class ResultsDeviceEntry_L95
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
-                ApplicationStandard = ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard.GetDescription(),
+                ApplicationStandard = ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard.GetDescription(),
             },
             RepeatAvailable = ProcessFullReport,
         };
 
-        if (ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard == ApplicationStandards.GS1)
-            lab.Config.Table = ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table.GetTableName();
+        if (ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard == ApplicationStandards.GS1)
+            lab.Config.Table = ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table.GetTableName();
 
-        if (ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Source)
+        if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Source)
             lab.Image = ResultsEntry.SourceImage.BitmapBytes;
-        else if (ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
+        else if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
             lab.Image = ResultRow.Stored.BitmapBytes;
 
         IsWorking = true;
         IsFaulted = false;
 
-        _ = Task.Run(() => ResultsEntry.ResultssManager.SelectedL95.Controller.ProcessLabelAsync(lab));
+        _ = Task.Run(() => ResultsEntry.ResultsManagerView.SelectedL95.Controller.ProcessLabelAsync(lab));
     }
     /// <summary>
     /// Processes the full report received from the L95 device.
@@ -508,7 +508,7 @@ public partial class ResultsDeviceEntry_L95
                 if (replaceSectors)
                     CurrentSectors.Clear();
 
-                CurrentSectors.Add(new Sector(message.Template, message.Report, [ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
+                CurrentSectors.Add(new Sector(message.Template, message.Report, [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
             }
             else if (GlobalAppSettings.Instance.LvsIgnoreNoResults)
                 return;
@@ -704,7 +704,7 @@ public partial class ResultsDeviceEntry_L95
     }
 
     /// <summary>
-    /// This is exposed through the interface to allow for the ResultssManager to call this method.
+    /// This is exposed through the interface to allow for the ResultsManagerView to call this method.
     /// </summary>
     public void RefreshOverlays()
     {

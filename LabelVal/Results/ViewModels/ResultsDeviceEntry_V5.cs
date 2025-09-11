@@ -35,7 +35,7 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
     /// <summary>
     /// Gets the manager for all image results.
     /// </summary>
-    public ResultsManager ResultssManager => ResultsEntry.ResultssManager;
+    public ResultsManagerViewModel ResultsManagerView => ResultsEntry.ResultsManagerView;
 
     /// <summary>
     /// Gets the device type for this entry.
@@ -132,7 +132,7 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
     {
         if (value) _IsWorkingTimer.Start();
         else _IsWorkingTimer.Stop();
-        ResultssManager.WorkingUpdate(Device, value);
+        ResultsManagerView.WorkingUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotWorking));
     }
 
@@ -149,7 +149,7 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
     [ObservableProperty] private bool isFaulted = false;
     partial void OnIsFaultedChanged(bool value)
     {
-        ResultssManager.FaultedUpdate(Device, value);
+        ResultsManagerView.FaultedUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotFaulted));
     }
 
@@ -180,18 +180,18 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
         IsWorking = false;
         IsFaulted = true;
     }
-    partial void OnIsSelectedChanging(bool value) { if (value) ResultsEntry.ResultssManager.ResetSelected(Device); }
+    partial void OnIsSelectedChanging(bool value) { if (value) ResultsEntry.ResultsManagerView.ResetSelected(Device); }
 
     /// <summary>
     /// Gets the appropriate label handler based on the current state and settings.
     /// </summary>
-    public LabelHandlers Handler => ResultssManager?.SelectedV5?.Controller != null && ResultssManager.SelectedV5.Controller.IsConnected ? ResultssManager.SelectedV5.Controller.IsSimulator
-            ? ResultssManager.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+    public LabelHandlers Handler => ResultsManagerView?.SelectedV5?.Controller != null && ResultsManagerView.SelectedV5.Controller.IsConnected ? ResultsManagerView.SelectedV5.Controller.IsSimulator
+            ? ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
                     : LabelHandlers.SimulatorDetect
                 : LabelHandlers.SimulatorTrigger
-            : ResultssManager.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+            : ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.CameraRestore
                     : LabelHandlers.CameraDetect
@@ -238,7 +238,7 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
 
                 try
                 {
-                    tempSectors.AddRange(((JObject)toolResult).GetParameter<JArray>("results").Select(result => new V5.Sectors.Sector((JObject)result, row.Template, [ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table, row.Template.GetParameter<string>("response.message"))).Cast<ISector>());
+                    tempSectors.AddRange(((JObject)toolResult).GetParameter<JArray>("results").Select(result => new V5.Sectors.Sector((JObject)result, row.Template, [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, row.Template.GetParameter<string>("response.message"))).Cast<ISector>());
                 }
                 catch (System.Exception ex)
                 {
@@ -308,17 +308,17 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
     public void Process()
     {
 
-        V5_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? ResultRow.Template : null, Handler, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table);
+        V5_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? ResultRow.Template : null, Handler, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table);
 
         if (Handler is LabelHandlers.SimulatorRestore or LabelHandlers.SimulatorDetect or LabelHandlers.SimulatorTrigger)
         {
-            if (ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Source || (ResultRow?.SourceImage == null && ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored))
+            if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Source || (ResultRow?.SourceImage == null && ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored))
                 lab.Image = ResultsEntry.SourceImage.BitmapBytes;
-            else if (ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
+            else if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
                 lab.Image = ResultRow.Stored.ImageBytes;
         }
 
-        _ = ResultsEntry.ResultssManager.SelectedV5.Controller.ProcessLabel(lab);
+        _ = ResultsEntry.ResultsManagerView.SelectedV5.Controller.ProcessLabel(lab);
 
         IsWorking = true;
         IsFaulted = false;
@@ -348,7 +348,7 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
                 return;
             }
 
-            if (!ResultsEntry.ResultssManager.SelectedV5.Controller.IsSimulator)
+            if (!ResultsEntry.ResultsManagerView.SelectedV5.Controller.IsSimulator)
             {
                 CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, report.Image, 600);
             }
@@ -358,7 +358,7 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
                 CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, report.Image, (int)Math.Round(ResultsEntry.SourceImage.Image.DpiX));
             }
 
-            CurrentTemplate = ResultsEntry.ResultssManager.SelectedV5.Controller.Config;
+            CurrentTemplate = ResultsEntry.ResultsManagerView.SelectedV5.Controller.Config;
             CurrentReport = report.Report;
 
             CurrentSectors.Clear();
@@ -372,7 +372,7 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
                 {
                     try
                     {
-                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, CurrentTemplate, [ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table, CurrentTemplate.GetParameter<string>("response.message")));
+                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, CurrentTemplate, [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, CurrentTemplate.GetParameter<string>("response.message")));
                     }
                     catch (System.Exception ex)
                     {
@@ -540,7 +540,7 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
     /// <returns>True if successful, otherwise false.</returns>
     public async Task<bool> ReadTask()
     {
-        var result = await ResultsEntry.ResultssManager.SelectedV5.Controller.Trigger_Wait_Return(true);
+        var result = await ResultsEntry.ResultsManagerView.SelectedV5.Controller.Trigger_Wait_Return(true);
         ProcessFullReport(result);
         return result != null;
     }
@@ -568,7 +568,7 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
             return 0;
         }
 
-        if (await ResultsEntry.ResultssManager.SelectedV5.Controller.CopySectorsSetConfig(null, ResultRow.Template) == V5_REST_Lib.Controllers.RestoreSectorsResults.Failure)
+        if (await ResultsEntry.ResultsManagerView.SelectedV5.Controller.CopySectorsSetConfig(null, ResultRow.Template) == V5_REST_Lib.Controllers.RestoreSectorsResults.Failure)
             return -1;
 
         return 1;

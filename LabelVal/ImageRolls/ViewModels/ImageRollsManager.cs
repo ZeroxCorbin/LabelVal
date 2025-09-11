@@ -76,11 +76,14 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             if (IsLoading) return;
             SelectedUserImageRoll = null;
 
-            App.ShowSplashScreen = true;
-            _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Fixed Image Roll...")); });
+            if(value.ImageCount != 0)
+            {
+                App.ShowSplashScreen = true;
+                _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Fixed Image Roll...")); });
+                IsLoading = true;
+            }
 
             ActiveImageRoll = value;
-            IsLoading = true;
         }
         else
         {
@@ -109,11 +112,14 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             if (IsLoading) return;
             SelectedFixedImageRoll = null;
 
-            App.ShowSplashScreen = true;
-            _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Image Roll...")); });
+            if (value.ImageCount != 0)
+            {
+                App.ShowSplashScreen = true;
+                _ = App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Render, () => { _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Image Roll...")); });
+                IsLoading = true;  
+            }
 
             ActiveImageRoll = value;
-            IsLoading = true;
         }
         else
         {
@@ -414,8 +420,8 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
                     failed = true;
                     break;
                 }
-                roll.ImageRolls = this;
 
+                roll.ImageRollsManager = this;
                 UserImageRolls.Add(roll);
             }
             if (failed)
@@ -443,7 +449,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
                 {
                     Logger.Debug($"Found: {roll.Name}");
                     roll.ImageRollsDatabase = db;
-                    roll.ImageRolls = this;
+                    roll.ImageRollsManager = this;
                     newRolls.Add(roll);
                 }
             }
@@ -456,6 +462,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         UserImageRolls.Clear();
         foreach (ImageRoll roll in newRolls)
         {
+            roll.ImageRollsManager = this;
             UserImageRolls.Add(roll);
         }
 
@@ -505,6 +512,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         ImageRoll existingRoll = UserImageRolls.FirstOrDefault(r => r.UID == roll.UID);
         if (existingRoll == null)
         {
+            roll.ImageRollsManager = this;
             UserImageRolls.Add(roll);
         }
 
@@ -697,6 +705,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             {
                 // Add new instance
                 savedRoll = NewImageRoll.CopyLite();
+                savedRoll.ImageRollsManager = this;
                 UserImageRolls.Add(savedRoll);
             }   
 
@@ -740,7 +749,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         else
             Logger.Error($"Failed to delete Image Roll: {NewImageRoll.UID}");
 
-        // Notify ResultssManager to delete results for this roll UID
+        // Notify ResultsManagerView to delete results for this roll UID
         WeakReferenceMessenger.Default.Send(new DeleteResultsForRollMessage(NewImageRoll.UID));
 
         LoadUserImageRollsList();

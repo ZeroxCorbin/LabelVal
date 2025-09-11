@@ -95,7 +95,7 @@ public partial class MainWindow : ObservableRecipient
 
     // Image Rolls Section
     public ImageRolls.ViewModels.ImageRollsManager ImageRolls { get; }
-    public Results.ViewModels.ResultsManager ResultssManager { get; }
+    public Results.ViewModels.ResultsManagerViewModel ResultsManagerView { get; }
 
     // Scanner Section
     public V5.ViewModels.ScannerManager ScannerManager { get; }
@@ -193,9 +193,9 @@ public partial class MainWindow : ObservableRecipient
 
         ImageRolls = new ImageRolls.ViewModels.ImageRollsManager();
         ResultssDatabases = new Results.ViewModels.ResultsDatabasesViewModel();
-        ResultssManager = new Results.ViewModels.ResultsManager();
+        ResultsManagerView = new Results.ViewModels.ResultsManagerViewModel();
 
-        RunManager = new Run.ViewModels.RunManager(ResultssManager);
+        RunManager = new Run.ViewModels.RunManager(ResultsManagerView);
 
         LabelBuilderViewModel = new LabelBuilder.ViewModels.LabelBuilderViewModel();
 

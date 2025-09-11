@@ -28,7 +28,7 @@ public partial class ImageRollsManager : UserControl
                 _viewModel.PropertyChanged -= ViewModel_PropertyChanged;
             }
 
-            _viewModel = e.NewValue as ViewModels.ImageRollsManager;
+            _viewModel = DataContext as ViewModels.ImageRollsManager;
             if (_viewModel == null)
                 return;
 
@@ -41,8 +41,8 @@ public partial class ImageRollsManager : UserControl
 
             if (ir != null && _viewModel.SelectedFixedImageRoll == null && _viewModel.SelectedUserImageRoll == null)
                 App.Settings.SetValue(nameof(ViewModels.ImageRollsManager.ActiveImageRoll), null);
-          
-            if(ir == null || (ir.RollType == ImageRollTypes.Database && ir.ImageCount == 0))
+
+            if (ir == null || (ir.RollType == ImageRollTypes.Database && ir.ImageCount == 0))
                 _ = Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage(true))));
         };
 
@@ -78,7 +78,6 @@ public partial class ImageRollsManager : UserControl
         {
             Refresh();
         }
-
     }
 
     private void UserControl_Unloaded(object sender, RoutedEventArgs e)
@@ -155,12 +154,12 @@ public partial class ImageRollsManager : UserControl
 
     private ListView FindListViewInTemplate(DependencyObject parent)
     {
-        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
         {
-            var child = VisualTreeHelper.GetChild(parent, i);
+            DependencyObject child = VisualTreeHelper.GetChild(parent, i);
             if (child is ListView lv)
                 return lv;
-            var result = FindListViewInTemplate(child);
+            ListView result = FindListViewInTemplate(child);
             if (result != null)
                 return result;
         }
@@ -169,15 +168,14 @@ public partial class ImageRollsManager : UserControl
 
     private ListView FindUserImageRollsListView()
     {
-        for (int i = 0; i < TabCtlUserIr.Items.Count; i++)
+        for (var i = 0; i < TabCtlUserIr.Items.Count; i++)
         {
-            var tabItem = TabCtlUserIr.ItemContainerGenerator.ContainerFromIndex(i) as TabItem;
-            if (tabItem != null)
+            if (TabCtlUserIr.ItemContainerGenerator.ContainerFromIndex(i) is TabItem tabItem)
             {
-                var contentPresenter = FindVisualChild<ContentPresenter>(tabItem);
+                ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(tabItem);
                 if (contentPresenter != null)
                 {
-                    var listView = FindVisualChild<ListView>(contentPresenter);
+                    ListView listView = FindVisualChild<ListView>(contentPresenter);
                     if (listView != null)
                     {
                         // Optionally check if ItemsSource is a CollectionViewGroup
@@ -200,13 +198,13 @@ public partial class ImageRollsManager : UserControl
     private T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
     {
         if (parent == null) return null;
-        int count = VisualTreeHelper.GetChildrenCount(parent);
-        for (int i = 0; i < count; i++)
+        var count = VisualTreeHelper.GetChildrenCount(parent);
+        for (var i = 0; i < count; i++)
         {
-            var child = VisualTreeHelper.GetChild(parent, i);
+            DependencyObject child = VisualTreeHelper.GetChild(parent, i);
             if (child is T tChild)
                 return tChild;
-            var result = FindVisualChild<T>(child);
+            T result = FindVisualChild<T>(child);
             if (result != null)
                 return result;
         }

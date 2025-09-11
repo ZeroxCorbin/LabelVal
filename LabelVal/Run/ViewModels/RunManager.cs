@@ -14,7 +14,7 @@ namespace LabelVal.Run.ViewModels;
 
 public partial class RunManager : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>, IRecipient<PropertyChangedMessage<Scanner>>, IRecipient<PropertyChangedMessage<Verifier>>, IRecipient<PropertyChangedMessage<ImageRoll>>
 {
-    private ResultsManager Resultss { get; }
+    private ResultsManagerViewModel Resultss { get; }
     [ObservableProperty] private Node _selectedV275Node;
     [ObservableProperty] private Scanner _selectedV5;
     [ObservableProperty] private Verifier _selectedL95;
@@ -30,7 +30,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
     [ObservableProperty] private int _loopCount = App.Settings.GetValue(nameof(LoopCount), 1, true);
     partial void OnLoopCountChanged(int value) { App.Settings.SetValue(nameof(LoopCount), value); }
 
-    public RunManager(ResultsManager imageResults)
+    public RunManager(ResultsManagerViewModel imageResults)
     {
         Resultss = imageResults;
 

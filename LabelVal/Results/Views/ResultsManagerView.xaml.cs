@@ -10,15 +10,17 @@ using System.Windows.Media;
 namespace LabelVal.Results.Views;
 
 /// <summary>
-/// Interaction logic for (ResultssManager.xaml
+/// Interaction logic for (ResultsManagerView.xaml
 /// </summary>
-public partial class ResultssManager : UserControl
+public partial class ResultsManagerView : UserControl
 {
-    private ViewModels.ResultsManager _viewModel;
+    private ViewModels.ResultsManagerViewModel _viewModel;
     private bool _isSnapping;
     private bool _isLoaded;
+    private int _pendingEntryLoads = 0;
+    private int _expectedEntryCount = 0;
 
-    public ResultssManager()
+    public ResultsManagerView()
     {
         InitializeComponent();
         DataContextChanged += OnDataContextChanged;
@@ -26,11 +28,11 @@ public partial class ResultssManager : UserControl
 
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (e.OldValue is ViewModels.ResultsManager oldVm)
+        if (e.OldValue is ViewModels.ResultsManagerViewModel oldVm)
         {
             oldVm.ResultssEntries.CollectionChanged -= OnResultssEntriesChanged;
         }
-        if (e.NewValue is ViewModels.ResultsManager newVm)
+        if (e.NewValue is ViewModels.ResultsManagerViewModel newVm)
         {
             newVm.ResultssEntries.CollectionChanged += OnResultssEntriesChanged;
             _viewModel = newVm;
@@ -39,9 +41,56 @@ public partial class ResultssManager : UserControl
 
     private void OnResultssEntriesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-        if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+        PrepareForNewRoll();
+        AttachEntryLoadedHandlers();
+    }
+
+    private void PrepareForNewRoll()
+    {
+        _expectedEntryCount = _viewModel?.ResultssEntries.Count ?? 0;
+        _pendingEntryLoads = _expectedEntryCount;
+        _isLoaded = false;
+    }
+
+    private void AttachEntryLoadedHandlers()
+    {
+        if (ResultssScrollViewer.Content is ItemsControl itemsControl)
         {
-            _isLoaded = false;
+            // Listen for container generation
+            itemsControl.ItemContainerGenerator.StatusChanged -= ItemContainerGenerator_StatusChanged;
+            itemsControl.ItemContainerGenerator.StatusChanged += ItemContainerGenerator_StatusChanged;
+        }
+    }
+
+    private void ItemContainerGenerator_StatusChanged(object? sender, EventArgs e)
+    {
+        if (ResultssScrollViewer.Content is ItemsControl itemsControl)
+        {
+            if (itemsControl.ItemContainerGenerator.Status == System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
+            {
+                foreach (var item in itemsControl.Items)
+                {
+                    if (itemsControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container)
+                    {
+                        container.Loaded -= ResultsEntry_Loaded;
+                        container.Loaded += ResultsEntry_Loaded;
+                    }
+                }
+            }
+        }
+    }
+
+    private void ResultsEntry_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (_pendingEntryLoads > 0)
+        {
+            _pendingEntryLoads--;
+            if (_pendingEntryLoads == 0 && !_isLoaded)
+            {
+                _isLoaded = true;
+                _ = Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new System.Action(() =>
+                    WeakReferenceMessenger.Default.Send(new ResultssRenderedMessage())));
+            }
         }
     }
 
@@ -176,12 +225,12 @@ public partial class ResultssManager : UserControl
 
     private void ResultssScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
-        if ((!_isLoaded && e.ExtentHeight > 0) || _viewModel.ActiveImageRoll != null && (_viewModel.ActiveImageRoll.RollType == ImageRolls.ViewModels.ImageRollTypes.Database && _viewModel.ActiveImageRoll.ImageCount == 0))
-        {
-            _isLoaded = true;
-            // Use Dispatcher to send message after rendering is complete
-            _ = Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new System.Action(() => WeakReferenceMessenger.Default.Send(new ResultssRenderedMessage())));
-        }
+        //if ((!_isLoaded && e.ExtentHeight > 0) || _viewModel.ActiveImageRoll != null && (_viewModel.ActiveImageRoll.RollType == ImageRolls.ViewModels.ImageRollTypes.Database && _viewModel.ActiveImageRoll.ImageCount == 0))
+        //{
+        //    _isLoaded = true;
+        //    // Use Dispatcher to send message after rendering is complete
+        //    _ = Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new System.Action(() => WeakReferenceMessenger.Default.Send(new ResultssRenderedMessage())));
+        //}
 
         if (_isSnapping || _viewModel?.ResultssEntries.Any() != true)
             return;

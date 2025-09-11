@@ -33,7 +33,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     /// <summary>
     /// Gets the manager for all image results.
     /// </summary>
-    public ResultsManager ResultssManager => ResultsEntry.ResultssManager;
+    public ResultsManagerViewModel ResultsManagerView => ResultsEntry.ResultsManagerView;
 
     /// <summary>
     /// Gets the device type for this entry.
@@ -109,7 +109,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
         else
             _IsWorkingTimer.Stop();
 
-        ResultssManager.WorkingUpdate(Device, value);
+        ResultsManagerView.WorkingUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotWorking));
     }
     /// <summary>
@@ -122,7 +122,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     [ObservableProperty] private bool isFaulted = false;
     partial void OnIsFaultedChanged(bool value)
     {
-        ResultssManager.FaultedUpdate(Device, value);
+        ResultsManagerView.FaultedUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotFaulted));
     }
     /// <summary>
@@ -151,18 +151,18 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
         IsFaulted = true;
     }
 
-    partial void OnIsSelectedChanging(bool value) { if (value) ResultsEntry.ResultssManager.ResetSelected(Device); }
+    partial void OnIsSelectedChanging(bool value) { if (value) ResultsEntry.ResultsManagerView.ResetSelected(Device); }
 
     /// <summary>
     /// Gets the appropriate label handler based on the current state and settings.
     /// </summary>
-    public LabelHandlers Handler => ResultssManager?.SelectedV275Node?.Controller != null && ResultssManager.SelectedV275Node.Controller.IsLoggedIn_Control ? ResultssManager.SelectedV275Node.Controller.IsSimulator
-            ? ResultssManager.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+    public LabelHandlers Handler => ResultsManagerView?.SelectedV275Node?.Controller != null && ResultsManagerView.SelectedV275Node.Controller.IsLoggedIn_Control ? ResultsManagerView.SelectedV275Node.Controller.IsSimulator
+            ? ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
                     : LabelHandlers.SimulatorDetect
                 : LabelHandlers.SimulatorTrigger
-            : ResultssManager.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+            : ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.CameraRestore
                     : LabelHandlers.CameraDetect
@@ -228,7 +228,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
                             if (jSec["name"].ToString() == rSec["name"].ToString())
                             {
 
-                                tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, rSec, [ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table, row.Template["jobVersion"].ToString()));
+                                tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, rSec, [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, row.Template["jobVersion"].ToString()));
 
                                 break;
                             }
@@ -309,16 +309,16 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
         IsWorking = true;
         IsFaulted = false;
 
-        V275_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? [.. ResultRow.Template["sectors"]] : null, Handler, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table);
+        V275_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? [.. ResultRow.Template["sectors"]] : null, Handler, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table);
 
-        if (ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Source || Handler is LabelHandlers.CameraTrigger or LabelHandlers.CameraRestore or LabelHandlers.CameraDetect || (ResultRow?.Stored == null && ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored))
+        if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Source || Handler is LabelHandlers.CameraTrigger or LabelHandlers.CameraRestore or LabelHandlers.CameraDetect || (ResultRow?.Stored == null && ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored))
             lab.Image = ResultsEntry.SourceImage.BitmapBytes;
-        else if (ResultsEntry.ResultssManager.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
+        else if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
             lab.Image = ResultRow.Stored.ImageBytes;
 
-        _ = ResultsEntry.ResultssManager.SelectedV275Node.Controller.IsSimulator
-            ? ResultsEntry.ResultssManager.SelectedV275Node.Controller.ProcessLabel_Simulator(lab)
-            : ResultsEntry.ResultssManager.SelectedV275Node.Controller.ProcessLabel_Printer(lab, ResultsEntry.PrintCount, ResultsEntry.SelectedPrinter.PrinterName);
+        _ = ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.IsSimulator
+            ? ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.ProcessLabel_Simulator(lab)
+            : ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.ProcessLabel_Printer(lab, ResultsEntry.PrintCount, ResultsEntry.SelectedPrinter.PrinterName);
 
     }
     private void ProcessRepeat(V275_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat.FullReport);
@@ -348,7 +348,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
 
             var jobString = JsonConvert.SerializeObject(report.Report);
 
-            if (!ResultsEntry.ResultssManager.SelectedV275Node.Controller.IsSimulator)
+            if (!ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.IsSimulator)
             {
                 CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, report.Image, 600);
             }
@@ -369,7 +369,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
                     {
                         if (templateSec["name"].ToString() == currentSect["name"].ToString())
                         {
-                            tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, [ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultssManager.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultssManager.ActiveImageRoll.SelectedGS1Table, report.Job["jobVersion"].ToString()));
+                            tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, report.Job["jobVersion"].ToString()));
                             break;
                         }
                     }
@@ -548,7 +548,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
             IsFaulted = false;
 
             V275_REST_Lib.Controllers.FullReport report;
-            if ((report = await ResultsEntry.ResultssManager.SelectedV275Node.Controller.GetFullReport(repeat, true)) == null)
+            if ((report = await ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.GetFullReport(repeat, true)) == null)
             {
                 Logger.Error("Unable to read the repeat report from the node.");
                 ClearCurrent();
@@ -580,17 +580,17 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     /// </returns>
     public async Task<int> LoadTask()
     {
-        if (!await ResultsEntry.ResultssManager.SelectedV275Node.Controller.DeleteSectors())
+        if (!await ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.DeleteSectors())
             return -1;
 
         if (StoredSectors.Count == 0)
         {
-            return !await ResultsEntry.ResultssManager.SelectedV275Node.Controller.DetectSectors() ? -1 : 2;
+            return !await ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.DetectSectors() ? -1 : 2;
         }
 
         foreach (var sec in StoredSectors)
         {
-            if (!await ResultsEntry.ResultssManager.SelectedV275Node.Controller.AddSector(sec.Template.Name, JsonConvert.SerializeObject(((V275.Sectors.SectorTemplate)sec.Template).Original)))
+            if (!await ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.AddSector(sec.Template.Name, JsonConvert.SerializeObject(((V275.Sectors.SectorTemplate)sec.Template).Original)))
                 return -1;
 
             if (sec.Template?.BlemishMask?.Layers != null)
@@ -598,7 +598,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
 
                 foreach (var layer in sec.Template.BlemishMask.Layers)
                 {
-                    if (!await ResultsEntry.ResultssManager.SelectedV275Node.Controller.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
+                    if (!await ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
                     {
                         if (layer.value != 0)
                             return -1;

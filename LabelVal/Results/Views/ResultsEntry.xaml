@@ -104,7 +104,7 @@
                                 DockPanel.Dock="Top"
                                 Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                 Text="V275"
-                                Visibility="{Binding ResultssManager.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Visibility="{Binding ResultsManagerView.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <Grid Background="{DynamicResource V275_Brush_Active}">
 
@@ -177,7 +177,7 @@
                                             <Style TargetType="{x:Type Grid}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Source}">
+                                                    <DataTrigger Binding="{Binding ResultsManagerView.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Source}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -197,7 +197,7 @@
                                             <Style TargetType="{x:Type Grid}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Stored}">
+                                                    <DataTrigger Binding="{Binding ResultsManagerView.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Stored}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -360,7 +360,7 @@
                                 DockPanel.Dock="Top"
                                 Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                 Text="V5"
-                                Visibility="{Binding ResultssManager.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Visibility="{Binding ResultsManagerView.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <Grid Background="{DynamicResource V5_Brush_Active}">
 
@@ -433,7 +433,7 @@
                                             <Style TargetType="{x:Type Grid}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Source}">
+                                                    <DataTrigger Binding="{Binding ResultsManagerView.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Source}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -453,7 +453,7 @@
                                             <Style TargetType="{x:Type Grid}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Stored}">
+                                                    <DataTrigger Binding="{Binding ResultsManagerView.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Stored}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -608,7 +608,7 @@
                         VerticalContentAlignment="Stretch"
                         Command="{Binding ProcessCommand}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        IsEnabled="{Binding ResultssManager.IsL95Working, Converter={StaticResource InvertBool}}"
+                        IsEnabled="{Binding ResultsManagerView.IsL95Working, Converter={StaticResource InvertBool}}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}">
 
                         <DockPanel>
@@ -617,7 +617,7 @@
                                 DockPanel.Dock="Top"
                                 Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                 Text="L95"
-                                Visibility="{Binding ResultssManager.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Visibility="{Binding ResultsManagerView.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <Grid Background="{DynamicResource L95_Brush_Active}">
 
@@ -690,7 +690,7 @@
                                             <Style TargetType="{x:Type Grid}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Source}">
+                                                    <DataTrigger Binding="{Binding ResultsManagerView.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Source}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -710,7 +710,7 @@
                                             <Style TargetType="{x:Type Grid}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Stored}">
+                                                    <DataTrigger Binding="{Binding ResultsManagerView.ActiveImageRoll.ImageType}" Value="{x:Static imageroll:ImageRollImageTypes.Stored}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -822,7 +822,7 @@
                     BorderBrush="{DynamicResource L95_Brush_Active}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     IsChecked="{Binding IsSelected}"
-                    IsEnabled="{Binding ResultssManager.IsL95Working, Converter={StaticResource InvertBool}}">
+                    IsEnabled="{Binding ResultsManagerView.IsL95Working, Converter={StaticResource InvertBool}}">
                     <ToggleButton.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.ToggleButton}" TargetType="ToggleButton">
                             <Setter Property="ToolTip" Value="Redirect L95 results to this image roll." />
@@ -835,7 +835,7 @@
                                                 DockPanel.Dock="Top"
                                                 Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                                 Text="L95"
-                                                Visibility="{Binding ResultssManager.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                Visibility="{Binding ResultsManagerView.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                             <Grid>
                                                 <Image
@@ -861,7 +861,7 @@
                                                     DockPanel.Dock="Top"
                                                     Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                                     Text="L95"
-                                                    Visibility="{Binding ResultssManager.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                    Visibility="{Binding ResultsManagerView.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                                 <Grid Background="{DynamicResource L95_Brush_Active}">
                                                     <Grid
@@ -1010,7 +1010,7 @@
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.IsLocked}" Value="True">
+                                <DataTrigger Binding="{Binding ResultsManagerView.ActiveImageRoll.IsLocked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -1044,7 +1044,7 @@
                                             <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.IsLocked}" Value="True">
+                                            <DataTrigger Binding="{Binding ResultsManagerView.ActiveImageRoll.IsLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -1068,7 +1068,7 @@
                                             <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.IsLocked}" Value="True">
+                                            <DataTrigger Binding="{Binding ResultsManagerView.ActiveImageRoll.IsLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -1090,7 +1090,7 @@
                                 <Button.Style>
                                     <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.IsLocked}" Value="True">
+                                            <DataTrigger Binding="{Binding ResultsManagerView.ActiveImageRoll.IsLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -1111,7 +1111,7 @@
                                 <Button.Style>
                                     <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.IsLocked}" Value="True">
+                                            <DataTrigger Binding="{Binding ResultsManagerView.ActiveImageRoll.IsLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -1150,7 +1150,7 @@
                     Height="48"
                     VerticalAlignment="Bottom"
                     d:Visibility="Visible"
-                    Command="{Binding ResultssManager.DeleteImageCommand}"
+                    Command="{Binding ResultsManagerView.DeleteImageCommand}"
                     CommandParameter="{Binding}"
                     Content="{iconPacks:Material Kind=Delete,
                                                  Width=24,
@@ -1161,7 +1161,7 @@
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ResultssManager.ActiveImageRoll.IsLocked}" Value="True">
+                                <DataTrigger Binding="{Binding ResultsManagerView.ActiveImageRoll.IsLocked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>

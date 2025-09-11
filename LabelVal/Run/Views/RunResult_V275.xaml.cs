@@ -64,7 +64,7 @@ public partial class RunResult_V275 : UserControl
         }
         else
         {
-            //_viewModel.ResultssManager.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
+            //_viewModel.ResultsManagerView.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
         }
     }
     private void V275CurrentSector_Click(object sender, RoutedEventArgs e)

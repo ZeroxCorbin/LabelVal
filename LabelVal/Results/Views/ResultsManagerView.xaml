@@ -4,7 +4,7 @@
     The main view consists of a scrollable list of image results with a thumbnail navigator and a side panel for viewing JSON data.
 -->
 <UserControl
-    x:Class="LabelVal.Results.Views.ResultssManager"
+    x:Class="LabelVal.Results.Views.ResultsManagerView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:barCommon="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
@@ -23,7 +23,7 @@
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Classes"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels"
-    d:DataContext="{d:DesignInstance Type=vm:ResultssManager}"
+    d:DataContext="{d:DesignInstance Type=vm:ResultsManagerViewModel}"
     dialog:DialogParticipation.Register="{Binding}"
     Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
