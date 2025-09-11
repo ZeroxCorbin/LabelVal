@@ -345,4 +345,14 @@ public partial class ResultsDeviceEntry_L95 : UserControl
             Clipboard.SetImage(image.Image);
         }
     }
+
+    private void Show3DViewerCurrent(object sender, RoutedEventArgs e)
+    {
+Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).CurrentImage.ImageBytes);
+    }
+
+    private void Show3DViewerStored(object sender, RoutedEventArgs e)
+    {
+Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).StoredImage.ImageBytes);
+    }
 }

@@ -498,6 +498,19 @@
 
                 </DockPanel>
 
+                <StackPanel HorizontalAlignment="Left">
+                    <!--  Show 3D  -->
+                    <Button
+                            Width="28"
+                            Height="28"
+                            Click="Show3DViewerStored"
+                            CommandParameter="{Binding SourceImage.BitmapBytes}"
+                            Content="{iconPacks:Material Kind=Video3d}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            ToolTip="Save the image." />
+                </StackPanel>
+
             </DockPanel>
 
             <!--  Stored Sectors Display: Visible only if there are stored sectors.  -->
@@ -829,6 +842,19 @@
                     </Grid>
 
                 </DockPanel>
+
+                <StackPanel HorizontalAlignment="Left">
+                    <!--  Show 3D  -->
+                    <Button
+                            Width="28"
+                            Height="28"
+                            Click="Show3DViewerCurrent"
+                            CommandParameter="{Binding SourceImage.BitmapBytes}"
+                            Content="{iconPacks:Material Kind=Video3d}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            ToolTip="Save the image." />
+                </StackPanel>
 
             </DockPanel>
 

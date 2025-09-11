@@ -62,4 +62,8 @@ public partial class ResultsEntryImages : UserControl
 
     private void btnShowPrinterAreaOverSourceToggle(object sender, RoutedEventArgs e) => ((ViewModels.ResultsEntry)DataContext).ShowPrinterAreaOverSource = !((ViewModels.ResultsEntry)DataContext).ShowPrinterAreaOverSource;
 
+    private void Show3DViewer(object sender, RoutedEventArgs e)
+    {
+        Show3DImage(((ViewModels.ResultsEntry)DataContext).SourceImage.ImageBytes);
+    }
 }

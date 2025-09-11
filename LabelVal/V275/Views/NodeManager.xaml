@@ -240,8 +240,8 @@
                                         Margin="3,2"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                         Foreground="{DynamicResource MahApps.Brushes.Text}"
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                         Text="Simulator Mode" />
                                     <ToggleButton
                                         Width="36"

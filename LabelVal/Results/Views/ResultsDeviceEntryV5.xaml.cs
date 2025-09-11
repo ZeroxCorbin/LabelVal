@@ -297,4 +297,13 @@ public partial class ResultsDeviceEntry_V5 : UserControl
         }
     }
 
+    private void Show3DViewerStored(object sender, RoutedEventArgs e)
+    {
+        Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).StoredImage.ImageBytes);
+    }
+
+    private void Show3DViewerCurrent(object sender, RoutedEventArgs e)
+    {
+Show3DImage(((ViewModels.IResultsDeviceEntry)DataContext).CurrentImage.ImageBytes);
+    }
 }
