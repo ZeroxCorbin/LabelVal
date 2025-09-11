@@ -114,6 +114,17 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     }
 
     /// <summary>
+    /// Use the simulation directory or use the API for images.
+    /// <see cref="UseSimulationDirectory"/>
+    /// </summary>
+    [ObservableProperty][property: JsonProperty] private bool useSimulationDirectory = false;
+    partial void OnUseSimulationDirectoryChanged(bool value)
+    {
+        foreach (var nd in Nodes)
+            nd.Controller.UseSimulationDirectory = value;
+    }
+
+    /// <summary>
     /// Gets or sets the currently selected image roll.
     /// </summary>
     [ObservableProperty] private ImageRoll activeImageRoll;
@@ -200,7 +211,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
         Logger.Info("Loading V275 devices.");
 
-        Node system = new(Host, SystemPort, 0, Username, Password, SimulatorImageDirectory, ActiveImageRoll);
+        Node system = new(Host, SystemPort, 0, Username, Password, SimulatorImageDirectory, UseSimulationDirectory, ActiveImageRoll);
 
         if ((await system.Controller.Commands.GetDevices()).Object is Devices dev)
         {
@@ -218,7 +229,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
                 Logger.Debug($"Adding Device MAC: {node.cameraMAC}");
 
-                Node newNode = new(Host, SystemPort, (uint)node.enumeration, Username, Password, SimulatorImageDirectory, ActiveImageRoll) { Manager = this };
+                Node newNode = new(Host, SystemPort, (uint)node.enumeration, Username, Password, SimulatorImageDirectory, UseSimulationDirectory, ActiveImageRoll) { Manager = this };
                 newNode.Controller.Initialize();
                 lst.Add(newNode);
             }

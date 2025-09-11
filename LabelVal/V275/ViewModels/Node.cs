@@ -77,11 +77,11 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     /// <param name="password">The password for authentication.</param>
     /// <param name="dir">The directory path for the controller.</param>
     /// <param name="imageRollEntry">The initial image roll entry.</param>
-    public Node(string host, uint systemPort, uint nodeNumber, string username, string password, string dir, ImageRoll imageRollEntry)
+    public Node(string host, uint systemPort, uint nodeNumber, string username, string password, string dir, bool useSimDir, ImageRoll imageRollEntry)
     {
         ActiveImageRoll = imageRollEntry;
 
-        Controller = new V275_REST_Lib.Controllers.Controller(host, systemPort, nodeNumber, username, password, dir);
+        Controller = new V275_REST_Lib.Controllers.Controller(host, systemPort, nodeNumber, username, password, dir, useSimDir);
         Controller.PropertyChanged += Controller_PropertyChanged;
 
         IsActive = true;

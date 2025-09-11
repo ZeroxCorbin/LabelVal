@@ -235,6 +235,38 @@
 
                             <DockPanel Margin="3">
 
+                                <StackPanel>
+                                    <TextBlock
+                                        Margin="3,2"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Foreground="{DynamicResource MahApps.Brushes.Text}"
+                                        Text="Simulator Mode" />
+                                    <ToggleButton
+                                        Width="36"
+                                        Height="36"
+                                        Margin="3,0"
+                                        HorizontalAlignment="Center"
+                                        IsChecked="{Binding UseSimulationDirectory}">
+                                        <ToggleButton.Style>
+                                            <Style BasedOn="{StaticResource MahApps.Styles.ToggleButton}" TargetType="{x:Type ToggleButton}">
+                                                <Setter Property="IsEnabled" Value="True" />
+                                                <Setter Property="Content" Value="{iconPacks:Material Kind=Api}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Manager.SelectedDevice.Controller.IsLoggedIn}" Value="True">
+                                                        <Setter Property="IsEnabled" Value="False" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding UseSimulationDirectory}" Value="True">
+                                                        <Setter Property="Content" Value="{iconPacks:Material Kind=SubdirectoryArrowLeft}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ToggleButton.Style>
+                                    </ToggleButton>
+                                </StackPanel>
+
+
                                 <TextBox
                                     Height="48"
                                     MaxWidth="220"
@@ -253,6 +285,9 @@
                                             <Setter Property="md:HintAssist.FloatingOffset" Value="0,-20" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Manager.SelectedDevice.Controller.IsLoggedIn}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding UseSimulationDirectory}" Value="False">
                                                     <Setter Property="IsEnabled" Value="False" />
                                                 </DataTrigger>
                                             </Style.Triggers>
