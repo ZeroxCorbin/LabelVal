@@ -670,10 +670,10 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
                 JObject deviceObject = new();
                 deviceObject["Device"] = device.Device.ToString();
 
-                if (type == "source" && device.StoredSectors.Count != 0)
+                if ((type is "source" or "all") && device.StoredSectors.Count != 0)
                     deviceObject["Stored"] = device.StoredSectors.GetJsonSectorsReport($"{img.ResultsManagerView.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}");
 
-                else if (type == "current" && device.CurrentSectors.Count != 0)
+                if ((type is "current" or "all") && device.CurrentSectors.Count != 0)
                     deviceObject["Current"] = device.CurrentSectors.GetJsonSectorsReport($"{img.ResultsManagerView.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}");
 
                 deviceArray.Add(deviceObject);
@@ -691,10 +691,10 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         {
             foreach (IResultsDeviceEntry device in img.ResultsDeviceEntries)
             {
-                if (type == "source" && device.StoredSectors.Count != 0)
+                if ((type is "source" or "all") && device.StoredSectors.Count != 0)
                     data += device.StoredSectors.GetDelimetedSectorsReport($"{img.ResultsManagerView.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
 
-                else if (type == "current" && device.CurrentSectors.Count != 0)
+                if ((type is "current" or "all") && device.CurrentSectors.Count != 0)
                     data += device.CurrentSectors.GetDelimetedSectorsReport($"{img.ResultsManagerView.ActiveImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
             }
         }

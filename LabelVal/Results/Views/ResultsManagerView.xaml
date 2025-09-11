@@ -1444,6 +1444,35 @@
                                         Kind="PageCopy" />
                                 </DockPanel>
                             </Button>
+
+                            <!--  Button to copy all sector details to the clipboard as CSV.  -->
+                            <Button
+                                Width="48"
+                                Height="48"
+                                HorizontalAlignment="Left"
+                                VerticalContentAlignment="Stretch"
+                                Command="{Binding CopyAllSectorsToClipboardCommand}"
+                                CommandParameter="all"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="Copy all stored and current sector details to the clipboard as CSV.">
+
+                                <DockPanel>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        DockPanel.Dock="Top"
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Text="All"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                    <iconPacks:PackIconModern
+                                        Width="24"
+                                        Height="24"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Kind="PageCopy" />
+                                </DockPanel>
+                            </Button>
                         </DockPanel>
 
                     </DockPanel>
