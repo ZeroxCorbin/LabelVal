@@ -5,17 +5,17 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls">
 
-	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="SharedButtonStyles.xaml" />
-	</ResourceDictionary.MergedDictionaries>
-	
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="SharedButtonStyles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <!--  Resource for L95 device-specific redirect button.  -->
     <Button
         x:Key="L95RedirectButton"
         BorderBrush="{DynamicResource L95_Brush_Active}"
         Command="{Binding ToggleL95SelectionCommand}"
         IsEnabled="{Binding IsL95Working, Converter={StaticResource InvertBool}}">
-		<Button.Style>
+        <Button.Style>
             <Style BasedOn="{StaticResource DeviceButton}" TargetType="Button">
                 <Setter Property="ToolTip" Value="Redirect L95 results to this image roll." />
                 <Setter Property="Content">

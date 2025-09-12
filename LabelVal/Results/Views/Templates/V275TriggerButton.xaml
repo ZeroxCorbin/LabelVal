@@ -10,14 +10,14 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="SharedButtonStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
-    
+
     <!--  Resource for V275 device-specific buttons. This is dynamically loaded into the main toolbar.  -->
 
     <!--  V275  -->
     <Button
         x:Key="V275TriggerButton"
+        BorderBrush="{DynamicResource V275_Brush_Active}"
         Command="{Binding AddDeviceImageCommand}"
-                BorderBrush="{DynamicResource V275_Brush_Active}"
         CommandParameter="{x:Static vm:ResultsEntryDevices.V275}">
 
         <Button.Style>

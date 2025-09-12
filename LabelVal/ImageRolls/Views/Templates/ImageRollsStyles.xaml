@@ -9,7 +9,22 @@
         <ResourceDictionary Source="ImageRollListItemTemplate.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <!--  Style for toolbar buttons.  -->
+    <!--  Style for toolbar toggle buttons.  -->
+    <Style
+        x:Key="ImageRollToolBarToggleButton"
+        BasedOn="{StaticResource MahApps.Styles.ToggleButton}"
+        TargetType="{x:Type ToggleButton}">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="ToolTip" Value="Toggle name aligned left or right." />
+        <Setter Property="md:ToggleButtonAssist.OnContent" Value="{iconPacks:Modern Kind=AlignRight}" />
+        <Setter Property="Content" Value="{iconPacks:Modern Kind=AlignLeft}" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style
         x:Key="ImageRollToolBarButton"
         BasedOn="{StaticResource MahApps.Styles.Button}"
@@ -26,20 +41,21 @@
         <Setter Property="Foreground" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" />
     </Style>
 
-    <!--  Style for toolbar toggle buttons.  -->
+    <!--  Style for toolbar action toggle buttons.  -->
     <Style
-        x:Key="ImageRollToolBarToggleButton"
-        BasedOn="{StaticResource MahApps.Styles.ToggleButton}"
+        x:Key="ToolBarActionToggleButton"
+        BasedOn="{StaticResource MaterialDesignActionToggleButton}"
         TargetType="{x:Type ToggleButton}">
-        <Setter Property="HorizontalAlignment" Value="Right" />
-        <Setter Property="ToolTip" Value="Toggle name aligned left or right." />
-        <Setter Property="md:ToggleButtonAssist.OnContent" Value="{iconPacks:Modern Kind=AlignRight}" />
-        <Setter Property="Content" Value="{iconPacks:Modern Kind=AlignLeft}" />
-        <Setter Property="LayoutTransform">
-            <Setter.Value>
-                <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
-            </Setter.Value>
-        </Setter>
+        <Setter Property="Width" Value="38" />
+        <Setter Property="Height" Value="38" />
+        <Setter Property="Margin" Value="3,0,0,0" />
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" />
     </Style>
+
 
 </ResourceDictionary>

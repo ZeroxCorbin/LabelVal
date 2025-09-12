@@ -96,46 +96,45 @@
                         FontWeight="Bold"
                         Text="{Binding SourceImage.Order}" />
                 </DockPanel>
-                
-                <ToolBar ToolBarTray.IsLocked="True">
 
+                <ToolBarTray>
+                    <ToolBar ToolBarTray.IsLocked="True">
 
-                    <Border Style="{StaticResource imageBar}" />
-
-                    <!--  Only Print Source Image  -->
-                    <Button
+                        <!--  Only Print Source Image  -->
+                        <Button
                             d:Visibility="Visible"
-                        Command="{Binding ProcessCommand}"
-                        CommandParameter="{x:Static vm:ResultsEntryDevices.V275}"
-                        Style="{StaticResource ToolBarButton}"
-                        ToolTip="Print the source image using the V275 printer.">
+                            Command="{Binding ProcessCommand}"
+                            CommandParameter="{x:Static vm:ResultsEntryDevices.V275}"
+                            Style="{StaticResource ToolBarButton}"
+                            ToolTip="Print the source image using the V275 printer.">
 
-                        <Grid>
-                            <!--<mah:ProgressRing
+                            <Grid>
+                                <!--<mah:ProgressRing
                             Width="28"
                             Height="28"
                             Foreground="White"
                             IsActive="{Binding IsV275Working}" />-->
 
-                            <iconPacks:PackIconMaterial
-                                Width="24"
-                                Height="24"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                Kind="Printer" />
-                        </Grid>
-                    </Button>
+                                <iconPacks:PackIconMaterial
+                                    Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                    Kind="Printer" />
+                            </Grid>
+                        </Button>
 
-                    <ItemsControl ItemTemplateSelector="{StaticResource DeviceButtonsTemplateSelector}" ItemsSource="{Binding ResultsDeviceEntries}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <DockPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                        <ItemsControl ItemTemplateSelector="{StaticResource DeviceButtonsTemplateSelector}" ItemsSource="{Binding ResultsDeviceEntries}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <DockPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
 
-                </ToolBar>
+                    </ToolBar>
+                </ToolBarTray>
             </DockPanel>
 
         </md:Card>

@@ -1,17 +1,18 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
-                    xmlns:converters="Converter"
-                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                    xmlns:imageroll="clr-namespace:LabelVal.ImageRolls.ViewModels"
-                    xmlns:vm="clr-namespace:LabelVal.Results.ViewModels">
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
+    xmlns:converters="Converter"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:imageroll="clr-namespace:LabelVal.ImageRolls.ViewModels"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:vm="clr-namespace:LabelVal.Results.ViewModels">
 
-	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="..\Templates\SharedButtonStyles.xaml" />
-	</ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="..\Templates\SharedButtonStyles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 
-	<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
     <DataTemplate x:Key="L95Buttons" DataType="{x:Type vm:ResultsDeviceEntry_L95}">
         <DockPanel>

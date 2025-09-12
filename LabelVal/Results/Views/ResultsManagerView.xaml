@@ -64,9 +64,13 @@
                 <DockPanel>
 
                     <!--  Left-side quick action panel for image roll settings.  -->
-                    <StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
 
-                        <DockPanel Background="Teal">
+                        <DockPanel Grid.Row="0" Background="Teal">
                             <iconPacks:PackIconMaterial
                                 Width="48"
                                 Height="40"
@@ -76,13 +80,9 @@
                                 Kind="FilmstripBoxMultiple" />
                         </DockPanel>
 
-
-                        <Border Style="{StaticResource imageBarHor}" />
-
                         <!--  ListBox to select where new images are added (Top or Bottom).  -->
                         <ListBox
-                            Padding="3"
-                            VerticalAlignment="Center"
+                            Grid.Row="1"
                             md:ListBoxAssist.CanUserToggleSelectedItem="True"
                             BorderThickness="0"
                             Focusable="False"
@@ -109,10 +109,7 @@
 
                             </ListBox.Style>
                         </ListBox>
-                    </StackPanel>
-
-
-                    <Border Style="{StaticResource imageBar}" />
+                    </Grid>
 
                     <DockPanel>
 
@@ -317,22 +314,331 @@
                         </DockPanel>
 
                         <!--  Toolbar for controlling the image roll and results.  -->
-                        <ToolBar
-                            Margin="0"
-                            Padding="3"
-                            HorizontalAlignment="Stretch"
-                            ToolBarTray.IsLocked="True">
+                        <ToolBarTray>
+                            <ToolBar
+                                Margin="0"
+                                BorderThickness="0"
+                                ToolBarTray.IsLocked="True">
 
-                            <DockPanel HorizontalAlignment="Left">
+                                <DockPanel HorizontalAlignment="Left">
 
-                                <!--  Button to add new images to the roll. Visible only when the roll is not locked.  -->
-                                <Button Command="{Binding AddImageCommand}" ToolTip="Add new image(s) to the roll.">
+                                    <!--  Button to add new images to the roll. Visible only when the roll is not locked.  -->
+                                    <Button Command="{Binding AddImageCommand}" ToolTip="Add new image(s) to the roll.">
+                                        <Button.Style>
+                                            <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ActiveImageRoll.IsLocked}" Value="False">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+
+                                        <DockPanel>
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                DockPanel.Dock="Top"
+                                                Text="Add Image"
+                                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                            <iconPacks:PackIconMaterial
+                                                Width="24"
+                                                Height="24"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="ImagePlus" />
+
+                                        </DockPanel>
+
+                                    </Button>
+
+                                    <!--  Device-specific buttons are loaded here from resources.  -->
+                                    <ContentControl Content="{StaticResource V275TriggerButton}" />
+                                    <ContentControl Content="{StaticResource V5TriggerButton}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <ContentControl Content="{StaticResource L95TriggerButton}" />
+                                        <ContentControl Content="{StaticResource L95RedirectButton}" />
+                                    </StackPanel>
+
+                                </DockPanel>
+
+                                <Separator Margin="6,0,3,0" Visibility="{Binding ActiveImageRoll.IsLocked, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}"/>
+
+                                <!--  Image Size Slider  -->
+                                <DockPanel Margin="3,1,3,0" VerticalAlignment="Stretch">
+
+                                    <TextBlock
+                                        Margin="0,0,0,2"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Top"
+                                        DockPanel.Dock="Top">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
+                                                        <Setter Property="Text" Value="Ex. Large" />
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
+                                                        <Setter Property="Text" Value="Large" />
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
+                                                        <Setter Property="Text" Value="Regular" />
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
+                                                        <Setter Property="Text" Value="Small" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <Slider
+                                        Width="48"
+                                        Height="24"
+                                        mah:SliderHelper.ChangeValueBy="LargeChange"
+                                        IsSnapToTickEnabled="True"
+                                        Maximum="400"
+                                        Minimum="100"
+                                        Style="{StaticResource MahApps.Styles.Slider.Flat}"
+                                        TickFrequency="100"
+                                        TickPlacement="BottomRight"
+                                        ToolTip="Adjust the size of the images in the list."
+                                        Value="{Binding ImagesMaxHeight}" />
+
+                                </DockPanel>
+
+                                <!--  Toggle button to show or hide alarms for errors and warnings.  -->
+                                <StackPanel Margin="3,0" VerticalAlignment="Center">
+                                    <TextBlock
+                                        Margin="0,0,0,2"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Top"
+                                        FontSize="10"
+                                        FontWeight="DemiBold"
+                                        Text="Alarms"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <ToggleButton IsChecked="{Binding HideErrorsWarnings}">
+                                        <ToggleButton.Style>
+                                            <Style BasedOn="{StaticResource ToolBarActionToggleButton}" TargetType="ToggleButton">
+                                                <Setter Property="ToolTip" Value="Show alarms for errors and warnings." />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HideErrorsWarnings}" Value="True">
+                                                        <Setter Property="ToolTip" Value="Hide alarms for errors and warnings." />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ToggleButton.Style>
+
+                                        <md:ToggleButtonAssist.OnContent>
+
+                                            <iconPacks:PackIconFontAwesome
+                                                Width="22"
+                                                Height="22"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="BellSlashSolid" />
+
+                                        </md:ToggleButtonAssist.OnContent>
+
+                                        <iconPacks:PackIconFontAwesome
+                                            Width="22"
+                                            Height="22"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Kind="BellSolid" />
+
+                                    </ToggleButton>
+                                </StackPanel>
+
+                                <!--  Toggle button to switch between automatic and fixed dual-column layout for sectors.  -->
+                                <StackPanel Margin="3,0" VerticalAlignment="Center">
+                                    <TextBlock
+                                        Margin="0,0,0,2"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Top"
+                                        FontSize="10"
+                                        FontWeight="DemiBold"
+                                        Text="Columns"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                    <ToggleButton IsChecked="{Binding DualSectorColumns}">
+                                        <ToggleButton.Style>
+                                            <Style BasedOn="{StaticResource ToolBarActionToggleButton}" TargetType="ToggleButton">
+                                                <Setter Property="ToolTip" Value="Automatically adjust sector columns based on image size." />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                                        <Setter Property="ToolTip" Value="Use a fixed dual-column layout for sectors." />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ToggleButton.Style>
+
+                                        <md:ToggleButtonAssist.OnContent>
+                                            <Grid>
+                                                <iconPacks:PackIconModern
+                                                    Width="22"
+                                                    Height="22"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Kind="ColumnTwo" />
+                                            </Grid>
+                                        </md:ToggleButtonAssist.OnContent>
+
+                                        <Grid>
+                                            <iconPacks:PackIconModern
+                                                Width="22"
+                                                Height="22"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="ColumnTwo" />
+                                            <iconPacks:PackIconMaterial
+                                                Width="18"
+                                                Height="18"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                                Kind="AlphaA" />
+                                        </Grid>
+                                    </ToggleButton>
+                                </StackPanel>
+
+                                <!--  Toggle button to show or hide extended data for 2D grid sectors.  -->
+                                <StackPanel Margin="3,0" VerticalAlignment="Center">
+                                    <TextBlock
+                                        Margin="0,0,0,2"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Top"
+                                        FontSize="10"
+                                        FontWeight="DemiBold"
+                                        Text="2D Grids"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                    <ToggleButton IsChecked="{Binding ShowExtendedData}">
+                                        <ToggleButton.Style>
+                                            <Style BasedOn="{StaticResource ToolBarActionToggleButton}" TargetType="ToggleButton">
+                                                <Setter Property="ToolTip" Value="Show extended data for 2D grid sectors." />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ShowExtendedData}" Value="True">
+                                                        <Setter Property="ToolTip" Value="Hide extended data for 2D grid sectors." />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ToggleButton.Style>
+
+                                        <md:ToggleButtonAssist.OnContent>
+                                            <Grid>
+                                                <iconPacks:PackIconModern
+                                                    Width="22"
+                                                    Height="22"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Kind="Grid" />
+                                                <iconPacks:PackIconJamIcons
+                                                    Width="22"
+                                                    Height="22"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Kind="QrCode" />
+                                            </Grid>
+                                        </md:ToggleButtonAssist.OnContent>
+                                        <Grid>
+                                            <iconPacks:PackIconJamIcons
+                                                Width="22"
+                                                Height="22"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="QrCode" />
+                                        </Grid>
+                                    </ToggleButton>
+                                </StackPanel>
+
+                                <Separator  Margin="6,0,3,0" />
+
+                                <!--  Button to copy all sector details to the clipboard as CSV.  -->
+                                <Button
+                                    Command="{Binding CopyAllSectorsToClipboardCommand}"
+                                    CommandParameter="source"
+                                    Style="{StaticResource ToolBarButton}"
+                                    ToolTip="Copy all current sector details to the clipboard as CSV.">
+
+                                    <DockPanel>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            DockPanel.Dock="Top"
+                                            Text="Stored"
+                                            Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                        <iconPacks:PackIconModern
+                                            Width="24"
+                                            Height="24"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Kind="PageCopy" />
+                                    </DockPanel>
+                                </Button>
+
+                                <!--  Button to copy all sector details to the clipboard as CSV.  -->
+                                <Button
+                                    Command="{Binding CopyAllSectorsToClipboardCommand}"
+                                    CommandParameter="current"
+                                    Style="{StaticResource ToolBarButton}"
+                                    ToolTip="Copy all current sector details to the clipboard as CSV.">
+
+
+                                    <DockPanel>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            DockPanel.Dock="Top"
+                                            Text="Current"
+                                            Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                        <iconPacks:PackIconModern
+                                            Width="24"
+                                            Height="24"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Kind="PageCopy" />
+                                    </DockPanel>
+                                </Button>
+
+                                <!--  Button to copy all sector details to the clipboard as CSV.  -->
+                                <Button
+                                    Command="{Binding CopyAllSectorsToClipboardCommand}"
+                                    CommandParameter="all"
+                                    Style="{StaticResource ToolBarButton}"
+                                    ToolTip="Copy all stored and current sector details to the clipboard as CSV.">
+
+                                    <DockPanel>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            DockPanel.Dock="Top"
+                                            Text="All"
+                                            Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                        <iconPacks:PackIconModern
+                                            Width="24"
+                                            Height="24"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Kind="PageCopy" />
+                                    </DockPanel>
+                                </Button>
+
+                                <Separator  Margin="6,0,3,0" />
+
+                                <!--  Button to store all current results to the database.  -->
+                                <Button Command="{Binding StoreAllCurrentResultsCommand}" ToolTip="Store all current results (images and sectors) to the database.">
+
                                     <Button.Style>
                                         <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
-                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Setter Property="Visibility" Value="Visible" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ActiveImageRoll.IsLocked}" Value="False">
-                                                    <Setter Property="Visibility" Value="Visible" />
+                                                <DataTrigger Binding="{Binding SelectedResultsDatabase.IsLocked}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -342,7 +648,7 @@
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             DockPanel.Dock="Top"
-                                            Text="Add Image"
+                                            Text="Store All"
                                             Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                         <iconPacks:PackIconMaterial
@@ -350,353 +656,33 @@
                                             Height="24"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            Kind="ImagePlus" />
-
+                                            Kind="StorePlusOutline" />
                                     </DockPanel>
-
                                 </Button>
 
-                                <!--  Device-specific buttons are loaded here from resources.  -->
-                                <ContentControl Content="{StaticResource V275TriggerButton}" />
-                                <ContentControl Content="{StaticResource V5TriggerButton}" />
-                                <StackPanel Orientation="Horizontal">
-                                    <ContentControl Content="{StaticResource L95TriggerButton}" />
-                                    <ContentControl Content="{StaticResource L95RedirectButton}" />
-                                </StackPanel>
+                                <!--  Button to clear all current results from the view.  -->
+                                <Button
+                                    Command="{Binding ClearAllCurrentResultsCommand}"
+                                    Style="{StaticResource ToolBarButton}"
+                                    ToolTip="Clear all current results (images and sectors).">
 
-                            </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            DockPanel.Dock="Top"
+                                            Text="Clear All"
+                                            Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                            <Border Margin="3,0,0,0">
-                                <Border.Style>
-                                    <Style BasedOn="{StaticResource imageBar}" TargetType="{x:Type Border}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ActiveImageRoll.IsLocked}" Value="False">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                            </Border>
-
-                            <!--  Image Size Slider  -->
-                            <DockPanel Margin="3,1,3,0" VerticalAlignment="Stretch">
-
-                                <TextBlock
-                                    Margin="0,0,0,2"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Top"
-                                    DockPanel.Dock="Top">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
-                                                    <Setter Property="Text" Value="Ex. Large" />
-                                                </DataTrigger>
-
-                                                <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
-                                                    <Setter Property="Text" Value="Large" />
-                                                </DataTrigger>
-
-                                                <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
-                                                    <Setter Property="Text" Value="Regular" />
-                                                </DataTrigger>
-
-                                                <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
-                                                    <Setter Property="Text" Value="Small" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-
-                                <Slider
-                                    Width="48"
-                                    Height="24"
-                                    mah:SliderHelper.ChangeValueBy="LargeChange"
-                                    IsSnapToTickEnabled="True"
-                                    Maximum="400"
-                                    Minimum="100"
-                                    Style="{StaticResource MahApps.Styles.Slider.Flat}"
-                                    TickFrequency="100"
-                                    TickPlacement="BottomRight"
-                                    ToolTip="Adjust the size of the images in the list."
-                                    Value="{Binding ImagesMaxHeight}" />
-
-                            </DockPanel>
-
-                            <!--  Toggle button to show or hide alarms for errors and warnings.  -->
-                            <StackPanel Margin="3,0" VerticalAlignment="Center">
-                                <TextBlock
-                                    Margin="0,0,0,2"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Top"
-                                    FontSize="10"
-                                    FontWeight="DemiBold"
-                                    Text="Alarms"
-                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                <ToggleButton IsChecked="{Binding HideErrorsWarnings}">
-                                    <ToggleButton.Style>
-                                        <Style BasedOn="{StaticResource ToolBarActionToggleButton}" TargetType="ToggleButton">
-                                            <Setter Property="ToolTip" Value="Show alarms for errors and warnings." />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding HideErrorsWarnings}" Value="True">
-                                                    <Setter Property="ToolTip" Value="Hide alarms for errors and warnings." />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ToggleButton.Style>
-
-                                    <md:ToggleButtonAssist.OnContent>
-
-                                        <iconPacks:PackIconFontAwesome
-                                            Width="22"
-                                            Height="22"
+                                        <iconPacks:PackIconMaterialDesign
+                                            Width="24"
+                                            Height="24"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            Kind="BellSlashSolid" />
-
-                                    </md:ToggleButtonAssist.OnContent>
-
-                                    <iconPacks:PackIconFontAwesome
-                                        Width="22"
-                                        Height="22"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Kind="BellSolid" />
-
-                                </ToggleButton>
-                            </StackPanel>
-
-                            <!--  Toggle button to switch between automatic and fixed dual-column layout for sectors.  -->
-                            <StackPanel Margin="3,0" VerticalAlignment="Center">
-                                <TextBlock
-                                    Margin="0,0,0,2"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Top"
-                                    FontSize="10"
-                                    FontWeight="DemiBold"
-                                    Text="Columns"
-                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                <ToggleButton IsChecked="{Binding DualSectorColumns}">
-                                    <ToggleButton.Style>
-                                        <Style BasedOn="{StaticResource ToolBarActionToggleButton}" TargetType="ToggleButton">
-                                            <Setter Property="ToolTip" Value="Automatically adjust sector columns based on image size." />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
-                                                    <Setter Property="ToolTip" Value="Use a fixed dual-column layout for sectors." />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ToggleButton.Style>
-
-                                    <md:ToggleButtonAssist.OnContent>
-                                        <Grid>
-                                            <iconPacks:PackIconModern
-                                                Width="22"
-                                                Height="22"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Kind="ColumnTwo" />
-                                        </Grid>
-                                    </md:ToggleButtonAssist.OnContent>
-
-                                    <Grid>
-                                        <iconPacks:PackIconModern
-                                            Width="22"
-                                            Height="22"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Kind="ColumnTwo" />
-                                        <iconPacks:PackIconMaterial
-                                            Width="18"
-                                            Height="18"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                                            Kind="AlphaA" />
-                                    </Grid>
-                                </ToggleButton>
-                            </StackPanel>
-
-                            <!--  Toggle button to show or hide extended data for 2D grid sectors.  -->
-                            <StackPanel Margin="3,0" VerticalAlignment="Center">
-                                <TextBlock
-                                    Margin="0,0,0,2"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Top"
-                                    FontSize="10"
-                                    FontWeight="DemiBold"
-                                    Text="2D Grids"
-                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                <ToggleButton IsChecked="{Binding ShowExtendedData}">
-                                    <ToggleButton.Style>
-                                        <Style BasedOn="{StaticResource ToolBarActionToggleButton}" TargetType="ToggleButton">
-                                            <Setter Property="ToolTip" Value="Show extended data for 2D grid sectors." />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ShowExtendedData}" Value="True">
-                                                    <Setter Property="ToolTip" Value="Hide extended data for 2D grid sectors." />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ToggleButton.Style>
-
-                                    <md:ToggleButtonAssist.OnContent>
-                                        <Grid>
-                                            <iconPacks:PackIconModern
-                                                Width="22"
-                                                Height="22"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Kind="Grid" />
-                                            <iconPacks:PackIconJamIcons
-                                                Width="22"
-                                                Height="22"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Kind="QrCode" />
-                                        </Grid>
-                                    </md:ToggleButtonAssist.OnContent>
-                                    <Grid>
-                                        <iconPacks:PackIconJamIcons
-                                            Width="22"
-                                            Height="22"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Kind="QrCode" />
-                                    </Grid>
-                                </ToggleButton>
-                            </StackPanel>
-
-                            <Border Margin="3,1,0,0" Style="{StaticResource imageBar}" />
-
-                            <!--  Button to copy all sector details to the clipboard as CSV.  -->
-                            <Button
-                                Command="{Binding CopyAllSectorsToClipboardCommand}"
-                                CommandParameter="source"
-                                Style="{StaticResource ToolBarButton}"
-                                ToolTip="Copy all current sector details to the clipboard as CSV.">
-
-                                <DockPanel>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        DockPanel.Dock="Top"
-                                        Text="Stored"
-                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                    <iconPacks:PackIconModern
-                                        Width="24"
-                                        Height="24"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Kind="PageCopy" />
-                                </DockPanel>
-                            </Button>
-
-                            <!--  Button to copy all sector details to the clipboard as CSV.  -->
-                            <Button
-                                Command="{Binding CopyAllSectorsToClipboardCommand}"
-                                CommandParameter="current"
-                                Style="{StaticResource ToolBarButton}"
-                                ToolTip="Copy all current sector details to the clipboard as CSV.">
-
-
-                                <DockPanel>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        DockPanel.Dock="Top"
-                                        Text="Current"
-                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                    <iconPacks:PackIconModern
-                                        Width="24"
-                                        Height="24"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Kind="PageCopy" />
-                                </DockPanel>
-                            </Button>
-
-                            <!--  Button to copy all sector details to the clipboard as CSV.  -->
-                            <Button
-                                Command="{Binding CopyAllSectorsToClipboardCommand}"
-                                CommandParameter="all"
-                                Style="{StaticResource ToolBarButton}"
-                                ToolTip="Copy all stored and current sector details to the clipboard as CSV.">
-
-                                <DockPanel>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        DockPanel.Dock="Top"
-                                        Text="All"
-                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                    <iconPacks:PackIconModern
-                                        Width="24"
-                                        Height="24"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Kind="PageCopy" />
-                                </DockPanel>
-                            </Button>
-
-                            <Border Margin="3,1,0,0" Style="{StaticResource imageBar}" />
-
-                            <!--  Button to store all current results to the database.  -->
-                            <Button Command="{Binding StoreAllCurrentResultsCommand}" ToolTip="Store all current results (images and sectors) to the database.">
-
-                                <Button.Style>
-                                    <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedResultsDatabase.IsLocked}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-
-                                <DockPanel>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        DockPanel.Dock="Top"
-                                        Text="Store All"
-                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                    <iconPacks:PackIconMaterial
-                                        Width="24"
-                                        Height="24"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Kind="StorePlusOutline" />
-                                </DockPanel>
-                            </Button>
-
-                            <!--  Button to clear all current results from the view.  -->
-                            <Button
-                                Command="{Binding ClearAllCurrentResultsCommand}"
-                                Style="{StaticResource ToolBarButton}"
-                                ToolTip="Clear all current results (images and sectors).">
-
-                                <DockPanel>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        DockPanel.Dock="Top"
-                                        Text="Clear All"
-                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                    <iconPacks:PackIconMaterialDesign
-                                        Width="24"
-                                        Height="24"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Kind="ClearAll" />
-                                </DockPanel>
-                            </Button>
-                        </ToolBar>
-
+                                            Kind="ClearAll" />
+                                    </DockPanel>
+                                </Button>
+                            </ToolBar>
+                        </ToolBarTray>
                     </DockPanel>
 
                 </DockPanel>

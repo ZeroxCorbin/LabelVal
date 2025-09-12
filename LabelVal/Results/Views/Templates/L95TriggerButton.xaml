@@ -14,9 +14,9 @@
 
     <Button
         x:Key="L95TriggerButton"
+        BorderBrush="{DynamicResource L95_Brush_Active}"
         Command="{Binding AddDeviceImageCommand}"
         CommandParameter="{x:Static vm:ResultsEntryDevices.L95}"
-		 BorderBrush="{DynamicResource L95_Brush_Active}"
         IsEnabled="{Binding IsL95Working, Converter={StaticResource InvertBool}}">
 
         <Button.Style>
