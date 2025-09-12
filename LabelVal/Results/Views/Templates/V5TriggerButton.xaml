@@ -13,7 +13,7 @@
     <!--  Resource for V5 device-specific buttons.  -->
 
     <Button
-        x:Key="V5Buttons"
+        x:Key="V5TriggerButton"
         BorderBrush="{DynamicResource V5_Brush_Active}"
         Command="{Binding AddDeviceImageCommand}"
         CommandParameter="{x:Static vm:ResultsEntryDevices.V5}">
@@ -55,7 +55,6 @@
             <TextBlock
                 HorizontalAlignment="Center"
                 DockPanel.Dock="Top"
-                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                 Text="V5"
                 Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 

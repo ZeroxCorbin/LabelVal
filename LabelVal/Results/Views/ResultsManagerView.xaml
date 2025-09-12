@@ -32,8 +32,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Templates/V5Buttons.xaml" />
-                <ResourceDictionary Source="Templates/V275Buttons.xaml" />
+                <ResourceDictionary Source="Templates/V5TriggerButton.xaml" />
+                <ResourceDictionary Source="Templates/V275TriggerButton.xaml" />
                 <ResourceDictionary Source="Templates/L95Buttons.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -357,8 +357,8 @@
                                 </Button>
 
                                 <!--  Device-specific buttons are loaded here from resources.  -->
-                                <ContentControl Content="{StaticResource V275Buttons}" />
-                                <ContentControl Content="{StaticResource V5Buttons}" />
+                                <ContentControl Content="{StaticResource V275TriggerButton}" />
+                                <ContentControl Content="{StaticResource V5TriggerButton}" />
                                 <StackPanel Orientation="Horizontal">
                                     <ContentControl Content="{StaticResource L95TriggerButton}" />
                                     <ContentControl Content="{StaticResource L95RedirectButton}" />

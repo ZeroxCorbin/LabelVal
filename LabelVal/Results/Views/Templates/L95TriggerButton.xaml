@@ -57,7 +57,6 @@
             <TextBlock
                 HorizontalAlignment="Center"
                 DockPanel.Dock="Top"
-                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                 Text="L95"
                 Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 

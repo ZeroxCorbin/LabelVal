@@ -21,7 +21,8 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
         <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
-        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
         <Setter Property="Foreground" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" />
     </Style>
 

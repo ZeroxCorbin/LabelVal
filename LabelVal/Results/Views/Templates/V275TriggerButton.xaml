@@ -15,7 +15,7 @@
 
     <!--  V275  -->
     <Button
-        x:Key="V275Buttons"
+        x:Key="V275TriggerButton"
         Command="{Binding AddDeviceImageCommand}"
                 BorderBrush="{DynamicResource V275_Brush_Active}"
         CommandParameter="{x:Static vm:ResultsEntryDevices.V275}">
@@ -60,7 +60,6 @@
             <TextBlock
                 HorizontalAlignment="Center"
                 DockPanel.Dock="Top"
-                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                 Text="V275"
                 Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
