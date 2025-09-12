@@ -46,7 +46,7 @@
                     <TextBlock
                         Margin="0,0,0,2"
                         Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
-                        Text="Sector Type" />
+                        Text="Sector Handling" />
                     <ListBox ItemsSource="{Binding Source={StaticResource ImageRollSectorTypes}}" SelectedItem="{Binding SectorType}" />
                 </StackPanel>
 

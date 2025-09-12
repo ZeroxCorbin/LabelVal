@@ -199,65 +199,83 @@
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                 <DockPanel>
-                    <DockPanel>
-
-                        <DockPanel Background="Teal" DockPanel.Dock="Top">
-                            <Button
-                                Width="48"
+                    <Grid Width="47">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <DockPanel Grid.Row="0" Background="Teal">
+                            <iconPacks:PackIconMaterial
+                                Width="32"
+                                Height="32"
                                 Padding="3"
                                 HorizontalAlignment="Center"
-                                Click="btnOpenImageRollsLocation"
-                                Content="{iconPacks:Material Kind=FilmstripBoxMultiple,
-                                                             Height=30,
-                                                             Width=30}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+                                Kind="FilmstripBoxMultiple" />
                         </DockPanel>
 
-                        <Border DockPanel.Dock="Top" Style="{StaticResource imageBarHor}" />
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            
+                            <Button
+                                Click="btnOpenImageRollsLocation"
+                                Content="{iconPacks:Material Kind=FolderOpen}"
+                                BorderThickness="0"
+                                Style="{StaticResource MahApps.Styles.Button}"
+                                ToolTip="Open the image roll database location."/>
 
-                        <!--  Dropdown for managing database sources.  -->
-                        <mah:DropDownButton
-                            Width="36"
-                            BorderThickness="0"
-                            ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            ItemsSource="{Binding FileRoot.Children}">
-                            <mah:DropDownButton.ItemTemplate>
-                                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                                    <DockPanel>
-                                        <CheckBox IsChecked="{Binding IsSelected}" />
-                                        <TextBlock Text="{Binding Name}" />
-                                    </DockPanel>
-                                </HierarchicalDataTemplate>
-                            </mah:DropDownButton.ItemTemplate>
+                            <!--  Dropdown for managing database sources.  -->
+                            <mah:DropDownButton
+                                Grid.Row="1"
+                                BorderThickness="0"
+                                ButtonStyle="{StaticResource MahApps.Styles.DropDownButton.Button.WindowCommands}"
+                                ItemsSource="{Binding FileRoot.Children}"
+                                ToolTip="Control which databases are loaded or ignored.">
+                                <mah:DropDownButton.ItemTemplate>
+                                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                        <DockPanel>
+                                            <CheckBox IsChecked="{Binding IsSelected}" />
+                                            <TextBlock Text="{Binding Name}" />
+                                        </DockPanel>
+                                    </HierarchicalDataTemplate>
+                                </mah:DropDownButton.ItemTemplate>
 
-                            <mah:DropDownButton.Icon>
-                                <iconPacks:PackIconMaterial Kind="Database" />
-                            </mah:DropDownButton.Icon>
-                        </mah:DropDownButton>
+                                <mah:DropDownButton.Icon>
+                                    <iconPacks:PackIconMaterial Kind="Database" />
+                                </mah:DropDownButton.Icon>
+                            </mah:DropDownButton>
+                        </Grid>
 
-                    </DockPanel>
+
+                    </Grid>
 
                     <DockPanel>
-                        <!--  Header for the User Image Rolls section.  -->
-                        <DockPanel HorizontalAlignment="Left" DockPanel.Dock="Top">
+
+                        <DockPanel
+                            Height="32"
+                            HorizontalAlignment="Stretch"
+                            DockPanel.Dock="Top">
                             <DockPanel.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                     <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
                                     <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                                 </LinearGradientBrush>
                             </DockPanel.Background>
+
                             <TextBlock
                                 Margin="6,0,6,3"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
                                 DockPanel.Dock="Top"
                                 Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
                                 Text="Image Rolls" />
-                            <Border Style="{StaticResource imageBarHor}" />
+
                         </DockPanel>
 
                         <!--  Toolbar with action buttons (Add, Edit, Save, etc.).  -->
-                        <ToolBarTray>
+                        <ToolBarTray Grid.Row="1">
 
                             <ToolBar Padding="0,3" ToolBarTray.IsLocked="True">
 
@@ -467,7 +485,7 @@
 
                     <!--  The content of the drawer is the ImageRollEntryEdit user control.  -->
                     <md:DrawerHost.TopDrawerContent>
-                        <local:ImageRollEntryEdit DataContext="{Binding NewImageRoll}" />
+                        <local:ImageRollEntryEdit DataContext="{Binding NewImageRoll}" Visibility="{Binding ., Converter={StaticResource IsNullOrEmptyVisibility}}"/>
                     </md:DrawerHost.TopDrawerContent>
 
                     <!--  Tab control to display User Image Rolls, grouped by standard.  -->

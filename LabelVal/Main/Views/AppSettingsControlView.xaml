@@ -25,7 +25,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!--<StackPanel Grid.Row="0" Grid.Column="0" Margin="3" HorizontalAlignment="Center">
+        <!--<StackPanel Grid.Row="1" Grid.Column="1" Margin="3" HorizontalAlignment="Center">
                 <TextBlock
                     Margin="3"
                     HorizontalAlignment="Center"

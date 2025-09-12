@@ -72,12 +72,11 @@
 
                         <DockPanel Grid.Row="0" Background="Teal">
                             <iconPacks:PackIconMaterial
-                                Width="48"
-                                Height="40"
-                                Margin="1,0"
-                                Padding="6"
+                                Width="32"
+                                Height="32"
+                                Padding="3"
                                 HorizontalAlignment="Center"
-                                Kind="FilmstripBoxMultiple" />
+                                Kind="FilmstripBox" />
                         </DockPanel>
 
                         <!--  ListBox to select where new images are added (Top or Bottom).  -->
@@ -201,7 +200,7 @@
                                 <!--  Sector Type  -->
                                 <StackPanel Margin="6,0,0,0">
 
-                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Sector Type" />
+                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Sector Handling" />
 
                                     <DockPanel>
 
@@ -363,7 +362,7 @@
 
                                 </DockPanel>
 
-                                <Separator Margin="6,0,3,0" Visibility="{Binding ActiveImageRoll.IsLocked, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}"/>
+                                <Separator Margin="6,0,3,0" Visibility="{Binding ActiveImageRoll.IsLocked, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
 
                                 <!--  Image Size Slider  -->
                                 <DockPanel Margin="3,1,3,0" VerticalAlignment="Stretch">
@@ -556,7 +555,7 @@
                                     </ToggleButton>
                                 </StackPanel>
 
-                                <Separator  Margin="6,0,3,0" />
+                                <Separator Margin="6,0,3,0" />
 
                                 <!--  Button to copy all sector details to the clipboard as CSV.  -->
                                 <Button
@@ -628,7 +627,7 @@
                                     </DockPanel>
                                 </Button>
 
-                                <Separator  Margin="6,0,3,0" />
+                                <Separator Margin="6,0,3,0" />
 
                                 <!--  Button to store all current results to the database.  -->
                                 <Button Command="{Binding StoreAllCurrentResultsCommand}" ToolTip="Store all current results (images and sectors) to the database.">
