@@ -19,11 +19,9 @@
 
         <Button
             BorderBrush="{DynamicResource V5_Brush_Active}"
-            Command="{Binding ProcessCommand}"
-            CommandParameter="{x:Static vm:ResultsEntryDevices.V5}"
-            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+            Command="{Binding ProcessCommand}">
             <Button.Style>
-                <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
+                <Style BasedOn="{StaticResource DeviceButton}" TargetType="{x:Type Button}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.Offline}">
                             <Setter Property="Visibility" Value="Collapsed" />

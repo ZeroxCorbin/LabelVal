@@ -180,32 +180,33 @@
                             <Style TargetType="ListBoxItem">
                                 <Setter Property="Padding" Value="1" />
                                 <Setter Property="Margin" Value="0" />
+                                <Setter Property="BorderThickness" Value="2" />
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="Focusable" Value="False" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Badged.Background}" />
+                                    </Trigger>
+                                </Style.Triggers>
                             </Style>
                         </ListBox.ItemContainerStyle>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Button
-                                    Width="40"
-                                    Height="auto"
-                                    Padding="0"
-                                    Command="{Binding BringIntoViewHandlerCommand}"
-                                    Style="{StaticResource MahApps.Styles.Button}">
-                                    <Border x:Name="HighlightBorder" BorderThickness="2">
-                                        <StackPanel>
-                                            <Image Height="30" Source="{Binding SourceImage.ImageLow}" />
-                                            <TextBlock
-                                                HorizontalAlignment="Center"
-                                                FontSize="8"
-                                                Text="{Binding SourceImage.Order}" />
-                                        </StackPanel>
-                                    </Border>
-                                </Button>
-                                <DataTemplate.Triggers>
-                                    <!--  Highlights the thumbnail that is currently at the top of the viewport.  -->
-                                    <DataTrigger Binding="{Binding IsTopmost}" Value="True">
-                                        <Setter TargetName="HighlightBorder" Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
-                                    </DataTrigger>
-                                </DataTemplate.Triggers>
+                                <Grid>
+                                    <Grid.InputBindings>
+                                        <MouseBinding Command="{Binding BringIntoViewHandlerCommand}" MouseAction="LeftClick" />
+                                    </Grid.InputBindings>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Image Source="{Binding SourceImage.ImageLow}" MaxWidth="48" MaxHeight="48"/>
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        HorizontalAlignment="Center"
+                                        FontWeight="DemiBold"
+                                        Text="{Binding SourceImage.Order}" />
+                                </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>

@@ -20,8 +20,7 @@
         <!--  V275  -->
         <Button
             BorderBrush="{DynamicResource V275_Brush_Active}"
-            Command="{Binding ProcessCommand}"
-            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+            Command="{Binding ProcessCommand}">
             <Button.Style>
                 <Style BasedOn="{StaticResource DeviceButton}" TargetType="{x:Type Button}">
                     <Style.Triggers>
