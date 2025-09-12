@@ -65,8 +65,9 @@
                         <mah:DropDownButton
                             Grid.Row="1"
                             BorderThickness="0"
-                                ButtonStyle="{StaticResource MahApps.Styles.DropDownButton.Button.WindowCommands}"
-                            ItemsSource="{Binding FileRoot.Children}" ToolTip="Control which databases are loaded or ignored.">
+                            ButtonStyle="{StaticResource MahApps.Styles.DropDownButton.Button.WindowCommands}"
+                            ItemsSource="{Binding FileRoot.Children}"
+                            ToolTip="Control which databases are loaded or ignored.">
                             <mah:DropDownButton.ItemTemplate>
                                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                     <DockPanel>
@@ -98,8 +99,8 @@
                     </DockPanel.Background>
 
                     <TextBlock
-                                Margin="6,0,6,3"
-                                VerticalAlignment="Center"
+                        Margin="6,0,6,3"
+                        VerticalAlignment="Center"
                         Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
                         Text="Results Databases" />
 
@@ -111,7 +112,6 @@
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
                 </DockPanel>
-
 
                 <ToolBarTray Grid.Row="1">
                     <ToolBar Padding="0,3" ToolBarTray.IsLocked="True">
@@ -140,30 +140,36 @@
                         </Button>
 
 
-                        <StackPanel Margin="6,0">
-                            <TextBlock
-                                Margin="0,0,0,2"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                DockPanel.Dock="Top"
-                                FontSize="10"
-                                FontWeight="DemiBold"
-                                Text="Text Align"
-                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                            <ToggleButton
-                                HorizontalAlignment="Center"
-                                md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}"
-                                Content="{iconPacks:Modern Kind=AlignLeft}"
-                                IsChecked="{Binding RightAlignOverflow}"
-                                ToolTip="Toggle name aligned left or right.">
-                                <ToggleButton.LayoutTransform>
-                                    <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
-                                </ToggleButton.LayoutTransform>
-                            </ToggleButton>
-                        </StackPanel>
                     </ToolBar>
                 </ToolBarTray>
+
+                <DockPanel
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="{DynamicResource MaterialDesign.Brush.ToolBar.Background}">
+                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,6,0">
+                        <TextBlock
+                            Margin="0,0,0,2"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            DockPanel.Dock="Top"
+                            FontSize="10"
+                            FontWeight="DemiBold"
+                            Text="Text Align"
+                            Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                        <ToggleButton
+                            HorizontalAlignment="Center"
+                            md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}"
+                            Content="{iconPacks:Modern Kind=AlignLeft}"
+                            IsChecked="{Binding RightAlignOverflow}"
+                            ToolTip="Toggle name aligned left or right.">
+                            <ToggleButton.LayoutTransform>
+                                <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
+                            </ToggleButton.LayoutTransform>
+                        </ToggleButton>
+                    </StackPanel>
+                </DockPanel>
             </DockPanel>
         </md:Card>
 
