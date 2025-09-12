@@ -7,7 +7,7 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:watchers="clr-namespace:Watchers.lib.Process;assembly=Watchers.lib">
 
-    <converters:IsNullOrEmptyVisibility x:Key="IsNullOrEmptyVisibility" />
+    <converters:IsNullOrEmpty x:Key="IsNullOrEmpty" />
 
     <!--  L95  -->
     <DataTemplate x:Key="L95MenuItem">
@@ -40,7 +40,7 @@
                     <md:Card.Style>
                         <Style TargetType="{x:Type md:Card}">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmptyVisibility}}" Value="True">
+                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -85,7 +85,7 @@
                                 <DataTrigger Binding="{Binding SelectedDevice.Controller.ProcessState}" Value="{x:Static watchers:Win32_ProcessWatcherProcessState.Exited}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmptyVisibility}}" Value="True">
+                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -124,7 +124,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmptyVisibility}}" Value="True">
+                            <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>

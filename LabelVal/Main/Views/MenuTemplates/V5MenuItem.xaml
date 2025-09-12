@@ -6,7 +6,7 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:v5="clr-namespace:LabelVal.V5.Views">
 
-    <converters:IsNullOrEmptyVisibility x:Key="IsNullOrEmptyVisibility" />
+    <converters:IsNullOrEmpty x:Key="IsNullOrEmpty" />
 
     <!--  V5  -->
     <DataTemplate x:Key="V5MenuItem">
@@ -39,7 +39,7 @@
                     <md:Card.Style>
                         <Style TargetType="{x:Type md:Card}">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmptyVisibility}}" Value="True">
+                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -79,7 +79,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmptyVisibility}}" Value="True">
+                            <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
