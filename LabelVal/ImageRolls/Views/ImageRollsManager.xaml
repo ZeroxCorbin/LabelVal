@@ -444,7 +444,10 @@
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         Background="{DynamicResource MaterialDesign.Brush.ToolBar.Background}">
-                        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,6,0">
+                        <StackPanel
+                            Margin="0,0,6,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
                             <TextBlock
                                 Margin="0,0,0,2"
                                 HorizontalAlignment="Right"
@@ -452,8 +455,8 @@
                                 DockPanel.Dock="Top"
                                 FontSize="10"
                                 FontWeight="DemiBold"
-                                Text="Text Align"
                                 Foreground="{DynamicResource MahApps.Brushes.Text}"
+                                Text="Text Align"
                                 Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <ToggleButton
