@@ -13,7 +13,7 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-    d:DataContext="{d:DesignInstance Type=ViewModels:ISectorDetails}"
+    d:DataContext="{d:DesignInstance Type=ViewModels:ISectorParameters}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -883,7 +883,7 @@
 
             <StackPanel>
 
-                <TextBlock Margin="3,0,3,3" Text="{Binding Username, Mode=OneWay}" />
+                <TextBlock Margin="3,0,3,3" Text="{Binding Sector.Username, Mode=OneWay}" />
 
                 <DockPanel>
                     <DockPanel.Style>

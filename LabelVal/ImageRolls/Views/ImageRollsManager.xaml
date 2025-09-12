@@ -434,14 +434,17 @@
 
                                 <StackPanel Margin="6,0">
                                     <TextBlock
-                                        Margin="0,0,0,3"
-                                        HorizontalAlignment="Center"
+                                        Margin="0,0,0,2"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        FontSize="10"
+                                        FontWeight="DemiBold"
                                         DockPanel.Dock="Top"
                                         Text="Text Align"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                     <ToggleButton
-                                        HorizontalAlignment="Right"
+                                        HorizontalAlignment="Center"
                                         md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}"
                                         Content="{iconPacks:Modern Kind=AlignLeft}"
                                         IsChecked="{Binding RightAlignOverflow}"
