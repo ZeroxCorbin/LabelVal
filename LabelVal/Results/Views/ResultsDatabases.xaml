@@ -177,8 +177,8 @@
         </md:Card>
 
         <DockPanel DockPanel.Dock="Top">
-            <Border Style="{StaticResource groupLeft}" Background="Purple"/>
-            <Border Style="{StaticResource groupBottom}" Background="Purple"/>
+            <Border Background="Purple" Style="{StaticResource groupLeft}" />
+            <Border Background="Purple" Style="{StaticResource groupBottom}" />
 
             <ListView
                 Margin="3,3,0,0"

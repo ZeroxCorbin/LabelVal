@@ -51,11 +51,7 @@
                         </LinearGradientBrush>
                     </DockPanel.Background>
 
-                    <TextBlock
-                        Margin="6,0,6,3"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center"
-                        DockPanel.Dock="Top">
+                    <TextBlock Margin="6,0,6,3" VerticalAlignment="Center">
                         <TextBlock.Style>
                             <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
                                 <Setter Property="Text">

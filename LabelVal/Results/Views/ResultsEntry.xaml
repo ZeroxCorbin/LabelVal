@@ -74,9 +74,12 @@
             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
             <DockPanel>
-                <DockPanel Width="48" Height="48">
+                <DockPanel
+                    Width="48"
+                    Height="48"
+                    Background="{DynamicResource MahApps.Brushes.Accent2}">
 
-                    <DockPanel
+                    <!--<DockPanel
                         Width="36"
                         Margin="0,4,0,2"
                         VerticalAlignment="Top"
@@ -86,14 +89,12 @@
                             Height="18"
                             HorizontalAlignment="Center"
                             Kind="ImageText" />
-                    </DockPanel>
+                    </DockPanel>-->
 
                     <TextBlock
-                        Margin="11,0,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        FontSize="{DynamicResource MahApps.Font.Size.Dialog.Message}"
-                        FontWeight="Bold"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignHeadline5TextBlock}"
                         Text="{Binding SourceImage.Order}" />
                 </DockPanel>
 

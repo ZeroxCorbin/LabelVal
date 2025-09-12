@@ -19,7 +19,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <DockPanel Margin="3,3,0,0" VerticalAlignment="Top">
 
         <md:Card
@@ -87,7 +87,7 @@
                             Command="{Binding AddCommand}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             Style="{StaticResource ToolBarButton}"
-                            ToolTip="New V275 System" >
+                            ToolTip="New V275 System">
                             <DockPanel>
                                 <TextBlock
                                     HorizontalAlignment="Center"
@@ -110,8 +110,8 @@
         </md:Card>
 
         <DockPanel DockPanel.Dock="Top">
-            <Border Style="{StaticResource groupLeft}" Background="{DynamicResource V275_Brush_Active}"/>
-            <Border Style="{StaticResource groupBottom}" Background="{DynamicResource V275_Brush_Active}" />
+            <Border Background="{DynamicResource V275_Brush_Active}" Style="{StaticResource groupLeft}" />
+            <Border Background="{DynamicResource V275_Brush_Active}" Style="{StaticResource groupBottom}" />
 
             <ItemsControl ItemsSource="{Binding Devices}">
                 <ItemsControl.ItemTemplate>
