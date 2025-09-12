@@ -24,7 +24,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Templates/SharedButtonStyles.xaml" />
+                <ResourceDictionary Source="..\..\Templates\SharedButtonStyles.xaml" />
                 <ResourceDictionary Source="ImageEntryTemplates/V275TriggerButton.xaml" />
                 <ResourceDictionary Source="ImageEntryTemplates/V5TriggerButton.xaml" />
                 <ResourceDictionary Source="ImageEntryTemplates/L95Buttons.xaml" />

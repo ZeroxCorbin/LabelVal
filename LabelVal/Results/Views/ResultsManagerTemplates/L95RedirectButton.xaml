@@ -6,7 +6,7 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="SharedButtonStyles.xaml" />
+        <ResourceDictionary Source="..\..\..\Templates\SharedButtonStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <!--  Resource for L95 device-specific redirect button.  -->

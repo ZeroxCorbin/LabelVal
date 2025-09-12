@@ -9,7 +9,7 @@
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="..\Templates\SharedButtonStyles.xaml" />
+        <ResourceDictionary Source="..\..\..\Templates\SharedButtonStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 
@@ -66,7 +66,7 @@
                 <Grid Background="{DynamicResource V275_Brush_Active}">
 
                     <mah:MetroProgressBar
-                        Width="62"
+                        Width="46"
                         Height="6"
                         Padding="0"
                         HorizontalAlignment="Left"

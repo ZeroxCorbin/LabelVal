@@ -32,9 +32,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Templates/V5TriggerButton.xaml" />
-                <ResourceDictionary Source="Templates/V275TriggerButton.xaml" />
-                <ResourceDictionary Source="Templates/L95Buttons.xaml" />
+                <ResourceDictionary Source="ResultsManagerTemplates/V5TriggerButton.xaml" />
+                <ResourceDictionary Source="ResultsManagerTemplates/V275TriggerButton.xaml" />
+                <ResourceDictionary Source="ResultsManagerTemplates/L95Buttons.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <!--  CollectionViewSource for sorting the image results entries by their source image order.  -->
@@ -122,7 +122,6 @@
                             </DockPanel.Background>
 
                             <DockPanel Margin="6,0,6,3">
-
 
                                 <!--  Name  -->
                                 <StackPanel>

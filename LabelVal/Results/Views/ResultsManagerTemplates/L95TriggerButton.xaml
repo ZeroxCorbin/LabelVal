@@ -7,7 +7,7 @@
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="SharedButtonStyles.xaml" />
+        <ResourceDictionary Source="..\..\..\Templates\SharedButtonStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <!--  Resource for L95 device-specific trigger button.  -->

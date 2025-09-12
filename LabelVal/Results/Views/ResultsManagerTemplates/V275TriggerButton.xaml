@@ -8,7 +8,7 @@
 
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="SharedButtonStyles.xaml" />
+        <ResourceDictionary Source="..\..\..\Templates\SharedButtonStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <!--  Resource for V275 device-specific buttons. This is dynamically loaded into the main toolbar.  -->

@@ -15,119 +15,155 @@
     d:DataContext="{d:DesignInstance Type=ViewModels:ResultsDatabasesViewModel}"
     mc:Ignorable="d">
 
-    <DockPanel
-        MinWidth="200"
-        MaxWidth="280"
-        Margin="3,3,0,0"
-        VerticalAlignment="Top">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <DockPanel Margin="3,3,0,0" VerticalAlignment="Top">
 
         <md:Card
-            Height="68"
             Margin="3,3,0,0"
             Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
             DockPanel.Dock="Top"
             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
             <DockPanel>
-                <DockPanel>
 
-                    <DockPanel Background="Purple" DockPanel.Dock="Top">
-                        <Button
-                            Width="48"
+                <!--  Left-side quick action panel for image roll settings.  -->
+                <Grid Width="47">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Grid.Row="0" Background="Purple">
+                        <iconPacks:PackIconMaterial
+                            Width="32"
+                            Height="32"
                             Padding="3"
                             HorizontalAlignment="Center"
-                            Click="btnOpenResultsLocation"
-                            Content="{iconPacks:Material Kind=StoreOutline,
-                                                         Height=30,
-                                                         Width=30}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+                            Kind="StoreOutline" />
                     </DockPanel>
 
-
-                    <Border DockPanel.Dock="Top" Style="{StaticResource imageBarHor}" />
-
-                    <mah:DropDownButton
-                        Width="36"
-                        BorderThickness="0"
-                        ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        ItemsSource="{Binding FileRoot.Children}">
-                        <mah:DropDownButton.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                                <DockPanel>
-                                    <CheckBox IsChecked="{Binding IsSelected}" />
-                                    <TextBlock Text="{Binding Name}" />
-                                </DockPanel>
-                            </HierarchicalDataTemplate>
-                        </mah:DropDownButton.ItemTemplate>
-
-                        <mah:DropDownButton.Icon>
-                            <iconPacks:PackIconMaterial Kind="Database" />
-                        </mah:DropDownButton.Icon>
-
-                    </mah:DropDownButton>
-
-                </DockPanel>
-
-                <Border Style="{StaticResource imageBar}" />
-
-                <DockPanel>
-                    <DockPanel DockPanel.Dock="Top">
-                        <DockPanel HorizontalAlignment="Left">
-                            <DockPanel.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
-                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                </LinearGradientBrush>
-                            </DockPanel.Background>
-
-                            <TextBlock
-                                Margin="6,0,0,3"
-                                DockPanel.Dock="Top"
-                                Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
-                                Text="Results Databases" />
-
-                            <Border Style="{StaticResource imageBarHor}" />
-
-                        </DockPanel>
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
 
                         <Button
-                            Padding="8,0"
-                            HorizontalAlignment="Right"
-                            Click="btnCollapseContent"
-                            Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+                            BorderThickness="0"
+                            Click="btnOpenResultsLocation"
+                            Content="{iconPacks:Material Kind=FolderOpen}"
+                            Style="{StaticResource MahApps.Styles.Button}"
+                            ToolTip="Open the image roll database location." />
 
-                    </DockPanel>
+                        <mah:DropDownButton
+                            Grid.Row="1"
+                            BorderThickness="0"
+                                ButtonStyle="{StaticResource MahApps.Styles.DropDownButton.Button.WindowCommands}"
+                            ItemsSource="{Binding FileRoot.Children}" ToolTip="Control which databases are loaded or ignored.">
+                            <mah:DropDownButton.ItemTemplate>
+                                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                    <DockPanel>
+                                        <CheckBox IsChecked="{Binding IsSelected}" />
+                                        <TextBlock Text="{Binding Name}" />
+                                    </DockPanel>
+                                </HierarchicalDataTemplate>
+                            </mah:DropDownButton.ItemTemplate>
+
+                            <mah:DropDownButton.Icon>
+                                <iconPacks:PackIconMaterial Kind="Database" />
+                            </mah:DropDownButton.Icon>
+
+                        </mah:DropDownButton>
+
+                    </Grid>
+                </Grid>
+
+
+                <DockPanel
+                    Height="32"
+                    HorizontalAlignment="Stretch"
+                    DockPanel.Dock="Top">
+                    <DockPanel.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
+                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                        </LinearGradientBrush>
+                    </DockPanel.Background>
+
+                    <TextBlock
+                                Margin="6,0,6,3"
+                                VerticalAlignment="Center"
+                        Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                        Text="Results Databases" />
 
                     <Button
-                        Width="48"
-                        HorizontalAlignment="Left"
-                        Command="{Binding CreateResultssDatabaseCommand}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="New Database">
-                        <iconPacks:PackIconMaterial
-                            Width="24"
-                            Height="24"
-                            Kind="Plus" />
-                    </Button>
-
-                    <ToggleButton
-                        Margin="6,0"
+                        Padding="8,0"
                         HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}"
-                        Content="{iconPacks:Modern Kind=AlignLeft}"
-                        IsChecked="{Binding RightAlignOverflow}"
-                        ToolTip="Toggle name aligned left or right.">
-                        <ToggleButton.LayoutTransform>
-                            <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
-                        </ToggleButton.LayoutTransform>
-                    </ToggleButton>
+                        Click="btnCollapseContent"
+                        Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
                 </DockPanel>
+
+
+                <ToolBarTray Grid.Row="1">
+                    <ToolBar Padding="0,3" ToolBarTray.IsLocked="True">
+
+
+                        <Button
+                            Command="{Binding CreateResultssDatabaseCommand}"
+                            Style="{StaticResource ToolBarButton}"
+                            ToolTip="New Database">
+
+                            <StackPanel>
+                                <TextBlock
+                                    Margin="0,0,0,3"
+                                    HorizontalAlignment="Center"
+                                    DockPanel.Dock="Top"
+                                    Text="New"
+                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                <iconPacks:PackIconMaterial
+                                    Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="Plus" />
+                            </StackPanel>
+                        </Button>
+
+
+                        <StackPanel Margin="6,0">
+                            <TextBlock
+                                Margin="0,0,0,2"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top"
+                                FontSize="10"
+                                FontWeight="DemiBold"
+                                Text="Text Align"
+                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                            <ToggleButton
+                                HorizontalAlignment="Center"
+                                md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}"
+                                Content="{iconPacks:Modern Kind=AlignLeft}"
+                                IsChecked="{Binding RightAlignOverflow}"
+                                ToolTip="Toggle name aligned left or right.">
+                                <ToggleButton.LayoutTransform>
+                                    <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
+                                </ToggleButton.LayoutTransform>
+                            </ToggleButton>
+                        </StackPanel>
+                    </ToolBar>
+                </ToolBarTray>
             </DockPanel>
         </md:Card>
 
