@@ -307,8 +307,6 @@
 
                             </DockPanel>
 
-                            <Border Style="{StaticResource imageBarHor}" />
-
                         </DockPanel>
 
                         <!--  Toolbar for controlling the image roll and results.  -->
@@ -681,6 +679,7 @@
                                 </Button>
                             </ToolBar>
                         </ToolBarTray>
+
                     </DockPanel>
 
                 </DockPanel>

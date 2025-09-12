@@ -13,10 +13,17 @@
     d:DataContext="{d:DesignInstance Type=ViewModels:NodeManager}"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\Templates\SharedButtonStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <DockPanel Margin="3,3,0,0" VerticalAlignment="Top">
 
         <md:Card
-            Height="68"
             Margin="3,3,0,0"
             Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
             DockPanel.Dock="Top"
@@ -33,90 +40,130 @@
                         Source="/Assets/Images/v275-white-outline.ico" />
                 </DockPanel>
 
-                <Border Style="{StaticResource imageBar}" />
+                <DockPanel
+                    Height="32"
+                    HorizontalAlignment="Stretch"
+                    DockPanel.Dock="Top">
+                    <DockPanel.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="0" Color="{DynamicResource V275}" />
+                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                        </LinearGradientBrush>
+                    </DockPanel.Background>
 
-                <DockPanel>
+                    <TextBlock
+                        Margin="6,0,6,3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        DockPanel.Dock="Top">
+                        <TextBlock.Style>
+                            <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
+                                <Setter Property="Text">
+                                    <Setter.Value>
+                                        <MultiBinding StringFormat="{}{0}:{1}">
+                                            <Binding Path="Host" />
+                                            <Binding Path="SystemPort" />
+                                        </MultiBinding>
 
-                    <DockPanel DockPanel.Dock="Top">
+                                    </Setter.Value>
+                                </Setter>
 
-                        <DockPanel HorizontalAlignment="Left">
-                            <DockPanel.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
-                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                </LinearGradientBrush>
-                            </DockPanel.Background>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
 
-                            <TextBlock Margin="6,0,0,3" DockPanel.Dock="Top">
-                                <TextBlock.Style>
-                                    <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
-                                        <Setter Property="Text">
-                                            <Setter.Value>
-                                                <MultiBinding StringFormat="{}{0}:{1}">
-                                                    <Binding Path="Host" />
-                                                    <Binding Path="SystemPort" />
-                                                </MultiBinding>
-
-                                            </Setter.Value>
-                                        </Setter>
-
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-
-                            <Border Style="{StaticResource imageBarHor}" />
-
-                        </DockPanel>
-
-                        <!--<Button Click="btnCollapseContent" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                VerticalAlignment="Top" HorizontalAlignment="Right" Margin="3"
-                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>-->
-
-                    </DockPanel>
-
-                    <Button
-                        Width="48"
-                        Click="btnShowSettings_Click"
-                        Content="{iconPacks:Material Kind=Cog,
-                                                     Width=24,
-                                                     Height=24}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="{loc:Loc Settings}" />
-
-                    <Button
-                        Width="48"
-                        Command="{Binding GetDevicesCommand}"
-                        Content="{iconPacks:Modern Kind=Refresh,
-                                                   Width=24,
-                                                   Height=24}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="{loc:Loc Refresh}" />
-
-                    <Button
-                        Width="48"
-                        HorizontalAlignment="Left"
-                        Click="btnOpenInBrowser_Click"
-                        Content="{iconPacks:Modern Kind=Browser,
-                                                   Width=24,
-                                                   Height=24}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
-
-                    <Button
-                        Width="48"
-                        HorizontalAlignment="Right"
-                        Click="btnShowDetails_Click"
-                        Content="{iconPacks:Material Kind=CodeJson,
-                                                     Width=24,
-                                                     Height=24}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="{loc:Loc Details}" />
 
                 </DockPanel>
+
+                <ToolBarTray>
+                    <ToolBar Padding="0,3" ToolBarTray.IsLocked="True">
+                        <Button
+                            Click="btnShowSettings_Click"
+                            Style="{StaticResource ToolBarButton}"
+                            ToolTip="{loc:Loc Settings}">
+                            <DockPanel>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    DockPanel.Dock="Top"
+                                    Text="Settings"
+                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                <iconPacks:PackIconMaterial
+                                    Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="Cog" />
+
+                            </DockPanel>
+                        </Button>
+
+                        <Button
+                            Command="{Binding GetDevicesCommand}"
+                            Style="{StaticResource ToolBarButton}"
+                            ToolTip="{loc:Loc Refresh}">
+                            <DockPanel>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    DockPanel.Dock="Top"
+                                    Text="Refresh"
+                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                <iconPacks:PackIconModern
+                                    Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="Refresh" />
+
+                            </DockPanel>
+                        </Button>
+
+                        <Button
+                            HorizontalAlignment="Left"
+                            Click="btnOpenInBrowser_Click"
+                            Style="{StaticResource ToolBarButton}">
+                            <DockPanel>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    DockPanel.Dock="Top"
+                                    Text="Browser"
+                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                <iconPacks:PackIconModern
+                                    Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="Browser" />
+
+                            </DockPanel>
+                        </Button>
+
+                        <!--<Button
+                                HorizontalAlignment="Right"
+                                Click="btnShowDetails_Click"
+                                Style="{StaticResource ToolBarButton}"
+                                ToolTip="{loc:Loc Details}" >
+                                <DockPanel>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        DockPanel.Dock="Top"
+                                        Text="JSON"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="24"
+                                        Height="24"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Kind="CodeJson" />
+
+                                </DockPanel>
+                            </Button>-->
+                    </ToolBar>
+                </ToolBarTray>
+
             </DockPanel>
         </md:Card>
 

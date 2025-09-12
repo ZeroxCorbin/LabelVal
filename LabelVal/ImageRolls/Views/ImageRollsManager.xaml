@@ -253,7 +253,6 @@
 
                     </Grid>
 
-
                     <DockPanel
                         Height="32"
                         HorizontalAlignment="Stretch"
@@ -276,7 +275,7 @@
                     </DockPanel>
 
                     <!--  Toolbar with action buttons (Add, Edit, Save, etc.).  -->
-                    <ToolBarTray Grid.Row="1">
+                    <ToolBarTray>
 
                         <ToolBar Padding="0,3" ToolBarTray.IsLocked="True">
 
