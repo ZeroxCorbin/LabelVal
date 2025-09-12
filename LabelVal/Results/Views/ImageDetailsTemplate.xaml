@@ -5,6 +5,10 @@
     xmlns:image="clr-namespace:LabelVal.ImageRolls.ViewModels"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="..\..\..\Templates\SharedButtonStyles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <converters:ShortenUIDConverter x:Key="shortenUID" />
     <converters:Double2String x:Key="double2String" />
 

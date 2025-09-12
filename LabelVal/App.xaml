@@ -29,6 +29,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Secondary/MaterialDesignColor.Red.xaml" />
 
                 <!--  Material Design: MahApps Compatibility  -->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Flyout.xaml" />
 
@@ -428,7 +429,16 @@
             <SolidColorBrush x:Key="StatusRed_Brush_Active" Color="{StaticResource StatusRed}" />
 
             <!--  Red-Green Colorblind Friendly (Deuteranopia/Protanopia) Device Colors  -->
+            <Color x:Key="V275">#193cbc</Color>
+            <SolidColorBrush x:Key="V275_Brush" Color="{StaticResource V275}" />
+
+            <Color x:Key="V5">#CC5500</Color>
+            <SolidColorBrush x:Key="V5_Brush" Color="{StaticResource V5}" />
+
+            <Color x:Key="L95">#4F000B</Color>
+            <SolidColorBrush x:Key="L95_Brush" Color="{StaticResource L95}" />
             <Color x:Key="V275_RG">#0072B2</Color>
+
             <!--  Blue  -->
             <SolidColorBrush x:Key="V275_RG_Brush" Color="{StaticResource V275_RG}" />
             <Color x:Key="V5_RG">#E69F00</Color>
@@ -464,15 +474,6 @@
             <SolidColorBrush x:Key="V275_Brush_Active" Color="{StaticResource V275}" />
             <SolidColorBrush x:Key="V5_Brush_Active" Color="{StaticResource V5}" />
             <SolidColorBrush x:Key="L95_Brush_Active" Color="{StaticResource L95}" />
-
-            <Color x:Key="V275">#193cbc</Color>
-            <SolidColorBrush x:Key="V275_Brush" Color="{StaticResource V275}" />
-
-            <Color x:Key="V5">#CC5500</Color>
-            <SolidColorBrush x:Key="V5_Brush" Color="{StaticResource V5}" />
-
-            <Color x:Key="L95">#4F000B</Color>
-            <SolidColorBrush x:Key="L95_Brush" Color="{StaticResource L95}" />
 
         </ResourceDictionary>
     </Application.Resources>
