@@ -64,7 +64,7 @@
                 <DockPanel>
 
                     <!--  Left-side quick action panel for image roll settings.  -->
-                    <Grid>
+                    <Grid Width="47">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />

@@ -56,11 +56,17 @@
                         </Grid.RowDefinitions>
 
                         <Button
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
                             BorderThickness="0"
                             Click="btnOpenResultsLocation"
-                            Content="{iconPacks:Material Kind=FolderOpen}"
-                            Style="{StaticResource MahApps.Styles.Button}"
-                            ToolTip="Open the image roll database location." />
+                            Style="{StaticResource MahApps.Styles.DropDownButton.Button.WindowCommands}"
+                            ToolTip="Open the image roll database location.">
+                            <iconPacks:Modern
+                                Width="22"
+                                Height="22"
+                                Kind="FolderOpen" />
+                        </Button>
 
                         <mah:DropDownButton
                             Grid.Row="1"
