@@ -59,7 +59,7 @@
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Style.Triggers>
-                    -->
+                -->
                 <!--<DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO}">
                                         <Setter Property="Source" Value="/Assets/Images/iec.png" />
                                     </DataTrigger>-->
@@ -82,7 +82,7 @@
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Style.Triggers>
-                    -->
+                -->
                 <!--<DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO}">
                                         <Setter Property="Source" Value="/Assets/Images/iso.png" />
                                     </DataTrigger>-->

@@ -518,6 +518,12 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
 
     #endregion
 
+    [RelayCommand]
+    private void ToggleL95Selection()
+    {
+        IsL95Selected = !IsL95Selected;
+    }
+
     #region Commands
 
     /// <summary>

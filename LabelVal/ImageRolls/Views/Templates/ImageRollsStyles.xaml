@@ -10,7 +10,10 @@
     </ResourceDictionary.MergedDictionaries>
 
     <!--  Style for toolbar buttons.  -->
-    <Style x:Key="ImageRollToolBarButton" TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+    <Style
+        x:Key="ImageRollToolBarButton"
+        BasedOn="{StaticResource MahApps.Styles.Button}"
+        TargetType="{x:Type Button}">
         <Setter Property="Height" Value="48" />
         <Setter Property="MinWidth" Value="48" />
         <Setter Property="Margin" Value="3,0,0,0" />
@@ -23,7 +26,10 @@
     </Style>
 
     <!--  Style for toolbar toggle buttons.  -->
-    <Style x:Key="ImageRollToolBarToggleButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
+    <Style
+        x:Key="ImageRollToolBarToggleButton"
+        BasedOn="{StaticResource MahApps.Styles.ToggleButton}"
+        TargetType="{x:Type ToggleButton}">
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="ToolTip" Value="Toggle name aligned left or right." />
         <Setter Property="md:ToggleButtonAssist.OnContent" Value="{iconPacks:Modern Kind=AlignRight}" />

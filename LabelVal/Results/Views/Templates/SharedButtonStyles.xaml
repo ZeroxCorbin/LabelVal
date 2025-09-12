@@ -35,13 +35,18 @@
     <!--  Style for device-specific buttons.  -->
     <Style
         x:Key="DeviceButton"
-        BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}"
+        BasedOn="{StaticResource MahApps.Styles.Button}"
         TargetType="{x:Type Button}">
-        <Setter Property="Width" Value="48" />
         <Setter Property="Height" Value="48" />
+        <Setter Property="MinWidth" Value="48" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="3,0,0,0" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Foreground" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" />
+        <Setter Property="BorderThickness" Value="1" />
     </Style>
 
 </ResourceDictionary>
