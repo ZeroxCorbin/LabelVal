@@ -11,9 +11,9 @@
 
     <!--  Results Databases  -->
     <DataTemplate x:Key="ImageRdMenuItem" DataType="{x:Type resultsVm:ResultsDatabasesViewModel}">
-        <!-- The DataContext here is an instance of ResultsDatabasesViewModel -->
+        <!--  The DataContext here is an instance of ResultsDatabasesViewModel  -->
         <DockPanel d:DataContext="{d:DesignInstance Type=resultsVm:ResultsDatabasesViewModel}" DataContext="{Binding Content}">
-            <!-- The DataContext is now the 'Content' property, which is likely null at design time -->
+            <!--  The DataContext is now the 'Content' property, which is likely null at design time  -->
 
             <DockPanel Width="48" Background="Purple">
 
@@ -30,6 +30,7 @@
 
             <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                 <DockPanel
+                    MaxWidth="260"
                     Margin="3"
                     HorizontalAlignment="Stretch"
                     Background="{DynamicResource MahApps.Brushes.ThemeBackground}">

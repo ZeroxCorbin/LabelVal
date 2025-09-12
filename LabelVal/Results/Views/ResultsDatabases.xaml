@@ -199,9 +199,10 @@
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <DockPanel>
+
+                        <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                             <DockPanel
-                                MaxWidth="240"
+                                MaxWidth="260"
                                 Margin="3"
                                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                                 <DockPanel.Style>
@@ -379,7 +380,8 @@
 
                                 </Grid>
                             </DockPanel>
-                        </DockPanel>
+                        </md:Card>
+
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

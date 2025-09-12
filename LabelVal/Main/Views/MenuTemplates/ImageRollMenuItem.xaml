@@ -29,8 +29,9 @@
 
             <Border Style="{StaticResource imageBar}" />
 
-            <md:Card Margin="3"  Background="{DynamicResource MahApps.Brushes.Control.Background}">
+            <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                 <DockPanel
+                    MaxWidth="260"
                     Margin="3"
                     HorizontalAlignment="Stretch"
                     Visibility="{Binding ., Converter={StaticResource IsNullOrEmptyVisibility}}">

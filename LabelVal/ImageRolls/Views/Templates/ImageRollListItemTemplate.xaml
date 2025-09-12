@@ -17,9 +17,9 @@
 
         <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
             <DockPanel
-            MaxWidth="240"
-            Margin="3"
-            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                MaxWidth="260"
+                Margin="3"
+                Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">
                         <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
@@ -28,13 +28,13 @@
 
                 <!--  Decorative borders for group styling.  -->
                 <Border
-                Margin="0,0,6,0"
-                Background="{DynamicResource MahApps.Brushes.Accent2}"
-                Style="{StaticResource groupLeft}" />
+                    Margin="0,0,6,0"
+                    Background="{DynamicResource MahApps.Brushes.Accent2}"
+                    Style="{StaticResource groupLeft}" />
                 <Border
-                Margin="-6,3,0,0"
-                Background="{DynamicResource MahApps.Brushes.Accent2}"
-                Style="{StaticResource groupBottom}" />
+                    Margin="-6,3,0,0"
+                    Background="{DynamicResource MahApps.Brushes.Accent2}"
+                    Style="{StaticResource groupBottom}" />
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -48,21 +48,21 @@
 
                     <!--  Icon representing an image roll.  -->
                     <iconPacks:PackIconMaterial
-                    Margin="0,3,6,0"
-                    VerticalAlignment="Center"
-                    Kind="ImageMultiple" />
+                        Margin="0,3,6,0"
+                        VerticalAlignment="Center"
+                        Kind="ImageMultiple" />
 
                     <!--  Displays the number of images in the roll, hidden if zero.  -->
                     <TextBlock
-                    Grid.Row="1"
-                    Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
-                    Text="{Binding ImageCount}" />
+                        Grid.Row="1"
+                        Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                        Text="{Binding ImageCount}" />
 
                     <Grid
-                    Grid.Column="1"
-                    Margin="3,0"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top">
+                        Grid.Column="1"
+                        Margin="3,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
@@ -71,16 +71,16 @@
                         </Grid.ColumnDefinitions>
 
                         <!--
-                        This section implements a text trimming effect for long image roll names.
-                        When the name overflows, a "..." hint appears. The text can be aligned left or right.
-                    -->
+                            This section implements a text trimming effect for long image roll names.
+                            When the name overflows, a "..." hint appears. The text can be aligned left or right.
+                        -->
 
                         <!--  Overflow indicator for right-aligned text.  -->
                         <md:SmartHint
-                        Grid.Column="0"
-                        Margin="3,0"
-                        FontSize="14"
-                        Hint="...">
+                            Grid.Column="0"
+                            Margin="3,0"
+                            FontSize="14"
+                            Hint="...">
                             <md:SmartHint.Style>
                                 <Style TargetType="md:SmartHint">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -102,15 +102,15 @@
 
                         <!--  ScrollViewer to handle long names. FlowDirection is toggled for alignment.  -->
                         <ScrollViewer
-                        x:Name="srcName4"
-                        Grid.Column="1"
-                        Padding="3,0"
-                        VerticalAlignment="Center"
-                        md:ScrollViewerAssist.BubbleVerticalScroll="True"
-                        md:ScrollViewerAssist.IsAutoHideEnabled="True"
-                        Focusable="False"
-                        HorizontalScrollBarVisibility="Auto"
-                        VerticalScrollBarVisibility="Disabled">
+                            x:Name="srcName4"
+                            Grid.Column="1"
+                            Padding="3,0"
+                            VerticalAlignment="Center"
+                            md:ScrollViewerAssist.BubbleVerticalScroll="True"
+                            md:ScrollViewerAssist.IsAutoHideEnabled="True"
+                            Focusable="False"
+                            HorizontalScrollBarVisibility="Auto"
+                            VerticalScrollBarVisibility="Disabled">
                             <ScrollViewer.Resources>
                                 <Style TargetType="ScrollBar" />
                                 <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">8</sys:Double>
@@ -144,10 +144,10 @@
 
                         <!--  Overflow indicator for left-aligned text.  -->
                         <md:SmartHint
-                        Grid.Column="2"
-                        Margin="3,0"
-                        FontSize="14"
-                        Hint="...">
+                            Grid.Column="2"
+                            Margin="3,0"
+                            FontSize="14"
+                            Hint="...">
                             <md:SmartHint.Style>
                                 <Style TargetType="md:SmartHint">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -169,9 +169,9 @@
 
                         <!--  Displays the GS1 Table number if applicable.  -->
                         <TextBlock
-                        Grid.Column="3"
-                        Margin="6,3"
-                        Text="{Binding SelectedGS1Table, Converter={StaticResource EnumValueToDescription}, StringFormat={}Table {0}}">
+                            Grid.Column="3"
+                            Margin="6,3"
+                            Text="{Binding SelectedGS1Table, Converter={StaticResource EnumValueToDescription}, StringFormat={}Table {0}}">
                             <TextBlock.Style>
                                 <Style BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}" TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -187,9 +187,9 @@
 
                     <!--  Panel for status icons at the bottom of the item.  -->
                     <DockPanel
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    HorizontalAlignment="Left">
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        HorizontalAlignment="Left">
 
                         <!--  Displays the target DPI for the image roll.  -->
                         <TextBlock Margin="6,0" VerticalAlignment="Center">
@@ -214,9 +214,9 @@
 
                         <!--  Icon indicating the sector type (shared or independent).  -->
                         <iconPacks:PackIconMaterial
-                        Margin="3"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center">
+                            Margin="3"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
                             <iconPacks:PackIconMaterial.Style>
                                 <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
                                     <Setter Property="Kind" Value="FormatListNumbered" />
@@ -234,9 +234,9 @@
 
                         <!--  Icon indicating if the image roll is locked or unlocked.  -->
                         <iconPacks:PackIconMaterial
-                        Margin="3"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center">
+                            Margin="3"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
                             <iconPacks:PackIconMaterial.Style>
                                 <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
                                     <Setter Property="Kind" Value="LockOpenVariant" />
@@ -254,9 +254,9 @@
 
                         <!--  Icon indicating the storage type (database or directory).  -->
                         <iconPacks:PackIconMaterial
-                        Margin="3"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center">
+                            Margin="3"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
                             <iconPacks:PackIconMaterial.Style>
                                 <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
                                     <Setter Property="Kind" Value="Database" />
