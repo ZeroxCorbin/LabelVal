@@ -222,13 +222,16 @@
                             </Grid.RowDefinitions>
 
                             <Button
-                                BorderThickness="0"
                                 HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center"
+                                BorderThickness="0"
                                 Click="btnOpenImageRollsLocation"
                                 Style="{StaticResource MahApps.Styles.DropDownButton.Button.WindowCommands}"
-                                ToolTip="Open the image roll database location." >
-                                <iconPacks:Modern Kind="FolderOpen" Width="22" Height="22" />
+                                ToolTip="Open the image roll database location.">
+                                <iconPacks:Modern
+                                    Width="22"
+                                    Height="22"
+                                    Kind="FolderOpen" />
                             </Button>
 
                             <!--  Dropdown for managing database sources.  -->
@@ -298,9 +301,9 @@
 
                                 <DockPanel>
                                     <TextBlock
-                                    Margin="0,0,0,3"
-                                    HorizontalAlignment="Center"
-                                    DockPanel.Dock="Top"
+                                        Margin="0,0,0,3"
+                                        HorizontalAlignment="Center"
+                                        DockPanel.Dock="Top"
                                         Text="New"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
@@ -332,9 +335,9 @@
 
                                 <DockPanel>
                                     <TextBlock
-                                    Margin="0,0,0,3"
-                                    HorizontalAlignment="Center"
-                                    DockPanel.Dock="Top"
+                                        Margin="0,0,0,3"
+                                        HorizontalAlignment="Center"
+                                        DockPanel.Dock="Top"
                                         Text="Edit"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
@@ -363,9 +366,9 @@
 
                                 <DockPanel>
                                     <TextBlock
-                                    Margin="0,0,0,3"
-                                    HorizontalAlignment="Center"
-                                    DockPanel.Dock="Top"
+                                        Margin="0,0,0,3"
+                                        HorizontalAlignment="Center"
+                                        DockPanel.Dock="Top"
                                         Text="Save"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     <iconPacks:PackIconMaterial
@@ -392,9 +395,9 @@
 
                                 <DockPanel>
                                     <TextBlock
-                                    Margin="0,0,0,3"
-                                    HorizontalAlignment="Center"
-                                    DockPanel.Dock="Top"
+                                        Margin="0,0,0,3"
+                                        HorizontalAlignment="Center"
+                                        DockPanel.Dock="Top"
                                         Text="Cancel"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     <iconPacks:PackIconMaterial
@@ -421,9 +424,9 @@
 
                                 <DockPanel>
                                     <TextBlock
-                                    Margin="0,0,0,3"
-                                    HorizontalAlignment="Center"
-                                    DockPanel.Dock="Top"
+                                        Margin="0,0,0,3"
+                                        HorizontalAlignment="Center"
+                                        DockPanel.Dock="Top"
                                         Text="Delete"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     <iconPacks:PackIconMaterial

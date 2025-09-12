@@ -81,12 +81,12 @@
 
                         <!--  ListBox to select where new images are added (Top or Bottom).  -->
                         <ListBox
-                            ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                             Grid.Row="1"
                             md:ListBoxAssist.CanUserToggleSelectedItem="True"
                             BorderThickness="0"
                             Focusable="False"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Disabled"
                             SelectedValue="{Binding ActiveImageRoll.ImageAddPosition}"
                             ToolTip="Select where to add new images.">
                             <ListBox.ItemContainerStyle>
