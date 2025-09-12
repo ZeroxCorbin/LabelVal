@@ -1,12 +1,12 @@
-<ResourceDictionary
+﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:converters="clr-namespace:Wpf.lib.Converters;assembly=Wpf.lib"
+    xmlns:converters="clr-namespace:Wpf.lib.Converters;assembly=Wpf.lib"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:v5="clr-namespace:LabelVal.V5.Views">
 
-	<converters:IsNullOrEmptyVisibility x:Key="IsNullOrEmptyVisibility" />
+    <converters:IsNullOrEmptyVisibility x:Key="IsNullOrEmptyVisibility" />
 
     <!--  V5  -->
     <DataTemplate x:Key="V5MenuItem">

@@ -13,75 +13,59 @@
     d:DataContext="{d:DesignInstance Type=viewModels:Printer}"
     mc:Ignorable="d">
 
-    <!--<GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top"
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+    <UserControl.Resources>
+        <converters:PrinterSettingThousandthsToInches x:Key="PrinterSettingThousandthsToInches" />
+    </UserControl.Resources>
 
-        <GroupBox.Header>
-
-            <DockPanel Margin="-5">
-
-                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="4,1">
-                    <TextBlock Text="Printers" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                </md:Card>
-
-                <Button Click="btnShowPrinterDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}" Margin="6,0,3,0" HorizontalAlignment="Right">
-
-                    <iconPacks:PackIconMaterial Height="18" Width="18" Margin="0,0,1,0" Kind="CodeJson"/>
-                </Button>
-
-            </DockPanel>
-        </GroupBox.Header>-->
-
-    <!--<md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">-->
-
-    <DockPanel Margin="3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+    <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
 
 
-        <ComboBox
-            Height="44"
-            Margin="3,0"
-            HorizontalContentAlignment="Center"
-            VerticalContentAlignment="Center"
-            md:HintAssist.FloatingOffset="0, -15"
-            BorderThickness="0"
-            ItemsSource="{Binding Printers}"
-            SelectedItem="{Binding SelectedPrinterName}">
+        <DockPanel
+            Margin="3"
+            HorizontalAlignment="Stretch"
+            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-            <ComboBox.Resources>
-                <converters:PrinterSettingThousandthsToInches x:Key="PrinterSettingThousandthsToInches" />
-            </ComboBox.Resources>
+            <DockPanel.Style>
+                <Style TargetType="DockPanel">
+                    <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
 
-            <ComboBox.Style>
-                <Style BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}" TargetType="{x:Type ComboBox}">
-                    <Setter Property="md:HintAssist.Hint">
-                        <Setter.Value>
-                            <TextBlock>
-                                <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Width, StringFormat=N2, Converter={StaticResource PrinterSettingThousandthsToInches}}" />
-                                <Run Text="x" />
-                                <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Height, StringFormat=N2, Converter={StaticResource PrinterSettingThousandthsToInches}}" />
-                                <Run Text="inches (" />
-                                <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrinterResolution.X}" />
-                                <Run Text="DPI )" />
-                            </TextBlock>
-                        </Setter.Value>
-                    </Setter>
                 </Style>
-            </ComboBox.Style>
+            </DockPanel.Style>
 
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}" />
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+            <StackPanel Margin="3">
 
-        <!--<TextBox Grid.Column="1" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding PrintCount}" md:HintAssist.Hint="# Copies"
-                        md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>-->
+                <TextBlock HorizontalAlignment="Center" Style="{StaticResource MaterialDesignBodyMediumTextBlock}">
+                    <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Width, StringFormat=N2, Converter={StaticResource PrinterSettingThousandthsToInches}}" />
+                    <Run Text="x" />
+                    <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Height, StringFormat=N2, Converter={StaticResource PrinterSettingThousandthsToInches}}" />
+                    <Run Text="inches (" />
+                    <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrinterResolution.X}" />
+                    <Run Text="DPI )" />
+                </TextBlock>
 
-    </DockPanel>
-    <!--</md:Card>-->
+                <Border BorderBrush="{DynamicResource MahApps.Brushes.Button.Border}" BorderThickness="1">
+                    <ComboBox
+                        MaxWidth="260"
+                        Margin="3,0"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        BorderThickness="0"
+                        ItemsSource="{Binding Printers}"
+                        SelectedItem="{Binding SelectedPrinterName}">
 
-    <!--</GroupBox>-->
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    MaxWidth="260"
+                                    Text="{Binding}"
+                                    TextWrapping="Wrap" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Border>
+
+
+            </StackPanel>
+        </DockPanel>
+    </md:Card>
 </UserControl>
