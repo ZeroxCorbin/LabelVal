@@ -110,8 +110,8 @@
         </md:Card>
 
         <DockPanel DockPanel.Dock="Top">
-            <Border Style="{StaticResource groupLeft}" />
-            <Border Style="{StaticResource groupBottom}" />
+            <Border Style="{StaticResource groupLeft}" Background="{DynamicResource V275_Brush_Active}"/>
+            <Border Style="{StaticResource groupBottom}" Background="{DynamicResource V275_Brush_Active}" />
 
             <ItemsControl ItemsSource="{Binding Devices}">
                 <ItemsControl.ItemTemplate>

@@ -689,8 +689,8 @@
 
         <!--  Main content area, including the results list and the JSON viewer drawer.  -->
         <DockPanel VerticalAlignment="Top" DockPanel.Dock="Top">
-            <Border Style="{StaticResource groupLeft}" />
-            <Border Style="{StaticResource groupBottom}" />
+            <Border Style="{StaticResource groupLeft}" Background="Teal" />
+            <Border Style="{StaticResource groupBottom}" Background="Teal"/>
 
             <!--  Main content area.  -->
             <DockPanel>

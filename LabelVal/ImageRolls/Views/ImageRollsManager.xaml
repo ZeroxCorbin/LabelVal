@@ -476,8 +476,8 @@
             </md:Card>
 
             <DockPanel DockPanel.Dock="Top">
-                <Border Style="{StaticResource groupLeft}" />
-                <Border Style="{StaticResource groupBottom}" />
+                <Border Style="{StaticResource groupLeft}"  Background="Teal"/>
+                <Border Style="{StaticResource groupBottom}"  Background="Teal"/>
 
                 <!--
                     DrawerHost that contains the editing UI for an image roll.
@@ -606,8 +606,8 @@
             </md:Card>
 
             <DockPanel>
-                <Border Style="{StaticResource groupLeft}" />
-                <Border Style="{StaticResource groupBottom}" />
+                <Border Style="{StaticResource groupLeft}"  Background="Teal"/>
+                <Border Style="{StaticResource groupBottom}"  Background="Teal"/>
 
                 <!--  Tab control to display Fixed Image Rolls, grouped by standard.  -->
                 <mah:MetroTabControl

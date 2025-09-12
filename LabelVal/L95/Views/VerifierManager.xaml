@@ -15,7 +15,6 @@
     <DockPanel Margin="3,3,0,0" VerticalAlignment="Top">
 
         <md:Card
-            Height="68"
             Margin="3,3,0,0"
             Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
             DockPanel.Dock="Top"
@@ -23,58 +22,51 @@
 
             <DockPanel>
 
-                <DockPanel Width="48" Background="{DynamicResource L95_Brush_Active}">
+                <DockPanel
+                    Width="47"
+                    VerticalAlignment="Stretch"
+                    Background="{DynamicResource L95_Brush_Active}">
                     <Image
-                        Width="36"
-                        Height="36"
+                        Width="28"
+                        Height="28"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Source="/Assets/Images/l95-white-outline.ico" />
                 </DockPanel>
 
-                <Border Style="{StaticResource imageBar}" />
+                <DockPanel
+                    Height="32"
+                    HorizontalAlignment="Stretch"
+                    DockPanel.Dock="Top">
+                    <DockPanel.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="0" Color="{DynamicResource L95}" />
+                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                        </LinearGradientBrush>
+                    </DockPanel.Background>
 
-                <DockPanel>
-                    <DockPanel DockPanel.Dock="Top">
+                    <TextBlock
+                        Margin="6,0,6,3"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                        Text="95xx" />
 
-                        <DockPanel HorizontalAlignment="Stretch">
-                            <DockPanel.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
-                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                </LinearGradientBrush>
-                            </DockPanel.Background>
-
-                            <TextBlock
-                                Margin="6,0,6,3"
-                                DockPanel.Dock="Top"
-                                Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
-                                Text="L95 Verifier" />
-
-                            <Border Style="{StaticResource imageBarHor}" />
-
-                        </DockPanel>
-
-                        <Button
-                            Padding="8,0"
-                            HorizontalAlignment="Right"
-                            Click="btnCollapseContent"
-                            Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
-
-                    </DockPanel>
-
-                    <DockPanel Height="24" />
-
+                    <Button
+                        Padding="8,0"
+                        HorizontalAlignment="Right"
+                        Click="btnCollapseContent"
+                        Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
                 </DockPanel>
+
             </DockPanel>
 
         </md:Card>
 
         <DockPanel DockPanel.Dock="Top">
-            <Border Style="{StaticResource groupLeft}" />
-            <Border Style="{StaticResource groupBottom}" />
+            <Border Background="{DynamicResource L95_Brush_Active}" Style="{StaticResource groupLeft}" />
+            <Border Background="{DynamicResource L95_Brush_Active}" Style="{StaticResource groupBottom}" />
 
             <ListView
                 Margin="3,3,0,0"
