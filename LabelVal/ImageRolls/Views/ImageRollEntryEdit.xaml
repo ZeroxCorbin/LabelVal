@@ -23,35 +23,50 @@
 
         <StackPanel>
 
-            <TextBox
-                Margin="3"
-                md:HintAssist.Hint="Name"
-                md:HintAssist.IsFloating="True"
-                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                Text="{Binding Name}" />
+            <StackPanel>
+                <TextBlock
+                    Margin="0,0,0,2"
+                    Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                    Text="Name" />
+
+                <TextBox Margin="3,0" Text="{Binding Name}" />
+            </StackPanel>
+
 
             <DockPanel>
-                <StackPanel Margin="6,0,0,0">
-                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Image Type" />
+                <StackPanel Margin="6,3,3,3">
+                    <TextBlock
+                        Margin="0,0,0,2"
+                        Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                        Text="Use Image" />
                     <ListBox ItemsSource="{Binding Source={StaticResource ImageRollImageTypes}}" SelectedItem="{Binding ImageType}" />
                 </StackPanel>
-                <StackPanel Margin="6,0,0,0">
-                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Sector Type" />
+
+                <StackPanel Margin="6,3,3,3">
+                    <TextBlock
+                        Margin="0,0,0,2"
+                        Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                        Text="Sector Type" />
                     <ListBox ItemsSource="{Binding Source={StaticResource ImageRollSectorTypes}}" SelectedItem="{Binding SectorType}" />
                 </StackPanel>
-                <TextBox
-                    Margin="3"
-                    HorizontalAlignment="Left"
-                    md:HintAssist.Hint="Target DPI"
-                    md:HintAssist.IsFloating="True"
-                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                    Text="{Binding TargetDPI}" />
+
+                <StackPanel Margin="6,3,3,3" VerticalAlignment="Top">
+                    <TextBlock
+                        Margin="0,0,0,2"
+                        Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                        Text="Target DPI" />
+                    <TextBox Margin="3,0" Text="{Binding TargetDPI}" />
+                </StackPanel>
+
 
             </DockPanel>
 
             <DockPanel>
-                <StackPanel Margin="6,0,0,0">
-                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Application Standards" />
+                <StackPanel Margin="6,3,3,3">
+                    <TextBlock
+                        Margin="0,0,0,2"
+                        Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                        Text="Application Standards" />
                     <ComboBox ItemsSource="{Binding Source={StaticResource ApplicationStandards}}" SelectedItem="{Binding SelectedApplicationStandard}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
@@ -61,7 +76,7 @@
                     </ComboBox>
                 </StackPanel>
 
-                <StackPanel Margin="6,0,0,0">
+                <StackPanel Margin="6,3,3,3">
 
                     <StackPanel.Style>
                         <Style TargetType="StackPanel">
@@ -75,7 +90,10 @@
 
                     </StackPanel.Style>
 
-                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="GS1 Table" />
+                    <TextBlock
+                        Margin="0,0,0,2"
+                        Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                        Text="GS1 Table" />
                     <ComboBox ItemsSource="{Binding Source={StaticResource AvailableTables}}" SelectedItem="{Binding SelectedGS1Table}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
@@ -88,8 +106,12 @@
             </DockPanel>
 
             <DockPanel>
-                <StackPanel Margin="6,0,0,0">
-                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Grading Standards" />
+                <StackPanel Margin="6,3,3,3">
+                    <TextBlock
+                        Margin="0,0,0,2"
+                        Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                        Text="Grading Standards" />
+
                     <ComboBox ItemsSource="{Binding Source={StaticResource GradingStandards}}" SelectedItem="{Binding SelectedGradingStandard}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>

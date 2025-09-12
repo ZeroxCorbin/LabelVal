@@ -142,7 +142,7 @@ public partial class ImageRollsDatabases : ObservableRecipient, IDisposable
 
         if (Databases.Count == 0)
         {
-            Databases.ImageRollsDatabase file = new(new FileFolderEntry(Path.Combine(App.UserImageRollsRoot, "My First Database" + App.DatabaseExtension)));
+            Databases.ImageRollsDatabase file = new(new FileFolderEntry(Path.Combine(App.UserImageRollsRoot, "General Results" + App.DatabaseExtension)));
             file.Close();
 
             FileRoot = EnumerateFolders(FileRoot);

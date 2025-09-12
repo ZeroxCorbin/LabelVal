@@ -59,7 +59,33 @@
                     IsChecked="{Binding DataContext.AppSettings.ShowMainMenu, Mode=OneWay, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}"
                     Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
             </DataTemplate>
+
+            <DataTemplate x:Key="HamburgerHeader">
+                <StackPanel>
+                    <Image
+                        Width="120"
+                        Margin="0,3,3,3"
+                        Source="/Assets/Images/label-val-logo.png" />
+                    <!--<StackPanel Margin="0,0,0,10" VerticalAlignment="Bottom">
+
+                        <TextBlock
+                            Margin="0,2,0,0"
+                            HorizontalAlignment="Center"
+                            FontSize="10"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource MahApps.Brushes.Gray5}"
+                            Text="For Internal Use Only! (Confidential B)" />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            FontSize="10"
+                            Foreground="{DynamicResource MahApps.Brushes.Gray5}"
+                            Text="Copyright &#169; Omron 2015" />
+                    </StackPanel>-->
+                </StackPanel>
+            </DataTemplate>
+
         </ResourceDictionary>
+
 
 
     </mah:MetroWindow.Resources>
@@ -252,6 +278,12 @@
                             ItemsSource="{Binding MenuItems}"
                             LayoutUpdated="hamMenu_LayoutUpdated"
                             SelectedItem="{Binding SelectedMenuItem}">
+
+                            <mah:HamburgerMenu.HamburgerMenuHeaderTemplate>
+                                <DataTemplate>
+                                    <ContentControl ContentTemplate="{StaticResource HamburgerHeader}" />
+                                </DataTemplate>
+                            </mah:HamburgerMenu.HamburgerMenuHeaderTemplate>
 
                             <mah:HamburgerMenu.ContentTemplate>
                                 <DataTemplate>

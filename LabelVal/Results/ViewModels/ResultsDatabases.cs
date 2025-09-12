@@ -141,7 +141,7 @@ public partial class ResultsDatabasesViewModel : ObservableRecipient
 
         if (Databases.Count == 0)
         {
-            ResultsDatabase file = new(new FileFolderEntry(Path.Combine(App.ResultssDatabaseRoot, "My First Database" + App.DatabaseExtension)));
+            ResultsDatabase file = new(new FileFolderEntry(Path.Combine(App.ResultssDatabaseRoot, "General Results" + App.DatabaseExtension)));
             file.Close();
 
             FileRoot = EnumerateFolders(FileRoot);

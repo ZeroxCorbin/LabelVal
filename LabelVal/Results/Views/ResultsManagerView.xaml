@@ -30,784 +30,24 @@
 
     <!--  Resources section defining shared elements and styles for this control.  -->
     <UserControl.Resources>
-
-        <!--  CollectionViewSource for sorting the image results entries by their source image order.  -->
-        <CollectionViewSource
-            x:Key="CvsResultssEntries"
-            IsLiveSortingRequested="True"
-            Source="{Binding ResultssEntries}">
-            <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription Direction="Ascending" PropertyName="SourceImage.Order" />
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
-
-        <!--  Resource for V275 device-specific buttons. This is dynamically loaded into the main toolbar.  -->
-        <DockPanel x:Key="V275Buttons">
-
-            <!--  V275  -->
-            <Border
-                Margin="3,0,0,0"
-                VerticalAlignment="Center"
-                BorderBrush="{DynamicResource V275_Brush_Active}"
-                BorderThickness="1"
-                CornerRadius="3">
-
-                <Border.Style>
-                    <Style TargetType="{x:Type Border}">
-                        <Style.Triggers>
-                            <!--  Hides the button if the V275 handler is offline.  -->
-                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.Offline}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-
-                            <!--  ToolTips change based on the current V275 handler mode.  -->
-                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
-                                <Setter Property="ToolTip" Value="V275: Process the source image and detect sectors." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorRestore}">
-                                <Setter Property="ToolTip" Value="V275: Process the source image and restore sectors from the database." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
-                                <Setter Property="ToolTip" Value="V275: Process the source image without sector detection or restoration." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
-                                <Setter Property="ToolTip" Value="V275: Trigger the printer, then detect sectors." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.CameraRestore}">
-                                <Setter Property="ToolTip" Value="V275: Trigger the printer, then restore sectors from the database." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
-                                <Setter Property="ToolTip" Value="V275: Trigger the printer." />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-
-                <Button
-                    Width="48"
-                    Height="48"
-                    HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch"
-                    Command="{Binding AddDeviceImageCommand}"
-                    CommandParameter="{x:Static vm:ResultsEntryDevices.V275}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    Style="{StaticResource MahApps.Styles.Button.Hamburger}">
-
-                    <DockPanel>
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            DockPanel.Dock="Top"
-                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                            Text="V275"
-                            Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                        <Grid Background="{DynamicResource V275_Brush_Active}">
-
-                            <!--  Progress bar shown when the V275 device is busy.  -->
-                            <mah:MetroProgressBar
-                                Width="62"
-                                Height="6"
-                                Padding="0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Foreground="White"
-                                IsIndeterminate="{Binding IsV275Working}"
-                                Visibility="{Binding IsV275Working, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                            <!--  Icons indicating the current mode (Camera/Simulator) and action (Detect/Restore/Trigger).  -->
-                            <!--  Camera  -->
-                            <Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.CameraRestore}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="Camera" />
-                            </Grid>
-
-                            <!--  Simulator  -->
-                            <Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorRestore}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="CameraImage" />
-
-                            </Grid>
-
-                            <!--  Detect  -->
-                            <Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="DataMatrixScan" />
-                            </Grid>
-
-                            <!--  Restore  -->
-                            <!--<Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="StoreOutline" />
-                            </Grid>-->
-
-                            <!--  Trigger  -->
-                            <Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding V275Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="Minus" />
-                            </Grid>
-                        </Grid>
-                    </DockPanel>
-                </Button>
-            </Border>
-
-        </DockPanel>
-
-        <!--  Resource for V5 device-specific buttons.  -->
-        <DockPanel x:Key="V5Buttons">
-
-            <!--  V5 Trigger  -->
-            <Border
-                Margin="3,0,0,0"
-                VerticalAlignment="Center"
-                BorderBrush="{DynamicResource V5_Brush_Active}"
-                BorderThickness="1"
-                CornerRadius="3">
-
-                <Border.Style>
-                    <Style TargetType="{x:Type Border}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.Offline}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
-                                <Setter Property="ToolTip" Value="V5: Process the source image and detect sectors." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorRestore}">
-                                <Setter Property="ToolTip" Value="V5: Process the source image and restore sectors from the database." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
-                                <Setter Property="ToolTip" Value="V5: Process the source image without sector detection or restoration." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
-                                <Setter Property="ToolTip" Value="V5: Trigger the camera, then detect sectors." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraRestore}">
-                                <Setter Property="ToolTip" Value="V5: Trigger the camera, then restore sectors from the database." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
-                                <Setter Property="ToolTip" Value="V5: Trigger the camera." />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-
-                <Button
-                    Width="48"
-                    Height="48"
-                    HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch"
-                    Command="{Binding AddDeviceImageCommand}"
-                    CommandParameter="{x:Static vm:ResultsEntryDevices.V5}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    Style="{StaticResource MahApps.Styles.Button.Hamburger}">
-
-                    <DockPanel>
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            DockPanel.Dock="Top"
-                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                            Text="V5"
-                            Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                        <Grid Background="{DynamicResource V5_Brush_Active}">
-
-                            <mah:MetroProgressBar
-                                Width="62"
-                                Height="6"
-                                Padding="0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Foreground="White"
-                                IsIndeterminate="{Binding IsV5Working}"
-                                Visibility="{Binding IsV5Working, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                            <!--  Camera  -->
-                            <Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraRestore}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="CameraIris" />
-                            </Grid>
-
-                            <!--  Simulator  -->
-                            <Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorRestore}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="FolderImage" />
-
-                            </Grid>
-
-                            <!--  Detect  -->
-                            <Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="DataMatrixScan" />
-                            </Grid>
-
-                            <!--<Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="Restore" />
-                            </Grid>-->
-
-                            <!--  Trigger  -->
-                            <Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="Minus" />
-                            </Grid>
-                        </Grid>
-                    </DockPanel>
-                </Button>
-            </Border>
-
-        </DockPanel>
-
-        <!--  Resource for L95 device-specific buttons.  -->
-        <DockPanel x:Key="L95Buttons">
-
-            <!--  L95 Trigger  -->
-            <Border
-                Margin="3,0,0,0"
-                VerticalAlignment="Center"
-                BorderBrush="{DynamicResource L95_Brush_Active}"
-                BorderThickness="1"
-                CornerRadius="3">
-
-                <Border.Style>
-                    <Style TargetType="{x:Type Border}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.Offline}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
-                                <Setter Property="ToolTip" Value="L95: Process the source image and detect sectors." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorRestore}">
-                                <Setter Property="ToolTip" Value="L95: Process the source image and restore sectors from the database." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
-                                <Setter Property="ToolTip" Value="L95: Process the source image without sector detection or restoration." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
-                                <Setter Property="ToolTip" Value="L95: Trigger the camera, then detect sectors." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraRestore}">
-                                <Setter Property="ToolTip" Value="L95: Trigger the camera, then restore sectors from the database." />
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
-                                <Setter Property="ToolTip" Value="L95: Trigger the camera." />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-
-                <Button
-                    Width="48"
-                    Height="48"
-                    HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch"
-                    Command="{Binding AddDeviceImageCommand}"
-                    CommandParameter="{x:Static vm:ResultsEntryDevices.L95}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    IsEnabled="{Binding IsL95Working, Converter={StaticResource InvertBool}}"
-                    Style="{StaticResource MahApps.Styles.Button.Hamburger}">
-
-                    <DockPanel>
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            DockPanel.Dock="Top"
-                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                            Text="L95"
-                            Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                        <Grid Background="{DynamicResource L95_Brush_Active}">
-
-                            <mah:MetroProgressBar
-                                Width="62"
-                                Height="6"
-                                Padding="0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Foreground="White"
-                                IsIndeterminate="{Binding IsL95Working}"
-                                Visibility="{Binding IsL95Working, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                            <!--  Camera  -->
-                            <Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraRestore}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="CameraIris" />
-                            </Grid>
-
-                            <!--  Simulator  -->
-                            <Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorRestore}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="FolderImage" />
-
-                            </Grid>
-
-                            <!--  Detect  -->
-                            <Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="DataMatrixScan" />
-                            </Grid>
-
-                            <!--<Grid
-                            Margin="0,6"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom">
-                            <Grid.Style>
-                                <Style TargetType="{x:Type Grid}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Grid.Style>
-
-                            <iconPacks:PackIconMaterial
-                                Width="18"
-                                Height="18"
-                                Margin="3,0"
-                                VerticalAlignment="Center"
-                                Kind="Restore" />
-                        </Grid>-->
-
-                            <!--  Trigger  -->
-                            <Grid
-                                Margin="0,6"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    Margin="3,0"
-                                    VerticalAlignment="Center"
-                                    Kind="Minus" />
-                            </Grid>
-                        </Grid>
-                    </DockPanel>
-                </Button>
-            </Border>
-
-            <!--  ToggleButton to redirect L95 results to the current image roll.  -->
-            <ToggleButton
-                Width="48"
-                Height="48"
-                Margin="3,0,0,0"
-                Padding="0"
-                VerticalAlignment="Center"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                BorderBrush="{DynamicResource L95_Brush_Active}"
-                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                IsChecked="{Binding IsL95Selected}"
-                IsEnabled="{Binding IsL95Working, Converter={StaticResource InvertBool}}">
-                <ToggleButton.Style>
-                    <Style BasedOn="{StaticResource MahApps.Styles.ToggleButton}" TargetType="ToggleButton">
-                        <Setter Property="ToolTip" Value="Redirect L95 results to this image roll." />
-                        <Setter Property="Content">
-                            <Setter.Value>
-                                <DockPanel>
-                                    <DockPanel>
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            DockPanel.Dock="Top"
-                                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                                            Text="L95"
-                                            Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                        <Grid>
-                                            <Image
-                                                Width="24"
-                                                Height="24"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Source="/Assets/Images/l95-white-outline.ico" />
-                                        </Grid>
-                                    </DockPanel>
-                                </DockPanel>
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-
-                            <!--  Visual state when L95 redirection is active.  -->
-                            <DataTrigger Binding="{Binding IsL95Selected}" Value="True">
-                                <Setter Property="ToolTip" Value="L95 results are being redirected to this image roll. Click to disable." />
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <DockPanel>
-                                            <TextBlock
-                                                HorizontalAlignment="Center"
-                                                DockPanel.Dock="Top"
-                                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                                                Text="L95"
-                                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                            <Grid Background="{DynamicResource L95_Brush_Active}">
-                                                <Grid
-                                                    Margin="3,6"
-                                                    HorizontalAlignment="Left"
-                                                    VerticalAlignment="Bottom">
-
-                                                    <iconPacks:PackIconMaterial
-                                                        Width="18"
-                                                        Height="18"
-                                                        Margin="3,0"
-                                                        VerticalAlignment="Center"
-                                                        Kind="Headphones" />
-                                                </Grid>
-
-                                                <iconPacks:PackIconMaterial
-                                                    Width="18"
-                                                    Height="18"
-                                                    Margin="0,6"
-                                                    HorizontalAlignment="Right"
-                                                    VerticalAlignment="Bottom"
-                                                    Kind="ChevronTripleDown" />
-                                            </Grid>
-                                        </DockPanel>
-                                    </Setter.Value>
-                                </Setter>
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.Offline}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </Style.Triggers>
-
-                    </Style>
-                </ToggleButton.Style>
-            </ToggleButton>
-        </DockPanel>
-
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Templates/SharedButtonStyles.xaml" />
+                <ResourceDictionary Source="Templates/V275Buttons.xaml" />
+                <ResourceDictionary Source="Templates/V5Buttons.xaml" />
+                <ResourceDictionary Source="Templates/L95Buttons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!--  CollectionViewSource for sorting the image results entries by their source image order.  -->
+            <CollectionViewSource
+                x:Key="CvsResultssEntries"
+                IsLiveSortingRequested="True"
+                Source="{Binding ResultssEntries}">
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription Direction="Ascending" PropertyName="SourceImage.Order" />
+                </CollectionViewSource.SortDescriptions>
+            </CollectionViewSource>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <!--  Main layout container for the Image Results Manager.  -->
@@ -908,7 +148,7 @@
 
                                 <!--  Standard  -->
                                 <StackPanel Margin="6,0,0,0">
-                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Standard" />
+                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="App Standard" />
                                     <TextBlock Margin="3,0" Text="{Binding ActiveImageRoll.SelectedApplicationStandard, Converter={StaticResource EnumValueToDescription}}" />
                                 </StackPanel>
 
@@ -926,11 +166,17 @@
                                     </TextBlock.Style>
                                 </TextBlock>
 
+                                <!--  Standard  -->
+                                <StackPanel Margin="6,0,0,0">
+                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Grading Standard" />
+                                    <TextBlock Margin="3,0" Text="{Binding ActiveImageRoll.SelectedGradingStandard}" />
+                                </StackPanel>
+
                                 <Border Margin="3,0,0,0" Style="{StaticResource imageBar}" />
 
                                 <!--  Iamge Type  -->
                                 <StackPanel Margin="6,0,0,0">
-                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Image Type" />
+                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Use Image" />
 
                                     <DockPanel>
 
@@ -989,39 +235,12 @@
 
                                 </StackPanel>
 
-                                <Border Margin="3,0,0,0" Style="{StaticResource imageBar}" />
-
-                                <!--  Locked Status  -->
-                                <StackPanel Margin="6,0,0,0">
-                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Locked" />
-
-                                    <DockPanel>
-                                        <TextBlock Margin="6,0" Text="{Binding ActiveImageRoll.IsLocked, Converter={StaticResource EnumValueToDescription}}" />
-
-                                        <iconPacks:PackIconMaterial HorizontalAlignment="Left" VerticalAlignment="Center">
-                                            <iconPacks:PackIconMaterial.Style>
-                                                <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                                                    <Setter Property="Kind" Value="LockOpenVariant" />
-                                                    <Setter Property="ToolTip" Value="Image Roll is unlocked." />
-
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ActiveImageRoll.IsLocked}" Value="True">
-                                                            <Setter Property="Kind" Value="Lock" />
-                                                            <Setter Property="ToolTip" Value="Image Roll is locked." />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </iconPacks:PackIconMaterial.Style>
-                                        </iconPacks:PackIconMaterial>
-                                    </DockPanel>
-
-                                </StackPanel>
 
                                 <Border Margin="3,0,0,0" Style="{StaticResource imageBar}" />
 
                                 <!--  Roll Type (Database or Directory)  -->
                                 <StackPanel Margin="6,0,0,0">
-                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Roll Type" />
+                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Roll Location" />
 
                                     <DockPanel>
                                         <TextBlock Margin="6,0" Text="{Binding ActiveImageRoll.RollType, Converter={StaticResource EnumValueToDescription}}" />
@@ -1064,6 +283,34 @@
                                     </TextBlock>
                                 </StackPanel>
 
+                                <Border Margin="3,0,0,0" Style="{StaticResource imageBar}" />
+
+                                <!--  Locked Status  -->
+                                <StackPanel Margin="6,0,0,0">
+                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Locked" />
+
+                                    <DockPanel>
+                                        <TextBlock Margin="6,0" Text="{Binding ActiveImageRoll.IsLocked, Converter={StaticResource EnumValueToDescription}}" />
+
+                                        <iconPacks:PackIconMaterial HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <iconPacks:PackIconMaterial.Style>
+                                                <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                    <Setter Property="Kind" Value="LockOpenVariant" />
+                                                    <Setter Property="ToolTip" Value="Image Roll is unlocked." />
+
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ActiveImageRoll.IsLocked}" Value="True">
+                                                            <Setter Property="Kind" Value="Lock" />
+                                                            <Setter Property="ToolTip" Value="Image Roll is locked." />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </iconPacks:PackIconMaterial.Style>
+                                        </iconPacks:PackIconMaterial>
+                                    </DockPanel>
+
+                                </StackPanel>
+
                             </DockPanel>
 
                             <Border Style="{StaticResource imageBarHor}" />
@@ -1071,20 +318,18 @@
                         </DockPanel>
 
                         <!--  Toolbar for controlling the image roll and results.  -->
-                        <DockPanel Margin="0,3,0,6">
+                        <ToolBar
+                            Margin="0"
+                            Padding="3"
+                            HorizontalAlignment="Stretch"
+                            ToolBarTray.IsLocked="True">
 
                             <DockPanel HorizontalAlignment="Left">
 
                                 <!--  Button to add new images to the roll. Visible only when the roll is not locked.  -->
-                                <Button
-                                    Width="48"
-                                    Margin="3,0,0,0"
-                                    VerticalContentAlignment="Stretch"
-                                    Command="{Binding AddImageCommand}"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    ToolTip="Add new image(s) to the roll.">
+                                <Button Command="{Binding AddImageCommand}" ToolTip="Add new image(s) to the roll.">
                                     <Button.Style>
-                                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                                        <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ActiveImageRoll.IsLocked}" Value="False">
@@ -1095,11 +340,9 @@
                                     </Button.Style>
 
                                     <DockPanel>
-
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             DockPanel.Dock="Top"
-                                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                             Text="Add Image"
                                             Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
@@ -1135,34 +378,35 @@
                             </Border>
 
                             <!--  Image Size Slider  -->
-                            <DockPanel Margin="9,0,9,0" HorizontalAlignment="Right">
+                            <DockPanel Margin="3,1,3,0" VerticalAlignment="Stretch">
 
-                                <md:SmartHint
-                                    Margin="3,0,3,0"
+                                <TextBlock
+                                    Margin="0,0,0,2"
                                     HorizontalAlignment="Center"
+                                    VerticalAlignment="Top"
                                     DockPanel.Dock="Top">
-                                    <md:SmartHint.Style>
-                                        <Style TargetType="md:SmartHint">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
-                                                    <Setter Property="Hint" Value="Ex. Large" />
+                                                    <Setter Property="Text" Value="Ex. Large" />
                                                 </DataTrigger>
 
                                                 <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
-                                                    <Setter Property="Hint" Value="Large" />
+                                                    <Setter Property="Text" Value="Large" />
                                                 </DataTrigger>
 
                                                 <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
-                                                    <Setter Property="Hint" Value="Regular" />
+                                                    <Setter Property="Text" Value="Regular" />
                                                 </DataTrigger>
 
                                                 <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
-                                                    <Setter Property="Hint" Value="Small" />
+                                                    <Setter Property="Text" Value="Small" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </md:SmartHint.Style>
-                                </md:SmartHint>
+                                    </TextBlock.Style>
+                                </TextBlock>
 
                                 <Slider
                                     Width="48"
@@ -1180,19 +424,18 @@
                             </DockPanel>
 
                             <!--  Toggle button to show or hide alarms for errors and warnings.  -->
-                            <StackPanel VerticalAlignment="Center">
+                            <StackPanel Margin="3,0" VerticalAlignment="Center">
                                 <TextBlock
+                                    Margin="0,0,0,2"
                                     HorizontalAlignment="Center"
-                                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                    VerticalAlignment="Top"
+                                    FontSize="10"
+                                    FontWeight="DemiBold"
                                     Text="Alarms"
                                     Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                <ToggleButton
-                                    Width="48"
-                                    Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    IsChecked="{Binding HideErrorsWarnings}">
+                                <ToggleButton IsChecked="{Binding HideErrorsWarnings}">
                                     <ToggleButton.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                                        <Style BasedOn="{StaticResource ToolBarActionToggleButton}" TargetType="ToggleButton">
                                             <Setter Property="ToolTip" Value="Show alarms for errors and warnings." />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding HideErrorsWarnings}" Value="True">
@@ -1205,8 +448,8 @@
                                     <md:ToggleButtonAssist.OnContent>
 
                                         <iconPacks:PackIconFontAwesome
-                                            Width="24"
-                                            Height="24"
+                                            Width="22"
+                                            Height="22"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Kind="BellSlashSolid" />
@@ -1214,8 +457,8 @@
                                     </md:ToggleButtonAssist.OnContent>
 
                                     <iconPacks:PackIconFontAwesome
-                                        Width="24"
-                                        Height="24"
+                                        Width="22"
+                                        Height="22"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Kind="BellSolid" />
@@ -1224,22 +467,19 @@
                             </StackPanel>
 
                             <!--  Toggle button to switch between automatic and fixed dual-column layout for sectors.  -->
-                            <StackPanel VerticalAlignment="Center">
+                            <StackPanel Margin="3,0" VerticalAlignment="Center">
                                 <TextBlock
+                                    Margin="0,0,0,2"
                                     HorizontalAlignment="Center"
-                                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                    VerticalAlignment="Top"
+                                    FontSize="10"
+                                    FontWeight="DemiBold"
                                     Text="Columns"
                                     Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                <ToggleButton
-                                    Width="48"
-                                    md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=ColumnTwo,
-                                                                                       Width=24,
-                                                                                       Height=24}"
-                                    Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    IsChecked="{Binding DualSectorColumns}">
+
+                                <ToggleButton IsChecked="{Binding DualSectorColumns}">
                                     <ToggleButton.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                                        <Style BasedOn="{StaticResource ToolBarActionToggleButton}" TargetType="ToggleButton">
                                             <Setter Property="ToolTip" Value="Automatically adjust sector columns based on image size." />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
@@ -1249,10 +489,21 @@
                                         </Style>
                                     </ToggleButton.Style>
 
+                                    <md:ToggleButtonAssist.OnContent>
+                                        <Grid>
+                                            <iconPacks:PackIconModern
+                                                Width="22"
+                                                Height="22"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="ColumnTwo" />
+                                        </Grid>
+                                    </md:ToggleButtonAssist.OnContent>
+
                                     <Grid>
                                         <iconPacks:PackIconModern
-                                            Width="24"
-                                            Height="24"
+                                            Width="22"
+                                            Height="22"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Kind="ColumnTwo" />
@@ -1268,21 +519,19 @@
                             </StackPanel>
 
                             <!--  Toggle button to show or hide extended data for 2D grid sectors.  -->
-                            <StackPanel VerticalAlignment="Center">
+                            <StackPanel Margin="3,0" VerticalAlignment="Center">
                                 <TextBlock
+                                    Margin="0,0,0,2"
                                     HorizontalAlignment="Center"
-                                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                    VerticalAlignment="Top"
+                                    FontSize="10"
+                                    FontWeight="DemiBold"
                                     Text="2D Grids"
                                     Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                                <ToggleButton
-                                    Width="48"
-                                    HorizontalAlignment="Left"
-                                    Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    IsChecked="{Binding ShowExtendedData}">
+                                <ToggleButton IsChecked="{Binding ShowExtendedData}">
                                     <ToggleButton.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                                        <Style BasedOn="{StaticResource ToolBarActionToggleButton}" TargetType="ToggleButton">
                                             <Setter Property="ToolTip" Value="Show extended data for 2D grid sectors." />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ShowExtendedData}" Value="True">
@@ -1295,14 +544,14 @@
                                     <md:ToggleButtonAssist.OnContent>
                                         <Grid>
                                             <iconPacks:PackIconModern
-                                                Width="24"
-                                                Height="24"
+                                                Width="22"
+                                                Height="22"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Kind="Grid" />
                                             <iconPacks:PackIconJamIcons
-                                                Width="24"
-                                                Height="24"
+                                                Width="22"
+                                                Height="22"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Kind="QrCode" />
@@ -1310,8 +559,8 @@
                                     </md:ToggleButtonAssist.OnContent>
                                     <Grid>
                                         <iconPacks:PackIconJamIcons
-                                            Width="24"
-                                            Height="24"
+                                            Width="22"
+                                            Height="22"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Kind="QrCode" />
@@ -1319,25 +568,19 @@
                                 </ToggleButton>
                             </StackPanel>
 
-                            <Border Margin="3,0,3,0" Style="{StaticResource imageBar}" />
+                            <Border Margin="3,1,0,0" Style="{StaticResource imageBar}" />
 
                             <!--  Button to copy all sector details to the clipboard as CSV.  -->
                             <Button
-                                Width="48"
-                                Height="48"
-                                HorizontalAlignment="Left"
-                                VerticalContentAlignment="Stretch"
                                 Command="{Binding CopyAllSectorsToClipboardCommand}"
                                 CommandParameter="source"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Style="{StaticResource ToolBarButton}"
                                 ToolTip="Copy all current sector details to the clipboard as CSV.">
 
                                 <DockPanel>
                                     <TextBlock
                                         HorizontalAlignment="Center"
                                         DockPanel.Dock="Top"
-                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                         Text="Stored"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
@@ -1352,21 +595,16 @@
 
                             <!--  Button to copy all sector details to the clipboard as CSV.  -->
                             <Button
-                                Width="48"
-                                Height="48"
-                                HorizontalAlignment="Left"
-                                VerticalContentAlignment="Stretch"
                                 Command="{Binding CopyAllSectorsToClipboardCommand}"
                                 CommandParameter="current"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Style="{StaticResource ToolBarButton}"
                                 ToolTip="Copy all current sector details to the clipboard as CSV.">
+
 
                                 <DockPanel>
                                     <TextBlock
                                         HorizontalAlignment="Center"
                                         DockPanel.Dock="Top"
-                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                         Text="Current"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
@@ -1381,21 +619,15 @@
 
                             <!--  Button to copy all sector details to the clipboard as CSV.  -->
                             <Button
-                                Width="48"
-                                Height="48"
-                                HorizontalAlignment="Left"
-                                VerticalContentAlignment="Stretch"
                                 Command="{Binding CopyAllSectorsToClipboardCommand}"
                                 CommandParameter="all"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Style="{StaticResource ToolBarButton}"
                                 ToolTip="Copy all stored and current sector details to the clipboard as CSV.">
 
                                 <DockPanel>
                                     <TextBlock
                                         HorizontalAlignment="Center"
                                         DockPanel.Dock="Top"
-                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                         Text="All"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
@@ -1408,19 +640,13 @@
                                 </DockPanel>
                             </Button>
 
-                            <Border Margin="0,0,0,0" Style="{StaticResource imageBar}" />
+                            <Border Margin="3,1,0,0" Style="{StaticResource imageBar}" />
 
                             <!--  Button to store all current results to the database.  -->
-                            <Button
-                                Width="48"
-                                Height="48"
-                                VerticalContentAlignment="Stretch"
-                                Command="{Binding StoreAllCurrentResultsCommand}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                ToolTip="Store all current results (images and sectors) to the database.">
+                            <Button Command="{Binding StoreAllCurrentResultsCommand}" ToolTip="Store all current results (images and sectors) to the database.">
 
                                 <Button.Style>
-                                    <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                                    <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
                                         <Setter Property="Visibility" Value="Visible" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding SelectedResultsDatabase.IsLocked}" Value="True">
@@ -1434,7 +660,6 @@
                                     <TextBlock
                                         HorizontalAlignment="Center"
                                         DockPanel.Dock="Top"
-                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                         Text="Store All"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
@@ -1449,19 +674,14 @@
 
                             <!--  Button to clear all current results from the view.  -->
                             <Button
-                                Width="48"
-                                Height="48"
-                                VerticalContentAlignment="Stretch"
                                 Command="{Binding ClearAllCurrentResultsCommand}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Style="{StaticResource ToolBarButton}"
                                 ToolTip="Clear all current results (images and sectors).">
 
                                 <DockPanel>
                                     <TextBlock
                                         HorizontalAlignment="Center"
                                         DockPanel.Dock="Top"
-                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                         Text="Clear All"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
@@ -1473,7 +693,7 @@
                                         Kind="ClearAll" />
                                 </DockPanel>
                             </Button>
-                        </DockPanel>
+                        </ToolBar>
 
                     </DockPanel>
 
