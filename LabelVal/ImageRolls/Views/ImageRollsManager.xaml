@@ -293,11 +293,11 @@
                                     </Style>
                                 </Button.Style>
 
-                                <StackPanel>
+                                <DockPanel>
                                     <TextBlock
-                                        Margin="0,0,0,3"
-                                        HorizontalAlignment="Center"
-                                        DockPanel.Dock="Top"
+                                    Margin="0,0,0,3"
+                                    HorizontalAlignment="Center"
+                                    DockPanel.Dock="Top"
                                         Text="New"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
@@ -307,7 +307,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Kind="Plus" />
-                                </StackPanel>
+                                </DockPanel>
                             </Button>
 
                             <!--  Edit Button: Visible when an item is selected and not in add/edit mode.  -->
@@ -327,11 +327,11 @@
                                     </Style>
                                 </Button.Style>
 
-                                <StackPanel>
+                                <DockPanel>
                                     <TextBlock
-                                        Margin="0,0,0,3"
-                                        HorizontalAlignment="Center"
-                                        DockPanel.Dock="Top"
+                                    Margin="0,0,0,3"
+                                    HorizontalAlignment="Center"
+                                    DockPanel.Dock="Top"
                                         Text="Edit"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
@@ -341,7 +341,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Kind="SquareEditOutline" />
-                                </StackPanel>
+                                </DockPanel>
 
                             </Button>
 
@@ -358,11 +358,11 @@
                                     </Style>
                                 </Button.Style>
 
-                                <StackPanel>
+                                <DockPanel>
                                     <TextBlock
-                                        Margin="0,0,0,3"
-                                        HorizontalAlignment="Center"
-                                        DockPanel.Dock="Top"
+                                    Margin="0,0,0,3"
+                                    HorizontalAlignment="Center"
+                                    DockPanel.Dock="Top"
                                         Text="Save"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     <iconPacks:PackIconMaterial
@@ -371,7 +371,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Kind="ContentSave" />
-                                </StackPanel>
+                                </DockPanel>
                             </Button>
 
                             <!--  Cancel Button: Visible when in add/edit mode.  -->
@@ -387,11 +387,11 @@
                                     </Style>
                                 </Button.Style>
 
-                                <StackPanel>
+                                <DockPanel>
                                     <TextBlock
-                                        Margin="0,0,0,3"
-                                        HorizontalAlignment="Center"
-                                        DockPanel.Dock="Top"
+                                    Margin="0,0,0,3"
+                                    HorizontalAlignment="Center"
+                                    DockPanel.Dock="Top"
                                         Text="Cancel"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     <iconPacks:PackIconMaterial
@@ -400,7 +400,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Kind="Cancel" />
-                                </StackPanel>
+                                </DockPanel>
                             </Button>
 
                             <!--  Delete Button: Visible when in add/edit mode.  -->
@@ -416,11 +416,11 @@
                                     </Style>
                                 </Button.Style>
 
-                                <StackPanel>
+                                <DockPanel>
                                     <TextBlock
-                                        Margin="0,0,0,3"
-                                        HorizontalAlignment="Center"
-                                        DockPanel.Dock="Top"
+                                    Margin="0,0,0,3"
+                                    HorizontalAlignment="Center"
+                                    DockPanel.Dock="Top"
                                         Text="Delete"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     <iconPacks:PackIconMaterial
@@ -429,7 +429,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Kind="Delete" />
-                                </StackPanel>
+                                </DockPanel>
                             </Button>
 
 

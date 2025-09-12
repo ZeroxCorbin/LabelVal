@@ -11,14 +11,24 @@
     xmlns:vm="clr-namespace:LabelVal.LabelBuilder.ViewModels"
     d:DataContext="{d:DesignInstance Type=vm:LabelBuilderViewModel}"
     mc:Ignorable="d">
-    <Grid>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="3,3,0,0" VerticalAlignment="Top">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
         <md:Card
-            Grid.Column="0"
-            Height="68"
             Margin="3,3,0,0"
             Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
             DockPanel.Dock="Top"
@@ -26,51 +36,75 @@
 
             <DockPanel>
 
-                <DockPanel Width="48" Background="Fuchsia">
+                <!--  Left-side quick action panel for image roll settings.  -->
+
+
+                <DockPanel Grid.Row="0" Width="47">
                     <iconPacks:PackIconMaterial
-                        Width="36"
-                        Height="36"
+                        Width="32"
+                        Height="32"
+                        Padding="3"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
                         Kind="Barcode" />
                 </DockPanel>
 
-                <Border Style="{StaticResource imageBar}" />
 
-                <DockPanel>
-                    <DockPanel DockPanel.Dock="Top">
+                <DockPanel
+                    Height="32"
+                    HorizontalAlignment="Stretch"
+                    DockPanel.Dock="Top">
+                    <DockPanel.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
+                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                        </LinearGradientBrush>
+                    </DockPanel.Background>
 
-                        <DockPanel HorizontalAlignment="Stretch">
-                            <DockPanel.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
-                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                </LinearGradientBrush>
-                            </DockPanel.Background>
+                    <TextBlock
+                        Margin="6,0,6,3"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                        Text="Label Builder" />
 
-                            <TextBlock
-                                Margin="6,0,6,3"
-                                DockPanel.Dock="Top"
-                                Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
-                                Text="Label Builder" />
+                    <Button
+                        Padding="8,0"
+                        HorizontalAlignment="Right"
+                        Click="btnCollapseContent"
+                        Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+                </DockPanel>
 
-                            <Border Style="{StaticResource imageBarHor}" />
 
-                        </DockPanel>
+                <ToolBarTray Grid.Row="1">
+                    <ToolBar Padding="0,3" ToolBarTray.IsLocked="True">
+
 
                         <Button
-                            Padding="8,0"
-                            HorizontalAlignment="Right"
-                            Click="btnCollapseContent"
-                            Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+                            Command="{Binding BarcodeBuilderViewModel.GenerateBarcodeCommand}"
+                            Style="{StaticResource ToolBarButton}"
+                            ToolTip="New Database">
 
-                    </DockPanel>
+                            <DockPanel>
+                                <TextBlock
+                                    Margin="0,0,0,3"
+                                    HorizontalAlignment="Center"
+                                    DockPanel.Dock="Top"
+                                    Text="Generate"
+                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                    <DockPanel Height="24" />
+                                <iconPacks:PackIconMaterial
+                                    Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="BarcodeScan" />
+                            </DockPanel>
+                        </Button>
 
-                </DockPanel>
+                    </ToolBar>
+                </ToolBarTray>
+
             </DockPanel>
 
         </md:Card>
@@ -84,7 +118,7 @@
                     DataContext="{Binding BarcodeBuilderViewModel}" />
             </ScrollViewer>
 
-            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto">
                 <barcodeViews:BarcodeManipulationView
                     Margin="3,0"
                     HorizontalAlignment="Stretch"
@@ -92,7 +126,7 @@
                     DataContext="{Binding BarcodeBuilderViewModel.BarcodeManipulationViewModel}" />
             </ScrollViewer>
 
-            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto">
                 <barcodeViews:BarcodeBuilderImagesView
                     Margin="3,0"
                     HorizontalAlignment="Stretch"
@@ -100,14 +134,11 @@
                     DataContext="{Binding BarcodeBuilderViewModel.BarcodeBuilderImagesViewModel}" />
             </ScrollViewer>
 
-            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
-                <barcodeViews:EnumBrowserView
-                    Margin="3,0"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    DataContext="{Binding BarcodeBuilderViewModel.EnumBrowserViewModel}" />
-            </ScrollViewer>
         </DockPanel>
+
+        <StatusBar Grid.Row="2" Margin="0,3,0,0">
+            <TextBlock Text="{Binding BarcodeBuilderViewModel.OutputErrorText}" />
+        </StatusBar>
 
     </Grid>
 </UserControl>

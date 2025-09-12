@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.Main.ViewModels;
 using Org.BouncyCastle.Asn1.GM;
 using System.Collections.ObjectModel;
 
@@ -9,6 +10,8 @@ namespace LabelVal.V275.ViewModels;
 
 public partial class V275Manager : ObservableRecipient
 {
+    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+
     public ObservableCollection<NodeManager> Devices { get; } = App.Settings.GetValue($"V275_{nameof(Devices)}", new ObservableCollection<NodeManager>(), true);
 
     [ObservableProperty][NotifyPropertyChangedRecipients] private Node selectedDevice;

@@ -110,8 +110,8 @@
         </md:Card>
 
         <DockPanel DockPanel.Dock="Top">
-            <Border Style="{StaticResource groupLeft}" Background="{DynamicResource V5_Brush_Active}"/>
-            <Border Style="{StaticResource groupBottom}" Background="{DynamicResource V5_Brush_Active}" />
+            <Border Background="{DynamicResource V5_Brush_Active}" Style="{StaticResource groupLeft}" />
+            <Border Background="{DynamicResource V5_Brush_Active}" Style="{StaticResource groupBottom}" />
 
             <ListView
                 Margin="3,3,0,0"

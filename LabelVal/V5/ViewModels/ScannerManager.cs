@@ -2,12 +2,14 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.Main.ViewModels;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.V5.ViewModels;
 
 public partial class ScannerManager : ObservableRecipient
 {
+    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
     public ObservableCollection<Scanner> Devices { get; } = App.Settings.GetValue($"V5_{nameof(Devices)}", new ObservableCollection<Scanner>(), true);
 
     [ObservableProperty][NotifyPropertyChangedRecipients] private Scanner selectedDevice;

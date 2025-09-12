@@ -23,6 +23,8 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 {
     #region Properties
 
+    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+
     /// <summary>
     /// Gets or sets a unique identifier for this NodeManager instance.
     /// </summary>

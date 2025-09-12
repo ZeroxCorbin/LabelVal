@@ -8,10 +8,13 @@ using System.IO;
 using System.Threading.Tasks;
 using NHibernate.Linq.Functions;
 using LabelVal.Results.Databases;
+using LabelVal.Main.ViewModels;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ResultsDatabasesViewModel : ObservableRecipient
 {
+    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+
     [ObservableProperty] private FileFolderEntry fileRoot = App.Settings.GetValue<FileFolderEntry>("ResultssDatabases_FileRoot", new FileFolderEntry(App.ResultssDatabaseRoot), true);
     partial void OnFileRootChanged(FileFolderEntry value) => App.Settings.SetValue("ResultssDatabases_FileRoot", value);
 

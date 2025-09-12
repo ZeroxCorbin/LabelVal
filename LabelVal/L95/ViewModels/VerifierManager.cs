@@ -2,12 +2,15 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.Main.ViewModels;
 using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace LabelVal.L95.ViewModels;
 public partial class VerifierManager : ObservableRecipient
 {
+    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+
     public ObservableCollection<Verifier> Devices { get; } = [];
 
     [ObservableProperty][NotifyPropertyChangedRecipients] public Verifier selectedDevice;

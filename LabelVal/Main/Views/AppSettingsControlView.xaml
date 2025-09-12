@@ -25,15 +25,19 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!--<StackPanel Grid.Row="1" Grid.Column="1" Margin="3" HorizontalAlignment="Center">
-                <TextBlock
-                    Margin="3"
-                    HorizontalAlignment="Center"
-                    Text="Show Button Text" />
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="3"
+            HorizontalAlignment="Center">
+            <TextBlock
+                Margin="3"
+                HorizontalAlignment="Center"
+                Text="Show Button Text" />
 
-                <ToggleButton IsChecked="{Binding ShowButtonText}" />
+            <ToggleButton IsChecked="{Binding ShowButtonText}" />
 
-            </StackPanel>-->
+        </StackPanel>
 
         <StackPanel
             Grid.Row="0"
