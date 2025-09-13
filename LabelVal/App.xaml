@@ -16,7 +16,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
+
 
                 <!--  MahApps  -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
@@ -33,6 +33,8 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Flyout.xaml" />
 
+                <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
+                
             </ResourceDictionary.MergedDictionaries>
 
             <converters:IsNullOrEmpty x:Key="IsNullOrEmpty" />

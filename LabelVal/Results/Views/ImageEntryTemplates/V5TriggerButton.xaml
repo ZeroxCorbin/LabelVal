@@ -17,9 +17,7 @@
 
     <DataTemplate x:Key="V5TriggerButton" DataType="{x:Type vm:ResultsDeviceEntry_V5}">
 
-        <Button
-            BorderBrush="{DynamicResource V5_Brush_Active}"
-            Command="{Binding ProcessCommand}">
+        <Button BorderBrush="{DynamicResource V5_Brush_Active}" Command="{Binding ProcessCommand}">
             <Button.Style>
                 <Style BasedOn="{StaticResource DeviceButton}" TargetType="{x:Type Button}">
                     <Style.Triggers>

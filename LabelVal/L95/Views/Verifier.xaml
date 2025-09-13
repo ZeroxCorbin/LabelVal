@@ -17,9 +17,11 @@
     <md:Card
         Margin="6"
         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-        BorderBrush="{DynamicResource MahApps.Brushes.Accent4}"
         BorderThickness="1"
         Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
+        <md:Card.Effect>
+            <DropShadowEffect ShadowDepth="0" BlurRadius="5" Color="{DynamicResource MahApps.Colors.Gray1}" Opacity="0.5" />
+        </md:Card.Effect>
 
         <DockPanel Margin="3">
 

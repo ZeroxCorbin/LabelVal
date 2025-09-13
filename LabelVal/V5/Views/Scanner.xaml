@@ -26,10 +26,11 @@
         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
         BorderThickness="1"
         Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
-
+        <md:Card.Effect>
+            <DropShadowEffect ShadowDepth="0" BlurRadius="5" Color="{DynamicResource MahApps.Colors.Gray1}" Opacity="0.5" />
+        </md:Card.Effect>
         <md:Card.Style>
             <Style BasedOn="{StaticResource {x:Type md:Card}}" TargetType="md:Card">
-                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent4}" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Controller.IsSimulator}" Value="True">
                         <Setter Property="BorderBrush" Value="{DynamicResource StatusYellow_Brush_Active}" />

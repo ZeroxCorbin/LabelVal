@@ -175,6 +175,10 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// Gets or sets the name of the image roll.
     /// </summary>
     [ObservableProperty][property: JsonProperty] private string name;
+    partial void OnNameChanged(string oldValue, string newValue)
+    {
+
+    }
 
     /// <summary>
     /// Gets or sets the number of images in the roll.

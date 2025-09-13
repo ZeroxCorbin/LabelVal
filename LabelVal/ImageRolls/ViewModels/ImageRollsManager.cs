@@ -652,7 +652,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
     {
         Logger.Info("Adding image roll.");
 
-        NewImageRoll = new ImageRoll(this) { ImageRollsDatabase = SelectedUserDatabase };
+        NewImageRoll = new ImageRoll(this) { ImageRollsDatabase = SelectedUserDatabase, ImageRollsManager = this };
     }
 
     /// <summary>

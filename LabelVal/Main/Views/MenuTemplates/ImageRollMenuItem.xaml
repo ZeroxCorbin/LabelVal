@@ -29,7 +29,10 @@
 
             <Border Style="{StaticResource imageBar}" />
 
-            <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
+            <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}" BorderThickness="0">
+                <md:Card.Effect>
+                    <DropShadowEffect ShadowDepth="0" BlurRadius="5" Color="{DynamicResource MahApps.Colors.Gray1}" Opacity="0.5" />
+                </md:Card.Effect>
                 <DockPanel
                     MaxWidth="260"
                     Margin="3"

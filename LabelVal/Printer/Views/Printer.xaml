@@ -18,7 +18,9 @@
     </UserControl.Resources>
 
     <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
-
+        <md:Card.Effect>
+            <DropShadowEffect ShadowDepth="0" BlurRadius="5" Color="{DynamicResource MahApps.Colors.Gray1}" Opacity="0.5" />
+        </md:Card.Effect>
 
         <DockPanel
             Margin="3"

@@ -50,6 +50,7 @@
                         Padding="4,1"
                         HorizontalAlignment="Left"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
                         <TextBlock
                             FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
                             Foreground="{DynamicResource MahApps.Brushes.Text}"
