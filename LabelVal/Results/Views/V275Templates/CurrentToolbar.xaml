@@ -94,9 +94,9 @@
                     </Style.Triggers>
                 </Style>
             </DockPanel.Style>
-            
+
             <Border Margin="1,0" Style="{StaticResource imageBar}" />
-            
+
         </DockPanel>
 
         <!--  Both  -->

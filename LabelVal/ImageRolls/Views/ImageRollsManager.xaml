@@ -33,7 +33,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="..\..\Templates\SharedButtonStyles.xaml" />
+                <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
                 <ResourceDictionary Source="Templates/ImageRollTabHeaderTemplate.xaml" />
                 <ResourceDictionary Source="Templates/ImageRollListItemTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>

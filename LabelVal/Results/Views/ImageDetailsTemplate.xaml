@@ -6,7 +6,7 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="..\..\..\Templates\SharedButtonStyles.xaml" />
+        <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <converters:ShortenUIDConverter x:Key="shortenUID" />

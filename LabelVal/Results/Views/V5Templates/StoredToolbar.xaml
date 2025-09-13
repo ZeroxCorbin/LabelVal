@@ -57,7 +57,7 @@
                 ToolTip="Overwrite the template sectors with the stored data from the database." />
 
             <Border Margin="1,0" Style="{StaticResource imageBar}" />
-            
+
         </DockPanel>
 
         <!--  Both: Copy  -->

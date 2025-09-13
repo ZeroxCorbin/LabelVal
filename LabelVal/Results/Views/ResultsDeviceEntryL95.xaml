@@ -482,20 +482,20 @@
 
                 <!--  Card containing the title and toolbar for the current image.  -->
                 <md:Card
-                        Margin="3,3,0,0"
-                        HorizontalAlignment="Left"
-                        Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                        DockPanel.Dock="Top"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                    Margin="3,3,0,0"
+                    HorizontalAlignment="Left"
+                    Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                    DockPanel.Dock="Top"
+                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                     <DockPanel>
 
                         <DockPanel Background="{DynamicResource Results_Brush_Active}">
                             <iconPacks:PackIconMaterial
-                                    Width="12"
-                                    Margin="3"
-                                    VerticalAlignment="Center"
-                                    Kind="StoreOutline" />
+                                Width="12"
+                                Margin="3"
+                                VerticalAlignment="Center"
+                                Kind="StoreOutline" />
                         </DockPanel>
 
                         <DockPanel>
@@ -508,14 +508,14 @@
 
                             <!--  Title  -->
                             <TextBlock
-                                    Margin="3,0"
-                                    FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
-                                    Text="Current Image" />
+                                Margin="3,0"
+                                FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                Text="Current Image" />
 
                             <ContentControl
-                                    Content="{StaticResource CurrentToolbar}"
-                                    DataContext="{Binding .}"
-                                    Tag="Image" />
+                                Content="{StaticResource CurrentToolbar}"
+                                DataContext="{Binding .}"
+                                Tag="Image" />
 
                         </DockPanel>
 
@@ -547,7 +547,9 @@
                 </DockPanel>
 
                 <!--<StackPanel HorizontalAlignment="Left">
-                    --><!--  Show 2D  --><!--
+                -->
+                <!--  Show 2D  -->
+                <!--
                     <Button
                         Width="28"
                         Height="28"
@@ -559,7 +561,9 @@
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                         ToolTip="Open the image in the 2D viewer." />
 
-                    --><!--  Show 3D  --><!--
+                -->
+                <!--  Show 3D  -->
+                <!--
                     <Button
                         Width="28"
                         Height="28"
@@ -591,20 +595,20 @@
 
                 <!--  Card containing the title and toolbar for the current sectors.  -->
                 <md:Card
-                        Margin="3,3,0,0"
-                        HorizontalAlignment="Left"
-                        Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                        DockPanel.Dock="Top"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                    Margin="3,3,0,0"
+                    HorizontalAlignment="Left"
+                    Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                    DockPanel.Dock="Top"
+                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                     <StackPanel>
                         <DockPanel>
 
                             <DockPanel Background="{DynamicResource Results_Brush_Active}">
                                 <iconPacks:PackIconMaterial
-                                        Width="12"
-                                        Margin="3"
-                                        VerticalAlignment="Center"
-                                        Kind="StoreOutline" />
+                                    Width="12"
+                                    Margin="3"
+                                    VerticalAlignment="Center"
+                                    Kind="StoreOutline" />
                             </DockPanel>
 
                             <DockPanel>
@@ -617,23 +621,23 @@
 
                                 <!--  Title  -->
                                 <TextBlock
-                                        Margin="3,0"
-                                        FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
-                                        Text="Current Sectors" />
+                                    Margin="3,0"
+                                    FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                    Text="Current Sectors" />
 
                                 <ContentControl
-                                        Content="{StaticResource CurrentToolbar}"
-                                        DataContext="{Binding .}"
-                                        Tag="Sectors" />
+                                    Content="{StaticResource CurrentToolbar}"
+                                    DataContext="{Binding .}"
+                                    Tag="Sectors" />
 
                             </DockPanel>
 
                         </DockPanel>
 
                         <TextBlock
-                                Margin="10,0,0,0"
-                                HorizontalAlignment="Left"
-                                Text="{Binding CurrentSectors[0].Version}" />
+                            Margin="10,0,0,0"
+                            HorizontalAlignment="Left"
+                            Text="{Binding CurrentSectors[0].Version}" />
                     </StackPanel>
                 </md:Card>
 

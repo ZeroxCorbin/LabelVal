@@ -26,9 +26,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ResultsManagerTemplates/V5TriggerButton.xaml" />
-                <ResourceDictionary Source="ResultsManagerTemplates/V275TriggerButton.xaml" />
-                <ResourceDictionary Source="ResultsManagerTemplates/L95Buttons.xaml" />
+                <ResourceDictionary Source="/Results/Views/V5Templates/V5TriggerButton.xaml" />
+                <ResourceDictionary Source="/Results/Views/V275Templates/V275TriggerButton.xaml" />
+                <ResourceDictionary Source="/Results/Views/L95Templates/L95Buttons.xaml" />
                 <ResourceDictionary Source="ResultsManagerTemplates/ImageRollDetails.xaml" />
                 <ResourceDictionary Source="ResultsManagerTemplates/ToolBar.xaml" />
             </ResourceDictionary.MergedDictionaries>

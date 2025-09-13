@@ -7,45 +7,47 @@
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="..\..\..\Templates\SharedButtonStyles.xaml" />
+        <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <!--  Resource for V5 device-specific buttons.  -->
+    <!--  Resource for L95 device-specific trigger button.  -->
 
     <Button
-        x:Key="V5TriggerButton"
-        BorderBrush="{DynamicResource V5_Brush_Active}"
+        x:Key="L95TriggerButton"
+        BorderBrush="{DynamicResource L95_Brush_Active50}"
         Command="{Binding AddDeviceImageCommand}"
-        CommandParameter="{x:Static vm:ResultsEntryDevices.V5}">
+        CommandParameter="{x:Static vm:ResultsEntryDevices.L95}"
+        IsEnabled="{Binding IsL95Working, Converter={StaticResource InvertBool}}">
+
         <Button.Style>
             <Style BasedOn="{StaticResource DeviceButton}" TargetType="{x:Type Button}">
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.Offline}">
+                    <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.Offline}">
                         <Setter Property="Visibility" Value="Collapsed" />
                     </DataTrigger>
 
-                    <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
-                        <Setter Property="ToolTip" Value="V5: Process the source image and detect sectors." />
+                    <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
+                        <Setter Property="ToolTip" Value="L95: Process the source image and detect sectors." />
                     </DataTrigger>
 
-                    <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorRestore}">
-                        <Setter Property="ToolTip" Value="V5: Process the source image and restore sectors from the database." />
+                    <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorRestore}">
+                        <Setter Property="ToolTip" Value="L95: Process the source image and restore sectors from the database." />
                     </DataTrigger>
 
-                    <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
-                        <Setter Property="ToolTip" Value="V5: Process the source image without sector detection or restoration." />
+                    <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
+                        <Setter Property="ToolTip" Value="L95: Process the source image without sector detection or restoration." />
                     </DataTrigger>
 
-                    <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
-                        <Setter Property="ToolTip" Value="V5: Trigger the camera, then detect sectors." />
+                    <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
+                        <Setter Property="ToolTip" Value="L95: Trigger the camera, then detect sectors." />
                     </DataTrigger>
 
-                    <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraRestore}">
-                        <Setter Property="ToolTip" Value="V5: Trigger the camera, then restore sectors from the database." />
+                    <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraRestore}">
+                        <Setter Property="ToolTip" Value="L95: Trigger the camera, then restore sectors from the database." />
                     </DataTrigger>
 
-                    <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
-                        <Setter Property="ToolTip" Value="V5: Trigger the camera." />
+                    <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
+                        <Setter Property="ToolTip" Value="L95: Trigger the camera." />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -55,10 +57,10 @@
             <TextBlock
                 HorizontalAlignment="Center"
                 DockPanel.Dock="Top"
-                Text="V5"
+                Text="L95"
                 Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-            <Grid Background="{DynamicResource V5_Brush_Active}">
+            <Grid Background="{DynamicResource L95_Brush_Active50}">
 
                 <mah:MetroProgressBar
                     Width="46"
@@ -67,8 +69,8 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Foreground="White"
-                    IsIndeterminate="{Binding IsV5Working}"
-                    Visibility="{Binding IsV5Working, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    IsIndeterminate="{Binding IsL95Working}"
+                    Visibility="{Binding IsL95Working, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                 <!--  Camera  -->
                 <Grid
@@ -79,15 +81,15 @@
                         <Style TargetType="{x:Type Grid}">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
+                                <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
 
-                                <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraRestore}">
+                                <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraRestore}">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
 
-                                <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
+                                <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -111,13 +113,13 @@
                         <Style TargetType="{x:Type Grid}">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
+                                <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorRestore}">
+                                <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorRestore}">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
+                                <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -142,10 +144,10 @@
                         <Style TargetType="{x:Type Grid}">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
+                                <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorDetect}">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
+                                <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraDetect}">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -161,30 +163,30 @@
                 </Grid>
 
                 <!--<Grid
-                            Margin="0,6"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom">
-                            <Grid.Style>
-                                <Style TargetType="{x:Type Grid}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Grid.Style>
+                    Margin="0,6"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom">
+                    <Grid.Style>
+                        <Style TargetType="{x:Type Grid}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
 
-                            <iconPacks:PackIconMaterial
-                                Width="18"
-                                Height="18"
-                                Margin="3,0"
-                                VerticalAlignment="Center"
-                                Kind="Restore" />
-                        </Grid>-->
+                    <iconPacks:PackIconMaterial
+                        Width="18"
+                        Height="18"
+                        Margin="3,0"
+                        VerticalAlignment="Center"
+                        Kind="Restore" />
+                </Grid>-->
 
                 <!--  Trigger  -->
                 <Grid
@@ -195,10 +197,10 @@
                         <Style TargetType="{x:Type Grid}">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
+                                <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.SimulatorTrigger}">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding V5Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
+                                <DataTrigger Binding="{Binding L95Handler}" Value="{x:Static barCommon:LabelHandlers.CameraTrigger}">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>

@@ -5,11 +5,12 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="..\..\..\Templates\SharedButtonStyles.xaml" />
-        <ResourceDictionary Source="V275TriggerButton.xaml" />
-        <ResourceDictionary Source="V5TriggerButton.xaml" />
-        <ResourceDictionary Source="L95Buttons.xaml" />
+        <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
+        <ResourceDictionary Source="/Results/Views/V5Templates/V5TriggerButton.xaml" />
+        <ResourceDictionary Source="/Results/Views/V275Templates/V275TriggerButton.xaml" />
+        <ResourceDictionary Source="/Results/Views/L95Templates/L95Buttons.xaml" />
     </ResourceDictionary.MergedDictionaries>
+    
     <ControlTemplate x:Key="ToolBarTemplate">
         <ToolBarTray>
             <ToolBar

@@ -9,7 +9,7 @@
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="..\..\..\Templates\SharedButtonStyles.xaml" />
+        <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 
