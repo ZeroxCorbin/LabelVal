@@ -1,9 +1,4 @@
-﻿<!--
-    This UserControl provides a comprehensive interface for managing and viewing image results.
-    It includes a toolbar for actions related to image rolls, device interactions, and result manipulation.
-    The main view consists of a scrollable list of image results with a thumbnail navigator and a side panel for viewing JSON data.
--->
-<UserControl
+﻿<UserControl
     x:Class="LabelVal.Results.Views.ResultsManagerView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -23,12 +18,11 @@
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Classes"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     d:DataContext="{d:DesignInstance Type=vm:ResultsManagerViewModel}"
     dialog:DialogParticipation.Register="{Binding}"
-    Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
 
-    <!--  Resources section defining shared elements and styles for this control.  -->
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -39,7 +33,6 @@
                 <ResourceDictionary Source="ResultsManagerTemplates/ToolBar.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!--  CollectionViewSource for sorting the image results entries by their source image order.  -->
             <CollectionViewSource
                 x:Key="CvsResultssEntries"
                 IsLiveSortingRequested="True"
@@ -51,21 +44,15 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <!--  Main layout container for the Image Results Manager.  -->
     <DockPanel VerticalAlignment="Top">
 
-        <!--  Top toolbar area containing image roll information and controls.  -->
         <DockPanel Margin="3,3,0,0" DockPanel.Dock="Top">
-
             <md:Card
                 Margin="3,3,0,0"
                 HorizontalAlignment="Left"
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
                 <DockPanel>
-
-                    <!--  Left-side quick action panel for image roll settings.  -->
                     <Grid Width="47">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -81,7 +68,6 @@
                                 Kind="FilmstripBox" />
                         </DockPanel>
 
-                        <!--  ListBox to select where new images are added (Top or Bottom).  -->
                         <ListBox
                             Grid.Row="1"
                             md:ListBoxAssist.CanUserToggleSelectedItem="True"
@@ -98,157 +84,146 @@
                             </ListBox.ItemContainerStyle>
                             <x:Static Member="imageroll:ImageAddPositions.Top" />
                             <x:Static Member="imageroll:ImageAddPositions.Bottom" />
-
                             <ListBox.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.ListBox}" TargetType="{x:Type ListBox}">
                                     <Setter Property="Visibility" Value="Visible" />
                                     <Style.Triggers>
-                                        <!--  Collapsed if the image roll is locked.  -->
                                         <DataTrigger Binding="{Binding ActiveImageRoll.IsLocked}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-
                             </ListBox.Style>
                         </ListBox>
                     </Grid>
 
                     <StackPanel>
-
-                        <!--  Header section displaying details of the currently selected image roll.  -->
                         <ContentControl Template="{StaticResource ImageRollDetailsTemplate}" />
-
-                        <!--  Toolbar for controlling the image roll and results.  -->
                         <ContentControl Template="{StaticResource ToolBarTemplate}" />
-
                     </StackPanel>
-
                 </DockPanel>
             </md:Card>
-
         </DockPanel>
 
-        <!--  Main content area, including the results list and the JSON viewer drawer.  -->
         <DockPanel VerticalAlignment="Top" DockPanel.Dock="Top">
             <Border Background="{DynamicResource ImageRoll_Brush_Active50}" Style="{StaticResource groupLeft}" />
             <Border Background="{DynamicResource ImageRoll_Brush_Active50}" Style="{StaticResource groupBottom}" />
 
-            <!--  Main content area.  -->
-            <DockPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <md:Card
+                    Height="24"
+                    Margin="3,3,0,0"
+                    HorizontalAlignment="Stretch"
+                    Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                    DockPanel.Dock="Top"
+                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                    <md:Card.Style>
+                        <Style BasedOn="{StaticResource MaterialDesignElevatedCard}" TargetType="{x:Type md:Card}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveImageRoll.ImageCount}" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </md:Card.Style>
 
-                <!--  Left-side panel for thumbnail navigation.  -->
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <md:Card
-                        Height="24"
-                        Margin="3,3,0,0"
-                        HorizontalAlignment="Stretch"
-                        Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                    <TextBlock
+                        Margin="6,0,6,3"
                         DockPanel.Dock="Top"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                        <md:Card.Style>
-                            <Style BasedOn="{StaticResource MaterialDesignElevatedCard}" TargetType="{x:Type md:Card}">
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Style.Triggers>
-                                    <!--  Collapsed if there are no image results.  -->
-                                    <DataTrigger Binding="{Binding ActiveImageRoll.ImageCount}" Value="0">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </md:Card.Style>
+                        Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                        Text="Navigate" />
+                </md:Card>
 
-                        <TextBlock
-                            Margin="6,0,6,3"
-                            DockPanel.Dock="Top"
-                            Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
-                            Text="Navigate" />
+                <ListBox
+                    x:Name="ImageRollThumbnails"
+                    Grid.Row="1"
+                    MaxWidth="140"
+                    DockPanel.Dock="Left"
+                    ItemsSource="{Binding Source={StaticResource CvsResultssEntries}}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    SelectedItem="{Binding TopmostItem, Mode=OneWay}"
+                    ToolTip="Click to navigate to an image.">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="1" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="BorderThickness" Value="2" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="Focusable" Value="False" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Badged.Background}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.InputBindings>
+                                    <MouseBinding Command="{Binding BringIntoViewHandlerCommand}" MouseAction="LeftClick" />
+                                </Grid.InputBindings>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Image
+                                    MaxWidth="48"
+                                    MaxHeight="48"
+                                    Source="{Binding SourceImage.ImageLow}" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    HorizontalAlignment="Center"
+                                    FontWeight="DemiBold"
+                                    Text="{Binding SourceImage.Order}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
 
-
-                    </md:Card>
-
-                    <!--  ListBox displaying thumbnails of the image results for quick navigation.  -->
-                    <ListBox
-                        x:Name="ImageRollThumbnails"
-                        Grid.Row="1"
-                        MaxWidth="140"
-                        DockPanel.Dock="Left"
-                        ItemsSource="{Binding Source={StaticResource CvsResultssEntries}}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto"
-                        SelectedItem="{Binding TopmostItem, Mode=OneWay}"
-                        ToolTip="Click to navigate to an image.">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="Padding" Value="1" />
-                                <Setter Property="Margin" Value="0" />
-                                <Setter Property="BorderThickness" Value="2" />
-                                <Setter Property="BorderBrush" Value="Transparent" />
-                                <Setter Property="Focusable" Value="False" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Badged.Background}" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.InputBindings>
-                                        <MouseBinding Command="{Binding BringIntoViewHandlerCommand}" MouseAction="LeftClick" />
-                                    </Grid.InputBindings>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Image
-                                        MaxWidth="48"
-                                        MaxHeight="48"
-                                        Source="{Binding SourceImage.ImageLow}" />
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        HorizontalAlignment="Center"
-                                        FontWeight="DemiBold"
-                                        Text="{Binding SourceImage.Order}" />
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
-
-
-                <!--  ScrollViewer for the main list of image results.  -->
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                 <ScrollViewer
                     x:Name="ResultssScrollViewer"
                     Margin="0"
                     HorizontalScrollBarVisibility="Disabled"
-                    PreviewKeyDown="ResultssScrollViewer_PreviewKeyDown"
-                    PreviewMouseWheel="ResultssScrollViewer_PreviewMouseWheel"
-                    ScrollChanged="ResultssScrollViewer_ScrollChanged"
                     Style="{StaticResource MahApps.Styles.ScrollViewer}"
                     VerticalScrollBarVisibility="Auto">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="PreviewMouseWheel">
+                            <i:InvokeCommandAction Command="{Binding PreviewMouseWheelCommand, RelativeSource={RelativeSource AncestorType=local:ResultsManagerView}}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="PreviewKeyDown">
+                            <i:InvokeCommandAction Command="{Binding PreviewKeyDownCommand, RelativeSource={RelativeSource AncestorType=local:ResultsManagerView}}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="ScrollChanged">
+                            <i:InvokeCommandAction Command="{Binding ScrollChangedCommand, RelativeSource={RelativeSource AncestorType=local:ResultsManagerView}}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="Unloaded">
+                            <i:InvokeCommandAction Command="{Binding UnloadedCommand, RelativeSource={RelativeSource AncestorType=local:ResultsManagerView}}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
 
-                    <!--  ItemsControl to display the collection of image result entries.  -->
                     <ItemsControl x:Name="ResultssItemsControl" ItemsSource="{Binding Source={StaticResource CvsResultssEntries}}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <!--  Each item is rendered using the ResultsEntry UserControl.  -->
                                 <local:ResultsEntry />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
-            </DockPanel>
+            </ScrollViewer>
         </DockPanel>
     </DockPanel>
 </UserControl>

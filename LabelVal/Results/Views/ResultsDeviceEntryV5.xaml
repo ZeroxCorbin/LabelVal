@@ -13,14 +13,15 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels"
-    d:DataContext="{d:DesignInstance Type=vm:ResultsDeviceEntry_V5,
-                                     IsDesignTimeCreatable=False}"
+    d:DataContext="{d:DesignInstance Type=vm:ResultsDeviceEntry_V5, IsDesignTimeCreatable=False}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ImageDetailsTemplate.xaml" />
+                <ResourceDictionary Source="V5Templates/StoredToolbar.xaml" />
+                <ResourceDictionary Source="V5Templates/CurrentToolbar.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <CollectionViewSource x:Key="StoredSectorsViewSource" Source="{Binding StoredSectors}">
@@ -36,333 +37,6 @@
                     <componentmodel:SortDescription PropertyName="CenterPoint.Y" />
                 </CollectionViewSource.SortDescriptions>
             </CollectionViewSource>
-
-            <DockPanel x:Key="Stored_Toolbar" x:Shared="False">
-
-                <Border Margin="3,0" Style="{StaticResource imageBar}" />
-
-                <!--  Image Only  -->
-                <DockPanel>
-                    <DockPanel.Style>
-                        <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
-
-                    <!--  Save Image  -->
-                    <Button
-                        Width="28"
-                        Command="{Binding ResultsEntry.SaveCommand}"
-                        CommandParameter="{Binding StoredImage.BitmapBytes}"
-                        Content="{iconPacks:Material Kind=ContentSave}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Save the stored image to a file." />
-
-                </DockPanel>
-
-                <!--  Sectors Only  -->
-                <DockPanel>
-                    <DockPanel.Style>
-                        <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.Offline}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
-
-                    <Button
-                        Width="28"
-                        Command="{Binding LoadCommand}"
-                        Content="{iconPacks:Material Kind=Download}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Overwrite the template sectors with the stored data from the database." />
-
-                    <Border Margin="3,0" Style="{StaticResource imageBar}" />
-
-                </DockPanel>
-
-                <!--  Both  -->
-                <Button
-                    Width="28"
-                    Click="btnCopyToClipboard_Click"
-                    Content="{iconPacks:Modern Kind=PageCopy}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Setter Property="Tag" Value="{Binding StoredSectors}" />
-                            <Setter Property="ToolTip" Value="Copy the sectors to the clipboard as CSV." />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Tag" Value="{Binding StoredImage}" />
-                                    <Setter Property="ToolTip" Value="Copy the image to the clipboard as a bitmap." />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <!--  Sectors Only  -->
-                <Button
-                    Width="28"
-                    Click="StoredSectors_Click"
-                    Content="{iconPacks:Modern Kind=SectionExpandAll}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    ToolTip="Show all stored sectors in a popup.">
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <!--  Sectors Only  -->
-                <Button
-                    Width="28"
-                    Click="StoredSectors_Click"
-                    Content="{iconPacks:Material Kind=CodeJson}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    Tag="json"
-                    ToolTip="Show the template and report JSON.">
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <!--  Image Only  -->
-                <DockPanel>
-                    <DockPanel.Style>
-                        <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding ResultsManagerView.SelectedResultsDatabase.IsLocked}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
-
-                    <Border Margin="3,0" Style="{StaticResource imageBar}" />
-
-                    <Button
-                        Width="28"
-                        Command="{Binding ClearStoredCommand}"
-                        Content="{iconPacks:Modern Kind=Delete}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Permanently remove the stored image and sectors from the database.&#x0a;(CAUTION) This can not be undone!" />
-
-                </DockPanel>
-
-            </DockPanel>
-
-            <!--  Current Toolbar  -->
-            <DockPanel x:Key="Current_Toolbar" x:Shared="False">
-
-                <Border Margin="3,0" Style="{StaticResource imageBar}" />
-
-                <!--  Image Only  -->
-                <DockPanel>
-                    <DockPanel.Style>
-                        <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
-
-                    <!--  Save Image  -->
-                    <Button
-                        Width="28"
-                        Command="{Binding ResultsEntry.SaveCommand}"
-                        CommandParameter="{Binding CurrentImage.BitmapBytes}"
-                        Content="{iconPacks:Material Kind=ContentSave}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Save the current image to a file." />
-
-                </DockPanel>
-
-                <!--  Sectors Only  -->
-                <Button
-                    Width="28"
-                    Command="{Binding StoreCommand}"
-                    Content="{iconPacks:Material Kind=StorePlusOutline}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    ToolTip="Store the current sectors and image to the database.">
-
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ResultsManagerView.SelectedResultsDatabase.IsLocked}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <!--  Sectors Only  -->
-                <Button
-                    Width="28"
-                    Command="{Binding ReadCommand}"
-                    Content="{iconPacks:Material Kind=Upload}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    ToolTip="Read the last results and image from the device.&#x0a;This action does not process the data.">
-
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.Offline}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image" />
-                                        <Condition Binding="{Binding CurrentSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </MultiDataTrigger>
-
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <DockPanel>
-                    <DockPanel.Style>
-                        <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
-
-                    <Border Margin="3,0" Style="{StaticResource imageBar}" />
-
-                </DockPanel>
-
-                <!--  Both  -->
-                <Button
-                    Width="28"
-                    Click="btnCopyToClipboard_Click"
-                    Content="{iconPacks:Modern Kind=PageCopy}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Setter Property="Tag" Value="{Binding CurrentSectors}" />
-                            <Setter Property="ToolTip" Value="Copy the sectors to the clipboard as CSV." />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Tag" Value="{Binding CurrentImage}" />
-                                    <Setter Property="ToolTip" Value="Copy the image to the clipboard as a bitmap." />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <!--  Sectors Only  -->
-                <Button
-                    Width="28"
-                    HorizontalAlignment="Right"
-                    Click="CurrentSectors_Click"
-                    Content="{iconPacks:Modern Kind=SectionExpandAll}"
-                    ToolTip="Show all current sectors in a popup.">
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <!--  Sectors Only  -->
-                <Button
-                    Width="28"
-                    HorizontalAlignment="Right"
-                    Click="CurrentSectors_Click"
-                    Content="{iconPacks:Material Kind=CodeJson}"
-                    Tag="json"
-                    ToolTip="Show the template and report JSON.">
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <DockPanel>
-                    <DockPanel.Style>
-                        <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
-
-                    <Border Margin="3,0" Style="{StaticResource imageBar}" />
-
-                    <Button
-                        Width="28"
-                        Command="{Binding ClearCurrentCommand}"
-                        CommandParameter="{x:Static vm:ResultsEntryDevices.V5}"
-                        Content="{iconPacks:MaterialDesign Kind=Clear}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Clear the current sectors and image." />
-
-                </DockPanel>
-
-
-            </DockPanel>
-
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -374,7 +48,6 @@
                     <DataTrigger Binding="{Binding StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                         <Setter Property="Visibility" Value="Visible" />
                     </DataTrigger>
-
                     <DataTrigger Binding="{Binding CurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                         <Setter Property="Visibility" Value="Visible" />
                     </DataTrigger>
@@ -385,10 +58,10 @@
         <Border Background="{DynamicResource V5_Brush_Active}" Style="{StaticResource groupLeft}" />
         <Border Background="{DynamicResource V5_Brush_Active}" Style="{StaticResource groupBottom}" />
 
-        <!--  Images  -->
+        <!-- Stored (Image + Sectors) -->
         <DockPanel>
 
-            <!--  Stored Image  -->
+            <!-- Stored Image -->
             <DockPanel DockPanel.Dock="Top">
                 <DockPanel.Style>
                     <Style TargetType="{x:Type DockPanel}">
@@ -409,7 +82,6 @@
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                     <DockPanel>
-
                         <DockPanel Background="{DynamicResource Results_Brush_Active}">
                             <iconPacks:PackIconMaterial
                                 Width="12"
@@ -418,18 +90,15 @@
                                 Kind="StoreOutline" />
                         </DockPanel>
 
-                        <!--  Title  -->
                         <md:Card
                             Margin="3,3,0,3"
                             Padding="4,1"
                             HorizontalAlignment="Left"
                             Background="{DynamicResource V5_Brush_Active}">
-
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Image" />
                         </md:Card>
 
                         <ContentControl Content="{StaticResource Stored_Toolbar}" Tag="Image" />
-
                     </DockPanel>
                 </md:Card>
 
@@ -447,44 +116,12 @@
                         ToolTip="Click to open a larger view of the image.&#x0a;Hold Shift and click to open a 3D view of the image.">
 
                         <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding StoredImage.ImageLow, Mode=OneWay}" />
-
                         <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding StoredImageOverlay, Mode=OneWay}" />
-
                     </Grid>
-
                 </DockPanel>
-
-                <StackPanel HorizontalAlignment="Left">
-
-                    <!--  Show 2D  -->
-                    <Button
-                        Width="28"
-                        Height="28"
-                        Margin="0,3"
-                        Click="Show2DViewerStored"
-                        CommandParameter="{Binding StoredImage.BitmapBytes}"
-                        Content="{iconPacks:Material Kind=Video2d}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Open the image in the 2D viewer." />
-
-                    <!--  Show 3D  -->
-                    <Button
-                        Width="28"
-                        Height="28"
-                        Margin="0,3"
-                        Click="Show3DViewerStored"
-                        CommandParameter="{Binding StoredImage.BitmapBytes}"
-                        Content="{iconPacks:Material Kind=Video3d}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Open the image in the 3D viewer." />
-
-                </StackPanel>
-
             </DockPanel>
 
-            <!--  Stored Sectors  -->
+            <!-- Stored Sectors -->
             <DockPanel HorizontalAlignment="Left">
                 <DockPanel.Style>
                     <Style TargetType="{x:Type DockPanel}">
@@ -506,7 +143,6 @@
 
                     <StackPanel>
                         <DockPanel>
-
                             <DockPanel Background="{DynamicResource Results_Brush_Active}">
                                 <iconPacks:PackIconMaterial
                                     Width="12"
@@ -515,7 +151,6 @@
                                     Kind="StoreOutline" />
                             </DockPanel>
 
-                            <!--  Title  -->
                             <md:Card
                                 Margin="3,3,0,3"
                                 Padding="4,1"
@@ -525,7 +160,6 @@
                             </md:Card>
 
                             <ContentControl Content="{StaticResource Stored_Toolbar}" Tag="Sectors" />
-
                         </DockPanel>
 
                         <TextBlock
@@ -534,13 +168,10 @@
                             Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                             Text="{Binding StoredSectors[0].Version}" />
                     </StackPanel>
-
                 </md:Card>
 
-                <DockPanel
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    DockPanel.Dock="Top">
+                <!-- Focused Stored Sector Toolbar -->
+                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Top" DockPanel.Dock="Top">
                     <DockPanel.Style>
                         <Style TargetType="DockPanel">
                             <Setter Property="Visibility" Value="Visible" />
@@ -560,7 +191,6 @@
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                         <DockPanel>
-
                             <DockPanel Height="26.62" />
 
                             <Button
@@ -596,26 +226,25 @@
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 Tag="Stored"
                                 ToolTip="Close the sector details view.&#x0a;Hold Shift and click to close all details views." />
-
                         </DockPanel>
                     </md:Card>
                 </DockPanel>
 
+                <!-- Stored Sectors List / Details -->
                 <ScrollViewer
                     x:Name="ScrollStoredSectors"
                     Margin="3"
-                    mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=ScrollStoredSectors, Converter={StaticResource ScrollBarNotVisibleToBool}}"
                     Focusable="False"
+                    VerticalScrollBarVisibility="Auto"
                     ScrollChanged="ScrollStoredSectors_ScrollChanged"
-                    VerticalScrollBarVisibility="Auto">
-                    <Grid>
+                    mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=ScrollStoredSectors, Converter={StaticResource ScrollBarNotVisibleToBool}}">
 
+                    <Grid>
                         <ListBox
                             Padding="0,1,0,0"
                             ItemsSource="{Binding Source={StaticResource StoredSectorsViewSource}}"
                             PreviewMouseWheel="StoredSectors_PreviewMouseWheel"
                             Tag="v5Stored">
-
                             <ListBox.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.ListBox}" TargetType="ListBox">
                                     <Setter Property="Visibility" Value="Visible" />
@@ -626,14 +255,12 @@
                                     </Style.Triggers>
                                 </Style>
                             </ListBox.Style>
-
                             <ListBox.ItemContainerStyle>
                                 <Style BasedOn="{StaticResource MahApps.Styles.ListBoxItem}" TargetType="ListBoxItem">
                                     <Setter Property="VerticalContentAlignment" Value="Stretch" />
                                     <Setter Property="Padding" Value="2" />
                                 </Style>
                             </ListBox.ItemContainerStyle>
-
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
@@ -662,7 +289,6 @@
                                     </WrapPanel>
                                 </ItemsPanelTemplate>
                             </ListBox.ItemsPanel>
-
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <sectors:Sector
@@ -673,6 +299,7 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
 
+                        <!-- Stored Details -->
                         <DockPanel HorizontalAlignment="Center" VerticalAlignment="Top">
                             <DockPanel.Style>
                                 <Style TargetType="DockPanel">
@@ -685,7 +312,6 @@
                                 </Style>
                             </DockPanel.Style>
 
-                            <!--  Keep this Dockapnel. It is used for Saving and Coping the SectorDetails Visual.  -->
                             <DockPanel>
                                 <sectors:SectorDetails DataContext="{Binding FocusedStoredSector}">
                                     <sectors:SectorDetails.Style>
@@ -696,12 +322,10 @@
                                                     <Setter Property="MaxWidth" Value="400" />
                                                     <Setter Property="Width" Value="auto" />
                                                 </DataTrigger>
-
                                                 <DataTrigger Binding="{Binding DataContext.ResultsEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
                                                     <Setter Property="MaxWidth" Value="400" />
                                                     <Setter Property="Width" Value="auto" />
                                                 </DataTrigger>
-
                                                 <DataTrigger Binding="{Binding DataContext.ResultsEntry.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
                                                     <Setter Property="MaxWidth" Value="400" />
                                                     <Setter Property="Width" Value="auto" />
@@ -717,7 +341,7 @@
             </DockPanel>
         </DockPanel>
 
-        <!--  Details  -->
+        <!-- Stored Image Details -->
         <ContentControl Content="{Binding StoredImage, Mode=OneWay}" ContentTemplate="{StaticResource imageDetailsTemplate}">
             <ContentControl.Style>
                 <Style TargetType="{x:Type ContentControl}">
@@ -735,10 +359,10 @@
             </ContentControl.Style>
         </ContentControl>
 
-        <!--  Sectors  -->
+        <!-- Current (Image + Sectors + Diff) -->
         <DockPanel>
 
-            <!--  Current Image  -->
+            <!-- Current Image -->
             <DockPanel DockPanel.Dock="Top">
                 <DockPanel.Style>
                     <Style TargetType="{x:Type DockPanel}">
@@ -759,8 +383,6 @@
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                     <DockPanel>
-
-                        <!--  Title  -->
                         <md:Card
                             Margin="3"
                             Padding="4,1"
@@ -769,8 +391,7 @@
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Image" />
                         </md:Card>
 
-                        <ContentControl Content="{StaticResource Current_Toolbar}" Tag="Image" />
-
+                        <ContentControl Content="{StaticResource CurrentToolbar}" Tag="Image" />
                     </DockPanel>
                 </md:Card>
 
@@ -788,16 +409,11 @@
                         ToolTip="Click to open a larger view of the image.&#x0a;Hold Shift and click to open a 3D view of the image.">
 
                         <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding CurrentImage.ImageLow, Mode=OneWay}" />
-
                         <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding CurrentImageOverlay, Mode=OneWay}" />
-
                     </Grid>
-
                 </DockPanel>
 
                 <StackPanel HorizontalAlignment="Left">
-
-                    <!--  Show 2D  -->
                     <Button
                         Width="28"
                         Height="28"
@@ -809,7 +425,6 @@
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                         ToolTip="Open the image in the 2D viewer." />
 
-                    <!--  Show 3D  -->
                     <Button
                         Width="28"
                         Height="28"
@@ -821,10 +436,9 @@
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                         ToolTip="Open the image in the 3D viewer." />
                 </StackPanel>
-
             </DockPanel>
 
-            <!--  Current Sectors  -->
+            <!-- Current Sectors -->
             <DockPanel>
                 <DockPanel.Style>
                     <Style TargetType="{x:Type DockPanel}">
@@ -846,8 +460,6 @@
 
                     <StackPanel>
                         <DockPanel>
-
-                            <!--  Title  -->
                             <md:Card
                                 Margin="3"
                                 Padding="4,1"
@@ -856,8 +468,7 @@
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Sectors" />
                             </md:Card>
 
-                            <ContentControl Content="{StaticResource Current_Toolbar}" Tag="Sectors" />
-
+                            <ContentControl Content="{StaticResource CurrentToolbar}" Tag="Sectors" />
                         </DockPanel>
 
                         <TextBlock
@@ -868,10 +479,8 @@
                     </StackPanel>
                 </md:Card>
 
-                <DockPanel
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    DockPanel.Dock="Top">
+                <!-- Focused Current Sector Toolbar -->
+                <DockPanel HorizontalAlignment="Right" VerticalAlignment="Top" DockPanel.Dock="Top">
                     <DockPanel.Style>
                         <Style TargetType="DockPanel">
                             <Setter Property="Visibility" Value="Visible" />
@@ -891,7 +500,6 @@
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                         <DockPanel>
-
                             <DockPanel Height="26.62" />
 
                             <Button
@@ -905,7 +513,7 @@
                             <Button
                                 Width="28"
                                 Click="btnCopyImage_Click"
-                                Content="{iconPacks:MaterialDesign Kind=ContentCopy}"
+                                Content="{iconPacks:MaterialDesign Kind=Image}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 ToolTip="Copy the sector details to the clipboard as a PNG image." />
@@ -927,28 +535,26 @@
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 Tag="Current"
                                 ToolTip="Close the sector details view.&#x0a;Hold Shift and click to close all details views." />
-
                         </DockPanel>
                     </md:Card>
                 </DockPanel>
 
+                <!-- Current Sectors List / Details -->
                 <ScrollViewer
                     x:Name="ScrollCurrentSectors"
                     Margin="3"
-                    mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=ScrollCurrentSectors, Converter={StaticResource ScrollBarNotVisibleToBool}}"
                     Focusable="False"
-                    ScrollChanged="ScrollStoredSectors_ScrollChanged"
-                    VerticalScrollBarVisibility="Auto">
+                    VerticalScrollBarVisibility="Auto"
+                    ScrollChanged="ScrollCurrentSectors_ScrollChanged"
+                    mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=ScrollCurrentSectors, Converter={StaticResource ScrollBarNotVisibleToBool}}">
 
                     <DockPanel>
-
                         <ListBox
                             Padding="0,1,0,0"
                             ItemsSource="{Binding Source={StaticResource CurrentSectorsViewSource}}"
                             PreviewMouseWheel="CurrentSectors_PreviewMouseWheel"
                             SelectedItem="{Binding CurrentSelectedSector}"
                             Tag="v5Current">
-
                             <ListBox.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.ListBox}" TargetType="ListBox">
                                     <Setter Property="Visibility" Value="Visible" />
@@ -959,14 +565,12 @@
                                     </Style.Triggers>
                                 </Style>
                             </ListBox.Style>
-
                             <ListBox.ItemContainerStyle>
                                 <Style BasedOn="{StaticResource MahApps.Styles.ListBoxItem}" TargetType="ListBoxItem">
                                     <Setter Property="VerticalContentAlignment" Value="Stretch" />
                                     <Setter Property="Padding" Value="2" />
                                 </Style>
                             </ListBox.ItemContainerStyle>
-
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
@@ -995,7 +599,6 @@
                                     </WrapPanel>
                                 </ItemsPanelTemplate>
                             </ListBox.ItemsPanel>
-
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <sectors:Sector
@@ -1006,6 +609,7 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
 
+                        <!-- Current Details -->
                         <DockPanel HorizontalAlignment="Center" VerticalAlignment="Top">
                             <DockPanel.Style>
                                 <Style TargetType="DockPanel">
@@ -1019,7 +623,6 @@
                             </DockPanel.Style>
 
                             <DockPanel>
-
                                 <sectors:SectorDetails DataContext="{Binding FocusedCurrentSector}">
                                     <sectors:SectorDetails.Style>
                                         <Style TargetType="sectors:SectorDetails">
@@ -1029,12 +632,10 @@
                                                     <Setter Property="MaxWidth" Value="400" />
                                                     <Setter Property="Width" Value="auto" />
                                                 </DataTrigger>
-
                                                 <DataTrigger Binding="{Binding DataContext.ResultsEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
                                                     <Setter Property="MaxWidth" Value="400" />
                                                     <Setter Property="Width" Value="auto" />
                                                 </DataTrigger>
-
                                                 <DataTrigger Binding="{Binding DataContext.ResultsEntry.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
                                                     <Setter Property="MaxWidth" Value="400" />
                                                     <Setter Property="Width" Value="auto" />
@@ -1045,12 +646,11 @@
                                 </sectors:SectorDetails>
                             </DockPanel>
                         </DockPanel>
-
                     </DockPanel>
                 </ScrollViewer>
             </DockPanel>
 
-            <!--  Dissimilar Results  -->
+            <!-- Dissimilar Results -->
             <DockPanel>
                 <DockPanel.Style>
                     <Style TargetType="{x:Type DockPanel}">
@@ -1071,8 +671,6 @@
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                     <DockPanel>
-
-                        <!--  Title  -->
                         <md:Card
                             Margin="3"
                             Padding="4,1"
@@ -1080,19 +678,14 @@
                             Background="{DynamicResource V5_Brush_Active}">
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Dissimilar Results" />
                         </md:Card>
-
                         <Border Margin="3,0" Style="{StaticResource imageBar}" />
-
                     </DockPanel>
                 </md:Card>
 
-                <ScrollViewer
-                    Margin="3"
-                    Focusable="False"
-                    ScrollChanged="ScrollStoredSectors_ScrollChanged"
-                    VerticalScrollBarVisibility="Auto">
-
-                    <ItemsControl Background="{DynamicResource MahApps.Brushes.ThemeBackground}" ItemsSource="{Binding DiffSectors}">
+                <ScrollViewer Margin="3" VerticalScrollBarVisibility="Auto" Focusable="False">
+                    <ItemsControl
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        ItemsSource="{Binding DiffSectors}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <sectors:SectorDifferences
@@ -1104,10 +697,9 @@
                     </ItemsControl>
                 </ScrollViewer>
             </DockPanel>
-
         </DockPanel>
 
-        <!--  Details  -->
+        <!-- Current Image Details -->
         <ContentControl Content="{Binding CurrentImage}" ContentTemplate="{StaticResource imageDetailsTemplate}">
             <ContentControl.Style>
                 <Style TargetType="{x:Type ContentControl}">
@@ -1124,6 +716,5 @@
                 </Style>
             </ContentControl.Style>
         </ContentControl>
-
     </DockPanel>
 </UserControl>

@@ -1,0 +1,231 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:LabelVal.Results.Views"
+    xmlns:vm="clr-namespace:LabelVal.Results.ViewModels">
+
+    <DockPanel x:Key="CurrentToolbar" x:Shared="False">
+
+        <Border Margin="3,0" Style="{StaticResource imageBar}" />
+
+        <!--  Image Only  -->
+        <DockPanel>
+            <DockPanel.Style>
+                <Style TargetType="DockPanel">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DockPanel.Style>
+
+            <Button
+                Width="28"
+                Command="{Binding ResultsEntry.SaveCommand}"
+                CommandParameter="{Binding CurrentImage.BitmapBytes}"
+                Content="{iconPacks:Material Kind=ContentSave}"
+                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                ToolTip="Save the current image to a file." />
+        </DockPanel>
+
+        <!--  Store  -->
+        <Button
+            Width="28"
+            Command="{Binding StoreCommand}"
+            Content="{iconPacks:Material Kind=StorePlusOutline}"
+            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+            ToolTip="Store the current sectors and image to the database.">
+            <Button.Style>
+                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ResultsManagerView.SelectedResultsDatabase.IsLocked}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <!--  Store Single  -->
+        <Button
+            Width="28"
+            Command="{Binding StoreSingleCommand}"
+            Content="{iconPacks:Material Kind=ChevronDoubleLeft}"
+            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+            ToolTip="Store the selected sector to the database.">
+            <Button.Style>
+                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Setter Property="IsEnabled" Value="True" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ResultsManagerView.SelectedResultsDatabase.IsLocked}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding CurrentSelectedSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <!--  Clear Single  -->
+        <Button
+            Width="28"
+            Command="{Binding ClearSingleCommand}"
+            Content="{iconPacks:MaterialDesign Kind=Clear}"
+            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+            ToolTip="Clear the selected sector.">
+            <Button.Style>
+                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Setter Property="IsEnabled" Value="True" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CurrentSelectedSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <!--  Read  -->
+        <Button
+            Width="28"
+            Command="{Binding ReadCommand}"
+            Content="{iconPacks:Material Kind=Upload}"
+            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+            ToolTip="Read the last results and image from the device.&#x0a;This action does not process the data.">
+            <Button.Style>
+                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ResultsManagerView.SelectedL95.Controller.IsConnected}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image" />
+                                <Condition Binding="{Binding CurrentSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <DockPanel>
+            <DockPanel.Style>
+                <Style TargetType="DockPanel">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DockPanel.Style>
+            <Border Margin="3,0" Style="{StaticResource imageBar}" />
+        </DockPanel>
+
+        <!--  Copy (Both)  -->
+        <Button
+            Width="28"
+            Command="{Binding CopyToClipboardCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
+            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+            Content="{iconPacks:Modern Kind=PageCopy}"
+            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+            <Button.Style>
+                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
+                    <Setter Property="Tag" Value="{Binding CurrentSectors}" />
+                    <Setter Property="ToolTip" Value="Copy the sectors to the clipboard as CSV." />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                            <Setter Property="Tag" Value="{Binding CurrentImage}" />
+                            <Setter Property="ToolTip" Value="Copy the image to the clipboard as a bitmap." />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <!--  Sectors Only: Show All  -->
+        <Button
+            Width="28"
+            Command="{Binding ShowCurrentSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
+            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+            Content="{iconPacks:Modern Kind=SectionExpandAll}"
+            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+            ToolTip="Show all stored sectors in a popup.&#x0a;Hold Shift and click to show the template and report JSON.">
+            <Button.Style>
+                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <!--  Sectors Only: JSON  -->
+        <Button
+            Width="28"
+            Command="{Binding ShowCurrentSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
+            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+            Content="{iconPacks:Material Kind=CodeJson}"
+            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+            Tag="json"
+            ToolTip="Show the template and report JSON.">
+            <Button.Style>
+                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <!--  Image Only: Clear  -->
+        <DockPanel>
+            <DockPanel.Style>
+                <Style TargetType="DockPanel">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DockPanel.Style>
+
+            <Border Margin="3,0" Style="{StaticResource imageBar}" />
+
+            <Button
+                Width="28"
+                Command="{Binding ClearCurrentCommand}"
+                CommandParameter="{x:Static vm:ResultsEntryDevices.L95}"
+                Content="{iconPacks:MaterialDesign Kind=Clear}"
+                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                ToolTip="Clear the current sectors and image." />
+        </DockPanel>
+    </DockPanel>
+</ResourceDictionary>

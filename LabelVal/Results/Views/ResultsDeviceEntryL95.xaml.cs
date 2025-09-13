@@ -12,17 +12,120 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace LabelVal.Results.Views;
-/// <summary>
-/// Interaction logic for (ResultsDeviceEntry_L95.xaml
-/// </summary>
 public partial class ResultsDeviceEntry_L95 : UserControl
 {
     private ViewModels.IResultsDeviceEntry _viewModel;
+
+    // RelayCommand
+    private class RelayCommand : ICommand
+    {
+        private readonly Action<object> _exec;
+        private readonly Func<object, bool> _can;
+        public RelayCommand(Action<object> exec, Func<object, bool> can = null) { _exec = exec; _can = can; }
+        public bool CanExecute(object p) => _can?.Invoke(p) ?? true;
+        public void Execute(object p) => _exec(p);
+        public event EventHandler CanExecuteChanged;
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    // DependencyProperty Commands
+    public static readonly DependencyProperty CopyToClipboardCommandProperty =
+        DependencyProperty.Register(nameof(CopyToClipboardCommand), typeof(ICommand), typeof(ResultsDeviceEntry_L95));
+    public ICommand CopyToClipboardCommand
+    {
+        get => (ICommand)GetValue(CopyToClipboardCommandProperty);
+        set => SetValue(CopyToClipboardCommandProperty, value);
+    }
+
+    public static readonly DependencyProperty ShowStoredSectorsCommandProperty =
+        DependencyProperty.Register(nameof(ShowStoredSectorsCommand), typeof(ICommand), typeof(ResultsDeviceEntry_L95));
+    public ICommand ShowStoredSectorsCommand
+    {
+        get => (ICommand)GetValue(ShowStoredSectorsCommandProperty);
+        set => SetValue(ShowStoredSectorsCommandProperty, value);
+    }
+
+    public static readonly DependencyProperty ShowCurrentSectorsCommandProperty =
+        DependencyProperty.Register(nameof(ShowCurrentSectorsCommand), typeof(ICommand), typeof(ResultsDeviceEntry_L95));
+    public ICommand ShowCurrentSectorsCommand
+    {
+        get => (ICommand)GetValue(ShowCurrentSectorsCommandProperty);
+        set => SetValue(ShowCurrentSectorsCommandProperty, value);
+    }
+
     public ResultsDeviceEntry_L95()
     {
         InitializeComponent();
-
         DataContextChanged += (e, s) => _viewModel = (ViewModels.IResultsDeviceEntry)DataContext;
+
+        CopyToClipboardCommand = new RelayCommand(ExecCopyToClipboard);
+        ShowStoredSectorsCommand = new RelayCommand(ExecShowStored);
+        ShowCurrentSectorsCommand = new RelayCommand(ExecShowCurrent);
+    }
+
+    private void ExecCopyToClipboard(object param)
+    {
+        if (param is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
+        {
+            if (Sectors.Output.SectorOutputSettings.CurrentOutputType == Sectors.Output.SectorOutputType.Delimited)
+                Clipboard.SetText(sectors.GetDelimetedSectorsReport($"{_viewModel.ResultsManagerView.ActiveImageRoll.Name}{(char)Sectors.Output.SectorOutputSettings.CurrentDelimiter}{_viewModel.ResultsEntry.SourceImage.Order}"));
+            else if (Sectors.Output.SectorOutputSettings.CurrentOutputType == Sectors.Output.SectorOutputType.JSON)
+                Clipboard.SetText(sectors.GetJsonSectorsReport($"{_viewModel.ResultsManagerView.ActiveImageRoll.Name}{(char)Sectors.Output.SectorOutputSettings.CurrentDelimiter}{_viewModel.ResultsEntry.SourceImage.Order}").ToString());
+        }
+        else if (param is ImageEntry image)
+        {
+            Clipboard.SetImage(image.Image);
+        }
+    }
+
+    private void ExecShowStored(object param)
+    {
+        if (param is string s && s == "json")
+        {
+            if (_viewModel?.Result?.Report != null)
+            {
+                List<JObject> reports = [];
+                foreach (JToken group in _viewModel.Result.Report["AllReports"])
+                    reports.Add((JObject)group["Report"]);
+
+                List<JObject> templates = [];
+                foreach (JToken group in _viewModel.Result.Report["AllReports"])
+                    templates.Add((JObject)group["Template"]);
+
+                var template = new JObject { ["Templates"] = JArray.FromObject(templates) };
+                var report = new JObject { ["Reports"] = JArray.FromObject(reports) };
+                _viewModel.ResultsManagerView.ShowSectorsDetailsWindow(template, report);
+            }
+        }
+        else
+        {
+            _viewModel.ResultsManagerView.ShowSectorsDetailsWindow(_viewModel.StoredSectors);
+        }
+    }
+
+    private void ExecShowCurrent(object param)
+    {
+        if (param is string s && s == "json")
+        {
+            if (_viewModel?.CurrentReport != null)
+            {
+                List<JObject> reports = [];
+                foreach (JToken group in _viewModel.CurrentReport["AllReports"])
+                    reports.Add((JObject)group["Report"]);
+
+                List<JObject> templates = [];
+                foreach (JToken group in _viewModel.CurrentReport["AllReports"])
+                    templates.Add((JObject)group["Template"]);
+
+                var template = new JObject { ["Templates"] = JArray.FromObject(templates) };
+                var report = new JObject { ["Reports"] = JArray.FromObject(reports) };
+                _viewModel.ResultsManagerView.ShowSectorsDetailsWindow(template, report);
+            }
+        }
+        else
+        {
+            _viewModel.ResultsManagerView.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
+        }
     }
 
     private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
@@ -76,79 +179,6 @@ public partial class ResultsDeviceEntry_L95 : UserControl
         }
     }
 
-    private void StoredSectors_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is Button b && b.Tag is string s && s.Equals("json"))
-        {
-            if (_viewModel?.Result?.Report != null)
-            {
-                //Create an array of reports and an array of templates serilize them to the JObject
-                List<JObject> reports = [];
-                foreach (JToken group in _viewModel.Result.Report["AllReports"])
-                {
-                    reports.Add((JObject)group["Report"]);
-                }
-
-                List<JObject> templates = [];
-                foreach (JToken group in _viewModel.Result.Report["AllReports"])
-                {
-                    templates.Add((JObject)group["Template"]);
-                }
-
-                var template = new JObject
-                {
-                    ["Templates"] = JArray.FromObject(templates)
-                };
-
-                var report = new JObject
-                {
-                    ["Reports"] = JArray.FromObject(reports)
-                };
-                _viewModel.ResultsManagerView.ShowSectorsDetailsWindow(template, report);
-            }
-        }
-        else
-        {
-            _viewModel.ResultsManagerView.ShowSectorsDetailsWindow(_viewModel.StoredSectors);
-        }
-    }
-    private void CurrentSectors_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is Button b && b.Tag is string s && s.Equals("json"))
-        {
-            if (_viewModel?.CurrentReport != null)
-            {
-                //Create an array of reports and an array of templates serilize them to the JObject
-                List<JObject> reports = [];
-                foreach (JToken group in _viewModel?.CurrentReport["AllReports"])
-                {
-                    reports.Add((JObject)group["Report"]);
-                }
-
-                List<JObject> templates = [];
-                foreach (JToken group in _viewModel?.CurrentReport["AllReports"])
-                {
-                    templates.Add((JObject)group["Template"]);
-                }
-
-                var template = new JObject
-                {
-                    ["Templates"] = JArray.FromObject(templates)
-                };
-
-                var report = new JObject
-                {
-                    ["Reports"] = JArray.FromObject(reports)
-                };
-
-                _viewModel.ResultsManagerView.ShowSectorsDetailsWindow(template, report);
-            }
-        }
-        else
-        {
-            _viewModel.ResultsManagerView.ShowSectorsDetailsWindow(_viewModel.CurrentSectors);
-        }
-    }
     private void ScrollStoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
         if (e.VerticalChange != 0)

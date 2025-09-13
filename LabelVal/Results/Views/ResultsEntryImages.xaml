@@ -137,9 +137,11 @@
 
             </DockPanel>
 
-            <StackPanel HorizontalAlignment="Left">
+            <!--<StackPanel HorizontalAlignment="Left">
 
-                <!--  Show 2D  -->
+            -->
+            <!--  Show 2D  -->
+            <!--
                 <Button
                     Width="28"
                     Height="28"
@@ -151,7 +153,9 @@
                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                     ToolTip="Open the image in the 2D viewer." />
 
-                <!--  Show 3D  -->
+            -->
+            <!--  Show 3D  -->
+            <!--
                 <Button
                     Width="28"
                     Height="28"
@@ -163,7 +167,7 @@
                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                     ToolTip="Open the image in the 3D viewer." />
 
-            </StackPanel>
+            </StackPanel>-->
 
         </DockPanel>
 

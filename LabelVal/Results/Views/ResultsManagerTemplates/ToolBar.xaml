@@ -18,47 +18,47 @@
                 ToolBarTray.IsLocked="True">
 
 
-                    <!--  Button to add new images to the roll. Visible only when the roll is not locked.  -->
-                    <Button Command="{Binding AddImageCommand}" ToolTip="Add new image(s) to the roll.">
-                        <Button.Style>
-                            <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ActiveImageRoll.IsLocked}" Value="False">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
+                <!--  Button to add new images to the roll. Visible only when the roll is not locked.  -->
+                <Button Command="{Binding AddImageCommand}" ToolTip="Add new image(s) to the roll.">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveImageRoll.IsLocked}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
 
-                        <DockPanel>
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                DockPanel.Dock="Top"
-                                Text="Add Image"
-                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <DockPanel>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            DockPanel.Dock="Top"
+                            Text="Add Image"
+                            Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                            <iconPacks:PackIconMaterial
-                                Width="24"
-                                Height="24"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Kind="ImagePlus" />
+                        <iconPacks:PackIconMaterial
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Kind="ImagePlus" />
 
-                        </DockPanel>
+                    </DockPanel>
 
-                    </Button>
+                </Button>
 
-                    <Separator Margin="6,0,3,0" Visibility="{Binding ActiveImageRoll.IsLocked, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
-                    <!--  Device-specific buttons are loaded here from resources.  -->
-                    <ContentControl Content="{StaticResource V275TriggerButton}" />
-                    <ContentControl Content="{StaticResource V5TriggerButton}" />
-                    <StackPanel Orientation="Horizontal">
-                        <ContentControl Content="{StaticResource L95TriggerButton}" />
-                        <ContentControl Content="{StaticResource L95RedirectButton}" />
-                    </StackPanel>
+                <Separator Margin="6,0,3,0" Visibility="{Binding ActiveImageRoll.IsLocked, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
+                <!--  Device-specific buttons are loaded here from resources.  -->
+                <ContentControl Content="{StaticResource V275TriggerButton}" />
+                <ContentControl Content="{StaticResource V5TriggerButton}" />
+                <StackPanel Orientation="Horizontal">
+                    <ContentControl Content="{StaticResource L95TriggerButton}" />
+                    <ContentControl Content="{StaticResource L95RedirectButton}" />
+                </StackPanel>
 
-           
+
 
                 <Separator Margin="6,0,3,0" Visibility="{Binding ActiveImageRoll.IsLocked, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
 
