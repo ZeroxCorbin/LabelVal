@@ -20,7 +20,7 @@
             <!--  L95 Process Image  -->
 
             <Button
-                BorderBrush="{DynamicResource L95_Brush_Active}"
+                BorderBrush="{DynamicResource L95_Brush_Active50}"
                 Command="{Binding ProcessCommand}"
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                 IsEnabled="{Binding ResultsManagerView.IsL95Working, Converter={StaticResource InvertBool}}">
@@ -66,7 +66,7 @@
                         Text="L95"
                         Visibility="{Binding ResultsManagerView.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                    <Grid Background="{DynamicResource L95_Brush_Active}">
+                    <Grid Background="{DynamicResource L95_Brush_Active50}">
 
                         <mah:MetroProgressBar
                             Width="46"
@@ -265,7 +265,7 @@
                 Padding="0"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Stretch"
-                BorderBrush="{DynamicResource L95_Brush_Active}"
+                BorderBrush="{DynamicResource L95_Brush_Active50}"
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                 IsChecked="{Binding IsSelected}"
                 IsEnabled="{Binding ResultsManagerView.IsL95Working, Converter={StaticResource InvertBool}}">
@@ -307,7 +307,7 @@
                                                 Text="L95"
                                                 Visibility="{Binding ResultsManagerView.AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                                            <Grid Background="{DynamicResource L95_Brush_Active}">
+                                            <Grid Background="{DynamicResource L95_Brush_Active50}">
                                                 <Grid
                                                     Margin="3,6"
                                                     HorizontalAlignment="Left"

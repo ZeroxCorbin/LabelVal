@@ -12,7 +12,7 @@
     <!--  Resource for L95 device-specific redirect button.  -->
     <Button
         x:Key="L95RedirectButton"
-        BorderBrush="{DynamicResource L95_Brush_Active}"
+        BorderBrush="{DynamicResource L95_Brush_Active50}"
         Command="{Binding ToggleL95SelectionCommand}"
         IsEnabled="{Binding IsL95Working, Converter={StaticResource InvertBool}}">
         <Button.Style>
@@ -54,7 +54,7 @@
                                         Text="L95"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                                    <Grid Background="{DynamicResource L95_Brush_Active}">
+                                    <Grid Background="{DynamicResource L95_Brush_Active50}">
                                         <Grid
                                             Margin="3,6"
                                             HorizontalAlignment="Left"

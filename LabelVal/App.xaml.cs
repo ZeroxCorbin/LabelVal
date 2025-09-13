@@ -23,6 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace LabelVal;
@@ -309,8 +310,13 @@ public partial class App : Application
 
         foreach (var key in resourceKeys)
         {
-            Current.Resources[$"{key}_Brush_Active"] = Current.Resources[$"{key}{suffix}_Brush"];
+            var baseBrush = Current.Resources[$"{key}{suffix}_Brush"];
+            var baseColor = (System.Windows.Media.Color)Current.Resources[$"{key}{suffix}"];
+
+            Current.Resources[$"{key}_Brush_Active"] = baseBrush;
+            Current.Resources[$"{key}_Brush_Active50"] = new SolidColorBrush(System.Windows.Media.Color.FromArgb(128, baseColor.R, baseColor.G, baseColor.B));
             Current.Resources[$"{key}_Color_Active"] = Current.Resources[$"{key}{suffix}"];
+            Current.Resources[$"{key}_Color_Active50"] = System.Windows.Media.Color.FromArgb(128, baseColor.R, baseColor.G, baseColor.B);
         }
     }
     private void UpdateMaterialDesignTheme()
@@ -408,8 +414,8 @@ public partial class App : Application
         //graphics.FillRectangle(Brushes.Black, 30, 1950, 90, 90);
 
         //300 DPI
-        graphics.FillRectangle(Brushes.White, 0, 976, 150, photo.Height - 976);
-        graphics.FillRectangle(Brushes.Black, 15, 975, 45, 45);
+        graphics.FillRectangle(System.Drawing.Brushes.White, 0, 976, 150, photo.Height - 976);
+        graphics.FillRectangle(System.Drawing.Brushes.Black, 15, 975, 45, 45);
 
         newmap.Save(path, ImageFormat.Png);
     }

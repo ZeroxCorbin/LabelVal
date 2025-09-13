@@ -14,7 +14,7 @@
 
     <Button
         x:Key="L95TriggerButton"
-        BorderBrush="{DynamicResource L95_Brush_Active}"
+        BorderBrush="{DynamicResource L95_Brush_Active50}"
         Command="{Binding AddDeviceImageCommand}"
         CommandParameter="{x:Static vm:ResultsEntryDevices.L95}"
         IsEnabled="{Binding IsL95Working, Converter={StaticResource InvertBool}}">
@@ -60,7 +60,7 @@
                 Text="L95"
                 Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-            <Grid Background="{DynamicResource L95_Brush_Active}">
+            <Grid Background="{DynamicResource L95_Brush_Active50}">
 
                 <mah:MetroProgressBar
                     Width="46"

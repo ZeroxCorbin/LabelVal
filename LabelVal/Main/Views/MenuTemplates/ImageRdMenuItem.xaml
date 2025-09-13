@@ -15,7 +15,7 @@
         <DockPanel d:DataContext="{d:DesignInstance Type=resultsVm:ResultsDatabasesViewModel}" DataContext="{Binding Content}">
             <!--  The DataContext is now the 'Content' property, which is likely null at design time  -->
 
-            <DockPanel Width="48" Background="{DynamicResource Results_Brush_Active}">
+            <DockPanel Width="48" Background="{DynamicResource Results_Brush_Active50}">
 
                 <iconPacks:PackIconMaterial
                     Width="36"

@@ -206,7 +206,7 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <DockPanel Grid.Row="0" Background="{DynamicResource ImageRoll_Brush_Active}">
+                        <DockPanel Grid.Row="0" Background="{DynamicResource ImageRoll_Brush_Active50}">
                             <iconPacks:PackIconMaterial
                                 Width="32"
                                 Height="32"
@@ -265,7 +265,7 @@
                         DockPanel.Dock="Top">
                         <DockPanel.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Offset="0" Color="{DynamicResource ImageRolls}" />
+                                <GradientStop Offset="0" Color="{DynamicResource ImageRoll_Color_Active50}" />
                                 <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                             </LinearGradientBrush>
                         </DockPanel.Background>
@@ -491,8 +491,8 @@
             </md:Card>
 
             <DockPanel DockPanel.Dock="Top">
-                <Border Background="{DynamicResource ImageRoll_Brush_Active}" Style="{StaticResource groupLeft}" />
-                <Border Background="{DynamicResource ImageRoll_Brush_Active}" Style="{StaticResource groupBottom}" />
+                <Border Background="{DynamicResource ImageRoll_Brush_Active50}" Style="{StaticResource groupLeft}" />
+                <Border Background="{DynamicResource ImageRoll_Brush_Active50}" Style="{StaticResource groupBottom}" />
 
                 <!--
                     DrawerHost that contains the editing UI for an image roll.
@@ -546,26 +546,31 @@
 
 
                 <DockPanel>
-
-                    <DockPanel
+                    <Grid
                         Width="47"
                         VerticalAlignment="Stretch"
-                        Background="{DynamicResource ImageRoll_Brush_Active}">
-                        <Image
-                            Width="28"
-                            Height="28"
+                        Background="{DynamicResource ImageRoll_Brush_Active50}">
+                        <iconPacks:PackIconMaterial
+                            Width="32"
+                            Height="32"
+                            Margin="1"
+                            Padding="3"
+                            HorizontalAlignment="Center"
+                            Kind="FilmstripBoxMultiple" />
+                        <iconPacks:PackIconMaterial
+                            Width="16"
+                            Height="16"
+                            Margin="5,0,0,6"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Source="/Assets/Images/l95-white-outline.ico" />
-                    </DockPanel>
+                            Foreground="{DynamicResource MahApps.Brushes.Control.Background}"
+                            Kind="Lock" />
+                    </Grid>
 
-                    <DockPanel
-                        Height="32"
-                        HorizontalAlignment="Stretch"
-                        DockPanel.Dock="Top">
+                    <DockPanel HorizontalAlignment="Stretch" DockPanel.Dock="Top">
                         <DockPanel.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Offset="0" Color="{DynamicResource ImageRolls}" />
+                                <GradientStop Offset="0" Color="{DynamicResource ImageRoll_Color_Active50}" />
                                 <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                             </LinearGradientBrush>
                         </DockPanel.Background>
@@ -587,8 +592,8 @@
             </md:Card>
 
             <DockPanel>
-                <Border Background="{DynamicResource ImageRoll_Brush_Active}" Style="{StaticResource groupLeft}" />
-                <Border Background="{DynamicResource ImageRoll_Brush_Active}" Style="{StaticResource groupBottom}" />
+                <Border Background="{DynamicResource ImageRoll_Brush_Active50}" Style="{StaticResource groupLeft}" />
+                <Border Background="{DynamicResource ImageRoll_Brush_Active50}" Style="{StaticResource groupBottom}" />
 
                 <!--  Tab control to display Fixed Image Rolls, grouped by standard.  -->
                 <mah:MetroTabControl

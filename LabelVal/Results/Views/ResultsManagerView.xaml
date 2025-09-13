@@ -72,7 +72,7 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <DockPanel Grid.Row="0" Background="{DynamicResource ImageRoll_Brush_Active}">
+                        <DockPanel Grid.Row="0" Background="{DynamicResource ImageRoll_Brush_Active50}">
                             <iconPacks:PackIconMaterial
                                 Width="32"
                                 Height="32"
@@ -131,8 +131,8 @@
 
         <!--  Main content area, including the results list and the JSON viewer drawer.  -->
         <DockPanel VerticalAlignment="Top" DockPanel.Dock="Top">
-            <Border Background="{DynamicResource ImageRoll_Brush_Active}" Style="{StaticResource groupLeft}" />
-            <Border Background="{DynamicResource ImageRoll_Brush_Active}" Style="{StaticResource groupBottom}" />
+            <Border Background="{DynamicResource ImageRoll_Brush_Active50}" Style="{StaticResource groupLeft}" />
+            <Border Background="{DynamicResource ImageRoll_Brush_Active50}" Style="{StaticResource groupBottom}" />
 
             <!--  Main content area.  -->
             <DockPanel>
@@ -150,6 +150,17 @@
                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                         DockPanel.Dock="Top"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                        <md:Card.Style>
+                            <Style BasedOn="{StaticResource MaterialDesignElevatedCard}" TargetType="{x:Type md:Card}">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <!--  Collapsed if there are no image results.  -->
+                                    <DataTrigger Binding="{Binding ActiveImageRoll.ImageCount}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </md:Card.Style>
 
                         <TextBlock
                             Margin="6,0,6,3"

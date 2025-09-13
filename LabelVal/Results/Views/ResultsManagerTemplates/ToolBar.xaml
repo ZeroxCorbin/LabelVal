@@ -17,7 +17,6 @@
                 BorderThickness="0"
                 ToolBarTray.IsLocked="True">
 
-                <DockPanel HorizontalAlignment="Left">
 
                     <!--  Button to add new images to the roll. Visible only when the roll is not locked.  -->
                     <Button Command="{Binding AddImageCommand}" ToolTip="Add new image(s) to the roll.">
@@ -50,6 +49,7 @@
 
                     </Button>
 
+                    <Separator Margin="6,0,3,0" Visibility="{Binding ActiveImageRoll.IsLocked, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
                     <!--  Device-specific buttons are loaded here from resources.  -->
                     <ContentControl Content="{StaticResource V275TriggerButton}" />
                     <ContentControl Content="{StaticResource V5TriggerButton}" />
@@ -58,7 +58,7 @@
                         <ContentControl Content="{StaticResource L95RedirectButton}" />
                     </StackPanel>
 
-                </DockPanel>
+           
 
                 <Separator Margin="6,0,3,0" Visibility="{Binding ActiveImageRoll.IsLocked, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
 

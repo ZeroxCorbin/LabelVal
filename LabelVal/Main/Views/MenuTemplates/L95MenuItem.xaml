@@ -16,7 +16,7 @@
             <Grid
                 Width="48"
                 MinHeight="82"
-                Background="{DynamicResource L95_Brush_Active}">
+                Background="{DynamicResource L95_Brush_Active50}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />

@@ -45,4 +45,50 @@
     <Color x:Key="ImageRoll_Color_Active" />
     <Color x:Key="Results_Color_Active" />
     <Color x:Key="LabelBuilder_Color_Active" />
+
+    <!--  Active (runtime-adjustable) brushes. Initially point at standard sets.  -->
+    <SolidColorBrush x:Key="ISO_GradeA_Brush_Active50" Color="{StaticResource ISO_GradeA}" />
+    <SolidColorBrush x:Key="ISO_GradeB_Brush_Active50" Color="{StaticResource ISO_GradeB}" />
+    <SolidColorBrush x:Key="ISO_GradeC_Brush_Active50" Color="{StaticResource ISO_GradeC}" />
+    <SolidColorBrush x:Key="ISO_GradeD_Brush_Active50" Color="{StaticResource ISO_GradeD}" />
+    <SolidColorBrush x:Key="ISO_GradeF_Brush_Active50" Color="{StaticResource ISO_GradeF}" />
+
+    <SolidColorBrush x:Key="SectorWarning_Brush_Active50" Color="{StaticResource SectorWarning}" />
+    <SolidColorBrush x:Key="SectorError_Brush_Active50" Color="{StaticResource SectorError}" />
+
+    <SolidColorBrush x:Key="StatusGreen_Brush_Active50" Color="{StaticResource StatusGreen}" />
+    <SolidColorBrush x:Key="StatusYellow_Brush_Active50" Color="{StaticResource StatusYellow}" />
+    <SolidColorBrush x:Key="StatusRed_Brush_Active50" Color="{StaticResource StatusRed}" />
+
+    <SolidColorBrush x:Key="V275_Brush_Active50" Color="{StaticResource V275}" />
+    <SolidColorBrush x:Key="V5_Brush_Active50" Color="{StaticResource V5}" />
+    <SolidColorBrush x:Key="L95_Brush_Active50" Color="{StaticResource L95}" />
+
+    <!--  New Active Brushes (point to Standard variants by default)  -->
+    <SolidColorBrush x:Key="ImageRoll_Brush_Active50" Color="{StaticResource ImageRoll}" />
+    <SolidColorBrush x:Key="Results_Brush_Active50" Color="{StaticResource Results}" />
+    <SolidColorBrush x:Key="LabelBuilder_Brush_Active50" Color="{StaticResource LabelBuilder}" />
+
+    <!--  Active Color values (use element content; no 'Color=' attribute on Color struct).  -->
+    <Color x:Key="ISO_GradeA_Color_Active50" />
+    <Color x:Key="ISO_GradeB_Color_Active50" />
+    <Color x:Key="ISO_GradeC_Color_Active50" />
+    <Color x:Key="ISO_GradeD_Color_Active50" />
+    <Color x:Key="ISO_GradeF_Color_Active50" />
+
+    <Color x:Key="SectorWarning_Color_Active50" />
+    <Color x:Key="SectorError_Color_Active50" />
+
+    <Color x:Key="StatusGreen_Color_Active50" />
+    <Color x:Key="StatusYellow_Color_Active50" />
+    <Color x:Key="StatusRed_Color_Active50" />
+
+    <Color x:Key="V275_Color_Active50" />
+    <Color x:Key="V5_Color_Active50" />
+    <Color x:Key="L95_Color_Active50" />
+
+    <!--  New Active Colors  -->
+    <Color x:Key="ImageRoll_Color_Active50" />
+    <Color x:Key="Results_Color_Active50" />
+    <Color x:Key="LabelBuilder_Color_Active50" />
 </ResourceDictionary>
