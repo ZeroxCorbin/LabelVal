@@ -652,7 +652,9 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
     {
         Logger.Info("Adding image roll.");
 
-        NewImageRoll = new ImageRoll(this) { ImageRollsDatabase = SelectedUserDatabase, ImageRollsManager = this };
+        NewImageRoll = new ImageRoll(this);
+        NewImageRoll.IsSaved = false;
+        NewImageRoll.ImageRollsDatabase = SelectedUserDatabase;
     }
 
     /// <summary>
@@ -664,6 +666,8 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         Logger.Info("Editing image roll.");
 
         NewImageRoll = SelectedUserImageRoll.CopyLite();
+        NewImageRoll.ImageRollsDatabase = SelectedUserDatabase;
+        NewImageRoll.ImageRollsManager = this;
     }
 
     /// <summary>
@@ -675,19 +679,14 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         if (NewImageRoll == null)
             return;
 
-        if (string.IsNullOrEmpty(NewImageRoll.Name))
+        if (NewImageRoll.HasErrors)
         {
-            Logger.Warning("Name is required for image rolls.");
+            foreach(var err in NewImageRoll.GetErrors())
+                Logger.Warning(err.ErrorMessage);
             return;
         }
 
-        if (NewImageRoll.SelectedApplicationStandard is ApplicationStandards.GS1 && NewImageRoll.SelectedGS1Table is GS1Tables.Unknown)
-        {
-            Logger.Warning("GS1 Table is required for GS1 image rolls.");
-            return;
-        }
-
-        if (SelectedUserDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)
+       if (SelectedUserDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)
         {
             Logger.Info($"Saved image roll: {NewImageRoll.Name}");
 
@@ -708,7 +707,9 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             {
                 // Add new instance
                 savedRoll = NewImageRoll.CopyLite();
+                savedRoll.ImageRollsDatabase = SelectedUserDatabase;
                 savedRoll.ImageRollsManager = this;
+                savedRoll.IsSaved = true;
                 UserImageRolls.Add(savedRoll);
             }   
 

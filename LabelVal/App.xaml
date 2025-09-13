@@ -34,7 +34,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Flyout.xaml" />
 
                 <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
-                
+
             </ResourceDictionary.MergedDictionaries>
 
             <converters:IsNullOrEmpty x:Key="IsNullOrEmpty" />

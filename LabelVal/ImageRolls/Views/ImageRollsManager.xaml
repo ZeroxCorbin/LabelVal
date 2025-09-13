@@ -415,10 +415,16 @@
                                     <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
+                                                    <Condition Binding="{Binding NewImageRoll.IsSaved}" Value="True" />
+                                                </MultiDataTrigger.Conditions>
+                                                <MultiDataTrigger.Setters>
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </MultiDataTrigger.Setters>
+                                            </MultiDataTrigger>
+                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
 

@@ -11,10 +11,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing.Printing;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
+using Wpf.lib.Validation;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
@@ -116,7 +119,8 @@ public delegate void ImageMovedEventHandler(object sender, ImageEntry imageEntry
 /// This class manages the collection of images, their properties, and related operations.
 /// </summary>
 [JsonObject(MemberSerialization.OptIn)]
-public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>, IDisposable
+[ObservableRecipient]
+public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChangedMessage<PrinterSettings>>, IDisposable
 {
     #region Events
 
@@ -171,13 +175,21 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// </summary>
     [ObservableProperty][property: JsonProperty] private ImageRollSectorTypes sectorType = ImageRollSectorTypes.Dynamic;
 
+
+    [ObservableProperty] private bool isSaved = true;
+
+
     /// <summary>
     /// Gets or sets the name of the image roll.
     /// </summary>
-    [ObservableProperty][property: JsonProperty] private string name;
+    [ObservableProperty]
+    [Required]
+    [FileSafeString]
+    [property: JsonProperty]
+    private string name = "";
     partial void OnNameChanged(string oldValue, string newValue)
     {
-
+        ValidateAllProperties();
     }
 
     /// <summary>
@@ -200,7 +212,12 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// Gets or sets the selected application standard for the roll.
     /// </summary>
     [ObservableProperty][property: JsonProperty("ApplicationStandard")][property: SQLite.Column("ApplicationStandard")] private ApplicationStandards selectedApplicationStandard;
-    partial void OnSelectedApplicationStandardChanged(ApplicationStandards value) { OnPropertyChanged(nameof(ApplicationStandardDescription)); OnPropertyChanged(nameof(StandardGroup)); }
+    partial void OnSelectedApplicationStandardChanged(ApplicationStandards value)
+    {
+        OnPropertyChanged(nameof(ApplicationStandardDescription));
+        OnPropertyChanged(nameof(StandardGroup));
+        ValidateAllProperties();
+    }
 
     /// <summary>
     /// Gets the description of the selected application standard.
@@ -210,8 +227,16 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// <summary>
     /// Gets or sets the selected GS1 table for the roll.
     /// </summary>
-    [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private GS1Tables selectedGS1Table;
-    partial void OnSelectedGS1TableChanged(GS1Tables value) => OnPropertyChanged(nameof(GS1TableNumber));
+    [ObservableProperty]
+    [property: JsonProperty("GS1Table")]
+    [property: SQLite.Column("GS1Table")]
+    [CustomValidation(typeof(ImageRoll), nameof(ValidateGS1Table))]
+    private GS1Tables selectedGS1Table;
+    partial void OnSelectedGS1TableChanged(GS1Tables value)
+    {
+        OnPropertyChanged(nameof(GS1TableNumber));
+        ValidateAllProperties();
+    }
 
     /// <summary>
     /// Gets the numeric value of the selected GS1 table.
@@ -226,7 +251,10 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// <summary>
     /// Gets or sets the target DPI for images in the roll.
     /// </summary>
-    [ObservableProperty][property: JsonProperty] private int targetDPI;
+    [ObservableProperty]
+    [property: JsonProperty]
+    [Range(0, 4800)]
+    private int targetDPI;
 
     /// <summary>
     /// The list of images in the roll.
@@ -277,13 +305,50 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
     public ImageRoll(ImageRollsManager imageRolls)
     {
+        Messenger = WeakReferenceMessenger.Default;
         ImageRollsManager = imageRolls;
         App.Settings.PropertyChanged += Settings_PropertyChanged;
-        IsActive = true;
+
+        if (string.IsNullOrEmpty(Name))
+        {
+            Name = GenerateUniqueName();
+        }
         ReceiveAll();
+        IsActive = true;
+
+
     }
 
     ~ImageRoll() => Dispose();
+
+    #endregion
+
+    private string GenerateUniqueName()
+    {
+        var baseName = "New Image Roll";
+        var newName = baseName;
+        var counter = 1;
+        var allRollNames = ImageRollsManager.UserImageRolls
+                                            .Select(r => r.Name)
+                                            .Concat(ImageRollsManager.FixedImageRolls.Select(r => r.Name))
+                                            .ToHashSet();
+        while (allRollNames.Contains(newName))
+        {
+            newName = $"{baseName} {counter++}";
+        }
+        Name = newName;
+        return newName;
+    }
+
+    #region Validation
+
+    public static ValidationResult ValidateGS1Table(GS1Tables table, ValidationContext context)
+    {
+        var imageRoll = (ImageRoll)context.ObjectInstance;
+        return imageRoll.SelectedApplicationStandard == ApplicationStandards.GS1 && table == GS1Tables.Unknown
+            ? new("A GS1 Table must be selected when the Application Standard is GS1.")
+            : ValidationResult.Success;
+    }
 
     #endregion
 
@@ -294,7 +359,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// </summary>
     private void ReceiveAll()
     {
-        var ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
+        RequestMessage<PrinterSettings> ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
         if (ret1.HasReceivedResponse)
             SelectedPrinter = ret1.Response;
     }
@@ -334,13 +399,13 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         var sorted = images.OrderBy(x => x).ToList();
         foreach (var f in sorted)
         {
-            (var entry, var isNew) = GetImageEntry(f);
+            (ImageEntry entry, var isNew) = GetImageEntry(f);
             if (entry == null)
                 continue;
 
             if (isNew)
             {
-                var tsk = Application.Current.Dispatcher.BeginInvoke(() => AddImage(ImageAddPositions.Bottom, entry)).Task;
+                Task tsk = Application.Current.Dispatcher.BeginInvoke(() => AddImage(ImageAddPositions.Bottom, entry)).Task;
                 taskList.Add(tsk);
             }
         }
@@ -364,13 +429,13 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
         Logger.Info($"Loading label images from database: {Name}");
 
-        var images = ImageRollsDatabase.SelectAllImages(UID);
+        List<ImageEntry> images = ImageRollsDatabase.SelectAllImages(UID);
         List<Task> taskList = [];
 
-        foreach (var f in images)
+        foreach (ImageEntry f in images)
         {
             f.SaveRequested += OnImageEntrySaveRequested;
-            var tsk = Application.Current.Dispatcher.BeginInvoke(() => ImageEntries.Add(f)).Task;
+            Task tsk = Application.Current.Dispatcher.BeginInvoke(() => ImageEntries.Add(f)).Task;
             taskList.Add(tsk);
         }
 
@@ -443,7 +508,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
         var ordered = ImageEntries.OrderBy(x => x.Order).ToList();
         // Adjust the order of existing items to make space for the new item
-        foreach (var currentImage in ordered)
+        foreach (ImageEntry currentImage in ordered)
         {
             if (currentImage.Order >= targetOrder)
                 currentImage.Order += newImages.Count;
@@ -452,7 +517,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
         // Insert each new image at the adjusted target order
         for (var i = 0; i < newImages.Count; i++)
         {
-            var newImage = newImages[i];
+            ImageEntry newImage = newImages[i];
             newImage.Order = targetOrder + i;
             ImageEntries.Add(newImage);
             SaveImage(newImage);
@@ -537,8 +602,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
     /// <returns>A new <see cref="ImageRoll"/> instance with the same property values.</returns>
     public ImageRoll CopyLite()
     {
-        var roll = JsonConvert.DeserializeObject<ImageRoll>(JsonConvert.SerializeObject(this));
-        roll.ImageRollsDatabase = ImageRollsDatabase;
+        ImageRoll roll = JsonConvert.DeserializeObject<ImageRoll>(JsonConvert.SerializeObject(this));
         return roll;
     }
 
@@ -621,7 +685,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
             var ire = new ImageEntry(UID, path);
             ire.SaveRequested += OnImageEntrySaveRequested;
 
-            var imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
+            ImageEntry imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
             if (imageEntry != null)
             {
                 Logger.Warning($"Image already exists in roll: {Path}");
@@ -650,7 +714,7 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
             var ire = new ImageEntry(UID, rawImage, TargetDPI);
             ire.SaveRequested += OnImageEntrySaveRequested;
 
-            var imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
+            ImageEntry imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
             if (imageEntry != null)
             {
                 Logger.Warning($"Image already exists in roll: {Path}");
@@ -680,14 +744,14 @@ public partial class ImageRoll : ObservableRecipient, IRecipient<PropertyChanged
 
         if (oldOrder < newOrder) // Moving down
         {
-            foreach (var img in ImageEntries.Where(i => i.Order > oldOrder && i.Order <= newOrder))
+            foreach (ImageEntry img in ImageEntries.Where(i => i.Order > oldOrder && i.Order <= newOrder))
             {
                 img.Order--;
             }
         }
         else // Moving up
         {
-            foreach (var img in ImageEntries.Where(i => i.Order >= newOrder && i.Order < oldOrder))
+            foreach (ImageEntry img in ImageEntries.Where(i => i.Order >= newOrder && i.Order < oldOrder))
             {
                 img.Order++;
             }

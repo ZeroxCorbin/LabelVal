@@ -19,7 +19,11 @@
 
     <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
         <md:Card.Effect>
-            <DropShadowEffect ShadowDepth="0" BlurRadius="5" Color="{DynamicResource MahApps.Colors.Gray1}" Opacity="0.5" />
+            <DropShadowEffect
+                BlurRadius="5"
+                Opacity="0.5"
+                ShadowDepth="0"
+                Color="{DynamicResource MahApps.Colors.Gray1}" />
         </md:Card.Effect>
 
         <DockPanel
@@ -45,9 +49,8 @@
                     <Run Text="DPI )" />
                 </TextBlock>
 
-                <Border BorderBrush="{DynamicResource MahApps.Brushes.Button.Border}" BorderThickness="1">
+                <Border BorderBrush="{DynamicResource MahApps.Brushes.Button.Border}" BorderThickness="1" MaxWidth="260">
                     <ComboBox
-                        MaxWidth="260"
                         Margin="3,0"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
@@ -58,7 +61,6 @@
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock
-                                    MaxWidth="260"
                                     Text="{Binding}"
                                     TextWrapping="Wrap" />
                             </DataTemplate>

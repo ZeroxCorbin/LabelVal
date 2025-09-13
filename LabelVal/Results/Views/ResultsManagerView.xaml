@@ -164,7 +164,7 @@
                     <ListBox
                         x:Name="ImageRollThumbnails"
                         Grid.Row="1"
-                        MaxWidth="120"
+                        MaxWidth="140"
                         DockPanel.Dock="Left"
                         ItemsSource="{Binding Source={StaticResource CvsResultssEntries}}"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -200,7 +200,10 @@
                                         <RowDefinition Height="*" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-                                    <Image Source="{Binding SourceImage.ImageLow}" MaxWidth="48" MaxHeight="48"/>
+                                    <Image
+                                        MaxWidth="48"
+                                        MaxHeight="48"
+                                        Source="{Binding SourceImage.ImageLow}" />
                                     <TextBlock
                                         Grid.Row="1"
                                         HorizontalAlignment="Center"

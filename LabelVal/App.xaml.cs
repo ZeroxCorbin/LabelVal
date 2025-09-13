@@ -50,9 +50,13 @@ public partial class App : Application
     })
     .ConfigureServices((context, services) =>
     {
+        services.AddSingleton<IMessenger, WeakReferenceMessenger>(provider =>
+        {
+            return WeakReferenceMessenger.Default;
+        });
 
         _ = services.AddSingleton<SectorDifferencesDatabaseSettings>(provider =>
-        {
+        { 
             return App.Settings.GetValue<SectorDifferencesDatabaseSettings>(nameof(SectorDifferencesDatabaseSettings), new(), true) ?? new SectorDifferencesDatabaseSettings();
         });
 
