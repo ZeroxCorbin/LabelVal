@@ -360,6 +360,9 @@
                                             <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                                 <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
+                                            <DataTrigger Binding="{Binding NewImageRoll.HasErrors}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
@@ -424,7 +427,7 @@
                                                     <Setter Property="Visibility" Value="Visible" />
                                                 </MultiDataTrigger.Setters>
                                             </MultiDataTrigger>
-                                         </Style.Triggers>
+                                        </Style.Triggers>
                                     </Style>
                                 </Button.Style>
 

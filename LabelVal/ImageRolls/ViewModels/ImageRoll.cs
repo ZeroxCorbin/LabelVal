@@ -9,11 +9,14 @@ using LabelVal.ImageRolls.Databases;
 using LabelVal.Main.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing.Printing;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
@@ -184,7 +187,7 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
     /// </summary>
     [ObservableProperty]
     [Required]
-    [FileSafeString]
+    [CustomValidation(typeof(ImageRoll), nameof(ValidateName))]
     [property: JsonProperty]
     private string name = "";
     partial void OnNameChanged(string oldValue, string newValue)
@@ -341,6 +344,43 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
     }
 
     #region Validation
+
+    public static bool IsFileNameSafe(string name)
+    {
+        var invalidChars = System.IO.Path.GetInvalidFileNameChars();
+        return !string.IsNullOrEmpty(name) && name.All(c => !invalidChars.Contains(c));
+    }
+    public static ValidationResult ValidateName(string name, ValidationContext context)
+    {
+        //Check if (the string is null empty or whitespace.
+        //Check the name to make sure it is not a duplicate UserImageRoll only
+        //Check if (the name is file safe.
+
+        var imageRoll = (ImageRoll)context.ObjectInstance;
+
+        if(imageRoll.RollType == ImageRollTypes.Directory)
+            return ValidationResult.Success;
+
+        var imageRollsManager = imageRoll.ImageRollsManager;
+        if (string.IsNullOrWhiteSpace(name))
+            return new("A name is required and cannot be empty.");
+        if (imageRollsManager != null)
+            {
+            var allNames = imageRollsManager.UserImageRolls
+                                            .Where(r => r.UID != imageRoll.UID) // Exclude the current roll
+                                            .Select(r => r.Name)
+                                            .Concat(imageRollsManager.FixedImageRolls.Select(r => r.Name))
+                                            .ToHashSet();
+            if (allNames.Contains(name))
+                return new("The name must be unique among user-defined and fixed image rolls.");
+        }
+
+        if (!IsFileNameSafe(name))
+            return new("The name contains invalid characters. Please avoid using characters such as \\ / : * ? \" < > |");
+
+        return ValidationResult.Success;
+
+    }
 
     public static ValidationResult ValidateGS1Table(GS1Tables table, ValidationContext context)
     {

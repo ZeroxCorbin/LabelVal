@@ -40,7 +40,10 @@
 
             <StackPanel Margin="3">
 
-                <TextBlock HorizontalAlignment="Center" Style="{StaticResource MaterialDesignBodyMediumTextBlock}">
+                <TextBlock
+                    Margin="0,0,0,3"
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource MaterialDesignBodyMediumTextBlock}">
                     <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Width, StringFormat=N2, Converter={StaticResource PrinterSettingThousandthsToInches}}" />
                     <Run Text="x" />
                     <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Height, StringFormat=N2, Converter={StaticResource PrinterSettingThousandthsToInches}}" />
@@ -49,7 +52,10 @@
                     <Run Text="DPI )" />
                 </TextBlock>
 
-                <Border BorderBrush="{DynamicResource MahApps.Brushes.Button.Border}" BorderThickness="1" MaxWidth="260">
+                <Border
+                    MaxWidth="260"
+                    BorderBrush="{DynamicResource MahApps.Brushes.Button.Border}"
+                    BorderThickness="1">
                     <ComboBox
                         Margin="3,0"
                         HorizontalContentAlignment="Center"
@@ -60,9 +66,7 @@
 
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock
-                                    Text="{Binding}"
-                                    TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding}" TextWrapping="Wrap" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>

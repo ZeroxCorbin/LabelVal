@@ -32,7 +32,8 @@
             <md:Card
                 Margin="3"
                 Background="{DynamicResource MahApps.Brushes.Control.Background}"
-                BorderThickness="0" Visibility="{Binding ., Converter={StaticResource IsNullOrEmptyVisibility}}">
+                BorderThickness="0"
+                Visibility="{Binding ., Converter={StaticResource IsNullOrEmptyVisibility}}">
                 <md:Card.Effect>
                     <DropShadowEffect
                         BlurRadius="5"
@@ -43,8 +44,7 @@
                 <DockPanel
                     MaxWidth="260"
                     Margin="3"
-                    HorizontalAlignment="Stretch"
-                    >
+                    HorizontalAlignment="Stretch">
 
                     <DockPanel.Style>
                         <Style TargetType="DockPanel">
