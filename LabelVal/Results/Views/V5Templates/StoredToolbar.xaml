@@ -1,17 +1,17 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
-    xmlns:vm="clr-namespace:LabelVal.Results.ViewModels"
-    xmlns:local="clr-namespace:LabelVal.Results.Views">
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:LabelVal.Results.Views"
+    xmlns:vm="clr-namespace:LabelVal.Results.ViewModels">
 
-    <!-- Stored toolbar (key name consistent with V275) -->
-    <DockPanel x:Key="Stored_Toolbar" x:Shared="False">
+    <!--  Stored toolbar (key name consistent with V275)  -->
+    <DockPanel x:Key="StoredToolbar" x:Shared="False">
 
         <Border Margin="3,0" Style="{StaticResource imageBar}" />
 
-        <!-- Image Only -->
+        <!--  Image Only  -->
         <DockPanel>
             <DockPanel.Style>
                 <Style TargetType="DockPanel">
@@ -24,16 +24,17 @@
                 </Style>
             </DockPanel.Style>
 
-            <Button Width="28"
-                    Command="{Binding ResultsEntry.SaveCommand}"
-                    CommandParameter="{Binding StoredImage.BitmapBytes}"
-                    Content="{iconPacks:Material Kind=ContentSave}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                    ToolTip="Save the stored image to a file." />
+            <Button
+                Width="28"
+                Command="{Binding ResultsEntry.SaveCommand}"
+                CommandParameter="{Binding StoredImage.BitmapBytes}"
+                Content="{iconPacks:Material Kind=ContentSave}"
+                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                ToolTip="Save the stored image to a file." />
         </DockPanel>
 
-        <!-- Sectors Only: Load -->
+        <!--  Sectors Only: Load  -->
         <DockPanel>
             <DockPanel.Style>
                 <Style TargetType="DockPanel">
@@ -49,22 +50,24 @@
                 </Style>
             </DockPanel.Style>
 
-            <Button Width="28"
-                    Command="{Binding LoadCommand}"
-                    Content="{iconPacks:Material Kind=Download}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                    ToolTip="Overwrite the template sectors with the stored data from the database." />
+            <Button
+                Width="28"
+                Command="{Binding LoadCommand}"
+                Content="{iconPacks:Material Kind=Download}"
+                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                ToolTip="Overwrite the template sectors with the stored data from the database." />
 
             <Border Margin="3,0" Style="{StaticResource imageBar}" />
         </DockPanel>
 
-        <!-- Both: Copy -->
-        <Button Width="28"
-                Command="{Binding CopyToClipboardCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V5}}"
-                CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
-                Content="{iconPacks:Modern Kind=PageCopy}"
-                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+        <!--  Both: Copy  -->
+        <Button
+            Width="28"
+            Command="{Binding CopyToClipboardCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V5}}"
+            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+            Content="{iconPacks:Modern Kind=PageCopy}"
+            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
             <Button.Style>
                 <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
                     <Setter Property="Tag" Value="{Binding StoredSectors}" />
@@ -79,13 +82,14 @@
             </Button.Style>
         </Button>
 
-        <!-- Sectors Only: Show all -->
-        <Button Width="28"
-                Command="{Binding ShowStoredSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V5}}"
-                CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
-                Content="{iconPacks:Modern Kind=SectionExpandAll}"
-                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                ToolTip="Show all stored sectors in a popup.">
+        <!--  Sectors Only: Show all  -->
+        <Button
+            Width="28"
+            Command="{Binding ShowStoredSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V5}}"
+            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+            Content="{iconPacks:Modern Kind=SectionExpandAll}"
+            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+            ToolTip="Show all stored sectors in a popup.">
             <Button.Style>
                 <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
                     <Style.Triggers>
@@ -97,14 +101,15 @@
             </Button.Style>
         </Button>
 
-        <!-- Sectors Only: JSON -->
-        <Button Width="28"
-                Command="{Binding ShowStoredSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V5}}"
-                CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
-                Content="{iconPacks:Material Kind=CodeJson}"
-                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                Tag="json"
-                ToolTip="Show the template and report JSON.">
+        <!--  Sectors Only: JSON  -->
+        <Button
+            Width="28"
+            Command="{Binding ShowStoredSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V5}}"
+            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+            Content="{iconPacks:Material Kind=CodeJson}"
+            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+            Tag="json"
+            ToolTip="Show the template and report JSON.">
             <Button.Style>
                 <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
                     <Style.Triggers>
@@ -116,7 +121,7 @@
             </Button.Style>
         </Button>
 
-        <!-- Image Only: Delete -->
+        <!--  Image Only: Delete  -->
         <DockPanel>
             <DockPanel.Style>
                 <Style TargetType="DockPanel">
@@ -134,12 +139,13 @@
 
             <Border Margin="3,0" Style="{StaticResource imageBar}" />
 
-            <Button Width="28"
-                    Command="{Binding ClearStoredCommand}"
-                    Content="{iconPacks:Modern Kind=Delete}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                    ToolTip="Permanently remove the stored image and sectors from the database.&#x0a;(CAUTION) This can not be undone!" />
+            <Button
+                Width="28"
+                Command="{Binding ClearStoredCommand}"
+                Content="{iconPacks:Modern Kind=Delete}"
+                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                ToolTip="Permanently remove the stored image and sectors from the database.&#x0a;(CAUTION) This can not be undone!" />
         </DockPanel>
     </DockPanel>
 </ResourceDictionary>

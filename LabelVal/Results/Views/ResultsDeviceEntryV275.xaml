@@ -92,12 +92,6 @@
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                         <DockPanel>
-                            <DockPanel.Background>
-                                <LinearGradientBrush StartPoint="0.4,0" EndPoint="1,1">
-                                    <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
-                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                </LinearGradientBrush>
-                            </DockPanel.Background>
 
                             <DockPanel Background="{DynamicResource Results_Brush_Active}">
                                 <iconPacks:PackIconMaterial
@@ -107,18 +101,29 @@
                                     Kind="StoreOutline" />
                             </DockPanel>
 
-                            <!--  Title  -->
-                            <TextBlock
-                                Margin="3,0"
-                                FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
-                                Text="Stored Image" />
+                            <DockPanel>
+                                <DockPanel.Background>
+                                    <LinearGradientBrush StartPoint="0.4,0" EndPoint="1,1">
+                                        <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
+                                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                    </LinearGradientBrush>
+                                </DockPanel.Background>
 
-                            <ContentControl
-                                Content="{StaticResource Stored_Toolbar}"
-                                DataContext="{Binding .}"
-                                Tag="Image" />
+                                <!--  Title  -->
+                                <TextBlock
+                                    Margin="3,0"
+                                    FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                    Text="Stored Image" />
+
+                                <ContentControl
+                                    Content="{StaticResource StoredToolbar}"
+                                    DataContext="{Binding .}"
+                                    Tag="Image" />
+
+                            </DockPanel>
 
                         </DockPanel>
+
                     </md:Card>
 
                     <DockPanel
@@ -207,25 +212,32 @@
                                         Kind="StoreOutline" />
                                 </DockPanel>
 
-                                <!--  Title  -->
-                                <md:Card
-                                    Margin="3,3,0,3"
-                                    Padding="4,1"
-                                    HorizontalAlignment="Left"
-                                    Background="{DynamicResource V275_Brush_Active}">
-                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Sectors" />
-                                </md:Card>
+                                <DockPanel>
+                                    <DockPanel.Background>
+                                        <LinearGradientBrush StartPoint="0.4,0" EndPoint="1,1">
+                                            <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
+                                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                        </LinearGradientBrush>
+                                    </DockPanel.Background>
 
-                                <ContentControl
-                                    Content="{StaticResource Stored_Toolbar}"
-                                    DataContext="{Binding .}"
-                                    Tag="Sectors" />
+                                    <!--  Title  -->
+                                    <TextBlock
+                                        Margin="3,0"
+                                        FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                        Text="Stored Sectors" />
+
+                                    <ContentControl
+                                        Content="{StaticResource StoredToolbar}"
+                                        DataContext="{Binding .}"
+                                        Tag="Sectors" />
+
+                                </DockPanel>
+
                             </DockPanel>
 
                             <TextBlock
                                 Margin="10,0,0,0"
                                 HorizontalAlignment="Left"
-                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                 Text="{Binding StoredSectors[0].Version}" />
                         </StackPanel>
 
@@ -449,32 +461,41 @@
                         </Style>
                     </DockPanel.Style>
 
-                    <md:Card
-                        Margin="3,3,0,0"
-                        HorizontalAlignment="Left"
-                        Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                        DockPanel.Dock="Top"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                    <DockPanel>
+
+                        <DockPanel Background="{DynamicResource Results_Brush_Active}">
+                            <iconPacks:PackIconMaterial
+                                Width="12"
+                                Margin="3"
+                                VerticalAlignment="Center"
+                                Kind="StoreOutline" />
+                        </DockPanel>
 
                         <DockPanel>
+                            <DockPanel.Background>
+                                <LinearGradientBrush StartPoint="0.4,0" EndPoint="1,1">
+                                    <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
+                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                </LinearGradientBrush>
+                            </DockPanel.Background>
 
                             <!--  Title  -->
-                            <md:Card
-                                Margin="3"
-                                Padding="4,1"
-                                HorizontalAlignment="Left"
-                                Background="{DynamicResource V275_Brush_Active}">
-                                <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Image" />
-                            </md:Card>
+                            <TextBlock
+                                Margin="3,0"
+                                FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                Text="Current Iamge" />
 
                             <ContentControl
                                 Content="{StaticResource CurrentToolbar}"
                                 DataContext="{Binding .}"
                                 Tag="Image" />
+
                         </DockPanel>
 
+                    </DockPanel>
 
-                    </md:Card>
+
 
                     <DockPanel
                         Margin="3"
@@ -546,30 +567,43 @@
                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                         DockPanel.Dock="Top"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
                         <StackPanel>
                             <DockPanel>
 
-                                <!--  Title  -->
-                                <md:Card
-                                    Margin="3"
-                                    Padding="4,1"
-                                    HorizontalAlignment="Left"
-                                    Background="{DynamicResource V275_Brush_Active}">
-                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Sectors" />
-                                </md:Card>
+                                <DockPanel Background="{DynamicResource Results_Brush_Active}">
+                                    <iconPacks:PackIconMaterial
+                                        Width="12"
+                                        Margin="3"
+                                        VerticalAlignment="Center"
+                                        Kind="StoreOutline" />
+                                </DockPanel>
 
-                                <ContentControl
-                                    Content="{StaticResource CurrentToolbar}"
-                                    DataContext="{Binding .}"
-                                    Tag="Sectors" />
+                                <DockPanel>
+                                    <DockPanel.Background>
+                                        <LinearGradientBrush StartPoint="0.4,0" EndPoint="1,1">
+                                            <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
+                                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                        </LinearGradientBrush>
+                                    </DockPanel.Background>
+
+                                    <!--  Title  -->
+                                    <TextBlock
+                                        Margin="3,0"
+                                        FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                        Text="Current Sectors" />
+
+                                    <ContentControl
+                                        Content="{StaticResource CurrentToolbar}"
+                                        DataContext="{Binding .}"
+                                        Tag="Sectors" />
+
+                                </DockPanel>
 
                             </DockPanel>
 
                             <TextBlock
                                 Margin="10,0,0,0"
                                 HorizontalAlignment="Left"
-                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                 Text="{Binding CurrentSectors[0].Version}" />
                         </StackPanel>
                     </md:Card>

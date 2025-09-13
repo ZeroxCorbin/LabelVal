@@ -5,7 +5,7 @@
     xmlns:local="clr-namespace:LabelVal.Results.Views"
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels">
 
-    <DockPanel x:Key="L95Stored_Toolbar" x:Shared="False">
+    <DockPanel x:Key="StoredToolbar" x:Shared="False">
         <Border Margin="3,0" Style="{StaticResource imageBar}" />
 
         <!--  Image Only  -->
