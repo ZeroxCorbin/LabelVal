@@ -449,7 +449,7 @@
 
                     <DockPanel>
 
-                        <DockPanel Background="Purple">
+                        <DockPanel Background="{DynamicResource Results_Brush_Active}">
                             <iconPacks:PackIconMaterial
                                 Width="12"
                                 Margin="3"
@@ -552,7 +552,7 @@
                     <StackPanel>
                         <DockPanel>
 
-                            <DockPanel Background="Purple">
+                            <DockPanel Background="{DynamicResource Results_Brush_Active}">
                                 <iconPacks:PackIconMaterial
                                     Width="12"
                                     Margin="3"

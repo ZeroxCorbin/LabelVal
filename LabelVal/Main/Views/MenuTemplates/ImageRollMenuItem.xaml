@@ -15,7 +15,7 @@
     <DataTemplate x:Key="ImageRollMenuItem">
         <DockPanel DataContext="{Binding Content.ActiveImageRoll}">
 
-            <DockPanel Width="48" Background="Teal">
+            <DockPanel Width="48" Background="{DynamicResource ImageRoll_Brush_Active}">
 
                 <iconPacks:PackIconMaterial
                     Width="48"

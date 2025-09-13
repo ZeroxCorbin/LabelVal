@@ -36,7 +36,7 @@
 
                 <DockPanel>
 
-                    <DockPanel Background="Teal">
+                    <DockPanel Background="{DynamicResource ImageRoll_Brush_Active}">
                         <iconPacks:PackIconMaterial
                             Width="12"
                             Margin="3"

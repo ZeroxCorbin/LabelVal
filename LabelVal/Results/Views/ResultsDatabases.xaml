@@ -40,7 +40,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <DockPanel Grid.Row="0" Background="Purple">
+                    <DockPanel Grid.Row="0" Background="{DynamicResource Results_Brush_Active}">
                         <iconPacks:PackIconMaterial
                             Width="32"
                             Height="32"
@@ -99,7 +99,7 @@
                     DockPanel.Dock="Top">
                     <DockPanel.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Offset="0" Color="Purple" />
+                            <GradientStop Offset="0" Color="{DynamicResource Results}" />
                             <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                         </LinearGradientBrush>
                     </DockPanel.Background>
@@ -183,8 +183,8 @@
         </md:Card>
 
         <DockPanel DockPanel.Dock="Top">
-            <Border Background="Purple" Style="{StaticResource groupLeft}" />
-            <Border Background="Purple" Style="{StaticResource groupBottom}" />
+            <Border Background="{DynamicResource Results_Brush_Active}" Style="{StaticResource groupLeft}" />
+            <Border Background="{DynamicResource Results_Brush_Active}" Style="{StaticResource groupBottom}" />
 
             <ListView
                 Margin="3,3,0,0"

@@ -809,7 +809,7 @@ public partial class ResultsDeviceEntry_L95
     //    var bounding = new GeometryDrawing
     //    {
     //        Geometry = bndAreas,
-    //        Pen = new Pen(Brushes.Purple, 5)
+    //        Pen = new Pen(Brushes.{DynamicResource Results_Brush_Active}, 5)
     //    };
 
     //    drwGroup.Children.Add(bounding);

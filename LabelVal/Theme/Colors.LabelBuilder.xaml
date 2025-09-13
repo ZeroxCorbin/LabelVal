@@ -1,0 +1,23 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        LabelBuilder Color Group (Copper / Warm Brown family)
+        Chosen to differ from existing oranges (#CC5500, #E69F00) by being more earthy/desaturated.
+        Variants for Standard / RG / BY / M
+    -->
+
+    <!--  Standard  -->
+    <Color x:Key="LabelBuilder">#B46A1D</Color>
+    <SolidColorBrush x:Key="LabelBuilder_Brush" Color="{StaticResource LabelBuilder}" />
+
+    <!--  Red-Green Colorblind Friendly  -->
+    <Color x:Key="LabelBuilder_RG">#A8601A</Color>
+    <SolidColorBrush x:Key="LabelBuilder_RG_Brush" Color="{StaticResource LabelBuilder_RG}" />
+
+    <!--  Blue-Yellow Colorblind Friendly  -->
+    <Color x:Key="LabelBuilder_BY">#BF7428</Color>
+    <SolidColorBrush x:Key="LabelBuilder_BY_Brush" Color="{StaticResource LabelBuilder_BY}" />
+
+    <!--  Monochrome  -->
+    <Color x:Key="LabelBuilder_M">#9B9B9B</Color>
+    <SolidColorBrush x:Key="LabelBuilder_M_Brush" Color="{StaticResource LabelBuilder_M}" />
+</ResourceDictionary>

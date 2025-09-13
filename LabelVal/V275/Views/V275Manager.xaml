@@ -31,8 +31,9 @@
             <DockPanel>
 
                 <DockPanel Width="48" Background="{DynamicResource V275_Brush_Active}">
-                    <Grid Height="38" 
-                          Margin="3"
+                    <Grid
+                        Height="38"
+                        Margin="3"
                         VerticalAlignment="Top">
                         <Image
                             Width="20"
@@ -59,7 +60,7 @@
                     DockPanel.Dock="Top">
                     <DockPanel.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Offset="0" Color="{DynamicResource V275}" />
+                            <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active}" />
                             <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                         </LinearGradientBrush>
                     </DockPanel.Background>

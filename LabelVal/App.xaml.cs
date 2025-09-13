@@ -1,6 +1,7 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.GS1;
 using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Main.Messages;
 using LabelVal.Main.Views;
 using LabelVal.Sectors.Classes;
@@ -303,12 +304,13 @@ public partial class App : Application
             "ISO_GradeA", "ISO_GradeB", "ISO_GradeC", "ISO_GradeD", "ISO_GradeF",
             "SectorWarning", "SectorError",
             "StatusGreen", "StatusYellow", "StatusRed",
-            "V275", "V5", "L95"
+            "V275", "V5", "L95", "ImageRoll", "Results", "LabelBuilder"
         };
 
         foreach (var key in resourceKeys)
         {
             Current.Resources[$"{key}_Brush_Active"] = Current.Resources[$"{key}{suffix}_Brush"];
+            Current.Resources[$"{key}_Color_Active"] = Current.Resources[$"{key}{suffix}"];
         }
     }
     private void UpdateMaterialDesignTheme()

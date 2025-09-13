@@ -1,0 +1,26 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  Standard Sector Status Colors  -->
+    <Color x:Key="SectorWarning">#FFC107</Color>
+    <SolidColorBrush x:Key="SectorWarning_Brush" Color="{StaticResource SectorWarning}" />
+    <Color x:Key="SectorError">Red</Color>
+    <SolidColorBrush x:Key="SectorError_Brush" Color="{StaticResource SectorError}" />
+
+    <!--  Red-Green Colorblind Friendly Sector Colors  -->
+    <Color x:Key="SectorWarning_RG">#F0E442</Color>
+    <SolidColorBrush x:Key="SectorWarning_RG_Brush" Color="{StaticResource SectorWarning_RG}" />
+    <Color x:Key="SectorError_RG">#D55E00</Color>
+    <SolidColorBrush x:Key="SectorError_RG_Brush" Color="{StaticResource SectorError_RG}" />
+
+    <!--  Blue-Yellow Colorblind Friendly Sector Colors  -->
+    <Color x:Key="SectorWarning_BY">#AF002A</Color>
+    <SolidColorBrush x:Key="SectorWarning_BY_Brush" Color="{StaticResource SectorWarning_BY}" />
+    <Color x:Key="SectorError_BY">#8B0000</Color>
+    <SolidColorBrush x:Key="SectorError_BY_Brush" Color="{StaticResource SectorError_BY}" />
+
+    <!--  Monochrome Colorblind Friendly Sector Colors  -->
+    <Color x:Key="SectorWarning_M">#A9A9A9</Color>
+    <SolidColorBrush x:Key="SectorWarning_M_Brush" Color="{StaticResource SectorWarning_M}" />
+    <Color x:Key="SectorError_M">#000000</Color>
+    <SolidColorBrush x:Key="SectorError_M_Brush" Color="{StaticResource SectorError_M}" />
+</ResourceDictionary>

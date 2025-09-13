@@ -1,0 +1,26 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- ImageRolls Color Group (Amethyst family)
+         Chosen to avoid overlap with existing blues, oranges, reds, greens, magentas.
+         Includes variants for:
+           - Standard
+           - Red/Green Colorblind (RG)
+           - Blue/Yellow Colorblind (BY)
+           - Monochrome (M) -->
+
+    <!-- Standard -->
+    <Color x:Key="ImageRoll">#7E4CCB</Color>
+    <SolidColorBrush x:Key="ImageRoll_Brush" Color="{StaticResource ImageRoll}" />
+
+    <!-- Red-Green Colorblind Friendly -->
+    <Color x:Key="ImageRoll_RG">#7B55C9</Color>
+    <SolidColorBrush x:Key="ImageRoll_RG_Brush" Color="{StaticResource ImageRoll_RG}" />
+
+    <!-- Blue-Yellow Colorblind Friendly -->
+    <Color x:Key="ImageRoll_BY">#9366D5</Color>
+    <SolidColorBrush x:Key="ImageRoll_BY_Brush" Color="{StaticResource ImageRoll_BY}" />
+
+    <!-- Monochrome (Achromatopsia) -->
+    <Color x:Key="ImageRoll_M">#B2B2B2</Color>
+    <SolidColorBrush x:Key="ImageRoll_M_Brush" Color="{StaticResource ImageRoll_M}" />
+</ResourceDictionary>

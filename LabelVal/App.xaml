@@ -17,12 +17,12 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
 
-
                 <!--  MahApps  -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Steel.xaml" />
 
+                <!--  Material Design  -->
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Grey.xaml" />
@@ -34,6 +34,17 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Flyout.xaml" />
 
                 <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
+
+                <!--  THEME COLOR GROUPS  -->
+                <ResourceDictionary Source="/Theme/Colors.AccentOverrides.xaml" />
+                <ResourceDictionary Source="/Theme/Colors.ISOGrades.xaml" />
+                <ResourceDictionary Source="/Theme/Colors.SectorStatus.xaml" />
+                <ResourceDictionary Source="/Theme/Colors.Status.xaml" />
+                <ResourceDictionary Source="/Theme/Colors.Device.xaml" />
+                <ResourceDictionary Source="/Theme/Colors.ImageRolls.xaml" />
+                <ResourceDictionary Source="/Theme/Colors.Results.xaml" />
+                <ResourceDictionary Source="/Theme/Colors.LabelBuilder.xaml" />
+                <ResourceDictionary Source="/Theme/Colors.ActiveSets.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
 
@@ -66,7 +77,6 @@
             </ObjectDataProvider>
 
             <!--  Barcode Enums  -->
-
             <ObjectDataProvider
                 x:Key="GradingStandards"
                 MethodName="GetValues"
@@ -85,7 +95,6 @@
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
 
-
             <ObjectDataProvider
                 x:Key="AvailableTables"
                 MethodName="GetValues"
@@ -95,9 +104,7 @@
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
 
-
             <!--  Sector Output Enums  -->
-
             <ObjectDataProvider
                 x:Key="SectorOutputType"
                 MethodName="GetValues"
@@ -135,7 +142,6 @@
             </ObjectDataProvider>
 
             <!--  Image Rolls Enums  -->
-
             <ObjectDataProvider
                 x:Key="ImageRollTypes"
                 MethodName="GetValues"
@@ -181,10 +187,7 @@
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
 
-
-            <Style BasedOn="{StaticResource MahApps.Styles.ScrollBar}" TargetType="ScrollBar">
-                <!--<Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}"/>-->
-            </Style>
+            <Style BasedOn="{StaticResource MahApps.Styles.ScrollBar}" TargetType="ScrollBar" />
 
             <Style TargetType="ToolTip">
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}" />
@@ -218,12 +221,14 @@
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
             </Style>
+
             <Style x:Key="imageBarHor" TargetType="Border">
                 <Setter Property="Width" Value="auto" />
                 <Setter Property="Height" Value="1" />
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
                 <Setter Property="VerticalAlignment" Value="Top" />
             </Style>
+
             <Style x:Key="groupLeft" TargetType="Border">
                 <Setter Property="DockPanel.Dock" Value="Left" />
                 <Setter Property="Margin" Value="4,3,0,5" />
@@ -233,6 +238,7 @@
                 <Setter Property="VerticalAlignment" Value="Stretch" />
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
             </Style>
+
             <Style x:Key="groupBottom" TargetType="Border">
                 <Setter Property="DockPanel.Dock" Value="Bottom" />
                 <Setter Property="Margin" Value="0,3,0,5" />
@@ -242,240 +248,6 @@
                 <Setter Property="VerticalAlignment" Value="Top" />
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
             </Style>
-
-            <SolidColorBrush x:Key="HighlightBrush" Color="{DynamicResource Primary700}" />
-            <SolidColorBrush x:Key="AccentBaseColorBrush" Color="{DynamicResource Primary600}" />
-            <SolidColorBrush x:Key="AccentColorBrush" Color="{DynamicResource Primary500}" />
-            <SolidColorBrush x:Key="AccentColorBrush2" Color="{DynamicResource Primary400}" />
-            <SolidColorBrush x:Key="AccentColorBrush3" Color="{DynamicResource Primary300}" />
-            <SolidColorBrush x:Key="AccentColorBrush4" Color="{DynamicResource Primary200}" />
-            <SolidColorBrush x:Key="WindowTitleColorBrush" Color="{DynamicResource Primary700}" />
-            <SolidColorBrush x:Key="AccentSelectedColorBrush" Color="{DynamicResource Primary500Foreground}" />
-            <LinearGradientBrush x:Key="ProgressBrush" StartPoint="1.002,0.5" EndPoint="0.001,0.5">
-                <GradientStop Offset="0" Color="{DynamicResource Primary700}" />
-                <GradientStop Offset="1" Color="{DynamicResource Primary300}" />
-            </LinearGradientBrush>
-            <SolidColorBrush x:Key="CheckmarkFill" Color="{DynamicResource Primary500}" />
-            <SolidColorBrush x:Key="RightArrowFill" Color="{DynamicResource Primary500}" />
-            <SolidColorBrush x:Key="IdealForegroundColorBrush" Color="{DynamicResource Primary500Foreground}" />
-            <SolidColorBrush
-                x:Key="IdealForegroundDisabledBrush"
-                Opacity="0.4"
-                Color="{DynamicResource Primary500}" />
-            <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.OnSwitchBrush.Win10" Color="{DynamicResource Primary500}" />
-            <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.OnSwitchMouseOverBrush.Win10" Color="{DynamicResource Primary400}" />
-            <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.ThumbIndicatorCheckedBrush.Win10" Color="{DynamicResource Primary500Foreground}" />
-
-            <!--  Standard ISO Grade Colors  -->
-            <Color x:Key="ISO_GradeA">Green</Color>
-            <SolidColorBrush x:Key="ISO_GradeA_Brush" Color="{StaticResource ISO_GradeA}" />
-
-            <Color x:Key="ISO_GradeB">Teal</Color>
-            <SolidColorBrush x:Key="ISO_GradeB_Brush" Color="{StaticResource ISO_GradeB}" />
-
-            <Color x:Key="ISO_GradeC">Blue</Color>
-            <SolidColorBrush x:Key="ISO_GradeC_Brush" Color="{StaticResource ISO_GradeC}" />
-
-            <Color x:Key="ISO_GradeD">Magenta</Color>
-            <SolidColorBrush x:Key="ISO_GradeD_Brush" Color="{StaticResource ISO_GradeD}" />
-
-            <Color x:Key="ISO_GradeF">Red</Color>
-            <SolidColorBrush x:Key="ISO_GradeF_Brush" Color="{StaticResource ISO_GradeF}" />
-
-            <!--  Red-Green Colorblind Friendly (Deuteranopia/Protanopia) ISO Grade Colors  -->
-            <Color x:Key="ISO_GradeA_RG">#0072B2</Color>
-            <!--  Blue  -->
-            <SolidColorBrush x:Key="ISO_GradeA_RG_Brush" Color="{StaticResource ISO_GradeA_RG}" />
-
-            <Color x:Key="ISO_GradeB_RG">#56B4E9</Color>
-            <!--  Sky Blue  -->
-            <SolidColorBrush x:Key="ISO_GradeB_RG_Brush" Color="{StaticResource ISO_GradeB_RG}" />
-
-            <Color x:Key="ISO_GradeC_RG">#F0E442</Color>
-            <!--  Yellow  -->
-            <SolidColorBrush x:Key="ISO_GradeC_RG_Brush" Color="{StaticResource ISO_GradeC_RG}" />
-
-            <Color x:Key="ISO_GradeD_RG">#E69F00</Color>
-            <!--  Orange  -->
-            <SolidColorBrush x:Key="ISO_GradeD_RG_Brush" Color="{StaticResource ISO_GradeD_RG}" />
-
-            <Color x:Key="ISO_GradeF_RG">#D55E00</Color>
-            <!--  Vermillion  -->
-            <SolidColorBrush x:Key="ISO_GradeF_RG_Brush" Color="{StaticResource ISO_GradeF_RG}" />
-
-            <!--  Blue-Yellow Colorblind Friendly (Tritanopia) ISO Grade Colors  -->
-            <Color x:Key="ISO_GradeA_BY">#D81B60</Color>
-            <!--  Pink  -->
-            <SolidColorBrush x:Key="ISO_GradeA_BY_Brush" Color="{StaticResource ISO_GradeA_BY}" />
-
-            <Color x:Key="ISO_GradeB_BY">#FFC107</Color>
-            <!--  Amber  -->
-            <SolidColorBrush x:Key="ISO_GradeB_BY_Brush" Color="{StaticResource ISO_GradeB_BY}" />
-
-            <Color x:Key="ISO_GradeC_BY">#004D40</Color>
-            <!--  Dark Teal  -->
-            <SolidColorBrush x:Key="ISO_GradeC_BY_Brush" Color="{StaticResource ISO_GradeC_BY}" />
-
-            <Color x:Key="ISO_GradeD_BY">#1E88E5</Color>
-            <!--  Blue  -->
-            <SolidColorBrush x:Key="ISO_GradeD_BY_Brush" Color="{StaticResource ISO_GradeD_BY}" />
-
-            <Color x:Key="ISO_GradeF_BY">#8B0000</Color>
-            <!--  Dark Red  -->
-            <SolidColorBrush x:Key="ISO_GradeF_BY_Brush" Color="{StaticResource ISO_GradeF_BY}" />
-
-            <!--  Monochrome Colorblind Friendly (Achromatopsia) ISO Grade Colors  -->
-            <Color x:Key="ISO_GradeA_M">#FFFFFF</Color>
-            <!--  White  -->
-            <SolidColorBrush x:Key="ISO_GradeA_M_Brush" Color="{StaticResource ISO_GradeA_M}" />
-
-            <Color x:Key="ISO_GradeB_M">#D3D3D3</Color>
-            <!--  Light Gray  -->
-            <SolidColorBrush x:Key="ISO_GradeB_M_Brush" Color="{StaticResource ISO_GradeB_M}" />
-
-            <Color x:Key="ISO_GradeC_M">#A9A9A9</Color>
-            <!--  Dark Gray  -->
-            <SolidColorBrush x:Key="ISO_GradeC_M_Brush" Color="{StaticResource ISO_GradeC_M}" />
-
-            <Color x:Key="ISO_GradeD_M">#808080</Color>
-            <!--  Gray  -->
-            <SolidColorBrush x:Key="ISO_GradeD_M_Brush" Color="{StaticResource ISO_GradeD_M}" />
-
-            <Color x:Key="ISO_GradeF_M">#000000</Color>
-            <!--  Black  -->
-            <SolidColorBrush x:Key="ISO_GradeF_M_Brush" Color="{StaticResource ISO_GradeF_M}" />
-
-
-            <!--  Standard Sector Status Colors  -->
-            <Color x:Key="SectorWarning">#FFC107</Color>
-            <SolidColorBrush x:Key="SectorWarning_Brush" Color="{StaticResource SectorWarning}" />
-
-            <Color x:Key="SectorError">Red</Color>
-            <SolidColorBrush x:Key="SectorError_Brush" Color="{StaticResource SectorError}" />
-
-            <!--  Red-Green Colorblind Friendly (Deuteranopia/Protanopia) Sector Colors  -->
-            <Color x:Key="SectorWarning_RG">#F0E442</Color>
-            <!--  Yellow  -->
-            <SolidColorBrush x:Key="SectorWarning_RG_Brush" Color="{StaticResource SectorWarning_RG}" />
-            <Color x:Key="SectorError_RG">#D55E00</Color>
-            <!--  Vermillion  -->
-            <SolidColorBrush x:Key="SectorError_RG_Brush" Color="{StaticResource SectorError_RG}" />
-
-            <!--  Blue-Yellow Colorblind Friendly (Tritanopia) Sector Colors  -->
-            <Color x:Key="SectorWarning_BY">#AF002A</Color>
-            <!--  Dark Pink  -->
-            <SolidColorBrush x:Key="SectorWarning_BY_Brush" Color="{StaticResource SectorWarning_BY}" />
-            <Color x:Key="SectorError_BY">#8B0000</Color>
-            <!--  Dark Red  -->
-            <SolidColorBrush x:Key="SectorError_BY_Brush" Color="{StaticResource SectorError_BY}" />
-
-            <!--  Monochrome Colorblind Friendly (Achromatopsia) Sector Colors  -->
-            <Color x:Key="SectorWarning_M">#A9A9A9</Color>
-            <!--  Dark Gray  -->
-            <SolidColorBrush x:Key="SectorWarning_M_Brush" Color="{StaticResource SectorWarning_M}" />
-            <Color x:Key="SectorError_M">#000000</Color>
-            <!--  Black  -->
-            <SolidColorBrush x:Key="SectorError_M_Brush" Color="{StaticResource SectorError_M}" />
-
-            <!--  Base Status Colors  -->
-            <Color x:Key="StatusGreen">#4CAF50</Color>
-            <SolidColorBrush x:Key="StatusGreen_Brush" Color="{StaticResource StatusGreen}" />
-            <Color x:Key="StatusYellow">#FFC107</Color>
-            <SolidColorBrush x:Key="StatusYellow_Brush" Color="{StaticResource StatusYellow}" />
-            <Color x:Key="StatusRed">#F44336</Color>
-            <SolidColorBrush x:Key="StatusRed_Brush" Color="{StaticResource StatusRed}" />
-
-            <!--  Red-Green Colorblind Friendly (Deuteranopia/Protanopia) Status Colors  -->
-            <Color x:Key="StatusGreen_RG">#0072B2</Color>
-            <!--  Blue  -->
-            <SolidColorBrush x:Key="StatusGreen_RG_Brush" Color="{StaticResource StatusGreen_RG}" />
-            <Color x:Key="StatusYellow_RG">#F0E442</Color>
-            <!--  Yellow  -->
-            <SolidColorBrush x:Key="StatusYellow_RG_Brush" Color="{StaticResource StatusYellow_RG}" />
-            <Color x:Key="StatusRed_RG">#D55E00</Color>
-            <!--  Vermillion  -->
-            <SolidColorBrush x:Key="StatusRed_RG_Brush" Color="{StaticResource StatusRed_RG}" />
-
-            <!--  Blue-Yellow Colorblind Friendly (Tritanopia) Status Colors  -->
-            <Color x:Key="StatusGreen_BY">#D81B60</Color>
-            <!--  Pink  -->
-            <SolidColorBrush x:Key="StatusGreen_BY_Brush" Color="{StaticResource StatusGreen_BY}" />
-            <Color x:Key="StatusYellow_BY">#004D40</Color>
-            <!--  Dark Teal  -->
-            <SolidColorBrush x:Key="StatusYellow_BY_Brush" Color="{StaticResource StatusYellow_BY}" />
-            <Color x:Key="StatusRed_BY">#8B0000</Color>
-            <!--  Dark Red  -->
-            <SolidColorBrush x:Key="StatusRed_BY_Brush" Color="{StaticResource StatusRed_BY}" />
-
-            <!--  Monochrome Colorblind Friendly (Achromatopsia) Status Colors  -->
-            <Color x:Key="StatusGreen_M">#FFFFFF</Color>
-            <!--  White  -->
-            <SolidColorBrush x:Key="StatusGreen_M_Brush" Color="{StaticResource StatusGreen_M}" />
-            <Color x:Key="StatusYellow_M">#A9A9A9</Color>
-            <!--  Dark Gray  -->
-            <SolidColorBrush x:Key="StatusYellow_M_Brush" Color="{StaticResource StatusYellow_M}" />
-            <Color x:Key="StatusRed_M">#000000</Color>
-            <!--  Black  -->
-            <SolidColorBrush x:Key="StatusRed_M_Brush" Color="{StaticResource StatusRed_M}" />
-
-            <!--  Active Colors (dynamically set for color blindness)  -->
-            <SolidColorBrush x:Key="ISO_GradeA_Brush_Active" Color="{StaticResource ISO_GradeA}" />
-            <SolidColorBrush x:Key="ISO_GradeB_Brush_Active" Color="{StaticResource ISO_GradeB}" />
-            <SolidColorBrush x:Key="ISO_GradeC_Brush_Active" Color="{StaticResource ISO_GradeC}" />
-            <SolidColorBrush x:Key="ISO_GradeD_Brush_Active" Color="{StaticResource ISO_GradeD}" />
-            <SolidColorBrush x:Key="ISO_GradeF_Brush_Active" Color="{StaticResource ISO_GradeF}" />
-            <SolidColorBrush x:Key="SectorWarning_Brush_Active" Color="{StaticResource SectorWarning}" />
-            <SolidColorBrush x:Key="SectorError_Brush_Active" Color="{StaticResource SectorError}" />
-            <SolidColorBrush x:Key="StatusGreen_Brush_Active" Color="{StaticResource StatusGreen}" />
-            <SolidColorBrush x:Key="StatusYellow_Brush_Active" Color="{StaticResource StatusYellow}" />
-            <SolidColorBrush x:Key="StatusRed_Brush_Active" Color="{StaticResource StatusRed}" />
-
-            <!--  Red-Green Colorblind Friendly (Deuteranopia/Protanopia) Device Colors  -->
-            <Color x:Key="V275">#193cbc</Color>
-            <SolidColorBrush x:Key="V275_Brush" Color="{StaticResource V275}" />
-
-            <Color x:Key="V5">#CC5500</Color>
-            <SolidColorBrush x:Key="V5_Brush" Color="{StaticResource V5}" />
-
-            <Color x:Key="L95">#4F000B</Color>
-            <SolidColorBrush x:Key="L95_Brush" Color="{StaticResource L95}" />
-            <Color x:Key="V275_RG">#0072B2</Color>
-
-            <!--  Blue  -->
-            <SolidColorBrush x:Key="V275_RG_Brush" Color="{StaticResource V275_RG}" />
-            <Color x:Key="V5_RG">#E69F00</Color>
-            <!--  Orange  -->
-            <SolidColorBrush x:Key="V5_RG_Brush" Color="{StaticResource V5_RG}" />
-            <Color x:Key="L95_RG">#000000</Color>
-            <!--  Black  -->
-            <SolidColorBrush x:Key="L95_RG_Brush" Color="{StaticResource L95_RG}" />
-
-            <!--  Blue-Yellow Colorblind Friendly (Tritanopia) Device Colors  -->
-            <Color x:Key="V275_BY">#D81B60</Color>
-            <!--  Pink  -->
-            <SolidColorBrush x:Key="V275_BY_Brush" Color="{StaticResource V275_BY}" />
-            <Color x:Key="V5_BY">#004D40</Color>
-            <!--  Dark Teal  -->
-            <SolidColorBrush x:Key="V5_BY_Brush" Color="{StaticResource V5_BY}" />
-            <Color x:Key="L95_BY">#1E88E5</Color>
-            <!--  Blue  -->
-            <SolidColorBrush x:Key="L95_BY_Brush" Color="{StaticResource L95_BY}" />
-
-            <!--  Monochrome Colorblind Friendly (Achromatopsia) Device Colors  -->
-            <Color x:Key="V275_M">#FFFFFF</Color>
-            <!--  White  -->
-            <SolidColorBrush x:Key="V275_M_Brush" Color="{StaticResource V275_M}" />
-            <Color x:Key="V5_M">#A9A9A9</Color>
-            <!--  Dark Gray  -->
-            <SolidColorBrush x:Key="V5_M_Brush" Color="{StaticResource V5_M}" />
-            <Color x:Key="L95_M">#000000</Color>
-            <!--  Black  -->
-            <SolidColorBrush x:Key="L95_M_Brush" Color="{StaticResource L95_M}" />
-
-            <!--  Active Device Colors (dynamically set for color blindness)  -->
-            <SolidColorBrush x:Key="V275_Brush_Active" Color="{StaticResource V275}" />
-            <SolidColorBrush x:Key="V5_Brush_Active" Color="{StaticResource V5}" />
-            <SolidColorBrush x:Key="L95_Brush_Active" Color="{StaticResource L95}" />
 
         </ResourceDictionary>
     </Application.Resources>
