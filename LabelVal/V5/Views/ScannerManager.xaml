@@ -34,8 +34,9 @@
                     <Image
                         Width="36"
                         Height="36"
+                        Margin="0,3"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
+                        VerticalAlignment="Top"
                         Source="/Assets/Images/v5-white-outline.ico" />
                 </DockPanel>
 

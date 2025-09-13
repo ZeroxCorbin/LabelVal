@@ -31,7 +31,9 @@
             <DockPanel>
 
                 <DockPanel Width="48" Background="{DynamicResource V275_Brush_Active}">
-                    <Grid Height="42" Margin="3">
+                    <Grid Height="38" 
+                          Margin="3"
+                        VerticalAlignment="Top">
                         <Image
                             Width="20"
                             HorizontalAlignment="Left"

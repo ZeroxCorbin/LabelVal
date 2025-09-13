@@ -265,7 +265,7 @@
                         DockPanel.Dock="Top">
                         <DockPanel.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
+                                <GradientStop Offset="0" Color="Teal" />
                                 <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                             </LinearGradientBrush>
                         </DockPanel.Background>
@@ -539,84 +539,50 @@
 
             <!--  Card containing the header for Fixed Image Rolls.  -->
             <md:Card
-                Height="48"
                 Margin="3,3,0,0"
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                 DockPanel.Dock="Top"
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
+
                 <DockPanel>
 
-                    <!--  Icon for the Fixed Image Rolls section.  -->
-                    <DockPanel Width="48" Height="48">
-                        <StackPanel
-                            Width="36"
-                            Height="36"
-                            Margin="0,2"
-                            VerticalAlignment="Center">
-                            <DockPanel>
-                                <iconPacks:PackIconMaterial
-                                    Height="14"
-                                    HorizontalAlignment="Center"
-                                    Kind="ImageMultiple" />
-                                <iconPacks:PackIconMaterial
-                                    Height="14"
-                                    HorizontalAlignment="Center"
-                                    Kind="ImageMultiple" />
-                            </DockPanel>
-                            <iconPacks:PackIconMaterial
-                                Height="6"
-                                Margin="0,0,0,1"
-                                HorizontalAlignment="Center"
-                                Kind="ChevronDown" />
-                            <iconPacks:PackIconMaterial
-                                Width="36"
-                                Height="14"
-                                HorizontalAlignment="Center"
-                                Kind="FolderLock" />
-                        </StackPanel>
+                    <DockPanel
+                        Width="47"
+                        VerticalAlignment="Stretch"
+                        Background="Teal">
+                        <Image
+                            Width="28"
+                            Height="28"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Source="/Assets/Images/l95-white-outline.ico" />
                     </DockPanel>
 
-                    <Border Style="{StaticResource imageBar}" />
+                    <DockPanel
+                        Height="32"
+                        HorizontalAlignment="Stretch"
+                        DockPanel.Dock="Top">
+                        <DockPanel.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Offset="0" Color="Teal" />
+                                <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                            </LinearGradientBrush>
+                        </DockPanel.Background>
 
-                    <DockPanel>
-                        <!--  Header for the Fixed Image Rolls section.  -->
-                        <DockPanel HorizontalAlignment="Left" DockPanel.Dock="Top">
-                            <DockPanel.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
-                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                </LinearGradientBrush>
-                            </DockPanel.Background>
 
-                            <TextBlock
-                                Margin="6,0,6,3"
-                                DockPanel.Dock="Top"
-                                Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
-                                Text="Fixed Image Rolls" />
-                            <Border Style="{StaticResource imageBarHor}" />
-                        </DockPanel>
+                        <TextBlock
+                            Margin="6,0,6,3"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Top"
+                            Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                            Text="Fixed Image Rolls" />
 
-                        <DockPanel>
-
-                            <!--  Hidden button for a developer feature (copying UID to clipboard).  -->
-                            <Button
-                                Width="48"
-                                HorizontalAlignment="Left"
-                                Command="{Binding UIDToClipboardCommand}"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                ToolTip="New UID to Clipboard"
-                                Visibility="Collapsed">
-
-                                <iconPacks:PackIconFontAwesome
-                                    Width="24"
-                                    Height="24"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    Kind="FingerprintSolid" />
-                            </Button>
-
-                        </DockPanel>
                     </DockPanel>
+
+
+
                 </DockPanel>
             </md:Card>
 
