@@ -7,8 +7,6 @@
 
     <DockPanel x:Key="CurrentToolbar" x:Shared="False">
 
-        <Border Margin="3,0" Style="{StaticResource imageBar}" />
-
         <!--  Image Only  -->
         <DockPanel>
             <DockPanel.Style>
@@ -23,7 +21,7 @@
             </DockPanel.Style>
 
             <Button
-                Width="28"
+                Margin="3"
                 Command="{Binding ResultsEntry.SaveCommand}"
                 CommandParameter="{Binding CurrentImage.BitmapBytes}"
                 Content="{iconPacks:Material Kind=ContentSave}"
@@ -34,7 +32,7 @@
 
         <!--  Store  -->
         <Button
-            Width="28"
+            Margin="3"
             Command="{Binding StoreCommand}"
             Content="{iconPacks:Material Kind=StorePlusOutline}"
             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
@@ -56,7 +54,7 @@
 
         <!--  Store Single  -->
         <Button
-            Width="28"
+            Margin="3"
             Command="{Binding StoreSingleCommand}"
             Content="{iconPacks:Material Kind=ChevronDoubleLeft}"
             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
@@ -82,7 +80,7 @@
 
         <!--  Clear Single  -->
         <Button
-            Width="28"
+            Margin="3"
             Command="{Binding ClearSingleCommand}"
             Content="{iconPacks:MaterialDesign Kind=Clear}"
             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
@@ -105,7 +103,7 @@
 
         <!--  Read  -->
         <Button
-            Width="28"
+            Margin="3"
             Command="{Binding ReadCommand}"
             Content="{iconPacks:Material Kind=Upload}"
             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
@@ -140,12 +138,14 @@
                     </Style.Triggers>
                 </Style>
             </DockPanel.Style>
-            <Border Margin="3,0" Style="{StaticResource imageBar}" />
+            
+            <Border Margin="1,0" Style="{StaticResource imageBar}" />
+            
         </DockPanel>
 
         <!--  Copy (Both)  -->
         <Button
-            Width="28"
+            Margin="3"
             Command="{Binding CopyToClipboardCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
             CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
             Content="{iconPacks:Modern Kind=PageCopy}"
@@ -166,7 +166,7 @@
 
         <!--  Sectors Only: Show All  -->
         <Button
-            Width="28"
+            Margin="3"
             Command="{Binding ShowCurrentSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
             CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
             Content="{iconPacks:Modern Kind=SectionExpandAll}"
@@ -185,7 +185,7 @@
 
         <!--  Sectors Only: JSON  -->
         <Button
-            Width="28"
+            Margin="3"
             Command="{Binding ShowCurrentSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
             CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
             Content="{iconPacks:Material Kind=CodeJson}"
@@ -216,10 +216,10 @@
                 </Style>
             </DockPanel.Style>
 
-            <Border Margin="3,0" Style="{StaticResource imageBar}" />
+            <Border Margin="1,0" Style="{StaticResource imageBar}" />
 
             <Button
-                Width="28"
+                Margin="3"
                 Command="{Binding ClearCurrentCommand}"
                 CommandParameter="{x:Static vm:ResultsEntryDevices.L95}"
                 Content="{iconPacks:MaterialDesign Kind=Clear}"

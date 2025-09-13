@@ -466,7 +466,7 @@
                     </Grid>
                 </DockPanel>
 
-                <StackPanel HorizontalAlignment="Left">
+                <!--<StackPanel HorizontalAlignment="Left">
                     <Button
                         Width="28"
                         Height="28"
@@ -488,7 +488,7 @@
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                         ToolTip="Open the image in the 3D viewer." />
-                </StackPanel>
+                </StackPanel>-->
             </DockPanel>
 
             <!--  Current Sectors  -->

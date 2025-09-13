@@ -462,40 +462,47 @@
                     </DockPanel.Style>
 
 
-                    <DockPanel>
-
-                        <DockPanel Background="{DynamicResource Results_Brush_Active}">
-                            <iconPacks:PackIconMaterial
-                                Width="12"
-                                Margin="3"
-                                VerticalAlignment="Center"
-                                Kind="StoreOutline" />
-                        </DockPanel>
+                    <md:Card
+                        Margin="3,3,0,0"
+                        HorizontalAlignment="Left"
+                        Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                        DockPanel.Dock="Top"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                         <DockPanel>
-                            <DockPanel.Background>
-                                <LinearGradientBrush StartPoint="0.4,0" EndPoint="1,1">
-                                    <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
-                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                </LinearGradientBrush>
-                            </DockPanel.Background>
 
-                            <!--  Title  -->
-                            <TextBlock
-                                Margin="3,0"
-                                FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
-                                Text="Current Iamge" />
+                            <DockPanel Background="{DynamicResource Results_Brush_Active}">
+                                <iconPacks:PackIconMaterial
+                                    Width="12"
+                                    Margin="3"
+                                    VerticalAlignment="Center"
+                                    Kind="StoreOutline" />
+                            </DockPanel>
 
-                            <ContentControl
-                                Content="{StaticResource CurrentToolbar}"
-                                DataContext="{Binding .}"
-                                Tag="Image" />
+                            <DockPanel>
+                                <DockPanel.Background>
+                                    <LinearGradientBrush StartPoint="0.4,0" EndPoint="1,1">
+                                        <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
+                                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                    </LinearGradientBrush>
+                                </DockPanel.Background>
+
+                                <!--  Title  -->
+                                <TextBlock
+                                    Margin="3,0"
+                                    FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                    Text="Current Image" />
+
+                                <ContentControl
+                                    Content="{StaticResource CurrentToolbar}"
+                                    DataContext="{Binding .}"
+                                    Tag="Image" />
+
+                            </DockPanel>
 
                         </DockPanel>
 
-                    </DockPanel>
-
-
+                    </md:Card>
 
                     <DockPanel
                         Margin="3"
@@ -517,9 +524,11 @@
 
                     </DockPanel>
 
-                    <StackPanel HorizontalAlignment="Left">
+                    <!--<StackPanel HorizontalAlignment="Left">
 
-                        <!--  Show 2D  -->
+                    -->
+                    <!--  Show 2D  -->
+                    <!--
                         <Button
                             Width="28"
                             Height="28"
@@ -531,7 +540,9 @@
                             Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                             ToolTip="Open the image in the 2D viewer." />
 
-                        <!--  Show 3D  -->
+                    -->
+                    <!--  Show 3D  -->
+                    <!--
                         <Button
                             Width="28"
                             Height="28"
@@ -544,7 +555,7 @@
                             ToolTip="Open the image in the 2D viewer." />
 
 
-                    </StackPanel>
+                    </StackPanel>-->
 
                 </DockPanel>
 

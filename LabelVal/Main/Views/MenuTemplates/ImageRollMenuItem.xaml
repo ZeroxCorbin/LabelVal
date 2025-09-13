@@ -13,9 +13,15 @@
 
     <!--  Image Rolls  -->
     <DataTemplate x:Key="ImageRollMenuItem">
-        <DockPanel DataContext="{Binding Content.ActiveImageRoll}">
+        <DockPanel MaxHeight="58" DataContext="{Binding Content.ActiveImageRoll}">
 
-            <DockPanel Width="48" Background="{DynamicResource ImageRoll_Brush_Active50}">
+            <DockPanel Width="48">
+                <DockPanel.Background>
+                    <LinearGradientBrush StartPoint="0,0.4" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="{DynamicResource ImageRoll_Color_Active50}" />
+                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                    </LinearGradientBrush>
+                </DockPanel.Background>
 
                 <iconPacks:PackIconMaterial
                     Width="48"

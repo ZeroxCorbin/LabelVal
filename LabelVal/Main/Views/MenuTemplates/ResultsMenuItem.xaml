@@ -10,12 +10,22 @@
     mc:Ignorable="d">
 
     <!--  Results Databases  -->
-    <DataTemplate x:Key="ImageRdMenuItem" DataType="{x:Type resultsVm:ResultsDatabasesViewModel}">
+    <DataTemplate x:Key="ResultsMenuItem" DataType="{x:Type resultsVm:ResultsDatabasesViewModel}">
         <!--  The DataContext here is an instance of ResultsDatabasesViewModel  -->
-        <DockPanel d:DataContext="{d:DesignInstance Type=resultsVm:ResultsDatabasesViewModel}" DataContext="{Binding Content}">
+        <DockPanel
+            MaxHeight="58"
+            d:DataContext="{d:DesignInstance Type=resultsVm:ResultsDatabasesViewModel,
+                                             IsDesignTimeCreatable=False}"
+            DataContext="{Binding Content}">
             <!--  The DataContext is now the 'Content' property, which is likely null at design time  -->
 
-            <DockPanel Width="48" Background="{DynamicResource Results_Brush_Active50}">
+            <DockPanel Width="48">
+                <DockPanel.Background>
+                    <LinearGradientBrush StartPoint="0,0.4" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="{DynamicResource Results_Color_Active50}" />
+                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                    </LinearGradientBrush>
+                </DockPanel.Background>
 
                 <iconPacks:PackIconMaterial
                     Width="36"

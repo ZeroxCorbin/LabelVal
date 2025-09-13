@@ -6,7 +6,6 @@
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels">
 
     <DockPanel x:Key="StoredToolbar" x:Shared="False">
-        <Border Margin="3,0" Style="{StaticResource imageBar}" />
 
         <!--  Image Only  -->
         <DockPanel>
@@ -22,7 +21,7 @@
             </DockPanel.Style>
 
             <Button
-                Width="28"
+                Margin="3"
                 Command="{Binding ResultsEntry.SaveCommand}"
                 CommandParameter="{Binding StoredImage.BitmapBytes}"
                 Content="{iconPacks:Material Kind=ContentSave}"
@@ -33,7 +32,7 @@
 
         <!--  Copy (Both)  -->
         <Button
-            Width="28"
+            Margin="3"
             Command="{Binding CopyToClipboardCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
             CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
             Content="{iconPacks:Modern Kind=PageCopy}"
@@ -54,7 +53,7 @@
 
         <!--  Sectors Only: Show All  -->
         <Button
-            Width="28"
+            Margin="3"
             Command="{Binding ShowStoredSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
             CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
             Content="{iconPacks:Modern Kind=SectionExpandAll}"
@@ -73,7 +72,7 @@
 
         <!--  Sectors Only: JSON  -->
         <Button
-            Width="28"
+            Margin="3"
             Command="{Binding ShowStoredSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
             CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
             Content="{iconPacks:Material Kind=CodeJson}"
@@ -107,10 +106,10 @@
                 </Style>
             </DockPanel.Style>
 
-            <Border Margin="3,0" Style="{StaticResource imageBar}" />
+            <Border Margin="1,0" Style="{StaticResource imageBar}" />
 
             <Button
-                Width="28"
+                Margin="3"
                 Command="{Binding ClearStoredCommand}"
                 CommandParameter="{x:Static vm:ResultsEntryDevices.L95}"
                 Content="{iconPacks:Modern Kind=Delete}"

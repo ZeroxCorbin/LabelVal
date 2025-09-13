@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
     xmlns:helpers="clr-namespace:LabelVal.Results.Helpers"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:imageRollEnums="clr-namespace:LabelVal.ImageRolls.ViewModels"
     xmlns:imageroll="clr-namespace:LabelVal.ImageRolls.ViewModels"
@@ -18,7 +19,6 @@
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Classes"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:vm="clr-namespace:LabelVal.Results.ViewModels"
-    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     d:DataContext="{d:DesignInstance Type=vm:ResultsManagerViewModel}"
     dialog:DialogParticipation.Register="{Binding}"
     mc:Ignorable="d">
@@ -65,7 +65,7 @@
                                 Height="32"
                                 Padding="3"
                                 HorizontalAlignment="Center"
-                                Kind="FilmstripBox" />
+                                Kind="FilmstripBoxMultiple" />
                         </DockPanel>
 
                         <ListBox

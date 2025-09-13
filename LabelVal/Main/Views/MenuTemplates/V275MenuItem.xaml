@@ -14,14 +14,18 @@
 
             <Border Style="{StaticResource hamMenuBottomBar}" />
 
-            <Grid
-                Width="48"
-                MinHeight="82"
-                Background="{DynamicResource V275_Brush_Active}">
+            <Grid Width="48" MinHeight="82">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0,0.4" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
+                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                    </LinearGradientBrush>
+                </Grid.Background>
+
 
                 <Image
                     Grid.Row="0"

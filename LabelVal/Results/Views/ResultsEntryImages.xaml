@@ -27,7 +27,6 @@
         <DockPanel>
 
             <md:Card
-                x:Name="CrdSource"
                 Margin="3,3,0,0"
                 HorizontalAlignment="Left"
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
@@ -35,33 +34,28 @@
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                 <DockPanel>
+                    <DockPanel.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="0" Color="{DynamicResource ImageRoll_Color_Active}" />
+                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                        </LinearGradientBrush>
+                    </DockPanel.Background>
 
-                    <DockPanel Background="{DynamicResource ImageRoll_Brush_Active}">
-                        <iconPacks:PackIconMaterial
-                            Width="12"
-                            Margin="3"
-                            VerticalAlignment="Center"
-                            Kind="FilmstripBox" />
-                    </DockPanel>
+                    <iconPacks:PackIconMaterial
+                        Width="12"
+                        Margin="3"
+                        VerticalAlignment="Center"
+                        Kind="FilmstripBox" />
 
                     <!--  Title  -->
-                    <md:Card
-                        Margin="3,3,0,3"
-                        Padding="4,1"
-                        HorizontalAlignment="Left"
-                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-
-                        <TextBlock
-                            FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
-                            Foreground="{DynamicResource MahApps.Brushes.Text}"
-                            Text="Source Image" />
-                    </md:Card>
-
-                    <Border Margin="3,0" Style="{StaticResource imageBar}" />
+                    <TextBlock
+                        Margin="3,0"
+                        FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                        Text="Source Image" />
 
                     <!--  Save Image  -->
                     <Button
-                        Width="28"
+                        Margin="3"
                         Command="{Binding SaveCommand}"
                         CommandParameter="{Binding SourceImage.BitmapBytes}"
                         Content="{iconPacks:Material Kind=ContentSave}"
@@ -70,12 +64,12 @@
                         ToolTip="Save the image." />
 
                     <Button
-                        Width="28"
+                        Margin="3"
                         Click="btnCopyToClipboard_Click"
                         Content="{iconPacks:Modern Kind=PageCopy}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
-
+                    
                 </DockPanel>
 
             </md:Card>

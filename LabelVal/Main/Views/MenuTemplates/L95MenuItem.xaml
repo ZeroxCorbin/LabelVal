@@ -13,15 +13,18 @@
     <DataTemplate x:Key="L95MenuItem">
         <DockPanel DataContext="{Binding Content}">
 
-            <Grid
-                Width="48"
-                MinHeight="82"
-                Background="{DynamicResource L95_Brush_Active50}">
+            <Grid Width="48" MinHeight="82">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0,0.4" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="{DynamicResource L95_Color_Active50}" />
+                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                    </LinearGradientBrush>
+                </Grid.Background>
 
                 <Image
                     Grid.Row="0"

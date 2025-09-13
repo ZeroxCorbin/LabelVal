@@ -32,7 +32,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="MenuTemplates/PrinterMenuItem.xaml" />
         <ResourceDictionary Source="MenuTemplates/ImageRollMenuItem.xaml" />
-        <ResourceDictionary Source="MenuTemplates/ImageRdMenuItem.xaml" />
+        <ResourceDictionary Source="MenuTemplates/ResultsMenuItem.xaml" />
         <ResourceDictionary Source="MenuTemplates/RunMenuItem.xaml" />
         <ResourceDictionary Source="MenuTemplates/LabelBuilderMenuItem.xaml" />
         <ResourceDictionary Source="MenuTemplates/V275MenuItem.xaml" />
@@ -81,7 +81,7 @@
         L96XX="{StaticResource L95MenuItem}"
         LabelBuilder="{StaticResource LabelBuilderMenuItem}"
         Printer="{StaticResource PrinterMenuItem}"
-        ResultssDatabases="{StaticResource ImageRdMenuItem}"
+        ResultssDatabases="{StaticResource ResultsMenuItem}"
         Run="{StaticResource RunMenuItem}"
         V275="{StaticResource V275MenuItem}"
         V5="{StaticResource V5MenuItem}" />

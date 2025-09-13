@@ -9,8 +9,6 @@
     <!--  Stored toolbar (key name consistent with V275)  -->
     <DockPanel x:Key="StoredToolbar" x:Shared="False">
 
-        <Border Margin="3,0" Style="{StaticResource imageBar}" />
-
         <!--  Image Only  -->
         <DockPanel>
             <DockPanel.Style>
@@ -25,7 +23,7 @@
             </DockPanel.Style>
 
             <Button
-                Width="28"
+                Margin="3"
                 Command="{Binding ResultsEntry.SaveCommand}"
                 CommandParameter="{Binding StoredImage.BitmapBytes}"
                 Content="{iconPacks:Material Kind=ContentSave}"
@@ -51,19 +49,20 @@
             </DockPanel.Style>
 
             <Button
-                Width="28"
+                Margin="3"
                 Command="{Binding LoadCommand}"
                 Content="{iconPacks:Material Kind=Download}"
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                 ToolTip="Overwrite the template sectors with the stored data from the database." />
 
-            <Border Margin="3,0" Style="{StaticResource imageBar}" />
+            <Border Margin="1,0" Style="{StaticResource imageBar}" />
+            
         </DockPanel>
 
         <!--  Both: Copy  -->
         <Button
-            Width="28"
+            Margin="3"
             Command="{Binding CopyToClipboardCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V5}}"
             CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
             Content="{iconPacks:Modern Kind=PageCopy}"
@@ -84,7 +83,7 @@
 
         <!--  Sectors Only: Show all  -->
         <Button
-            Width="28"
+            Margin="3"
             Command="{Binding ShowStoredSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V5}}"
             CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
             Content="{iconPacks:Modern Kind=SectionExpandAll}"
@@ -103,7 +102,7 @@
 
         <!--  Sectors Only: JSON  -->
         <Button
-            Width="28"
+            Margin="3"
             Command="{Binding ShowStoredSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V5}}"
             CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
             Content="{iconPacks:Material Kind=CodeJson}"
@@ -137,10 +136,10 @@
                 </Style>
             </DockPanel.Style>
 
-            <Border Margin="3,0" Style="{StaticResource imageBar}" />
+            <Border Margin="1,0" Style="{StaticResource imageBar}" />
 
             <Button
-                Width="28"
+                Margin="3"
                 Command="{Binding ClearStoredCommand}"
                 Content="{iconPacks:Modern Kind=Delete}"
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
