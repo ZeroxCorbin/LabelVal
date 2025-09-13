@@ -6,18 +6,18 @@
     -->
 
     <!--  Standard  -->
-    <Color x:Key="Results">#00AFA0</Color>
+    <Color x:Key="Results">#7E4CCB</Color>
     <SolidColorBrush x:Key="Results_Brush" Color="{StaticResource Results}" />
 
     <!--  Red-Green Colorblind Friendly  -->
-    <Color x:Key="Results_RG">#009E92</Color>
+    <Color x:Key="Results_RG">#7B55C9</Color>
     <SolidColorBrush x:Key="Results_RG_Brush" Color="{StaticResource Results_RG}" />
 
     <!--  Blue-Yellow Colorblind Friendly  -->
-    <Color x:Key="Results_BY">#00B5A8</Color>
+    <Color x:Key="Results_BY">#9366D5</Color>
     <SolidColorBrush x:Key="Results_BY_Brush" Color="{StaticResource Results_BY}" />
 
     <!--  Monochrome  -->
-    <Color x:Key="Results_M">#7EBEB9</Color>
+    <Color x:Key="Results_M">#B2B2B2</Color>
     <SolidColorBrush x:Key="Results_M_Brush" Color="{StaticResource Results_M}" />
 </ResourceDictionary>
