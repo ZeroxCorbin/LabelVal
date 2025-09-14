@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:LabelVal.LabelBuilder.Views"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:vm="clr-namespace:LabelVal.LabelBuilder.ViewModels"
@@ -17,9 +18,158 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <!--  Central container style  -->
+            <Style x:Key="LabelBuilderSectionContainerStyle" TargetType="GroupBox">
+                <Setter Property="Margin" Value="3,3,0,0" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="BorderBrush" Value="{DynamicResource LabelBuilder_Brush_Active}" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="GroupBox">
+
+                            <DockPanel>
+                                <md:Card
+             
+                                    Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                    DockPanel.Dock="Top"
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                                    <DockPanel>
+                                        <DockPanel.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
+                                                <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                            </LinearGradientBrush>
+                                        </DockPanel.Background>
+
+                                        <!--  Title  -->
+                                        <ContentPresenter
+                                            Margin="3"
+                                            ContentSource="Header"
+                                            DockPanel.Dock="Top" />
+
+                                    </DockPanel>
+                                </md:Card>
+
+                                <ContentPresenter Margin="2" />
+                            </DockPanel>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+            </Style>
+
+            <Style x:Key="LabelBuilderSectionExpanderStyle" TargetType="Expander">
+                <Setter Property="Foreground" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" />
+                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource LabelBuilder_Brush_Active}" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Expander">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <md:Card
+                                    Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                    DockPanel.Dock="Top"
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                                    <!--  Header  -->
+                                    <DockPanel x:Name="HeaderSite" LastChildFill="True">
+                                        <DockPanel.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
+                                                <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                            </LinearGradientBrush>
+                                        </DockPanel.Background>
+                                        
+                                        <!--  Toggle (arrow only now)  -->
+                                        <ToggleButton
+                                            x:Name="PART_Toggle"
+                                            Width="22"
+                                            Height="22"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
+                                            DockPanel.Dock="Left"
+                                            Focusable="False"
+                                            IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}">
+                                            <ToggleButton.Template>
+                                                <ControlTemplate TargetType="ToggleButton">
+                                                    <Border  Background="{TemplateBinding Background}">
+                                                        <Path
+                                                            x:Name="Arrow"
+                                                            Width="12"
+                                                            Height="12"
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"
+                                                            Data="M 0 0 L 8 0 L 4 5 Z"
+                                                            Fill="{DynamicResource LabelBuilder_Brush_Active}"
+                                                            RenderTransformOrigin="0.5,0.5">
+                                                            <Path.RenderTransform>
+                                                                <RotateTransform Angle="0" />
+                                                            </Path.RenderTransform>
+                                                        </Path>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsChecked" Value="True">
+                                                            <Setter TargetName="Arrow" Property="RenderTransform">
+                                                                <Setter.Value>
+                                                                    <RotateTransform Angle="180" />
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="{DynamicResource LabelBuilder_Brush_Active50}" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter Property="Opacity" Value="0.55" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </ToggleButton.Template>
+                                        </ToggleButton>
+
+                                        <!--  Header content now outside (not inside toggle area)  -->
+                                        <ContentPresenter
+                                            Margin="3"
+                                            VerticalAlignment="Center"
+                                            Content="{TemplateBinding Header}"
+                                            ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                            RecognizesAccessKey="True" />
+                                    </DockPanel>
+                                </md:Card>
+
+                                <!--  Expanded Content  -->
+                                <ContentPresenter
+                                    x:Name="ExpandSite"
+                                    Grid.Row="1"
+                                    Margin="6,4,6,6"
+                                    ContentSource="Content"
+                                    Focusable="False"
+                                    Visibility="Collapsed" />
+                            </Grid>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsExpanded" Value="True">
+                                    <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
+    <!--  Pass style into children  -->
     <DockPanel Margin="0,3,0,0" VerticalAlignment="Top">
         <Border Style="{StaticResource groupLeft}">
             <Border.Background>
@@ -37,7 +187,7 @@
                 </LinearGradientBrush>
             </Border.Background>
         </Border>
-        
+
         <md:Card
             Margin="3,3,0,0"
             Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
@@ -53,11 +203,9 @@
                     <iconPacks:PackIconMaterial
                         Width="32"
                         Height="32"
-                        Padding="3"
                         HorizontalAlignment="Center"
                         Kind="Barcode" />
                 </DockPanel>
-
 
                 <DockPanel
                     Height="32"
@@ -120,27 +268,31 @@
         </md:Card>
 
         <DockPanel Grid.Row="1" Margin="3,0,3,0">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,0,3,0">
                 <barcodeViews:BarcodeSettingsView
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
-                    DataContext="{Binding BarcodeBuilderViewModel}" />
+                    DataContext="{Binding BarcodeBuilderViewModel}"
+                    SectionContainerStyle="{StaticResource LabelBuilderSectionContainerStyle}"
+                    SectionExpanderStyle="{StaticResource LabelBuilderSectionExpanderStyle}" />
             </ScrollViewer>
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" Margin="0,0,3,0">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,0,3,0">
                 <barcodeViews:BarcodeManipulationView
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
-                    DataContext="{Binding BarcodeBuilderViewModel.BarcodeManipulationViewModel}" />
+                    DataContext="{Binding BarcodeBuilderViewModel.BarcodeManipulationViewModel}"
+                    SectionContainerStyle="{StaticResource LabelBuilderSectionContainerStyle}"
+                    SectionExpanderStyle="{StaticResource LabelBuilderSectionExpanderStyle}" />
             </ScrollViewer>
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,0,3,0">
                 <barcodeViews:BarcodeBuilderImagesView
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
-                    DataContext="{Binding BarcodeBuilderViewModel.BarcodeBuilderImagesViewModel}" />
+                    DataContext="{Binding BarcodeBuilderViewModel.BarcodeBuilderImagesViewModel}"
+                    SectionContainerStyle="{StaticResource LabelBuilderSectionContainerStyle}" />
             </ScrollViewer>
-
         </DockPanel>
 
         <StatusBar Grid.Row="2" Margin="0,3,0,0">

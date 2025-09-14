@@ -41,8 +41,7 @@
                     </DockPanel.Background>
 
                     <iconPacks:PackIconMaterial
-                        Width="12"
-                        Margin="3"
+                        Margin="3,0"
                         VerticalAlignment="Center"
                         Kind="FilmstripBox" />
 
