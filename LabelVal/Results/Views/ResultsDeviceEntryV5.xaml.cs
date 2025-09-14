@@ -238,15 +238,21 @@ public partial class ResultsDeviceEntry_V5 : UserControl
         encoder.Frames.Add(BitmapFrame.Create(bitmap));
     }
 
+    [RelayCommand]
     private void Show3DImage(byte[] image)
     {
         var img = new ImageViewer3D.ViewModels.ImageViewer3D_SingleMesh(image);
-        var wnd = (Main.Views.MainWindow)Window.GetWindow(this);
-        img.Width = wnd.ActualWidth - 100;
-        img.Height = wnd.ActualHeight - 100;
-        var dlg = new ImageViewer3DDialogView { DataContext = img };
-        dlg.Unloaded += (_, _) => img.Dispose();
-        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(wnd.DataContext, dlg);
+
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+
+        img.Width = yourParentWindow.ActualWidth - 100;
+        img.Height = yourParentWindow.ActualHeight - 100;
+
+        var tmp = new ImageViewer3DDialogView() { DataContext = img };
+        tmp.Unloaded += (s, e) =>
+        img.Dispose();
+        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, tmp);
+
     }
 
     private void Show3DViewerStored(object sender, RoutedEventArgs e) => Show3DImage(_viewModel.StoredImage.ImageBytes);

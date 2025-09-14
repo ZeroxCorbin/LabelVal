@@ -183,8 +183,22 @@
         </md:Card>
 
         <DockPanel DockPanel.Dock="Top">
-            <Border Background="{DynamicResource Results_Brush_Active}" Style="{StaticResource groupLeft}" />
-            <Border Background="{DynamicResource Results_Brush_Active}" Style="{StaticResource groupBottom}" />
+            <Border Style="{StaticResource groupLeft}">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="1,1" EndPoint="0.2,0.2">
+                        <GradientStop Offset="0" Color="{DynamicResource Results_Color_Active}" />
+                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+            <Border Style="{StaticResource groupBottom}">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0.8,0.8">
+                        <GradientStop Offset="0" Color="{DynamicResource Results_Color_Active}" />
+                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
 
             <ListView
                 Margin="3,3,0,0"

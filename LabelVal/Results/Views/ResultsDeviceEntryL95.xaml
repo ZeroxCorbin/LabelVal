@@ -70,8 +70,22 @@
         </DockPanel.Style>
 
         <!--  Decorative borders for styling.  -->
-        <Border Background="{DynamicResource L95_Brush_Active}" Style="{StaticResource groupLeft}" />
-        <Border Background="{DynamicResource L95_Brush_Active}" Style="{StaticResource groupBottom}" />
+        <Border Style="{StaticResource groupLeft}">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="1,1" EndPoint="0.2,0.2">
+                    <GradientStop Offset="0" Color="{DynamicResource L95_Color_Active}" />
+                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+        <Border Style="{StaticResource groupBottom}">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0.8,0.8">
+                    <GradientStop Offset="0" Color="{DynamicResource L95_Color_Active}" />
+                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
 
         <!--  Section for displaying stored data (image and sectors).  -->
         <DockPanel>
@@ -98,8 +112,21 @@
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                     <DockPanel>
+                        <DockPanel.Background>
+                            <LinearGradientBrush StartPoint="0.2,0" EndPoint="1,1">
+                                <GradientStop Offset="0" Color="{DynamicResource L95_Color_Active50}" />
+                                <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                            </LinearGradientBrush>
+                        </DockPanel.Background>
 
-                        <DockPanel Background="{DynamicResource Results_Brush_Active}">
+                        <DockPanel>
+                            <DockPanel.Background>
+                                <LinearGradientBrush StartPoint="0.2,0" EndPoint="1,1">
+                                    <GradientStop Offset="0" Color="{DynamicResource Results_Color_Active}" />
+                                    <GradientStop Offset="1" Color="{DynamicResource L95_Color_Active50}" />
+                                </LinearGradientBrush>
+                            </DockPanel.Background>
+
                             <iconPacks:PackIconMaterial
                                 Width="12"
                                 Margin="3"
@@ -108,12 +135,6 @@
                         </DockPanel>
 
                         <DockPanel>
-                            <DockPanel.Background>
-                                <LinearGradientBrush StartPoint="0.4,0" EndPoint="1,1">
-                                    <GradientStop Offset="0" Color="{DynamicResource L95_Color_Active50}" />
-                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                </LinearGradientBrush>
-                            </DockPanel.Background>
 
                             <!--  Title  -->
                             <TextBlock
@@ -180,7 +201,7 @@
 
                     <StackPanel>
                         <StackPanel.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="0.75,1">
+                            <LinearGradientBrush StartPoint="0.2,0" EndPoint="1,1">
                                 <GradientStop Offset="0" Color="{DynamicResource L95_Color_Active50}" />
                                 <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                             </LinearGradientBrush>
@@ -190,7 +211,7 @@
 
                             <DockPanel>
                                 <DockPanel.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,2">
+                                    <LinearGradientBrush StartPoint="0.2,0" EndPoint="1,1">
                                         <GradientStop Offset="0" Color="{DynamicResource Results_Color_Active}" />
                                         <GradientStop Offset="1" Color="{DynamicResource L95_Color_Active50}" />
                                     </LinearGradientBrush>
@@ -281,7 +302,7 @@
                     ScrollChanged="ScrollStoredSectors_ScrollChanged"
                     VerticalScrollBarVisibility="Auto">
 
-                    <Grid>
+                    <StackPanel>
 
                         <!--  ListBox to display all stored sectors. It is hidden when a sector is focused to show details instead.  -->
                         <ListBox
@@ -339,9 +360,7 @@
                             <!--  Each item in the ListBox is a Sector control.  -->
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <sectors:Sector
-                                        MouseEnter="storedSectorMouseEnter"
-                                        MouseLeave="storedSectorMouseLeave" />
+                                    <sectors:Sector MouseEnter="storedSectorMouseEnter" MouseLeave="storedSectorMouseLeave" />
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
 
@@ -387,7 +406,7 @@
                                 </sectors:SectorDetails>
                             </DockPanel>
                         </DockPanel>
-                    </Grid>
+                    </StackPanel>
                 </ScrollViewer>
             </DockPanel>
 

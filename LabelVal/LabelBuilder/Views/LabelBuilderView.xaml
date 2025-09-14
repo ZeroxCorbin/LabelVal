@@ -20,14 +20,24 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Margin="3,3,0,0" VerticalAlignment="Top">
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
+    <DockPanel Margin="0,3,0,0" VerticalAlignment="Top">
+        <Border Style="{StaticResource groupLeft}">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="1,1" EndPoint="0.2,0.2">
+                    <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
+                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+        <Border Style="{StaticResource groupBottom}">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0.8,0.8">
+                    <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
+                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+        
         <md:Card
             Margin="3,3,0,0"
             Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
@@ -109,18 +119,16 @@
 
         </md:Card>
 
-        <DockPanel Grid.Row="1" Margin="3,0">
+        <DockPanel Grid.Row="1" Margin="3,0,3,0">
             <ScrollViewer HorizontalScrollBarVisibility="Auto">
                 <barcodeViews:BarcodeSettingsView
-                    Margin="3,0"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     DataContext="{Binding BarcodeBuilderViewModel}" />
             </ScrollViewer>
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" Margin="0,0,3,0">
                 <barcodeViews:BarcodeManipulationView
-                    Margin="3,0"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     DataContext="{Binding BarcodeBuilderViewModel.BarcodeManipulationViewModel}" />
@@ -128,7 +136,6 @@
 
             <ScrollViewer HorizontalScrollBarVisibility="Auto">
                 <barcodeViews:BarcodeBuilderImagesView
-                    Margin="3,0"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     DataContext="{Binding BarcodeBuilderViewModel.BarcodeBuilderImagesViewModel}" />
@@ -140,5 +147,5 @@
             <TextBlock Text="{Binding BarcodeBuilderViewModel.OutputErrorText}" />
         </StatusBar>
 
-    </Grid>
+    </DockPanel>
 </UserControl>

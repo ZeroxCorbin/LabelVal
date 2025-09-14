@@ -251,16 +251,21 @@ public partial class ResultsDeviceEntry_V275 : UserControl
         _ = Application.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshStoredOverlay());
     }
 
+    [RelayCommand]
     private void Show3DImage(byte[] image)
     {
         var img = new ImageViewer3D.ViewModels.ImageViewer3D_SingleMesh(image);
-        var parentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
-        img.Width = parentWindow.ActualWidth - 100;
-        img.Height = parentWindow.ActualHeight - 100;
 
-        var dlg = new ImageViewer3DDialogView { DataContext = img };
-        dlg.Unloaded += (s, e) => img.Dispose();
-        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(parentWindow.DataContext, dlg);
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+
+        img.Width = yourParentWindow.ActualWidth - 100;
+        img.Height = yourParentWindow.ActualHeight - 100;
+
+        var tmp = new ImageViewer3DDialogView() { DataContext = img };
+        tmp.Unloaded += (s, e) =>
+        img.Dispose();
+        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, tmp);
+
     }
 
     private void Show3DViewerCurrent(object sender, RoutedEventArgs e) => Show3DImage(_viewModel.CurrentImage.ImageBytes);

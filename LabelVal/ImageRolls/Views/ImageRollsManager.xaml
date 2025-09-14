@@ -491,8 +491,22 @@
             </md:Card>
 
             <DockPanel DockPanel.Dock="Top">
-                <Border Background="{DynamicResource ImageRoll_Brush_Active50}" Style="{StaticResource groupLeft}" />
-                <Border Background="{DynamicResource ImageRoll_Brush_Active50}" Style="{StaticResource groupBottom}" />
+                <Border Style="{StaticResource groupLeft}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="1,1" EndPoint="0.2,0.2">
+                            <GradientStop Offset="0" Color="{DynamicResource ImageRoll_Color_Active}" />
+                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+                <Border Style="{StaticResource groupBottom}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0.8,0.8">
+                            <GradientStop Offset="0" Color="{DynamicResource ImageRoll_Color_Active}" />
+                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
 
                 <!--
                     DrawerHost that contains the editing UI for an image roll.
@@ -592,8 +606,22 @@
             </md:Card>
 
             <DockPanel>
-                <Border Background="{DynamicResource ImageRoll_Brush_Active50}" Style="{StaticResource groupLeft}" />
-                <Border Background="{DynamicResource ImageRoll_Brush_Active50}" Style="{StaticResource groupBottom}" />
+                <Border Style="{StaticResource groupLeft}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="1,1" EndPoint="0.2,0.2">
+                            <GradientStop Offset="0" Color="{DynamicResource ImageRoll_Color_Active50}" />
+                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+                <Border Style="{StaticResource groupBottom}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0.8,0.8">
+                            <GradientStop Offset="0" Color="{DynamicResource ImageRoll_Color_Active50}" />
+                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
 
                 <!--  Tab control to display Fixed Image Rolls, grouped by standard.  -->
                 <mah:MetroTabControl

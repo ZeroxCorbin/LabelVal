@@ -63,8 +63,22 @@
             </Style>
         </DockPanel.Style>
 
-        <Border Background="{DynamicResource V275_Brush_Active}" Style="{StaticResource groupLeft}" />
-        <Border Background="{DynamicResource V275_Brush_Active}" Style="{StaticResource groupBottom}" />
+        <Border Style="{StaticResource groupLeft}">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="1,1" EndPoint="0.2,0.2">
+                    <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active}" />
+                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+        <Border Style="{StaticResource groupBottom}">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0.8,0.8">
+                    <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active}" />
+                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
 
         <DockPanel>
 
@@ -92,8 +106,21 @@
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                         <DockPanel>
+                            <DockPanel.Background>
+                                <LinearGradientBrush StartPoint="0.2,0" EndPoint="1,1">
+                                    <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
+                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                </LinearGradientBrush>
+                            </DockPanel.Background>
 
-                            <DockPanel Background="{DynamicResource Results_Brush_Active}">
+                            <DockPanel>
+                                <DockPanel.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Offset="0" Color="{DynamicResource Results_Color_Active}" />
+                                        <GradientStop Offset="1" Color="{DynamicResource V275_Color_Active50}" />
+                                    </LinearGradientBrush>
+                                </DockPanel.Background>
+
                                 <iconPacks:PackIconMaterial
                                     Width="12"
                                     Margin="3"
@@ -102,12 +129,6 @@
                             </DockPanel>
 
                             <DockPanel>
-                                <DockPanel.Background>
-                                    <LinearGradientBrush StartPoint="0.4,0" EndPoint="1,1">
-                                        <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
-                                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                    </LinearGradientBrush>
-                                </DockPanel.Background>
 
                                 <!--  Title  -->
                                 <TextBlock
@@ -115,7 +136,8 @@
                                     FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
                                     Text="Stored Image" />
 
-                                <ContentControl HorizontalAlignment="Right"
+                                <ContentControl
+                                    HorizontalAlignment="Right"
                                     Content="{StaticResource V275StoredToolbar}"
                                     DataContext="{Binding .}"
                                     Tag="Image" />
@@ -134,7 +156,7 @@
                         <Grid
                             MaxWidth="{Binding ResultsEntry.ImagesMaxHeight}"
                             MaxHeight="{Binding ResultsEntry.ImagesMaxHeight}"
-                                   MouseDown="StoredImage_MouseDown"
+                            MouseDown="StoredImage_MouseDown"
                             ToolTip="Click to open a larger view of the image.&#x0a;Hold Shift and click to open a 3D view of the image.">
 
                             <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding StoredImage.ImageLow, Mode=OneWay}" />
@@ -169,7 +191,7 @@
 
                         <StackPanel>
                             <StackPanel.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="0.75,1">
+                                <LinearGradientBrush StartPoint="0.2,0" EndPoint="1,1">
                                     <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
                                     <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                                 </LinearGradientBrush>
@@ -179,7 +201,7 @@
 
                                 <DockPanel>
                                     <DockPanel.Background>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,2">
+                                        <LinearGradientBrush StartPoint="0.2,0" EndPoint="1,1">
                                             <GradientStop Offset="0" Color="{DynamicResource Results_Color_Active}" />
                                             <GradientStop Offset="1" Color="{DynamicResource V275_Color_Active50}" />
                                         </LinearGradientBrush>
@@ -210,7 +232,7 @@
 
                             </DockPanel>
 
-                            <DockPanel HorizontalAlignment="Stretch">
+                            <DockPanel HorizontalAlignment="Stretch" DockPanel.Dock="Top">
 
                                 <TextBlock
                                     Margin="6,1,0,5"
@@ -296,7 +318,7 @@
 
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" ItemWidth="200">
+                                        <WrapPanel ItemWidth="200" Orientation="Horizontal">
                                             <WrapPanel.Style>
                                                 <Style TargetType="WrapPanel">
                                                     <Setter Property="ItemWidth" Value="200" />
@@ -325,9 +347,7 @@
 
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <sectors:Sector
-                                            MouseEnter="storedSectorMouseEnter"
-                                            MouseLeave="storedSectorMouseLeave" />
+                                        <sectors:Sector MouseEnter="storedSectorMouseEnter" MouseLeave="storedSectorMouseLeave" />
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
