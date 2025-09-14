@@ -39,88 +39,87 @@
 
     </UserControl.Resources>
 
-        <md:Card
-            Margin="4"
-            Padding="0"
-            
-            Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-            Foreground="{DynamicResource MahApps.Brushes.Text}">
+    <md:Card
+        Margin="4"
+        Padding="0"
+        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+        Foreground="{DynamicResource MahApps.Brushes.Text}">
 
-            <StackPanel>
+        <StackPanel>
 
-                <!--  Name, Wrong Standard, Overall Grade String  -->
-                <Grid Margin="3" DockPanel.Dock="Top">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        HorizontalAlignment="Center"
-                        Background="{DynamicResource SectorError_Brush_Active}"
-                        DockPanel.Dock="Top"
-                        Text="WRONG STANDARD"
-                        Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}" />
+            <!--  Name, Wrong Standard, Overall Grade String  -->
+            <Grid Margin="3" DockPanel.Dock="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    HorizontalAlignment="Center"
+                    Background="{DynamicResource SectorError_Brush_Active}"
+                    DockPanel.Dock="Top"
+                    Text="WRONG STANDARD"
+                    Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}" />
 
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        HorizontalAlignment="Right"
-                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                        Text="{Binding Template.Username, Mode=OneTime}" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                    Text="{Binding Template.Username, Mode=OneTime}" />
 
-                    <!--<TextBlock
+                <!--<TextBlock
                         Margin="3,0"
                         HorizontalAlignment="Center"
                         Foreground="{DynamicResource ColorBlindBrush2}"
                         Text="{Binding Template.Version, StringFormat={}{0}}" />-->
 
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        HorizontalAlignment="Left"
-                        Text="{Binding Report.OverallGrade.Value}" />
-                </Grid>
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    Text="{Binding Report.OverallGrade.Value}" />
+            </Grid>
 
-                <!--  Icon, Symbology, Decode Text  -->
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
+            <!--  Icon, Symbology, Decode Text  -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
 
-                    <!--  Symbology Image  -->
-                    <Border
-                        Grid.Column="0"
-                        Width="30"
-                        Height="30"
-                        Margin="3,3,0,0"
-                        VerticalAlignment="Top"
-                        Background="White">
-                        <Border.Style>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="Visibility" Value="Visible" />
+                <!--  Symbology Image  -->
+                <Border
+                    Grid.Column="0"
+                    Width="30"
+                    Height="30"
+                    Margin="3,3,0,0"
+                    VerticalAlignment="Top"
+                    Background="White">
+                    <Border.Style>
+                        <Style TargetType="{x:Type Border}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Report, Mode=OneTime}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+                    <Image Stretch="Fill">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Setter Property="Source" Value="/Assets/Images/barcode-1d.png" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Report, Mode=OneTime}" Value="{x:Null}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Border.Style>
-
-                        <Image Stretch="Fill">
-                            <Image.Style>
-                                <Style TargetType="{x:Type Image}">
-                                    <Setter Property="Source" Value="/Assets/Images/barcode-1d.png" />
-                                    <Style.Triggers>
-                                        <!--<DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
+                                    <!--<DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
                                             <Setter Property="Source" Value="/Assets/Images/barcode-2d.png" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
@@ -132,20 +131,20 @@
                                         <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
                                             <Setter Property="Source" Value="/Assets/Images/FlawTool.png" />
                                         </DataTrigger>-->
-                                    </Style.Triggers>
-                                </Style>
-                            </Image.Style>
-                        </Image>
-                    </Border>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Border>
 
-                    <DockPanel Grid.Column="1">
+                <DockPanel Grid.Column="1">
 
-                        <!--  Symbology Name  -->
-                        <TextBlock Margin="3,0" DockPanel.Dock="Top">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Text" Value="{Binding Report.Symbology, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}" />
-                                    <!--<Style.Triggers>
+                    <!--  Symbology Name  -->
+                    <TextBlock Margin="3,0" DockPanel.Dock="Top">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="Text" Value="{Binding Report.Symbology, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}" />
+                                <!--<Style.Triggers>
 
                                         <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                             <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}" />
@@ -158,22 +157,22 @@
                                             <Setter Property="Text" Value="" />
                                         </DataTrigger>
                                     </Style.Triggers>-->
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
 
 
-                        <!--  Decode Text & OCR  -->
-                        <TextBlock
-                            MaxWidth="172"
-                            Margin="3,0"
-                            DockPanel.Dock="Top"
-                            TextWrapping="Wrap">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}" />
-                                    <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
-                                    <!--<Style.Triggers>
+                    <!--  Decode Text & OCR  -->
+                    <TextBlock
+                        MaxWidth="172"
+                        Margin="3,0"
+                        DockPanel.Dock="Top"
+                        TextWrapping="Wrap">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}" />
+                                <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
+                                <!--<Style.Triggers>
                                                 <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                                     <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}" />
                                                     <Setter Property="ToolTip" Value="{Binding Report.Text, Mode=OneTime}" />
@@ -190,11 +189,11 @@
                                                 </DataTrigger>
 
                                             </Style.Triggers>-->
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
 
-                        <!--<Expander md:ExpanderAssist.HorizontalHeaderPadding="1" IsEnabled="{Binding Report.GS1Results, Converter={StaticResource IsNotNull}}">
+                    <!--<Expander md:ExpanderAssist.HorizontalHeaderPadding="1" IsEnabled="{Binding Report.GS1Results, Converter={StaticResource IsNotNull}}">
                             <Expander.Style>
                                 <Style BasedOn="{StaticResource MaterialDesignExpander}" TargetType="{x:Type Expander}">
 
@@ -243,53 +242,53 @@
                             </DockPanel>
                         </Expander>-->
 
-                    </DockPanel>
+                </DockPanel>
 
-                    <!--  Overall Grade Button  -->
-                    <Button
-                        Grid.Column="2"
-                        Width="30"
-                        Height="30"
-                        Margin="3"
-                        VerticalAlignment="Top"
-                        BorderThickness="3"
-                        IsHitTestVisible="False">
-                        <Button.Style>
-                            <Style BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}" TargetType="{x:Type Button}">
-                                <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
-                                <Setter Property="BorderBrush" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                <!--  Overall Grade Button  -->
+                <Button
+                    Grid.Column="2"
+                    Width="30"
+                    Height="30"
+                    Margin="3"
+                    VerticalAlignment="Top"
+                    BorderThickness="3"
+                    IsHitTestVisible="False">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}" TargetType="{x:Type Button}">
+                            <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
 
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsError, Mode=OneTime}" Value="True">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush_Active}" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsWarning, Mode=OneTime}" Value="True">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource SectorWarning_Brush_Active}" />
-                                    </DataTrigger>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsError, Mode=OneTime}" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush_Active}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsWarning, Mode=OneTime}" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorWarning_Brush_Active}" />
+                                </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding Report.OverallGrade.Grade.Letter, Mode=OneTime}" Value="B">
-                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Report.OverallGrade.Grade.Letter, Mode=OneTime}" Value="C">
-                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Report.OverallGrade.Grade.Letter, Mode=OneTime}" Value="D">
-                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Report.OverallGrade.Grade.Letter, Mode=OneTime}" Value="F">
-                                        <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
-                                    </DataTrigger>
+                                <DataTrigger Binding="{Binding Report.OverallGrade.Grade.Letter, Mode=OneTime}" Value="B">
+                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush_Active}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Report.OverallGrade.Grade.Letter, Mode=OneTime}" Value="C">
+                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush_Active}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Report.OverallGrade.Grade.Letter, Mode=OneTime}" Value="D">
+                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush_Active}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Report.OverallGrade.Grade.Letter, Mode=OneTime}" Value="F">
+                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush_Active}" />
+                                </DataTrigger>
 
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
 
-                        <Button.Content>
-                            <TextBlock>
-                                <TextBlock.Style>
-                                    <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
-                                        <Setter Property="Text" Value="{Binding Report.OverallGrade.Grade.LetterValue, StringFormat=N1, Mode=OneTime}" />
-                                        <!--<Style.Triggers>
+                    <Button.Content>
+                        <TextBlock>
+                            <TextBlock.Style>
+                                <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text" Value="{Binding Report.OverallGrade.Grade.LetterValue, StringFormat=N1, Mode=OneTime}" />
+                                    <!--<Style.Triggers>
                                             <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                                 <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}" />
                                             </DataTrigger>
@@ -300,23 +299,23 @@
                                                 <Setter Property="Text" Value="{Binding Report.BlemishCount, Mode=OneTime}" />
                                             </DataTrigger>
                                         </Style.Triggers>-->
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Button.Content>
-                    </Button>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Button.Content>
+                </Button>
 
-                </Grid>
+            </Grid>
 
-                <Separator />
+            <Separator />
 
-                <!--  Apeture and X Dimension  -->
-                <DockPanel>
-                    <DockPanel.Style>
-                        <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <!--<DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
+            <!--  Apeture and X Dimension  -->
+            <DockPanel>
+                <DockPanel.Style>
+                    <Style TargetType="{x:Type DockPanel}">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <!--<DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
@@ -325,14 +324,14 @@
                                 <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>-->
-                                <DataTrigger Binding="{Binding Report, Mode=OneTime}" Value="{x:Null}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
+                            <DataTrigger Binding="{Binding Report, Mode=OneTime}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
 
-                    <!--<UniformGrid DockPanel.Dock="Top" Rows="1">
+                <!--<UniformGrid DockPanel.Dock="Top" Rows="1">
                         <TextBox
                             Margin="3,0"
                             HorizontalAlignment="Center"
@@ -341,8 +340,8 @@
                             BorderThickness="0"
                             IsHitTestVisible="False"
                             Text="{Binding Report.Aperture, StringFormat=N1, Mode=OneTime}" />
-                    -->
-                    <!--<TextBox
+                -->
+                <!--<TextBox
                             Margin="3,0"
                             HorizontalAlignment="Left"
                             md:TextFieldAssist.PrefixText="xDim"
@@ -350,166 +349,166 @@
                             BorderThickness="0"
                             IsHitTestVisible="False"
                             Text="{Binding Report.XDimension, StringFormat=N1, Mode=OneTime}" />-->
-                    <!--
+                <!--
                     </UniformGrid>-->
 
-                </DockPanel>
+            </DockPanel>
 
-                <Expander
-                    md:ExpanderAssist.HorizontalHeaderPadding="3,1"
-                    IsExpanded="{Binding ShowApplicationParameters}"
-                    Visibility="{Binding SectorDetails.ApplicationParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
-                    <Expander.Header>
-                        <DockPanel>
-                            <TextBlock Margin="0,0,3,0" Text="Application" />
-                            <TextBlock
-                                VerticalAlignment="Bottom"
-                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                                Text="{Binding Report.ApplicationStandard, Converter={StaticResource EnumValueToDescription}}" />
-                        </DockPanel>
-                    </Expander.Header>
-                    <!--  Parameters  -->
-                    <StackPanel>
+            <Expander
+                md:ExpanderAssist.HorizontalHeaderPadding="3,1"
+                IsExpanded="{Binding ShowApplicationParameters}"
+                Visibility="{Binding SectorDetails.ApplicationParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
+                <Expander.Header>
+                    <DockPanel>
+                        <TextBlock Margin="0,0,3,0" Text="Application" />
+                        <TextBlock
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                            Text="{Binding Report.ApplicationStandard, Converter={StaticResource EnumValueToDescription}}" />
+                    </DockPanel>
+                </Expander.Header>
+                <!--  Parameters  -->
+                <StackPanel>
 
-                        <DockPanel>
-                            <ItemsControl
-                                Margin="3,0"
-                                DockPanel.Dock="Top"
-                                ItemsSource="{Binding Report.GS1Results.Fields, Mode=OneTime}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding}" TextWrapping="Wrap" />
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-
-                            <TextBlock
-                                Margin="3,0"
-                                Background="{DynamicResource MahApps.Brushes.Accent3}"
-                                TextWrapping="Wrap">
-                                <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource gs1FormattedOutput}">
-                                        <Binding Path="Report.GS1Results.Input" />
-                                        <Binding Path="Report.Symbology" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </DockPanel>
-
+                    <DockPanel>
                         <ItemsControl
-                            Padding="6,0"
-                            Background="{DynamicResource MahApps.Brushes.Control.Background}"
-                            ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
-                            ItemsSource="{Binding SectorDetails.ApplicationParameters, Mode=OneTime}" />
+                            Margin="3,0"
+                            DockPanel.Dock="Top"
+                            ItemsSource="{Binding Report.GS1Results.Fields, Mode=OneTime}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-                    </StackPanel>
-                </Expander>
+                        <TextBlock
+                            Margin="3,0"
+                            Background="{DynamicResource MahApps.Brushes.Accent3}"
+                            TextWrapping="Wrap">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource gs1FormattedOutput}">
+                                    <Binding Path="Report.GS1Results.Input" />
+                                    <Binding Path="Report.Symbology" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </DockPanel>
 
-                <Expander
-                    Margin="0"
-                    md:ExpanderAssist.HorizontalHeaderPadding="3,1"
-                    IsExpanded="{Binding ShowGradingParameters}"
-                    Visibility="{Binding SectorDetails.GradingParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
-                    <Expander.Header>
-                        <DockPanel>
-                            <TextBlock Margin="0,0,3,0" Text="Grading" />
-                            <TextBlock
-                                VerticalAlignment="Bottom"
-                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                                Text="{Binding Report.GradingStandard, Converter={StaticResource EnumValueToDescription}}" />
-                        </DockPanel>
+                    <ItemsControl
+                        Padding="6,0"
+                        Background="{DynamicResource MahApps.Brushes.Control.Background}"
+                        ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
+                        ItemsSource="{Binding SectorDetails.ApplicationParameters, Mode=OneTime}" />
 
-                    </Expander.Header>
-                    <!--  Parameters  -->
-                    <StackPanel>
-                        <ItemsControl
-                            Padding="6,0"
-                            Background="{DynamicResource MahApps.Brushes.Control.Background}"
-                            ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
-                            ItemsSource="{Binding SectorDetails.GradingParameters, Mode=OneTime}" />
-                    </StackPanel>
-                </Expander>
+                </StackPanel>
+            </Expander>
 
-                <Expander
-                    md:ExpanderAssist.HorizontalHeaderPadding="3,1"
-                    IsExpanded="{Binding ShowSymbologyParameters}"
-                    Visibility="{Binding SectorDetails.SymbologyParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
-                    <Expander.Header>
+            <Expander
+                Margin="0"
+                md:ExpanderAssist.HorizontalHeaderPadding="3,1"
+                IsExpanded="{Binding ShowGradingParameters}"
+                Visibility="{Binding SectorDetails.GradingParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
+                <Expander.Header>
+                    <DockPanel>
+                        <TextBlock Margin="0,0,3,0" Text="Grading" />
+                        <TextBlock
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                            Text="{Binding Report.GradingStandard, Converter={StaticResource EnumValueToDescription}}" />
+                    </DockPanel>
 
-                        <TextBlock Text="Symbology" />
-                    </Expander.Header>
-                    <!--  Parameters  -->
-                    <StackPanel>
+                </Expander.Header>
+                <!--  Parameters  -->
+                <StackPanel>
+                    <ItemsControl
+                        Padding="6,0"
+                        Background="{DynamicResource MahApps.Brushes.Control.Background}"
+                        ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
+                        ItemsSource="{Binding SectorDetails.GradingParameters, Mode=OneTime}" />
+                </StackPanel>
+            </Expander>
 
-                        <ItemsControl
-                            Padding="6,0"
-                            Background="{DynamicResource MahApps.Brushes.Control.Background}"
-                            ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
-                            ItemsSource="{Binding SectorDetails.SymbologyParameters, Mode=OneTime}" />
-                    </StackPanel>
-                </Expander>
+            <Expander
+                md:ExpanderAssist.HorizontalHeaderPadding="3,1"
+                IsExpanded="{Binding ShowSymbologyParameters}"
+                Visibility="{Binding SectorDetails.SymbologyParameters, Mode=OneTime, Converter={StaticResource NullOrCountZeroToVisibility}}">
+                <Expander.Header>
 
-                <!--  Alarms  -->
-                <DockPanel>
-                    <DockPanel.Style>
-                        <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding SectorDetails.Alarms.Count, Mode=OneTime}" Value="0">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
+                    <TextBlock Text="Symbology" />
+                </Expander.Header>
+                <!--  Parameters  -->
+                <StackPanel>
 
-                    <Separator DockPanel.Dock="Top" />
+                    <ItemsControl
+                        Padding="6,0"
+                        Background="{DynamicResource MahApps.Brushes.Control.Background}"
+                        ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
+                        ItemsSource="{Binding SectorDetails.SymbologyParameters, Mode=OneTime}" />
+                </StackPanel>
+            </Expander>
 
-                    <ItemsControl ItemsSource="{Binding SectorDetails.Alarms, Mode=OneTime}">
-                        <ItemsControl.ItemTemplate>
+            <!--  Alarms  -->
+            <DockPanel>
+                <DockPanel.Style>
+                    <Style TargetType="{x:Type DockPanel}">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SectorDetails.Alarms.Count, Mode=OneTime}" Value="0">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
 
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" MaxWidth="172" />
-                                        <ColumnDefinition Width="auto" />
-                                    </Grid.ColumnDefinitions>
+                <Separator DockPanel.Dock="Top" />
+
+                <ItemsControl ItemsSource="{Binding SectorDetails.Alarms, Mode=OneTime}">
+                    <ItemsControl.ItemTemplate>
+
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" MaxWidth="172" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
 
 
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        Margin="3,0"
-                                        Text="{Binding Value, Converter={StaticResource stringToUpper}, Mode=OneTime}"
-                                        TextWrapping="Wrap" />
+                                <TextBlock
+                                    Grid.Column="0"
+                                    Margin="3,0"
+                                    Text="{Binding Value, Converter={StaticResource stringToUpper}, Mode=OneTime}"
+                                    TextWrapping="Wrap" />
 
-                                    <Border
-                                        Grid.Column="1"
-                                        Width="10"
-                                        Height="10"
-                                        BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                                        BorderThickness="1"
-                                        CornerRadius="3">
-                                        <Border.Style>
-                                            <Style TargetType="{x:Type Border}">
-                                                <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Category, Mode=OneTime}" Value="{x:Static bar_common:AvaailableAlarmCategories.Error}">
-                                                        <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Category, Mode=OneTime}" Value="{x:Static bar_common:AvaailableAlarmCategories.Warning}">
-                                                        <Setter Property="Background" Value="{DynamicResource SectorWarning_Brush_Active}" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                    </Border>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
+                                <Border
+                                    Grid.Column="1"
+                                    Width="10"
+                                    Height="10"
+                                    BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                                    BorderThickness="1"
+                                    CornerRadius="3">
+                                    <Border.Style>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="Background" Value="{DynamicResource ISO_GradeA_Brush_Active}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Category, Mode=OneTime}" Value="{x:Static bar_common:AvaailableAlarmCategories.Error}">
+                                                    <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Category, Mode=OneTime}" Value="{x:Static bar_common:AvaailableAlarmCategories.Warning}">
+                                                    <Setter Property="Background" Value="{DynamicResource SectorWarning_Brush_Active}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
 
-                    </ItemsControl>
-                </DockPanel>
+                </ItemsControl>
+            </DockPanel>
 
-            </StackPanel>
-        </md:Card>
+        </StackPanel>
+    </md:Card>
 
 </UserControl>

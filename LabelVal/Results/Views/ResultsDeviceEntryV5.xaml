@@ -103,7 +103,7 @@
                                 <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                             </LinearGradientBrush>
                         </DockPanel.Background>
-                        
+
                         <DockPanel>
                             <DockPanel.Background>
                                 <LinearGradientBrush StartPoint="0.2,0" EndPoint="1.2,1.2">

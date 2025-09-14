@@ -77,7 +77,7 @@
         <Button
             Command="{Binding Show3DImageCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V275}}"
             CommandParameter="{Binding StoredImage.BitmapBytes}"
-            Style="{StaticResource Show3DViewerButtonStyle}"/>
+            Style="{StaticResource Show3DViewerButtonStyle}" />
 
         <!--  Sectors Only: Show All  -->
         <Button
