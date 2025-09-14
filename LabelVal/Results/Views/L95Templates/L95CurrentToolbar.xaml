@@ -74,7 +74,7 @@
         </Button>
 
         <!--  Sectors Only: Read  -->
-        <Button Command="{Binding ReadCommand}">
+        <!--<Button Command="{Binding ReadCommand}">
             <Button.Style>
                 <Style BasedOn="{StaticResource ReadButtonStyle}" TargetType="Button">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -92,7 +92,7 @@
                     </Style.Triggers>
                 </Style>
             </Button.Style>
-        </Button>
+        </Button>-->
 
         <!--  Sectors-only separator  -->
         <ContentControl ContentTemplate="{StaticResource SectorsOnlySeparator}" />

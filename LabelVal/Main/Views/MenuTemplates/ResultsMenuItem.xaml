@@ -46,6 +46,7 @@
                         ShadowDepth="0"
                         Color="{DynamicResource MahApps.Colors.Gray1}" />
                 </md:Card.Effect>
+                
                 <DockPanel
                     MaxWidth="260"
                     Margin="3"

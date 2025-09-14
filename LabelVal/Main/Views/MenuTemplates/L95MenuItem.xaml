@@ -5,6 +5,7 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:l95="clr-namespace:LabelVal.L95.Views"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:watchers="clr-namespace:Watchers.lib.Process;assembly=Watchers.lib">
 
     <converters:IsNullOrEmpty x:Key="IsNullOrEmpty" />
@@ -128,6 +129,9 @@
                         <Setter Property="Visibility" Value="Visible" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsPaneOpen, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" Value="False">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>

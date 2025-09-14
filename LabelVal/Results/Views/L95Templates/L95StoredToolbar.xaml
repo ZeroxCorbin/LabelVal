@@ -20,7 +20,7 @@
             Style="{StaticResource SaveImageButtonStyle}">
             <Button.ToolTip>Save the stored image to a file.</Button.ToolTip>
         </Button>
-        
+
         <!--  Both: Copy  -->
         <Button
             Command="{Binding CopyToClipboardCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
@@ -39,7 +39,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        
+
         <!--  Sectors Only: Show All  -->
         <Button
             Command="{Binding ShowStoredSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
