@@ -1,10 +1,10 @@
-﻿using LabelVal.Dialogs;
+﻿using CommunityToolkit.Mvvm.Input;
+using LabelVal.Dialogs;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Views;
 using MahApps.Metro.Controls.Dialogs;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,53 +17,15 @@ public partial class ResultsDeviceEntry_V5 : UserControl
 {
     private ViewModels.IResultsDeviceEntry _viewModel;
 
-    private class RelayCommand : ICommand
-    {
-        private readonly Action<object> _exec;
-        private readonly Func<object, bool> _can;
-        public RelayCommand(Action<object> exec, Func<object, bool> can = null) { _exec = exec; _can = can; }
-        public bool CanExecute(object p) => _can?.Invoke(p) ?? true;
-        public void Execute(object p) => _exec(p);
-        public event EventHandler CanExecuteChanged;
-        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    public static readonly DependencyProperty CopyToClipboardCommandProperty =
-        DependencyProperty.Register(nameof(CopyToClipboardCommand), typeof(ICommand), typeof(ResultsDeviceEntry_V5));
-    public ICommand CopyToClipboardCommand
-    {
-        get => (ICommand)GetValue(CopyToClipboardCommandProperty);
-        set => SetValue(CopyToClipboardCommandProperty, value);
-    }
-
-    public static readonly DependencyProperty ShowStoredSectorsCommandProperty =
-        DependencyProperty.Register(nameof(ShowStoredSectorsCommand), typeof(ICommand), typeof(ResultsDeviceEntry_V5));
-    public ICommand ShowStoredSectorsCommand
-    {
-        get => (ICommand)GetValue(ShowStoredSectorsCommandProperty);
-        set => SetValue(ShowStoredSectorsCommandProperty, value);
-    }
-
-    public static readonly DependencyProperty ShowCurrentSectorsCommandProperty =
-        DependencyProperty.Register(nameof(ShowCurrentSectorsCommand), typeof(ICommand), typeof(ResultsDeviceEntry_V5));
-    public ICommand ShowCurrentSectorsCommand
-    {
-        get => (ICommand)GetValue(ShowCurrentSectorsCommandProperty);
-        set => SetValue(ShowCurrentSectorsCommandProperty, value);
-    }
-
     public ResultsDeviceEntry_V5()
     {
         InitializeComponent();
         DataContextChanged += (_, _) => _viewModel = (ViewModels.IResultsDeviceEntry)DataContext;
-
-        CopyToClipboardCommand    = new RelayCommand(ExecCopyToClipboard);
-        ShowStoredSectorsCommand  = new RelayCommand(ExecShowStored);
-        ShowCurrentSectorsCommand = new RelayCommand(ExecShowCurrent);
     }
 
     #region Command Methods
-    private void ExecCopyToClipboard(object param)
+    [RelayCommand]
+    private void CopyToClipboard(object param)
     {
         if (param is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
         {
@@ -78,7 +40,8 @@ public partial class ResultsDeviceEntry_V5 : UserControl
         }
     }
 
-    private void ExecShowStored(object param)
+    [RelayCommand]
+    private void ShowStoredSectors(object param)
     {
         if (param is string s && s == "json")
         {
@@ -91,7 +54,8 @@ public partial class ResultsDeviceEntry_V5 : UserControl
         }
     }
 
-    private void ExecShowCurrent(object param)
+    [RelayCommand]
+    private void ShowCurrentSectors(object param)
     {
         if (param is string s && s == "json")
             _viewModel.ResultsManagerView.ShowSectorsDetailsWindow(_viewModel.CurrentTemplate, _viewModel.CurrentReport);
@@ -133,7 +97,7 @@ public partial class ResultsDeviceEntry_V5 : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            foreach (var device in _viewModel.ResultsEntry.ResultsDeviceEntries)
+            foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries)
             {
                 if (device.FocusedCurrentSector != null) device.FocusedCurrentSector.IsFocused = false;
                 device.FocusedCurrentSector = null;
@@ -150,7 +114,7 @@ public partial class ResultsDeviceEntry_V5 : UserControl
             switch ((string)((Button)sender).Tag)
             {
                 case "Stored":
-                    foreach (var device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
                     {
                         if (device.FocusedStoredSector != null) device.FocusedStoredSector.IsFocused = false;
                         device.FocusedStoredSector = null;
@@ -158,7 +122,7 @@ public partial class ResultsDeviceEntry_V5 : UserControl
                     }
                     break;
                 case "Current":
-                    foreach (var device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
                     {
                         if (device.FocusedCurrentSector != null) device.FocusedCurrentSector.IsFocused = false;
                         device.FocusedCurrentSector = null;
@@ -250,7 +214,7 @@ public partial class ResultsDeviceEntry_V5 : UserControl
     {
         PngBitmapEncoder encoder = new();
         EncodeVisual(visual, encoder);
-        using var fs = System.IO.File.Create(fileName);
+        using System.IO.FileStream fs = System.IO.File.Create(fileName);
         encoder.Save(fs);
     }
     public void CopyToClipboard(FrameworkElement visual)

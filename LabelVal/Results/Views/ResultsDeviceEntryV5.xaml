@@ -21,8 +21,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ImageDetailsTemplate.xaml" />
-                <ResourceDictionary Source="V5Templates/StoredToolbar.xaml" />
-                <ResourceDictionary Source="V5Templates/CurrentToolbar.xaml" />
+                <ResourceDictionary Source="V5Templates/V5StoredToolbar.xaml" />
+                <ResourceDictionary Source="V5Templates/V5CurrentToolbar.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <CollectionViewSource x:Key="StoredSectorsViewSource" Source="{Binding StoredSectors}">
@@ -107,7 +107,7 @@
                                 Text="Stored Image" />
 
                             <ContentControl
-                                Content="{StaticResource StoredToolbar}"
+                                Content="{StaticResource V5StoredToolbar}"
                                 DataContext="{Binding .}"
                                 Tag="Image" />
 
@@ -183,7 +183,7 @@
                                     Text="Stored Sectors" />
 
                                 <ContentControl
-                                    Content="{StaticResource StoredToolbar}"
+                                    Content="{StaticResource V5StoredToolbar}"
                                     DataContext="{Binding .}"
                                     Tag="Sectors" />
 
@@ -438,7 +438,7 @@
                                 Text="Current Image" />
 
                             <ContentControl
-                                Content="{StaticResource CurrentToolbar}"
+                                Content="{StaticResource V5CurrentToolbar}"
                                 DataContext="{Binding .}"
                                 Tag="Image" />
 
@@ -537,7 +537,7 @@
                                     Text="Current Sectors" />
 
                                 <ContentControl
-                                    Content="{StaticResource CurrentToolbar}"
+                                    Content="{StaticResource V5CurrentToolbar}"
                                     DataContext="{Binding .}"
                                     Tag="Sectors" />
 

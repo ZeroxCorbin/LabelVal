@@ -1,0 +1,153 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
+
+    <!--  Base button style for all results toolbars  -->
+    <Style
+        x:Key="ResultsToolbarButtonBase"
+        BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}"
+        TargetType="Button">
+        <Setter Property="Margin" Value="3" />
+        <Setter Property="Foreground" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" />
+    </Style>
+
+    <!--  Save Image (command + parameter supplied where used)  -->
+    <Style
+        x:Key="SaveImageButtonStyle"
+        BasedOn="{StaticResource ResultsToolbarButtonBase}"
+        TargetType="Button">
+        <Setter Property="Content" Value="{iconPacks:Material Kind=ContentSave}" />
+        <Setter Property="ToolTip" Value="Save the image to a file." />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--
+        Copy sectors/image (Tag inside button changes via trigger) No need for (a template, The style triggers seems to override the Content as well
+        Since it is shown on both and the Content issues, there is no need for (trigger in the base
+    -->
+
+    <!--  Store sectors/image  -->
+    <Style
+        x:Key="StoreButtonStyle"
+        BasedOn="{StaticResource ResultsToolbarButtonBase}"
+        TargetType="Button">
+        <Setter Property="Content" Value="{iconPacks:Material Kind=StorePlusOutline}" />
+        <Setter Property="ToolTip" Value="Store the current sectors and image to the database." />
+        <!--  Visibility collapsed if hosting ContentControl has Tag=Image  -->
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Read last (device-specific visibility logic still added locally if needed)  -->
+    <Style
+        x:Key="ReadButtonStyle"
+        BasedOn="{StaticResource ResultsToolbarButtonBase}"
+        TargetType="Button">
+        <Setter Property="Content" Value="{iconPacks:Material Kind=Upload}" />
+        <Setter Property="ToolTip" Value="Read the last results and image from the device (no processing)." />
+    </Style>
+
+
+
+    <!--  Show All sectors  -->
+    <Style
+        x:Key="ShowAllButtonStyle"
+        BasedOn="{StaticResource ResultsToolbarButtonBase}"
+        TargetType="Button">
+        <Setter Property="Content" Value="{iconPacks:Modern Kind=SectionExpandAll}" />
+        <Setter Property="ToolTip" Value="Show all sectors in a popup." />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  JSON view  -->
+    <Style
+        x:Key="JsonButtonStyle"
+        BasedOn="{StaticResource ResultsToolbarButtonBase}"
+        TargetType="Button">
+        <Setter Property="Content" Value="{iconPacks:Material Kind=CodeJson}" />
+        <Setter Property="Tag" Value="json" />
+        <Setter Property="ToolTip" Value="Show the template and report JSON." />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Clear/Delete image  -->
+    <Style
+        x:Key="ClearImageButtonStyle"
+        BasedOn="{StaticResource ResultsToolbarButtonBase}"
+        TargetType="Button">
+        <Setter Property="Content" Value="{iconPacks:MaterialDesign Kind=Clear}" />
+        <Setter Property="ToolTip" Value="Clear the current sectors and image." />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Delete stored (uses same visibility logic as image-only sections)  -->
+    <Style
+        x:Key="DeleteStoredButtonStyle"
+        BasedOn="{StaticResource ResultsToolbarButtonBase}"
+        TargetType="Button">
+        <Setter Property="Content" Value="{iconPacks:Modern Kind=Delete}" />
+        <Setter Property="ToolTip" Value="Permanently remove the stored image and sectors. (Cannot be undone)" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ResultsManagerView.SelectedResultsDatabase.IsLocked}" Value="True">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  Horizontal separator block used before Clear/Delete groups  -->
+    <DataTemplate x:Key="ImageOnlySeparator">
+        <DockPanel>
+            <DockPanel.Style>
+                <Style TargetType="DockPanel">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DockPanel.Style>
+            <Border Margin="1,0" Style="{StaticResource imageBar}" />
+        </DockPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SectorsOnlySeparator">
+        <DockPanel>
+            <DockPanel.Style>
+                <Style TargetType="DockPanel">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DockPanel.Style>
+            <Border Margin="1,0" Style="{StaticResource imageBar}" />
+        </DockPanel>
+    </DataTemplate>
+
+</ResourceDictionary>

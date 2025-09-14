@@ -29,8 +29,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ImageDetailsTemplate.xaml" />
-                <ResourceDictionary Source="L95Templates/StoredToolbar.xaml" />
-                <ResourceDictionary Source="L95Templates/CurrentToolbar.xaml" />
+                <ResourceDictionary Source="L95Templates/L95StoredToolbar.xaml" />
+                <ResourceDictionary Source="L95Templates/L95CurrentToolbar.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <!--  CollectionViewSource for sorting the stored sectors by their center point coordinates.  -->
@@ -122,7 +122,7 @@
                                 Text="Stored Image" />
 
                             <ContentControl
-                                Content="{StaticResource StoredToolbar}"
+                                Content="{StaticResource L95StoredToolbar}"
                                 DataContext="{Binding .}"
                                 Tag="Image" />
 
@@ -238,7 +238,7 @@
                                     Text="Stored Sectors" />
 
                                 <ContentControl
-                                    Content="{StaticResource StoredToolbar}"
+                                    Content="{StaticResource L95StoredToolbar}"
                                     DataContext="{Binding .}"
                                     Tag="Sectors" />
 
@@ -513,7 +513,7 @@
                                 Text="Current Image" />
 
                             <ContentControl
-                                Content="{StaticResource CurrentToolbar}"
+                                Content="{StaticResource L95CurrentToolbar}"
                                 DataContext="{Binding .}"
                                 Tag="Image" />
 
@@ -626,7 +626,7 @@
                                     Text="Current Sectors" />
 
                                 <ContentControl
-                                    Content="{StaticResource CurrentToolbar}"
+                                    Content="{StaticResource L95CurrentToolbar}"
                                     DataContext="{Binding .}"
                                     Tag="Sectors" />
 

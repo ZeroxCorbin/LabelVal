@@ -1,4 +1,5 @@
-﻿using LabelVal.Dialogs;
+﻿using CommunityToolkit.Mvvm.Input;
+using LabelVal.Dialogs;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Extensions;
@@ -15,63 +16,17 @@ public partial class ResultsDeviceEntry_V275 : UserControl
 {
     private ViewModels.IResultsDeviceEntry _viewModel;
 
-    #region RelayCommand Helper
-    private class RelayCommand : ICommand
-    {
-        private readonly Action<object> _execute;
-        private readonly Func<object, bool> _can;
-        public RelayCommand(Action<object> execute, Func<object, bool> can = null)
-        {
-            _execute = execute;
-            _can = can;
-        }
-        public bool CanExecute(object parameter) => _can?.Invoke(parameter) ?? true;
-        public void Execute(object parameter) => _execute(parameter);
-        public event EventHandler CanExecuteChanged;
-        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-    }
-    #endregion
-
-    #region Commands (Dependency Properties)
-    public static readonly DependencyProperty CopyToClipboardCommandProperty =
-        DependencyProperty.Register(nameof(CopyToClipboardCommand), typeof(ICommand), typeof(ResultsDeviceEntry_V275));
-
-    public static readonly DependencyProperty ShowStoredSectorsCommandProperty =
-        DependencyProperty.Register(nameof(ShowStoredSectorsCommand), typeof(ICommand), typeof(ResultsDeviceEntry_V275));
-
-    public static readonly DependencyProperty ShowCurrentSectorsCommandProperty =
-        DependencyProperty.Register(nameof(ShowCurrentSectorsCommand), typeof(ICommand), typeof(ResultsDeviceEntry_V275));
-
-    public ICommand CopyToClipboardCommand
-    {
-        get => (ICommand)GetValue(CopyToClipboardCommandProperty);
-        set => SetValue(CopyToClipboardCommandProperty, value);
-    }
-    public ICommand ShowStoredSectorsCommand
-    {
-        get => (ICommand)GetValue(ShowStoredSectorsCommandProperty);
-        set => SetValue(ShowStoredSectorsCommandProperty, value);
-    }
-    public ICommand ShowCurrentSectorsCommand
-    {
-        get => (ICommand)GetValue(ShowCurrentSectorsCommandProperty);
-        set => SetValue(ShowCurrentSectorsCommandProperty, value);
-    }
-    #endregion
-
     public ResultsDeviceEntry_V275()
     {
         InitializeComponent();
 
         DataContextChanged += (e, s) => _viewModel = (ViewModels.IResultsDeviceEntry)DataContext;
-
-        CopyToClipboardCommand = new RelayCommand(ExecuteCopyToClipboard);
-        ShowStoredSectorsCommand = new RelayCommand(ExecuteShowStoredSectors);
-        ShowCurrentSectorsCommand = new RelayCommand(ExecuteShowCurrentSectors);
     }
 
     #region Command Execute Methods (moved from toolbar Click handlers)
-    private void ExecuteCopyToClipboard(object param)
+
+    [RelayCommand]
+    private void CopyToClipboard(object param)
     {
         if (param is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
         {
@@ -86,7 +41,8 @@ public partial class ResultsDeviceEntry_V275 : UserControl
         }
     }
 
-    private void ExecuteShowStoredSectors(object param)
+    [RelayCommand]
+    private void ShowStoredSectors(object param)
     {
         if (param is string s && s.Equals("json"))
         {
@@ -99,7 +55,8 @@ public partial class ResultsDeviceEntry_V275 : UserControl
         }
     }
 
-    private void ExecuteShowCurrentSectors(object param)
+    [RelayCommand]
+    private void ShowCurrentSectors(object param)
     {
         if (param is string s && s.Equals("json"))
         {

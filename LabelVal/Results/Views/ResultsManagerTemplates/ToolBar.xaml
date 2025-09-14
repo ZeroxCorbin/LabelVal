@@ -10,7 +10,7 @@
         <ResourceDictionary Source="/Results/Views/V275Templates/V275TriggerButton.xaml" />
         <ResourceDictionary Source="/Results/Views/L95Templates/L95Buttons.xaml" />
     </ResourceDictionary.MergedDictionaries>
-    
+
     <ControlTemplate x:Key="ToolBarTemplate">
         <ToolBarTray>
             <ToolBar
