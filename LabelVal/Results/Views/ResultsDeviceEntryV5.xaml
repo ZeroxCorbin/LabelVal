@@ -415,13 +415,13 @@
 
                     <DockPanel>
 
-                        <DockPanel Background="{DynamicResource Results_Brush_Active}">
+                        <!--<DockPanel Background="{DynamicResource Results_Brush_Active}">
                             <iconPacks:PackIconMaterial
                                 Width="12"
                                 Margin="3"
                                 VerticalAlignment="Center"
                                 Kind="StoreOutline" />
-                        </DockPanel>
+                        </DockPanel>-->
 
                         <DockPanel>
                             <DockPanel.Background>
@@ -433,7 +433,7 @@
 
                             <!--  Title  -->
                             <TextBlock
-                                Margin="3,0"
+                                Margin="6,0,3,0"
                                 FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
                                 Text="Current Image" />
 
@@ -514,13 +514,13 @@
 
                         <DockPanel>
 
-                            <DockPanel Background="{DynamicResource Results_Brush_Active}">
+                            <!--<DockPanel Background="{DynamicResource Results_Brush_Active}">
                                 <iconPacks:PackIconMaterial
                                     Width="12"
                                     Margin="3"
                                     VerticalAlignment="Center"
                                     Kind="StoreOutline" />
-                            </DockPanel>
+                            </DockPanel>-->
 
                             <DockPanel>
                                 <DockPanel.Background>
@@ -532,7 +532,7 @@
 
                                 <!--  Title  -->
                                 <TextBlock
-                                    Margin="3,0"
+                                    Margin="6,0,3,0"
                                     FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
                                     Text="Current Sectors" />
 

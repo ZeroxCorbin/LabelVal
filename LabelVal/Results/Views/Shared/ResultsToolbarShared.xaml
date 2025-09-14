@@ -9,6 +9,8 @@
         BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}"
         TargetType="Button">
         <Setter Property="Margin" Value="3" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Foreground" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" />
     </Style>
 

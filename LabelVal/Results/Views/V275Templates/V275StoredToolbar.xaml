@@ -12,25 +12,6 @@
     <!--  Stored Toolbar (V275)  -->
     <DockPanel x:Key="V275StoredToolbar" x:Shared="False">
 
-        <!--  Both: Copy  -->
-        <Button
-            Command="{Binding CopyToClipboardCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V275}}"
-            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
-            Content="{iconPacks:Modern Kind=PageCopy}">
-            <Button.Style>
-                <Style BasedOn="{StaticResource ResultsToolbarButtonBase}" TargetType="Button">
-                    <Setter Property="Tag" Value="{Binding StoredSectors}" />
-                    <Setter Property="ToolTip" Value="Copy the sectors to the clipboard as CSV." />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                            <Setter Property="Tag" Value="{Binding StoredImage}" />
-                            <Setter Property="ToolTip" Value="Copy the image to the clipboard as a bitmap." />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-
         <!--  Image Only: Save stored image  -->
         <Button
             Command="{Binding ResultsEntry.SaveCommand}"
@@ -38,6 +19,7 @@
             Style="{StaticResource SaveImageButtonStyle}">
             <Button.ToolTip>Save the stored image to a file.</Button.ToolTip>
         </Button>
+
 
         <!--  Sectors Only: Load (retain original multi-condition visibility)  -->
         <DockPanel>
@@ -73,7 +55,24 @@
             <Border Margin="1,0" Style="{StaticResource imageBar}" />
         </DockPanel>
 
-
+        <!--  Both: Copy  -->
+        <Button
+            Command="{Binding CopyToClipboardCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V275}}"
+            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+            Content="{iconPacks:Modern Kind=PageCopy}">
+            <Button.Style>
+                <Style BasedOn="{StaticResource ResultsToolbarButtonBase}" TargetType="Button">
+                    <Setter Property="Tag" Value="{Binding StoredSectors}" />
+                    <Setter Property="ToolTip" Value="Copy the sectors to the clipboard as CSV." />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                            <Setter Property="Tag" Value="{Binding StoredImage}" />
+                            <Setter Property="ToolTip" Value="Copy the image to the clipboard as a bitmap." />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
 
         <!--  Sectors Only: Show All  -->
         <Button

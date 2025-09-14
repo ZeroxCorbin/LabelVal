@@ -11,6 +11,16 @@
 
     <DockPanel x:Key="L95StoredToolbar" x:Shared="False">
 
+
+
+        <!--  Image Only: Save stored image  -->
+        <Button
+            Command="{Binding ResultsEntry.SaveCommand}"
+            CommandParameter="{Binding StoredImage.BitmapBytes}"
+            Style="{StaticResource SaveImageButtonStyle}">
+            <Button.ToolTip>Save the stored image to a file.</Button.ToolTip>
+        </Button>
+        
         <!--  Both: Copy  -->
         <Button
             Command="{Binding CopyToClipboardCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
@@ -29,15 +39,7 @@
                 </Style>
             </Button.Style>
         </Button>
-
-        <!--  Image Only: Save stored image  -->
-        <Button
-            Command="{Binding ResultsEntry.SaveCommand}"
-            CommandParameter="{Binding StoredImage.BitmapBytes}"
-            Style="{StaticResource SaveImageButtonStyle}">
-            <Button.ToolTip>Save the stored image to a file.</Button.ToolTip>
-        </Button>
-
+        
         <!--  Sectors Only: Show All  -->
         <Button
             Command="{Binding ShowStoredSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
