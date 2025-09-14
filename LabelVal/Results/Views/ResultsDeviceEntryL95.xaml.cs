@@ -308,6 +308,7 @@ public partial class ResultsDeviceEntry_L95 : UserControl
         }
     }
 
+    [RelayCommand]
     private void Show3DImage(byte[] image)
     {
         var img = new ImageViewer3D.ViewModels.ImageViewer3D_SingleMesh(image);

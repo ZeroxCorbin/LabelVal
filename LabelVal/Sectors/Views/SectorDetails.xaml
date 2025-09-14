@@ -39,21 +39,15 @@
 
     </UserControl.Resources>
 
-    <DockPanel>
-        <DockPanel.Background>
-            <SolidColorBrush Opacity="0.5" Color="{DynamicResource MahApps.Colors.Accent}" />
-        </DockPanel.Background>
-
         <md:Card
-            Width="190"
-            Margin="3"
+            Margin="4"
             Padding="0"
+            
             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
             Foreground="{DynamicResource MahApps.Brushes.Text}">
 
-            <StackPanel Margin="3">
+            <StackPanel>
 
-                <!--  Name, Wrong Standard, Overall Grade String  -->
                 <!--  Name, Wrong Standard, Overall Grade String  -->
                 <Grid Margin="3" DockPanel.Dock="Top">
                     <Grid.RowDefinitions>
@@ -518,5 +512,4 @@
             </StackPanel>
         </md:Card>
 
-    </DockPanel>
 </UserControl>

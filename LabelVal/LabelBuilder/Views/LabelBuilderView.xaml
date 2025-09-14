@@ -36,10 +36,10 @@
 
             <DockPanel>
 
-                <!--  Left-side quick action panel for image roll settings.  -->
-
-
-                <DockPanel Grid.Row="0" Width="47">
+                <DockPanel
+                    Grid.Row="0"
+                    Width="47"
+                    Background="{DynamicResource LabelBuilder_Brush_Active50}">
                     <iconPacks:PackIconMaterial
                         Width="32"
                         Height="32"
@@ -55,7 +55,7 @@
                     DockPanel.Dock="Top">
                     <DockPanel.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
+                            <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active50}" />
                             <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                         </LinearGradientBrush>
                     </DockPanel.Background>

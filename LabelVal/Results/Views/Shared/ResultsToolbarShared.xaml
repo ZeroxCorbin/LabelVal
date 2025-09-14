@@ -57,7 +57,19 @@
         <Setter Property="ToolTip" Value="Read the last results and image from the device (no processing)." />
     </Style>
 
-
+    <!--  Show 3D Viewer  -->
+    <Style
+        x:Key="Show3DViewerButtonStyle"
+        BasedOn="{StaticResource ResultsToolbarButtonBase}"
+        TargetType="Button">
+        <Setter Property="Content" Value="{iconPacks:Material Kind=Video3d}" />
+        <Setter Property="ToolTip" Value="Open the image in the 3D viewer." />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 
     <!--  Show All sectors  -->
     <Style

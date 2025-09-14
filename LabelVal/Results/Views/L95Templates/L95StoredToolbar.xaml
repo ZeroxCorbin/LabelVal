@@ -11,8 +11,6 @@
 
     <DockPanel x:Key="L95StoredToolbar" x:Shared="False">
 
-
-
         <!--  Image Only: Save stored image  -->
         <Button
             Command="{Binding ResultsEntry.SaveCommand}"
@@ -40,6 +38,11 @@
             </Button.Style>
         </Button>
 
+        <Button
+            Command="{Binding Show3DImageCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
+            CommandParameter="{Binding StoredImage.BitmapBytes}"
+            Style="{StaticResource Show3DViewerButtonStyle}"/>
+        
         <!--  Sectors Only: Show All  -->
         <Button
             Command="{Binding ShowStoredSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"

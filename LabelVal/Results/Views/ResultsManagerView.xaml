@@ -218,7 +218,14 @@
                     <ItemsControl x:Name="ResultssItemsControl" ItemsSource="{Binding Source={StaticResource CvsResultssEntries}}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <local:ResultsEntry />
+                                <local:ResultsEntry>
+                                    <local:ResultsEntry.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0.3,0.5">
+                                            <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent4}" />
+                                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                        </LinearGradientBrush>
+                                    </local:ResultsEntry.Background>
+                                </local:ResultsEntry>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

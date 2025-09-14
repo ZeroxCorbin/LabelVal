@@ -15,7 +15,7 @@
     <!--  Redefine the DropShadowEffect for light theme  -->
     <DropShadowEffect
         x:Key="MaterialDesignShadowDepth1"
-        BlurRadius="5"
+        BlurRadius="2"
         Direction="270"
         Opacity="1"
         RenderingBias="Performance"

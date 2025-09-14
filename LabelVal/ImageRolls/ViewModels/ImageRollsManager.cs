@@ -702,6 +702,8 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
                 UserImageRolls[index].SelectedGradingStandard = NewImageRoll.SelectedGradingStandard;
                 UserImageRolls[index].TargetDPI = NewImageRoll.TargetDPI;
                 UserImageRolls[index].IsLocked = NewImageRoll.IsLocked;
+                UserImageRolls[index].SectorType = NewImageRoll.SectorType;
+                UserImageRolls[index].ImageType = NewImageRoll.ImageType;
             }
             else
             {
@@ -711,6 +713,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
                 savedRoll.ImageRollsManager = this;
                 savedRoll.IsSaved = true;
                 UserImageRolls.Add(savedRoll);
+                RefreshView = !RefreshView;
             }   
 
             UpdateUserImageRollCache(savedRoll);
@@ -719,7 +722,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             if (file != null)
                 file.IsSelected = true;
 
-            RefreshView = !RefreshView;
+            
         }
         else
             Logger.Error($"Failed to save image roll: {NewImageRoll.Name}");

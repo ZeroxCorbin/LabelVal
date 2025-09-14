@@ -18,7 +18,7 @@
         <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
             <md:Card.Effect>
                 <DropShadowEffect
-                    BlurRadius="5"
+                    BlurRadius="2"
                     Opacity="0.5"
                     ShadowDepth="0"
                     Color="{DynamicResource MahApps.Colors.Gray1}" />

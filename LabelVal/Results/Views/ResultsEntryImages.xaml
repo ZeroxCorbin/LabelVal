@@ -28,7 +28,6 @@
 
             <md:Card
                 Margin="3,3,0,0"
-                HorizontalAlignment="Left"
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                 DockPanel.Dock="Top"
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
@@ -53,22 +52,24 @@
                         FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
                         Text="Source Image" />
 
-                    <!--  Save Image  -->
-                    <Button
-                        Margin="3"
-                        Command="{Binding SaveCommand}"
-                        CommandParameter="{Binding SourceImage.BitmapBytes}"
-                        Content="{iconPacks:Material Kind=ContentSave}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Save the image." />
+                    <DockPanel HorizontalAlignment="Right">
+                        <!--  Save Image  -->
+                        <Button
+                            Margin="3"
+                            Command="{Binding SaveCommand}"
+                            CommandParameter="{Binding SourceImage.BitmapBytes}"
+                            Content="{iconPacks:Material Kind=ContentSave}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            ToolTip="Save the image." />
 
-                    <Button
-                        Margin="3"
-                        Click="btnCopyToClipboard_Click"
-                        Content="{iconPacks:Modern Kind=PageCopy}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+                        <Button
+                            Margin="3"
+                            Click="btnCopyToClipboard_Click"
+                            Content="{iconPacks:Modern Kind=PageCopy}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+                    </DockPanel>
 
                 </DockPanel>
 

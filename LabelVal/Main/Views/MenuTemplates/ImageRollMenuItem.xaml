@@ -42,7 +42,7 @@
                 Visibility="{Binding ., Converter={StaticResource IsNullOrEmptyVisibility}}">
                 <md:Card.Effect>
                     <DropShadowEffect
-                        BlurRadius="5"
+                        BlurRadius="2"
                         Opacity="0.5"
                         ShadowDepth="0"
                         Color="{DynamicResource MahApps.Colors.Gray1}" />

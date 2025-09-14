@@ -91,4 +91,5 @@
     <Color x:Key="ImageRoll_Color_Active50" />
     <Color x:Key="Results_Color_Active50" />
     <Color x:Key="LabelBuilder_Color_Active50" />
+
 </ResourceDictionary>

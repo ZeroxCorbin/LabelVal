@@ -11,6 +11,13 @@
             <Border Style="{StaticResource hamMenuBottomBar}" />
 
             <DockPanel Width="48" Height="48">
+                <DockPanel.Background>
+                    <LinearGradientBrush StartPoint="0,0.4" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active50}" />
+                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                    </LinearGradientBrush>
+                </DockPanel.Background>
+
                 <iconPacks:PackIconMaterial
                     Width="36"
                     Height="36"

@@ -53,7 +53,7 @@
     </UserControl.Resources>
 
     <!--  Main container for the control. It's only visible if there are stored or current sectors to display.  -->
-    <DockPanel MaxHeight="800">
+    <DockPanel MaxHeight="800" VerticalAlignment="Top">
         <DockPanel.Style>
             <Style TargetType="DockPanel">
                 <Setter Property="Visibility" Value="Collapsed" />
@@ -92,7 +92,7 @@
                 <!--  Card containing the title and toolbar for the stored image.  -->
                 <md:Card
                     Margin="3,3,0,0"
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Stretch"
                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                     DockPanel.Dock="Top"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
@@ -122,6 +122,7 @@
                                 Text="Stored Image" />
 
                             <ContentControl
+                                HorizontalAlignment="Right"
                                 Content="{StaticResource L95StoredToolbar}"
                                 DataContext="{Binding .}"
                                 Tag="Image" />
@@ -135,14 +136,12 @@
                 <!--  Container for the stored image itself.  -->
                 <DockPanel
                     Margin="3"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
+                    HorizontalAlignment="Center"
                     Background="Black">
 
                     <Grid
                         MaxWidth="{Binding ResultsEntry.ImagesMaxHeight}"
                         MaxHeight="{Binding ResultsEntry.ImagesMaxHeight}"
-                        Margin="3"
                         MouseDown="StoredImage_MouseDown"
                         ToolTip="Click to open a larger view of the image.&#x0a;Hold Shift and click to open a 3D view of the image.">
 
@@ -156,42 +155,10 @@
 
                 </DockPanel>
 
-                <!--<StackPanel Margin="0,3" HorizontalAlignment="Left">
-
-                -->
-                <!--  Show 2D  -->
-                <!--
-                    <Button
-                        Width="28"
-                        Height="28"
-                        Margin="0,3"
-                        Click="Show2DViewerStored"
-                        CommandParameter="{Binding StoredImage.BitmapBytes}"
-                        Content="{iconPacks:Material Kind=Video2d}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Open the image in the 2D viewer." />
-
-                -->
-                <!--  Show 3D  -->
-                <!--
-                    <Button
-                        Width="28"
-                        Height="28"
-                        Margin="0,3"
-                        Click="Show3DViewerStored"
-                        CommandParameter="{Binding StoredImage.BitmapBytes}"
-                        Content="{iconPacks:Material Kind=Video3d}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Open the image in the 3D viewer." />
-
-                </StackPanel>-->
-
             </DockPanel>
 
             <!--  Stored Sectors Display: Visible only if there are stored sectors.  -->
-            <DockPanel HorizontalAlignment="Left">
+            <DockPanel>
                 <DockPanel.Style>
                     <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Collapsed" />
@@ -206,16 +173,29 @@
                 <!--  Card containing the title and toolbar for the stored sectors.  -->
                 <md:Card
                     Margin="3,3,0,0"
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Stretch"
                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                     DockPanel.Dock="Top"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                     <StackPanel>
+                        <StackPanel.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0.75,1">
+                                <GradientStop Offset="0" Color="{DynamicResource L95_Color_Active50}" />
+                                <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                            </LinearGradientBrush>
+                        </StackPanel.Background>
 
                         <DockPanel>
 
-                            <DockPanel Background="{DynamicResource Results_Brush_Active}">
+                            <DockPanel>
+                                <DockPanel.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,2">
+                                        <GradientStop Offset="0" Color="{DynamicResource Results_Color_Active}" />
+                                        <GradientStop Offset="1" Color="{DynamicResource L95_Color_Active50}" />
+                                    </LinearGradientBrush>
+                                </DockPanel.Background>
+
                                 <iconPacks:PackIconMaterial
                                     Width="12"
                                     Margin="3"
@@ -224,12 +204,6 @@
                             </DockPanel>
 
                             <DockPanel>
-                                <DockPanel.Background>
-                                    <LinearGradientBrush StartPoint="0.4,0" EndPoint="1,1">
-                                        <GradientStop Offset="0" Color="{DynamicResource L95_Color_Active50}" />
-                                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                    </LinearGradientBrush>
-                                </DockPanel.Background>
 
                                 <!--  Title  -->
                                 <TextBlock
@@ -238,6 +212,7 @@
                                     Text="Stored Sectors" />
 
                                 <ContentControl
+                                    HorizontalAlignment="Right"
                                     Content="{StaticResource L95StoredToolbar}"
                                     DataContext="{Binding .}"
                                     Tag="Sectors" />
@@ -246,81 +221,57 @@
 
                         </DockPanel>
 
-                        <TextBlock
-                            Margin="10,0,0,0"
-                            HorizontalAlignment="Left"
-                            Text="{Binding StoredSectors[0].Version}" />
-                    </StackPanel>
-                </md:Card>
+                        <DockPanel HorizontalAlignment="Stretch" DockPanel.Dock="Top">
 
-                <!--  Toolbar for the focused stored sector. Visible only when a sector is focused.  -->
-                <DockPanel
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    DockPanel.Dock="Top">
-                    <DockPanel.Style>
-                        <Style TargetType="DockPanel">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding FocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
+                            <TextBlock
+                                Margin="6,1,0,5"
+                                HorizontalAlignment="Left"
+                                Text="{Binding StoredSectors[0].Version}" />
 
-                    <md:Card
-                        Margin="0,0,0,3"
-                        HorizontalAlignment="Right"
-                        Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                        DockPanel.Dock="Top"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                            <DockPanel HorizontalAlignment="Right">
+                                <DockPanel.Style>
+                                    <Style TargetType="DockPanel">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding FocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DockPanel.Style>
 
-                        <DockPanel>
+                                <Button
+                                    Click="btnSaveImage_Click"
+                                    Content="{iconPacks:Material Kind=ContentSave}"
+                                    Style="{StaticResource ResultsToolbarButtonBase}"
+                                    ToolTip="Save the sector details as a PNG image." />
 
-                            <DockPanel Height="26.62" />
+                                <Button
+                                    Click="btnCopyImage_Click"
+                                    Content="{iconPacks:MaterialDesign Kind=Image}"
+                                    Style="{StaticResource ResultsToolbarButtonBase}"
+                                    ToolTip="Copy the sector details to the clipboard as a PNG image." />
 
-                            <!--  Save sector details as an image.  -->
-                            <Button
-                                Width="28"
-                                Click="btnSaveImage_Click"
-                                Content="{iconPacks:Material Kind=ContentSave}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                ToolTip="Save the sector details as a PNG image." />
+                                <Button
+                                    Command="{Binding FocusedStoredSector.CopyToClipBoardCommand}"
+                                    CommandParameter="{Binding ResultsEntry.SourceImage.Order}"
+                                    Content="{iconPacks:Material Kind=ContentCopy}"
+                                    Style="{StaticResource ResultsToolbarButtonBase}"
+                                    ToolTip="Copy the focused sector to the clipboard as CSV." />
 
-                            <!--  Copy sector details image to clipboard.  -->
-                            <Button
-                                Width="28"
-                                Click="btnCopyImage_Click"
-                                Content="{iconPacks:MaterialDesign Kind=Image}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                ToolTip="Copy the sector details to the clipboard as a PNG image." />
+                                <Button
+                                    Click="btnCloseDetails_Click"
+                                    Content="{iconPacks:MaterialDesign Kind=Close}"
+                                    Style="{StaticResource ResultsToolbarButtonBase}"
+                                    Tag="Stored"
+                                    ToolTip="Close the sector details view.&#x0a;Hold Shift and click to close all details views." />
 
-                            <!--  Copy focused sector data as CSV.  -->
-                            <Button
-                                Width="28"
-                                Command="{Binding FocusedStoredSector.CopyToClipBoardCommand}"
-                                CommandParameter="{Binding ResultsEntry.SourceImage.Order}"
-                                Content="{iconPacks:Material Kind=ContentCopy}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                ToolTip="Copy the focused sector to the clipboard as CSV." />
-
-                            <!--  Close the sector details view.  -->
-                            <Button
-                                Width="28"
-                                Click="btnCloseDetails_Click"
-                                Content="{iconPacks:MaterialDesign Kind=Close}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Tag="Stored"
-                                ToolTip="Close the sector details view.&#x0a;Hold Shift and click to close all details views." />
+                            </DockPanel>
 
                         </DockPanel>
-                    </md:Card>
-                </DockPanel>
+                    </StackPanel>
+
+                </md:Card>
 
                 <!--  Scrollable area for the list of stored sectors.  -->
                 <ScrollViewer
@@ -330,12 +281,10 @@
                     ScrollChanged="ScrollStoredSectors_ScrollChanged"
                     VerticalScrollBarVisibility="Auto">
 
-                    <DockPanel>
+                    <Grid>
 
                         <!--  ListBox to display all stored sectors. It is hidden when a sector is focused to show details instead.  -->
                         <ListBox
-                            Padding="0,1,0,0"
-                            DockPanel.Dock="Top"
                             ItemsSource="{Binding Source={StaticResource StoredSectorsViewSource}}"
                             PreviewMouseWheel="StoredSectors_PreviewMouseWheel"
                             Tag="l95Stored">
@@ -353,18 +302,17 @@
 
                             <ListBox.ItemContainerStyle>
                                 <Style BasedOn="{StaticResource MahApps.Styles.ListBoxItem}" TargetType="ListBoxItem">
-                                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                                    <Setter Property="Padding" Value="2" />
+                                    <!--<Setter Property="VerticalContentAlignment" Value="Stretch" />-->
+                                    <Setter Property="Padding" Value="1" />
                                 </Style>
                             </ListBox.ItemContainerStyle>
 
                             <!--  The WrapPanel arranges sectors in a grid-like layout that adjusts based on available width.  -->
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                    <WrapPanel ItemWidth="200" Orientation="Horizontal">
                                         <WrapPanel.Style>
                                             <Style TargetType="WrapPanel">
-                                                <Setter Property="ItemWidth" Value="200" />
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ResultsEntry.ImagesMaxHeight}" Value="400">
                                                         <Setter Property="MaxWidth" Value="400" />
@@ -392,7 +340,6 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <sectors:Sector
-                                        Background="{DynamicResource AccentColorBrush}"
                                         MouseEnter="storedSectorMouseEnter"
                                         MouseLeave="storedSectorMouseLeave" />
                                 </DataTemplate>
@@ -440,7 +387,7 @@
                                 </sectors:SectorDetails>
                             </DockPanel>
                         </DockPanel>
-                    </DockPanel>
+                    </Grid>
                 </ScrollViewer>
             </DockPanel>
 
@@ -490,14 +437,6 @@
 
                     <DockPanel>
 
-                        <!--<DockPanel Background="{DynamicResource Results_Brush_Active}">
-                            <iconPacks:PackIconMaterial
-                                Width="12"
-                                Margin="3"
-                                VerticalAlignment="Center"
-                                Kind="StoreOutline" />
-                        </DockPanel>-->
-
                         <DockPanel>
                             <DockPanel.Background>
                                 <LinearGradientBrush StartPoint="0.4,0" EndPoint="1,1">
@@ -546,38 +485,6 @@
 
                 </DockPanel>
 
-                <!--<StackPanel HorizontalAlignment="Left">
-                -->
-                <!--  Show 2D  -->
-                <!--
-                    <Button
-                        Width="28"
-                        Height="28"
-                        Margin="0,3"
-                        Click="Show2DViewerCurrent"
-                        CommandParameter="{Binding CurrentImage.BitmapBytes}"
-                        Content="{iconPacks:Material Kind=Video2d}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Open the image in the 2D viewer." />
-
-                -->
-                <!--  Show 3D  -->
-                <!--
-                    <Button
-                        Width="28"
-                        Height="28"
-                        Margin="0,3"
-                        Click="Show3DViewerCurrent"
-                        CommandParameter="{Binding CurrentImage.BitmapBytes}"
-                        Content="{iconPacks:Material Kind=Video3d}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                        ToolTip="Open the image in the 3D viewer." />
-
-
-                </StackPanel>-->
-
             </DockPanel>
 
             <!--  Current Sectors Display: Visible only if there are current sectors.  -->
@@ -602,14 +509,6 @@
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                     <StackPanel>
                         <DockPanel>
-
-                            <!--<DockPanel Background="{DynamicResource Results_Brush_Active}">
-                                <iconPacks:PackIconMaterial
-                                    Width="12"
-                                    Margin="3"
-                                    VerticalAlignment="Center"
-                                    Kind="StoreOutline" />
-                            </DockPanel>-->
 
                             <DockPanel>
                                 <DockPanel.Background>

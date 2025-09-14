@@ -4,8 +4,8 @@
     xmlns:converters="clr-namespace:Wpf.lib.Converters;assembly=Wpf.lib"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:l95="clr-namespace:LabelVal.L95.Views"
-    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:watchers="clr-namespace:Watchers.lib.Process;assembly=Watchers.lib">
 
     <converters:IsNullOrEmpty x:Key="IsNullOrEmpty" />

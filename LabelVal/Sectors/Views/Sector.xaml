@@ -31,13 +31,12 @@
     </UserControl.Resources>
 
     <md:Card
-        Width="190"
         Margin="3"
         Padding="0"
         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
         Foreground="{DynamicResource MahApps.Brushes.Text}">
 
-        <StackPanel Margin="3">
+        <StackPanel>
 
             <DockPanel>
 
@@ -260,7 +259,7 @@
                     <TextBlock Name="txtDecodeText" Margin="3,1,0,0">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource ShortenString}, ConverterParameter=13, Mode=OneTime}" />
+                                <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource ShortenString}, ConverterParameter=15, Mode=OneTime}" />
                                 <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
                                 <!--<Style.Triggers>
 
@@ -421,54 +420,6 @@
 
                 </ItemsControl>
             </Border>
-
-            <!--  Gs1ValueResults  -->
-            <!--<Border BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsGS1Standard, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Border.Style>
-                    <Style TargetType="{x:Type Border}">
-                        <Setter Property="Visibility" Value="Visible"/>
-                        <Style.Triggers>
-                            <DataTrigger Value="0" Binding="{Binding SectorDifferences.Gs1ValueResults.Count, Mode=OneTime}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-
-                <ItemsControl ItemsSource="{Binding SectorDifferences.Gs1ValueResults, Mode=OneTime}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Grid.Column="0" Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
-                                <TextBox BorderThickness="0" IsHitTestVisible="False" Grid.Column="1"
-                                         Text="{Binding Path=Value, StringFormat=N1, Mode=OneTime}"
-                                         Margin="3,-4"
-                                         md:TextFieldAssist.SuffixText="{Binding DataContext.Report.Units, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
-
-                                <Border Grid.Column="2" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3" Margin="2,0,2,0">
-                                    <Border.Style>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="Background" Value="{DynamicResource StatusGreen_Brush_Active}"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Value="FAIL" Binding="{Binding Path=Result, Mode=OneTime}">
-                                                    <Setter Property="Background" Value="{DynamicResource SectorError_Brush_Active}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                </Border>
-
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Border>-->
 
         </StackPanel>
     </md:Card>
