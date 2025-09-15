@@ -1,14 +1,24 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!--  Standard (Red-Green friendly base already noted) Device Colors  -->
-    <Color x:Key="V275">#193cbc</Color>
+    <!--
+        Device Colors (Refactored)
+        Distinct base hues:
+          V275 = Royal Blue
+          V5   = Vivid Orange
+          L95  = Deep Wine
+        Variants tuned for RG / BY color vision deficiencies.
+    -->
+
+    <!-- Standard -->
+    <Color x:Key="V275">#1F4FD8</Color>
     <SolidColorBrush x:Key="V275_Brush" Color="{StaticResource V275}" />
-    <Color x:Key="V5">#CC5500</Color>
+    <Color x:Key="V5">#E16400</Color>
     <SolidColorBrush x:Key="V5_Brush" Color="{StaticResource V5}" />
-    <Color x:Key="L95">#4F000B</Color>
+    <Color x:Key="L95">#7A0032</Color>
     <SolidColorBrush x:Key="L95_Brush" Color="{StaticResource L95}" />
 
-    <!--  Red-Green Colorblind Friendly Device Colors  -->
+    <!-- Red-Green (RG) -->
     <Color x:Key="V275_RG">#0072B2</Color>
     <SolidColorBrush x:Key="V275_RG_Brush" Color="{StaticResource V275_RG}" />
     <Color x:Key="V5_RG">#E69F00</Color>
@@ -16,7 +26,7 @@
     <Color x:Key="L95_RG">#000000</Color>
     <SolidColorBrush x:Key="L95_RG_Brush" Color="{StaticResource L95_RG}" />
 
-    <!--  Blue-Yellow Colorblind Friendly Device Colors  -->
+    <!-- Blue-Yellow (BY) -->
     <Color x:Key="V275_BY">#D81B60</Color>
     <SolidColorBrush x:Key="V275_BY_Brush" Color="{StaticResource V275_BY}" />
     <Color x:Key="V5_BY">#004D40</Color>
@@ -24,7 +34,7 @@
     <Color x:Key="L95_BY">#1E88E5</Color>
     <SolidColorBrush x:Key="L95_BY_Brush" Color="{StaticResource L95_BY}" />
 
-    <!--  Monochrome Colorblind Friendly Device Colors  -->
+    <!-- Monochrome -->
     <Color x:Key="V275_M">#FFFFFF</Color>
     <SolidColorBrush x:Key="V275_M_Brush" Color="{StaticResource V275_M}" />
     <Color x:Key="V5_M">#A9A9A9</Color>

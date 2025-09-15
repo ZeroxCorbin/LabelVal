@@ -1,23 +1,23 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--
-        Results Color Group (Turquoise family)
-        Distinct from existing teal (#004D40), blues, and status greens.
-        Variants for Standard / RG / BY / M
+        Results Color Group (Cyan / Azure family)
+        Previously conflicted with LabelBuilder (both purple). Now reassigned to cyan.
     -->
 
-    <!--  Standard  -->
-    <Color x:Key="Results">#7E4CCB</Color>
+    <!-- Standard -->
+    <Color x:Key="Results">#0C89D4</Color>
     <SolidColorBrush x:Key="Results_Brush" Color="{StaticResource Results}" />
 
-    <!--  Red-Green Colorblind Friendly  -->
-    <Color x:Key="Results_RG">#7B55C9</Color>
+    <!-- Red-Green -->
+    <Color x:Key="Results_RG">#56B4E9</Color>
     <SolidColorBrush x:Key="Results_RG_Brush" Color="{StaticResource Results_RG}" />
 
-    <!--  Blue-Yellow Colorblind Friendly  -->
-    <Color x:Key="Results_BY">#9366D5</Color>
+    <!-- Blue-Yellow -->
+    <Color x:Key="Results_BY">#0E9FDA</Color>
     <SolidColorBrush x:Key="Results_BY_Brush" Color="{StaticResource Results_BY}" />
 
-    <!--  Monochrome  -->
+    <!-- Monochrome -->
     <Color x:Key="Results_M">#B2B2B2</Color>
     <SolidColorBrush x:Key="Results_M_Brush" Color="{StaticResource Results_M}" />
 </ResourceDictionary>
