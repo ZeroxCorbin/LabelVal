@@ -21,8 +21,10 @@ using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace LabelVal.Results.ViewModels;
 
@@ -757,17 +759,34 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         {
             if (res == null) return;
 
+            // 1. Normalize to 32bpp BGR while preserving (or reconstructing) DPI
+            double srcDpiX, srcDpiY;
+            var convertedImage = ConvertImageToBgr32PreserveDpi(res.Image, out srcDpiX, out srcDpiY);
+
+            // Fallback DPI logic (device DPI -> roll target -> 600)
+            int fallback = SelectedV275Node?.Controller?.Dpi
+                           ?? ActiveImageRoll?.TargetDPI
+                           ?? 600;
+
+            // If decoded DPI invalid (<10) use fallback
+            int finalDpi = (int)Math.Round(srcDpiX >= 10 ? srcDpiX : fallback);
+
+            // Keep FullReport bytes consistent if property is writable
+            try { res.Image = convertedImage; } catch { /* ignore if immutable */ }
+
+            // 2. Locked roll path (only allowed if image already exists)
             if (ActiveImageRoll.IsLocked)
             {
-                var ire = new ImageEntry(ActiveImageRoll.UID, res.Image, ActiveImageRoll.TargetDPI);
-                if (ActiveImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
+                var testEntry = new ImageEntry(ActiveImageRoll.UID, convertedImage, finalDpi);
+                if (ActiveImageRoll.ImageEntries.FirstOrDefault(x => x.UID == testEntry.UID) == null)
                 {
                     Logger.Warning("The database is locked. Cannot add image.");
                     return;
                 }
             }
 
-            (ImageEntry entry, var isNew) = ActiveImageRoll.GetImageEntry(res.Image);
+            // 3. Retrieve/create ImageEntry based on normalized bytes
+            (ImageEntry entry, var isNew) = ActiveImageRoll.GetImageEntry(convertedImage);
             if (entry == null) return;
 
             entry.NewData = res;
@@ -817,6 +836,64 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         finally
         {
             WorkingUpdate(ResultsEntryDevices.L95, false);
+        }
+    }
+
+    // Helper: ensure BGR32 (32bpp) and preserve or reconstruct DPI
+    private static byte[] ConvertImageToBgr32PreserveDpi(byte[] image, out double dpiX, out double dpiY)
+    {
+        dpiX = dpiY = 0;
+        if (image == null || image.Length == 0)
+            return image ?? Array.Empty<byte>();
+
+        try
+        {
+            using var ms = new MemoryStream(image, false);
+            var decoder = BitmapDecoder.Create(ms, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+            var frame = decoder.Frames[0];
+
+            dpiX = frame.DpiX;
+            dpiY = frame.DpiY;
+
+            // If already Bgr32 with valid DPI just return original bytes
+            if (frame.Format == System.Windows.Media.PixelFormats.Bgr32 && dpiX >= 10 && dpiY >= 10)
+                return image;
+
+            // Convert format if needed
+            BitmapSource working = frame.Format == System.Windows.Media.PixelFormats.Bgr32
+                ? frame
+                : new FormatConvertedBitmap(frame, System.Windows.Media.PixelFormats.Bgr32, null, 0);
+
+            // If DPI invalid, leave (we will fallback later in caller); otherwise we keep it
+            if (dpiX < 10 || dpiY < 10)
+            {
+                // Keep placeholder (caller supplies fallback); do not force here to avoid assuming context
+                dpiX = dpiY = 0;
+            }
+
+            // Re-pack to guarantee 32bpp BGR byte ordering (BMP stores pixels-per-meter for DPI)
+            var encoder = new BmpBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(CloneWithOptionalDpi(working, dpiX, dpiY)));
+            using var outMs = new MemoryStream();
+            encoder.Save(outMs);
+            return outMs.ToArray();
+        }
+        catch (Exception ex)
+        {
+            Logger.Warning($"ConvertImageToBgr32PreserveDpi failed: {ex.Message}");
+            return image;
+        }
+
+        static BitmapSource CloneWithOptionalDpi(BitmapSource src, double dpiX, double dpiY)
+        {
+            // If dpiX/dpiY are zero or invalid we just keep pixel data; DPI fallback applied later.
+            if (dpiX < 10 || dpiY < 10)
+                (dpiX, dpiY) = (src.DpiX, src.DpiY);
+
+            int stride = (src.PixelWidth * src.Format.BitsPerPixel + 7) / 8;
+            var pixels = new byte[stride * src.PixelHeight];
+            src.CopyPixels(pixels, stride, 0);
+            return BitmapSource.Create(src.PixelWidth, src.PixelHeight, dpiX, dpiY, src.Format, src.Palette, pixels, stride);
         }
     }
 
