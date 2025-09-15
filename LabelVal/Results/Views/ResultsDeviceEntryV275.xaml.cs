@@ -268,8 +268,4 @@ public partial class ResultsDeviceEntry_V275 : UserControl
         _ = Application.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshStoredOverlay());
     }
 
-    private void Show3DViewerCurrent(object sender, RoutedEventArgs e) => Show3DImage(_viewModel.CurrentImage.ImageBytes);
-    private void Show3DViewerStored(object sender, RoutedEventArgs e) => Show3DImage(_viewModel.StoredImage.ImageBytes);
-    private void Show2DViewerStored(object sender, RoutedEventArgs e) => _ = ShowImage(_viewModel.StoredImage, _viewModel.StoredImageOverlay);
-    private void Show2DViewerCurrent(object sender, RoutedEventArgs e) => _ = ShowImage(_viewModel.CurrentImage, _viewModel.CurrentImageOverlay);
 }

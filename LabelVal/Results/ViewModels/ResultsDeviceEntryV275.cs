@@ -4,7 +4,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
+using LabelVal.Results.Helpers;
 using LabelVal.Sectors.Classes;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
@@ -311,10 +313,11 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
 
         V275_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? [.. ResultRow.Template["sectors"]] : null, Handler, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table);
 
+        double srcDpiX, srcDpiY;
         if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Source || Handler is LabelHandlers.CameraTrigger or LabelHandlers.CameraRestore or LabelHandlers.CameraDetect || (ResultRow?.Stored == null && ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored))
-            lab.Image = ResultsEntry.SourceImage.BitmapBytes;
+            lab.Image = GlobalAppSettings.Instance.PreseveImageFormat ? ResultsEntry.SourceImage.BitmapBytes : ConvertImageToBgr32PreserveDpi.Convert(ResultsEntry.SourceImage.BitmapBytes, out srcDpiX, out srcDpiY); 
         else if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
-            lab.Image = ResultRow.Stored.ImageBytes;
+            lab.Image = GlobalAppSettings.Instance.PreseveImageFormat ? ResultRow.Stored.ImageBytes : ConvertImageToBgr32PreserveDpi.Convert(ResultRow.Stored.ImageBytes, out srcDpiX, out srcDpiY);
 
         _ = ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.IsSimulator
             ? ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.ProcessLabel_Simulator(lab)
@@ -348,15 +351,8 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
 
             var jobString = JsonConvert.SerializeObject(report.Report);
 
-            if (!ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.IsSimulator)
-            {
-                CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, report.Image, 600);
-            }
-            else
-            {
-                using var img = new ImageMagick.MagickImage(report.Image);
-                CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, report.Image, (int)Math.Round(ResultsEntry.SourceImage.Image.DpiX));
-            }
+            var img = GlobalAppSettings.Instance.PreseveImageFormat ? report.Image : ConvertImageToBgr32PreserveDpi.Convert(report.Image, out var dpiX, out var dpiY);
+            CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, img);
 
             CurrentSectors.Clear();
 

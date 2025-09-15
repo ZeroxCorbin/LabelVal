@@ -751,7 +751,7 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
     {
         try
         {
-            var ire = new ImageEntry(UID, rawImage, TargetDPI);
+            var ire = new ImageEntry(UID, rawImage);
             ire.SaveRequested += OnImageEntrySaveRequested;
 
             ImageEntry imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);

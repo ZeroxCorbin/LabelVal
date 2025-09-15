@@ -166,7 +166,7 @@ public partial class ImageEntry : ObservableObject
     /// Gets the image data as a byte array, suitable for saving.
     /// </summary>
     [Ignore]
-    public byte[] BitmapBytes => BitmapHelpers.ImageToBytes(Image);
+    public byte[] BitmapBytes => OriginalImage;
 
     /// <summary>
     /// Gets or sets the DPI of the image along the X-axis.
@@ -343,7 +343,7 @@ public partial class ImageEntry : ObservableObject
     /// <param name="image">The raw image data.</param>
     /// <param name="imageDpi">The DPI of the image.</param>
     /// <param name="comment">An optional comment.</param>
-    public ImageEntry(string rollUID, byte[] image, int imageDpi = 0, string comment = null)
+    public ImageEntry(string rollUID, byte[] image, string comment = null)
     {
         RollUID = rollUID;
         ImageBytes = image; // Use property to trigger setter logic
@@ -352,11 +352,11 @@ public partial class ImageEntry : ObservableObject
         Comment = comment;
         // Only override DPI if it wasn't found in the metadata (i.e., it's 0 or the default 96)
         // and a valid DPI has been passed to the constructor.
-        if (imageDpi > 0 && (ImageDpiX <= 0 || ImageDpiX == 96))
-        {
-            ImageDpiX = imageDpi;
-            ImageDpiY = imageDpi; // Assume square pixels if only one DPI value is given
-        }
+        //if (imageDpi > 0 && (ImageDpiX <= 0 || ImageDpiX == 96))
+        //{
+        //    ImageDpiX = imageDpi;
+        //    ImageDpiY = imageDpi; // Assume square pixels if only one DPI value is given
+        //}
     }
 
     #endregion

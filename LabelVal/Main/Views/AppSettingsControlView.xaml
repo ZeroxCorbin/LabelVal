@@ -19,6 +19,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -81,6 +82,21 @@
                 Text="Auto Detect V275 Nodes" />
 
             <ToggleButton IsChecked="{Binding V275AutoRefreshServers}" />
+
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="3"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom">
+            <TextBlock
+                Margin="3"
+                HorizontalAlignment="Center"
+                Text="Preserve Image&#x0a;Format" />
+
+            <ToggleButton IsChecked="{Binding PreseveImageFormat}" />
 
         </StackPanel>
 

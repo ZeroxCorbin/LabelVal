@@ -350,12 +350,12 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
 
             if (!ResultsEntry.ResultsManagerView.SelectedV5.Controller.IsSimulator)
             {
-                CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, report.Image, 600);
+                CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, report.Image);
             }
             else
             {
                 using var img = new ImageMagick.MagickImage(report.Image);
-                CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, report.Image, (int)Math.Round(ResultsEntry.SourceImage.Image.DpiX));
+                CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, report.Image);
             }
 
             CurrentTemplate = ResultsEntry.ResultsManagerView.SelectedV5.Controller.Config;

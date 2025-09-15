@@ -9,6 +9,7 @@ using LabelVal.ImageRolls.ViewModels;
 using LabelVal.L95.Sectors;
 using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
+using LabelVal.Results.Helpers;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
@@ -463,8 +464,9 @@ public partial class ResultsDeviceEntryL95
         if (ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard == ApplicationStandards.GS1)
             lab.Config.Table = ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table.GetTableName();
 
+        double srcDpiX, srcDpiY;
         if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Source)
-            lab.Image = ResultsEntry.SourceImage.BitmapBytes;
+            lab.Image = GlobalAppSettings.Instance.PreseveImageFormat ? ResultsEntry.SourceImage.BitmapBytes : ConvertImageToBgr32PreserveDpi.Convert(ResultsEntry.SourceImage.BitmapBytes, out srcDpiX, out srcDpiY);
         else if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
         {
             if(ResultRow == null || ResultRow.Stored == null)
@@ -472,7 +474,8 @@ public partial class ResultsDeviceEntryL95
                 Logger.Error("No stored image to process.");
                 return;
             }
-            lab.Image = ResultRow.Stored.BitmapBytes;
+
+            lab.Image = GlobalAppSettings.Instance.PreseveImageFormat ? ResultRow.Stored.BitmapBytes : ConvertImageToBgr32PreserveDpi.Convert(ResultRow.Stored.BitmapBytes, out srcDpiX, out srcDpiY); 
         }
             
 
@@ -542,8 +545,8 @@ public partial class ResultsDeviceEntryL95
 
             GetSectorDiff();
 
-
-            CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, message.Template.GetParameter<byte[]>("Report.Thumbnail"), 0);
+            var img = GlobalAppSettings.Instance.PreseveImageFormat ? message.Template.GetParameter<byte[]>("Report.Image") : ConvertImageToBgr32PreserveDpi.Convert(message.Template.GetParameter<byte[]>("Report.Image"), out _, out _);
+            CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, message.Template.GetParameter<byte[]>("Report.Thumbnail"));
             RefreshCurrentOverlay();
 
             IsFaulted = false;

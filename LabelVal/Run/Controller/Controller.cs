@@ -458,7 +458,7 @@ public partial class Controller : ObservableObject
 
         v5.Template = V5.Config;
         v5.Report = res.Report;
-        v5.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ResultsEntry.ImageRollUID, res.Image, 0));
+        v5.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ResultsEntry.ImageRollUID, res.Image));
 
         if (UpdateUI)
             _ = Application.Current.Dispatcher.BeginInvoke(() => ((ResultsDeviceEntryV5)ire).ProcessFullReport(res));
@@ -499,7 +499,7 @@ public partial class Controller : ObservableObject
         }
 
         l95.Report = res.Report;
-        l95.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ResultsEntry.ImageRollUID, res.Template.GetParameter<byte[]>("Report.Thumbnail"), 0));
+        l95.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ResultsEntry.ImageRollUID, res.Template.GetParameter<byte[]>("Report.Thumbnail")));
 
         if (UpdateUI)
             _ = Application.Current.Dispatcher.BeginInvoke(() => ((ResultsDeviceEntryL95) ire).ProcessFullReport(res, true));
