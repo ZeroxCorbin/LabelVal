@@ -14,7 +14,7 @@
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
-    <DataTemplate x:Key="L95Buttons" DataType="{x:Type vm:ResultsDeviceEntry_L95}">
+    <DataTemplate x:Key="L95Buttons" DataType="{x:Type vm:ResultsDeviceEntryL95}">
         <DockPanel>
 
             <!--  L95 Process Image  -->

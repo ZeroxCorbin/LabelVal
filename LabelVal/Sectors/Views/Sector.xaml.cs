@@ -35,12 +35,12 @@ public partial class Sector : UserControl
 
     public bool IsSectorFocused => GroupName switch
     {
-        "v275Stored" => ResultsEntry.FocusedStoredSector != null,
-        "v275Current" => ResultsEntry.FocusedCurrentSector != null,
-        "v5Stored" => ResultsEntry.FocusedStoredSector != null,
-        "v5Current" => ResultsEntry.FocusedCurrentSector != null,
-        "l95Stored" => ResultsEntry.FocusedStoredSector != null,
-        "l95Current" => ResultsEntry.FocusedCurrentSector != null,
+        "V275Stored" => ResultsEntry.FocusedStoredSector != null,
+        "V275Current" => ResultsEntry.FocusedCurrentSector != null,
+        "V5Stored" => ResultsEntry.FocusedStoredSector != null,
+        "V5Current" => ResultsEntry.FocusedCurrentSector != null,
+        "L95Stored" => ResultsEntry.FocusedStoredSector != null,
+        "L95Current" => ResultsEntry.FocusedCurrentSector != null,
         _ => false,
     };
 
@@ -121,7 +121,7 @@ public partial class Sector : UserControl
         //This lets us know which sector is being focused on
         switch (GroupName)
         {
-            case "v275Stored":
+            case "V275Stored":
                var devices =  ResultsEntry.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == Results.ViewModels.ResultsEntryDevices.V275);
                 foreach (var device in devices)
                 {
@@ -132,7 +132,7 @@ public partial class Sector : UserControl
                     Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IResultsDeviceEntry)device).RefreshStoredOverlay());
                 }
                 break;
-            case "v275Current":
+            case "V275Current":
                 devices = ResultsEntry.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == Results.ViewModels.ResultsEntryDevices.V275);
                 foreach (var device in devices)
                 {
@@ -143,7 +143,7 @@ public partial class Sector : UserControl
                     Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IResultsDeviceEntry)device).RefreshCurrentOverlay());
                 }
                 break;
-            case "v5Stored":
+            case "V5Stored":
                 devices = ResultsEntry.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == Results.ViewModels.ResultsEntryDevices.V5);
                 foreach (var device in devices)
                 {
@@ -154,7 +154,7 @@ public partial class Sector : UserControl
                     Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IResultsDeviceEntry)device).RefreshStoredOverlay());
                 }
                 break;
-            case "v5Current":
+            case "V5Current":
                 devices = ResultsEntry.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == Results.ViewModels.ResultsEntryDevices.V5);
                 foreach (var device in devices)
                 {
@@ -165,7 +165,7 @@ public partial class Sector : UserControl
                     Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IResultsDeviceEntry)device).RefreshCurrentOverlay());
                 }
                 break;
-            case "l95Stored":
+            case "L95Stored":
                 devices = ResultsEntry.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == Results.ViewModels.ResultsEntryDevices.L95);
                 foreach (var device in devices)
                 {
@@ -176,7 +176,7 @@ public partial class Sector : UserControl
                     Application.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IResultsDeviceEntry)device).RefreshStoredOverlay());
                 }
                 break;
-            case "l95Current":
+            case "L95Current":
                 devices = ResultsEntry.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == Results.ViewModels.ResultsEntryDevices.L95);
                 foreach (var device in devices)
                 {

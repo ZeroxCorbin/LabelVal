@@ -42,10 +42,10 @@ public partial class RunResult_V275 : UserControl
         {
             switch ((string)((Button)sender).Tag)
             {
-                case "v275Stored":
+                case "V275Stored":
                     ((ViewModels.RunResult)DataContext).V275FocusedStoredSector = null;
                     break;
-                case "v275Current":
+                case "V275Current":
                     ((ViewModels.RunResult)DataContext).V275FocusedCurrentSector = null;
                     ((ViewModels.RunResult)DataContext).V275FocusedStoredSector = null;
                     break;

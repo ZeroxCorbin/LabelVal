@@ -64,6 +64,96 @@ public partial class ResultsDeviceEntry_V5 : UserControl
     }
     #endregion
 
+    [RelayCommand]
+    private void SaveSectorDetailsImage(SectorDetails sectorDetails)
+    {
+        if (sectorDetails != null)
+        {
+            string path;
+            if ((path = Utilities.FileUtilities.SaveFileDialog($"{((Sectors.Interfaces.ISector)sectorDetails.DataContext).Template.Username}", "PNG|*.png", "Save sector details.")) != "")
+            {
+                try { SaveToPng(sectorDetails, path); } catch { }
+            }
+        }
+    }
+
+    [RelayCommand]
+    private void CopySectorDetailsImage(SectorDetails sectorDetails)
+    {
+        if (sectorDetails != null)
+        {
+            try { CopyToClipboard(sectorDetails); } catch { }
+        }
+    }
+
+    [RelayCommand]
+    private void CloseSectorDetails(string type)
+    {
+        if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+        {
+            foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries)
+            {
+                if (device.FocusedCurrentSector != null)
+                    device.FocusedCurrentSector.IsFocused = false;
+                device.FocusedCurrentSector = null;
+
+                if (device.FocusedStoredSector != null)
+                    device.FocusedStoredSector.IsFocused = false;
+                device.FocusedStoredSector = null;
+
+                _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshCurrentOverlay);
+                _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
+            }
+        }
+        else
+        {
+            switch (type)
+            {
+                case "Stored":
+                    foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    {
+                        if (device.FocusedStoredSector != null)
+                            device.FocusedStoredSector.IsFocused = false;
+                        device.FocusedStoredSector = null;
+                        _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
+                    }
+                    break;
+                case "Current":
+                    foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    {
+                        if (device.FocusedCurrentSector != null)
+                            device.FocusedCurrentSector.IsFocused = false;
+                        device.FocusedCurrentSector = null;
+
+                        if (device.FocusedStoredSector != null)
+                            device.FocusedStoredSector.IsFocused = false;
+                        device.FocusedStoredSector = null;
+
+                        _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshCurrentOverlay);
+                        _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
+                    }
+                    break;
+            }
+        }
+    }
+
+    [RelayCommand]
+    private void Show3DImage(byte[] image)
+    {
+        var img = new ImageViewer3D.ViewModels.ImageViewer3D_SingleMesh(image);
+
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+
+        img.Width = yourParentWindow.ActualWidth - 100;
+        img.Height = yourParentWindow.ActualHeight - 100;
+
+        var tmp = new ImageViewer3DDialogView() { DataContext = img };
+        tmp.Unloaded += (s, e) =>
+        img.Dispose();
+        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, tmp);
+
+    }
+
     #region Scroll Sync & Mouse Wheel (restored for parity with V275/L95)
     private void ScrollStoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
@@ -93,50 +183,6 @@ public partial class ResultsDeviceEntry_V5 : UserControl
     #endregion
 
     #region Existing Event Handlers
-    private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
-    {
-        if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-        {
-            foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries)
-            {
-                if (device.FocusedCurrentSector != null) device.FocusedCurrentSector.IsFocused = false;
-                device.FocusedCurrentSector = null;
-
-                if (device.FocusedStoredSector != null) device.FocusedStoredSector.IsFocused = false;
-                device.FocusedStoredSector = null;
-
-                _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshCurrentOverlay);
-                _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
-            }
-        }
-        else
-        {
-            switch ((string)((Button)sender).Tag)
-            {
-                case "Stored":
-                    foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
-                    {
-                        if (device.FocusedStoredSector != null) device.FocusedStoredSector.IsFocused = false;
-                        device.FocusedStoredSector = null;
-                        _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
-                    }
-                    break;
-                case "Current":
-                    foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
-                    {
-                        if (device.FocusedCurrentSector != null) device.FocusedCurrentSector.IsFocused = false;
-                        device.FocusedCurrentSector = null;
-
-                        if (device.FocusedStoredSector != null) device.FocusedStoredSector.IsFocused = false;
-                        device.FocusedStoredSector = null;
-
-                        _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshCurrentOverlay);
-                        _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
-                    }
-                    break;
-            }
-        }
-    }
 
     private void StoredImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
@@ -192,24 +238,6 @@ public partial class ResultsDeviceEntry_V5 : UserControl
         _ = Application.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshStoredOverlay());
     }
 
-    private void btnSaveImage_Click(object sender, RoutedEventArgs e)
-    {
-        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<SectorDetails>(parent);
-        if (sectorDetails != null)
-        {
-            var path = Utilities.FileUtilities.SaveFileDialog($"{((Sectors.Interfaces.ISector)sectorDetails.DataContext).Template.Username}", "PNG|*.png", "Save sector details.");
-            if (!string.IsNullOrEmpty(path))
-                try { SaveToPng(sectorDetails, path); } catch { }
-        }
-    }
-    private void btnCopyImage_Click(object sender, RoutedEventArgs e)
-    {
-        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<SectorDetails>(parent);
-        if (sectorDetails != null) CopyToClipboard(sectorDetails);
-    }
-
     public void SaveToPng(FrameworkElement visual, string fileName)
     {
         PngBitmapEncoder encoder = new();
@@ -236,23 +264,6 @@ public partial class ResultsDeviceEntry_V5 : UserControl
         RenderTargetBitmap bitmap = new((int)visual.ActualWidth, (int)visual.ActualHeight, 96, 96, PixelFormats.Pbgra32);
         bitmap.Render(visual);
         encoder.Frames.Add(BitmapFrame.Create(bitmap));
-    }
-
-    [RelayCommand]
-    private void Show3DImage(byte[] image)
-    {
-        var img = new ImageViewer3D.ViewModels.ImageViewer3D_SingleMesh(image);
-
-        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
-
-        img.Width = yourParentWindow.ActualWidth - 100;
-        img.Height = yourParentWindow.ActualHeight - 100;
-
-        var tmp = new ImageViewer3DDialogView() { DataContext = img };
-        tmp.Unloaded += (s, e) =>
-        img.Dispose();
-        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, tmp);
-
     }
 
     private void Show3DViewerStored(object sender, RoutedEventArgs e) => Show3DImage(_viewModel.StoredImage.ImageBytes);

@@ -34,30 +34,6 @@
             </Button.Style>
         </Button>
 
-        <!--  Sectors Only: Read (visibility logic per original)  -->
-        <Button Command="{Binding ReadCommand}">
-            <Button.Style>
-                <Style BasedOn="{StaticResource ReadButtonStyle}" TargetType="Button">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ResultsManagerView.SelectedV275Node.Controller.IsLoggedIn_Monitor}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ResultsManagerView.SelectedV275Node.Controller.IsLoggedIn_Control}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image" />
-                                <Condition Binding="{Binding CurrentSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </MultiDataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-
         <!--  Sectors-only separator  -->
         <ContentControl ContentTemplate="{StaticResource SectorsOnlySeparator}" />
 

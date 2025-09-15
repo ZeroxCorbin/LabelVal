@@ -94,7 +94,30 @@ public partial class ResultsDeviceEntry_L95 : UserControl
         }
     }
 
-    private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
+    [RelayCommand]
+    private void SaveSectorDetailsImage(SectorDetails sectorDetails)
+    {
+        if (sectorDetails != null)
+        {
+            string path;
+            if ((path = Utilities.FileUtilities.SaveFileDialog($"{((Sectors.Interfaces.ISector)sectorDetails.DataContext).Template.Username}", "PNG|*.png", "Save sector details.")) != "")
+            {
+                try { SaveToPng(sectorDetails, path); } catch { }
+            }
+        }
+    }
+
+    [RelayCommand]
+    private void CopySectorDetailsImage(SectorDetails sectorDetails)
+    {
+        if (sectorDetails != null)
+        {
+            try { CopyToClipboard(sectorDetails); } catch { }
+        }
+    }
+
+    [RelayCommand]
+    private void CloseSectorDetails(string type)
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
@@ -114,7 +137,7 @@ public partial class ResultsDeviceEntry_L95 : UserControl
         }
         else
         {
-            switch ((string)((Button)sender).Tag)
+            switch (type)
             {
                 case "Stored":
                     foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
@@ -122,7 +145,6 @@ public partial class ResultsDeviceEntry_L95 : UserControl
                         if (device.FocusedStoredSector != null)
                             device.FocusedStoredSector.IsFocused = false;
                         device.FocusedStoredSector = null;
-
                         _ = Application.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
                     }
                     break;
@@ -144,6 +166,24 @@ public partial class ResultsDeviceEntry_L95 : UserControl
             }
         }
     }
+
+    [RelayCommand]
+    private void Show3DImage(byte[] image)
+    {
+        var img = new ImageViewer3D.ViewModels.ImageViewer3D_SingleMesh(image);
+
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+
+        img.Width = yourParentWindow.ActualWidth - 100;
+        img.Height = yourParentWindow.ActualHeight - 100;
+
+        var tmp = new ImageViewer3DDialogView() { DataContext = img };
+        tmp.Unloaded += (s, e) =>
+        img.Dispose();
+        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, tmp);
+
+    }
+
 
     private void ScrollStoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
@@ -177,32 +217,6 @@ public partial class ResultsDeviceEntry_L95 : UserControl
         ScrollCurrentSectors.ScrollToVerticalOffset(ScrollCurrentSectors.VerticalOffset - e.Delta);
     }
 
-    private void btnSaveImage_Click(object sender, RoutedEventArgs e)
-    {
-        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
-
-        if (sectorDetails != null)
-        {
-            string path;
-            if ((path = Utilities.FileUtilities.SaveFileDialog($"{((Sectors.Interfaces.ISector)sectorDetails.DataContext).Template.Username}", "PNG|*.png", "Save sector details.")) != "")
-            {
-                try
-                {
-                    SaveToPng(sectorDetails, path);
-                }
-                catch { }
-            }
-        }
-    }
-    private void btnCopyImage_Click(object sender, RoutedEventArgs e)
-    {
-        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
-
-        if (sectorDetails != null)
-            CopyToClipboard(sectorDetails);
-    }
     public void SaveToPng(FrameworkElement visual, string fileName)
     {
         PngBitmapEncoder encoder = new();
@@ -305,40 +319,6 @@ public partial class ResultsDeviceEntry_L95 : UserControl
                 sector.IsMouseOver = false;
 
             _ = Application.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshStoredOverlay());
-        }
-    }
-
-    [RelayCommand]
-    private void Show3DImage(byte[] image)
-    {
-        var img = new ImageViewer3D.ViewModels.ImageViewer3D_SingleMesh(image);
-
-        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
-
-        img.Width = yourParentWindow.ActualWidth - 100;
-        img.Height = yourParentWindow.ActualHeight - 100;
-
-        var tmp = new ImageViewer3DDialogView() { DataContext = img };
-        tmp.Unloaded += (s, e) =>
-        img.Dispose();
-        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, tmp);
-
-    }
-
-    private void btnCopyToClipboard_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is Button btn && btn.Tag is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
-        {
-            if (Sectors.Output.SectorOutputSettings.CurrentOutputType == Sectors.Output.SectorOutputType.Delimited)
-                Clipboard.SetText(sectors.GetDelimetedSectorsReport($"{_viewModel.ResultsManagerView.ActiveImageRoll.Name}{(char)Sectors.Output.SectorOutputSettings.CurrentDelimiter}{_viewModel.ResultsEntry.SourceImage.Order}"));
-
-            else if (Sectors.Output.SectorOutputSettings.CurrentOutputType == Sectors.Output.SectorOutputType.JSON)
-                Clipboard.SetText(sectors.GetJsonSectorsReport($"{_viewModel.ResultsManagerView.ActiveImageRoll.Name}{(char)Sectors.Output.SectorOutputSettings.CurrentDelimiter}{_viewModel.ResultsEntry.SourceImage.Order}").ToString());
-
-        }
-        else if (sender is Button btn2 && btn2.Tag is ImageEntry image)
-        {
-            Clipboard.SetImage(image.Image);
         }
     }
 

@@ -27,6 +27,8 @@
                 <!--  New extracted toolbars  -->
                 <ResourceDictionary Source="V275Templates/V275StoredToolbar.xaml" />
                 <ResourceDictionary Source="V275Templates/V275CurrentToolbar.xaml" />
+                <ResourceDictionary Source="V275Templates/V275StoredUniqueToolbar.xaml" />
+                <ResourceDictionary Source="V275Templates/V275CurrentUniqueToolbar.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <!--  (All other existing resources retained: CollectionViewSources etc.)  -->
@@ -232,54 +234,86 @@
 
                             </DockPanel>
 
-                            <DockPanel HorizontalAlignment="Stretch" DockPanel.Dock="Top">
+                            <Grid Margin="0" DockPanel.Dock="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <!--  Left (expands)  -->
+                                    <ColumnDefinition Width="Auto" />
+                                    <!--  Right toolbars  -->
+                                </Grid.ColumnDefinitions>
 
-                                <TextBlock
-                                    Margin="6,1,0,5"
-                                    HorizontalAlignment="Left"
-                                    Text="{Binding StoredSectors[0].Version}" />
+                                <!--  Left title and version (put both if (you like)  -->
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="6,1,0,5"
+                                        HorizontalAlignment="Left"
+                                        Text="{Binding StoredSectors[0].Version}" />
+                                </StackPanel>
 
-                                <DockPanel HorizontalAlignment="Right">
-                                    <DockPanel.Style>
-                                        <Style TargetType="DockPanel">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding FocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </DockPanel.Style>
+                                <!--  Right toolbars container  -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <!--  Unique toolbar (shown when no focused sector)  -->
+                                    <ContentControl
+                                        Content="{StaticResource V275StoredUniqueToolbar}"
+                                        DataContext="{Binding .}"
+                                        Tag="Sectors">
+                                        <ContentControl.Style>
+                                            <Style TargetType="ContentControl">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding FocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentControl.Style>
+                                    </ContentControl>
 
-                                    <Button
-                                        Click="btnSaveImage_Click"
-                                        Content="{iconPacks:Material Kind=ContentSave}"
-                                        Style="{StaticResource ResultsToolbarButtonBase}"
-                                        ToolTip="Save the sector details as a PNG image." />
+                                    <!--  Focused-sector buttons (existing DockPanel content copied as-is)  -->
+                                    <DockPanel>
+                                        <DockPanel.Style>
+                                            <Style TargetType="DockPanel">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding FocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DockPanel.Style>
 
-                                    <Button
-                                        Click="btnCopyImage_Click"
-                                        Content="{iconPacks:MaterialDesign Kind=Image}"
-                                        Style="{StaticResource ResultsToolbarButtonBase}"
-                                        ToolTip="Copy the sector details to the clipboard as a PNG image." />
+                                        <Button
+                                            Command="{Binding SaveSectorDetailsImageCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V275}}"
+                                            CommandParameter="{Binding ., ElementName=FocusedStoredSector}"
+                                            Content="{iconPacks:Material Kind=ContentSave}"
+                                            Style="{StaticResource ResultsToolbarButtonBase}"
+                                            ToolTip="Save the sector details as a PNG image." />
 
-                                    <Button
-                                        Command="{Binding FocusedStoredSector.CopyToClipBoardCommand}"
-                                        CommandParameter="{Binding ResultsEntry.SourceImage.Order}"
-                                        Content="{iconPacks:Material Kind=ContentCopy}"
-                                        Style="{StaticResource ResultsToolbarButtonBase}"
-                                        ToolTip="Copy the focused sector to the clipboard as CSV." />
+                                        <Button
+                                            Command="{Binding CopySectorDetailsImageCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V275}}"
+                                            CommandParameter="{Binding ., ElementName=FocusedStoredSector}"
+                                            Content="{iconPacks:MaterialDesign Kind=Image}"
+                                            Style="{StaticResource ResultsToolbarButtonBase}"
+                                            ToolTip="Copy the sector details to the clipboard as a PNG image." />
 
-                                    <Button
-                                        Click="btnCloseDetails_Click"
-                                        Content="{iconPacks:MaterialDesign Kind=Close}"
-                                        Style="{StaticResource ResultsToolbarButtonBase}"
-                                        Tag="Stored"
-                                        ToolTip="Close the sector details view.&#x0a;Hold Shift and click to close all details views." />
+                                        <Button
+                                            Command="{Binding FocusedStoredSector.CopyToClipBoardCommand}"
+                                            CommandParameter="{Binding ResultsEntry.SourceImage.Order}"
+                                            Content="{iconPacks:Material Kind=ContentCopy}"
+                                            Style="{StaticResource ResultsToolbarButtonBase}"
+                                            ToolTip="Copy the focused sector to the clipboard as CSV." />
 
-                                </DockPanel>
+                                        <Button
+                                            Command="{Binding CloseSectorDetailsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V275}}"
+                                            CommandParameter="Stored"
+                                            Content="{iconPacks:MaterialDesign Kind=Close}"
+                                            Style="{StaticResource ResultsToolbarButtonBase}"
+                                            ToolTip="Close the sector details view.&#x0a;Hold Shift and click to close all details views." />
 
-                            </DockPanel>
+                                    </DockPanel>
+                                </StackPanel>
+                            </Grid>
+
                         </StackPanel>
 
                     </md:Card>
@@ -296,7 +330,7 @@
                             <ListBox
                                 ItemsSource="{Binding Source={StaticResource StoredSectorsViewSource}}"
                                 PreviewMouseWheel="StoredSectors_PreviewMouseWheel"
-                                Tag="v275Stored">
+                                Tag="V275Stored">
 
                                 <ListBox.Style>
                                     <Style BasedOn="{StaticResource MahApps.Styles.ListBox}" TargetType="ListBox">
@@ -366,7 +400,7 @@
 
                                 <!--  Keep this Dockapnel. It is used for Saving and Coping the SectorDetails Visual.  -->
                                 <DockPanel>
-                                    <sectors:SectorDetails DataContext="{Binding FocusedStoredSector}">
+                                    <sectors:SectorDetails x:Name="FocusedStoredSector" DataContext="{Binding FocusedStoredSector}">
                                         <sectors:SectorDetails.Style>
                                             <Style TargetType="sectors:SectorDetails">
                                                 <Setter Property="Width" Value="200" />
@@ -421,51 +455,58 @@
             <DockPanel>
 
                 <!--  Current Image  -->
-                <DockPanel Margin="3,0" DockPanel.Dock="Top">
+                <DockPanel DockPanel.Dock="Top">
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding CurrentImage, Mode=OneWay, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                <DataTrigger Binding="{Binding CurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </DockPanel.Style>
 
-
                     <md:Card
                         Margin="3,3,0,0"
-                        HorizontalAlignment="Left"
+                        HorizontalAlignment="Stretch"
                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                         DockPanel.Dock="Top"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                         <DockPanel>
+                            <DockPanel.Background>
+                                <LinearGradientBrush StartPoint="0.2,0" EndPoint="1,1">
+                                    <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
+                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                </LinearGradientBrush>
+                            </DockPanel.Background>
 
-                            <!--<DockPanel Background="{DynamicResource Results_Brush_Active}">
+                            <DockPanel>
+                                <DockPanel.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Offset="0" Color="{DynamicResource Results_Color_Active}" />
+                                        <GradientStop Offset="1" Color="{DynamicResource V275_Color_Active50}" />
+                                    </LinearGradientBrush>
+                                </DockPanel.Background>
+
                                 <iconPacks:PackIconMaterial
                                     Width="12"
                                     Margin="3"
                                     VerticalAlignment="Center"
                                     Kind="StoreOutline" />
-                            </DockPanel>-->
+                            </DockPanel>
 
                             <DockPanel>
-                                <DockPanel.Background>
-                                    <LinearGradientBrush StartPoint="0.4,0" EndPoint="1,1">
-                                        <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
-                                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                    </LinearGradientBrush>
-                                </DockPanel.Background>
 
                                 <!--  Title  -->
                                 <TextBlock
-                                    Margin="6,0,3,0"
+                                    Margin="3,0"
                                     FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
                                     Text="Current Image" />
 
                                 <ContentControl
+                                    HorizontalAlignment="Right"
                                     Content="{StaticResource V275CurrentToolbar}"
                                     DataContext="{Binding .}"
                                     Tag="Image" />
@@ -478,56 +519,22 @@
 
                     <DockPanel
                         Margin="3"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch"
                         Background="Black">
 
                         <Grid
                             MaxWidth="{Binding ResultsEntry.ImagesMaxHeight}"
                             MaxHeight="{Binding ResultsEntry.ImagesMaxHeight}"
-                            Margin="3"
                             MouseDown="CurrentImage_MouseDown"
                             ToolTip="Click to open a larger view of the image.&#x0a;Hold Shift and click to open a 3D view of the image.">
 
                             <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding CurrentImage.ImageLow, Mode=OneWay}" />
 
                             <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding CurrentImageOverlay, Mode=OneWay}" />
+
                         </Grid>
 
                     </DockPanel>
-
-                    <!--<StackPanel HorizontalAlignment="Left">
-
-                    -->
-                    <!--  Show 2D  -->
-                    <!--
-                        <Button
-                            Width="28"
-                            Height="28"
-                            Margin="0,3"
-                            Click="Show2DViewerCurrent"
-                            CommandParameter="{Binding CurrentImage.BitmapBytes}"
-                            Content="{iconPacks:Material Kind=Video2d}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            ToolTip="Open the image in the 2D viewer." />
-
-                    -->
-                    <!--  Show 3D  -->
-                    <!--
-                        <Button
-                            Width="28"
-                            Height="28"
-                            Margin="0,3"
-                            Click="Show3DViewerCurrent"
-                            CommandParameter="{Binding CurrentImage.BitmapBytes}"
-                            Content="{iconPacks:Material Kind=Video3d}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            ToolTip="Open the image in the 2D viewer." />
-
-
-                    </StackPanel>-->
 
                 </DockPanel>
 
@@ -546,36 +553,46 @@
 
                     <md:Card
                         Margin="3,3,0,0"
-                        HorizontalAlignment="Left"
+                        HorizontalAlignment="Stretch"
                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                         DockPanel.Dock="Top"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
                         <StackPanel>
+                            <StackPanel.Background>
+                                <LinearGradientBrush StartPoint="0.2,0" EndPoint="1,1">
+                                    <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
+                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                </LinearGradientBrush>
+                            </StackPanel.Background>
+
                             <DockPanel>
 
-                                <!--<DockPanel Background="{DynamicResource Results_Brush_Active}">
+                                <DockPanel>
+                                    <DockPanel.Background>
+                                        <LinearGradientBrush StartPoint="0.2,0" EndPoint="1,1">
+                                            <GradientStop Offset="0" Color="{DynamicResource Results_Color_Active}" />
+                                            <GradientStop Offset="1" Color="{DynamicResource V275_Color_Active50}" />
+                                        </LinearGradientBrush>
+                                    </DockPanel.Background>
+
                                     <iconPacks:PackIconMaterial
                                         Width="12"
                                         Margin="3"
                                         VerticalAlignment="Center"
                                         Kind="StoreOutline" />
-                                </DockPanel>-->
+                                </DockPanel>
 
                                 <DockPanel>
-                                    <DockPanel.Background>
-                                        <LinearGradientBrush StartPoint="0.4,0" EndPoint="1,1">
-                                            <GradientStop Offset="0" Color="{DynamicResource V275_Color_Active50}" />
-                                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                        </LinearGradientBrush>
-                                    </DockPanel.Background>
 
                                     <!--  Title  -->
                                     <TextBlock
-                                        Margin="6,0,3,0"
+                                        Margin="3,0"
                                         FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
                                         Text="Current Sectors" />
 
                                     <ContentControl
+                                        HorizontalAlignment="Right"
                                         Content="{StaticResource V275CurrentToolbar}"
                                         DataContext="{Binding .}"
                                         Tag="Sectors" />
@@ -584,76 +601,89 @@
 
                             </DockPanel>
 
-                            <TextBlock
-                                Margin="10,0,0,0"
-                                HorizontalAlignment="Left"
-                                Text="{Binding CurrentSectors[0].Version}" />
+                            <Grid Margin="0" DockPanel.Dock="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <!--  Left (expands)  -->
+                                    <ColumnDefinition Width="Auto" />
+                                    <!--  Right toolbars  -->
+                                </Grid.ColumnDefinitions>
+
+                                <!--  Left title and version (put both if (you like)  -->
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="6,1,0,5"
+                                        HorizontalAlignment="Left"
+                                        Text="{Binding CurrentSectors[0].Version}" />
+                                </StackPanel>
+
+                                <!--  Right toolbars container  -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <!--  Unique toolbar (shown when no focused sector)  -->
+                                    <ContentControl
+                                        Content="{StaticResource V275CurrentUniqueToolbar}"
+                                        DataContext="{Binding .}"
+                                        Tag="Sectors">
+                                        <ContentControl.Style>
+                                            <Style TargetType="ContentControl">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding FocusedCurrentSector, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentControl.Style>
+                                    </ContentControl>
+
+                                    <!--  Focused-sector buttons (existing DockPanel content copied as-is)  -->
+                                    <DockPanel>
+                                        <DockPanel.Style>
+                                            <Style TargetType="DockPanel">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding FocusedCurrentSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DockPanel.Style>
+
+                                        <Button
+                                            Command="{Binding SaveSectorDetailsImageCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V275}}"
+                                            CommandParameter="{Binding ., ElementName=FocusedCurrentSector}"
+                                            Content="{iconPacks:Material Kind=ContentSave}"
+                                            Style="{StaticResource ResultsToolbarButtonBase}"
+                                            ToolTip="Save the sector details as a PNG image." />
+
+                                        <Button
+                                            Command="{Binding CopySectorDetailsImageCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V275}}"
+                                            CommandParameter="{Binding ., ElementName=FocusedCurrentSector}"
+                                            Content="{iconPacks:MaterialDesign Kind=Image}"
+                                            Style="{StaticResource ResultsToolbarButtonBase}"
+                                            ToolTip="Copy the sector details to the clipboard as a PNG image." />
+
+                                        <Button
+                                            Command="{Binding FocusedCurrentSector.CopyToClipBoardCommand}"
+                                            CommandParameter="{Binding ResultsEntry.SourceImage.Order}"
+                                            Content="{iconPacks:Material Kind=ContentCopy}"
+                                            Style="{StaticResource ResultsToolbarButtonBase}"
+                                            ToolTip="Copy the focused sector to the clipboard as CSV." />
+
+                                        <Button
+                                            Command="{Binding CloseSectorDetailsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V275}}"
+                                            CommandParameter="Current"
+                                            Content="{iconPacks:MaterialDesign Kind=Close}"
+                                            Style="{StaticResource ResultsToolbarButtonBase}"
+                                            ToolTip="Close the sector details view.&#x0a;Hold Shift and click to close all details views." />
+
+                                    </DockPanel>
+                                </StackPanel>
+                            </Grid>
+
                         </StackPanel>
+
                     </md:Card>
-
-                    <DockPanel
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        DockPanel.Dock="Top">
-                        <DockPanel.Style>
-                            <Style TargetType="DockPanel">
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding FocusedCurrentSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DockPanel.Style>
-
-                        <md:Card
-                            Margin="0,0,0,3"
-                            HorizontalAlignment="Right"
-                            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                            DockPanel.Dock="Top"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-                            <DockPanel>
-
-                                <DockPanel Height="26.62" />
-
-                                <Button
-                                    Width="28"
-                                    Click="btnSaveImage_Click"
-                                    Content="{iconPacks:Material Kind=ContentSave}"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                    ToolTip="Save the sector details as a PNG image." />
-
-                                <Button
-                                    Width="28"
-                                    Click="btnCopyImage_Click"
-                                    Content="{iconPacks:MaterialDesign Kind=ContentCopy}"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                    ToolTip="Copy the sector details to the clipboard as a PNG image." />
-
-                                <Button
-                                    Width="28"
-                                    Command="{Binding FocusedCurrentSector.CopyToClipBoardCommand}"
-                                    CommandParameter="{Binding ResultsEntry.SourceImage.Order}"
-                                    Content="{iconPacks:Material Kind=ContentCopy}"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                    ToolTip="Copy the focused sector to the clipboard as CSV." />
-
-                                <Button
-                                    Width="28"
-                                    Click="btnCloseDetails_Click"
-                                    Content="{iconPacks:MaterialDesign Kind=Close}"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                    Tag="Current"
-                                    ToolTip="Close the sector details view.&#x0a;Hold Shift and click to close all details views." />
-
-                            </DockPanel>
-                        </md:Card>
-                    </DockPanel>
 
                     <ScrollViewer
                         x:Name="ScrollCurrentSectors"
@@ -670,7 +700,7 @@
                                 ItemsSource="{Binding Source={StaticResource CurrentSectorsViewSource}}"
                                 PreviewMouseWheel="CurrentSectors_PreviewMouseWheel"
                                 SelectedItem="{Binding CurrentSelectedSector}"
-                                Tag="v275Current">
+                                Tag="V275Current">
                                 <ListBox.Style>
                                     <Style BasedOn="{StaticResource MahApps.Styles.ListBox}" TargetType="ListBox">
                                         <Setter Property="Visibility" Value="Visible" />
@@ -748,7 +778,7 @@
 
                                     <!--  Keep this Dockapnel. It is used for Saving and Coping the SectorDetails Visual.  -->
                                     <DockPanel>
-                                        <sectors:SectorDetails DataContext="{Binding FocusedCurrentSector}">
+                                        <sectors:SectorDetails x:Name="FocusedCurrentSector" DataContext="{Binding FocusedCurrentSector}">
                                             <sectors:SectorDetails.Style>
                                                 <Style TargetType="sectors:SectorDetails">
                                                     <Setter Property="Width" Value="200" />

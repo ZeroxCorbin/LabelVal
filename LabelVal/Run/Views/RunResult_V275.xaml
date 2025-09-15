@@ -223,7 +223,7 @@
                             Padding="0,1,0,0"
                             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                             ItemsSource="{Binding V275StoredSectors}"
-                            Tag="v275Stored">
+                            Tag="V275Stored">
                             <ItemsControl.Style>
                                 <Style TargetType="ItemsControl">
                                     <Setter Property="Visibility" Value="Visible" />
@@ -384,7 +384,7 @@
                             Padding="0,2,0,0"
                             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                             ItemsSource="{Binding V275CurrentSectors}"
-                            Tag="v275Current">
+                            Tag="V275Current">
                             <ItemsControl.Style>
                                 <Style TargetType="ItemsControl">
                                     <Setter Property="Visibility" Value="Visible" />

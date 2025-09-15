@@ -32,7 +32,6 @@
 
                             <DockPanel>
                                 <md:Card
-             
                                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                                     DockPanel.Dock="Top"
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
@@ -89,7 +88,7 @@
                                                 <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                                             </LinearGradientBrush>
                                         </DockPanel.Background>
-                                        
+
                                         <!--  Toggle (arrow only now)  -->
                                         <ToggleButton
                                             x:Name="PART_Toggle"
@@ -102,7 +101,7 @@
                                             IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}">
                                             <ToggleButton.Template>
                                                 <ControlTemplate TargetType="ToggleButton">
-                                                    <Border  Background="{TemplateBinding Background}">
+                                                    <Border Background="{TemplateBinding Background}">
                                                         <Path
                                                             x:Name="Arrow"
                                                             Width="12"
@@ -268,7 +267,10 @@
         </md:Card>
 
         <DockPanel Grid.Row="1" Margin="3,0,3,0">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,0,3,0">
+            <ScrollViewer
+                Margin="0,0,3,0"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto">
                 <barcodeViews:BarcodeSettingsView
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
@@ -277,7 +279,10 @@
                     SectionExpanderStyle="{StaticResource LabelBuilderSectionExpanderStyle}" />
             </ScrollViewer>
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,0,3,0">
+            <ScrollViewer
+                Margin="0,0,3,0"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto">
                 <barcodeViews:BarcodeManipulationView
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
@@ -286,7 +291,10 @@
                     SectionExpanderStyle="{StaticResource LabelBuilderSectionExpanderStyle}" />
             </ScrollViewer>
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,0,3,0">
+            <ScrollViewer
+                Margin="0,0,3,0"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto">
                 <barcodeViews:BarcodeBuilderImagesView
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"

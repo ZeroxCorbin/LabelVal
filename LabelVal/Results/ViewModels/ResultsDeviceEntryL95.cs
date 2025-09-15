@@ -27,7 +27,7 @@ namespace LabelVal.Results.ViewModels;
 /// Represents a device-specific entry for an L95 device within the image results view.
 /// This class manages the state, data, and operations related to image verification results from an L95 device.
 /// </summary>
-public partial class ResultsDeviceEntry_L95
+public partial class ResultsDeviceEntryL95
     : ObservableRecipient, IResultsDeviceEntry, IRecipient<PropertyChangedMessage<FullReport>>, IDisposable
 {
     /// <summary>
@@ -176,10 +176,10 @@ public partial class ResultsDeviceEntry_L95
     partial void OnIsSelectedChanging(bool value) { if (value) ResultsEntry.ResultsManagerView.ResetSelected(Device); }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ResultsDeviceEntry_L95"/> class.
+    /// Initializes a new instance of the <see cref="ResultsDeviceEntryL95"/> class.
     /// </summary>
     /// <param name="imageResultsEntry">The parent image result entry.</param>
-    public ResultsDeviceEntry_L95(ResultsEntry imageResultsEntry)
+    public ResultsDeviceEntryL95(ResultsEntry imageResultsEntry)
     {
         ResultsEntry = imageResultsEntry;
 
@@ -740,7 +740,7 @@ public partial class ResultsDeviceEntry_L95
     }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the <see cref="ResultsDeviceEntry_L95"/> and optionally releases the managed resources.
+    /// Releases the unmanaged resources used by the <see cref="ResultsDeviceEntryL95"/> and optionally releases the managed resources.
     /// </summary>
     public void Dispose()
     {

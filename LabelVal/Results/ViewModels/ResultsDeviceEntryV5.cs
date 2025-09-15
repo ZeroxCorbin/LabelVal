@@ -25,7 +25,7 @@ namespace LabelVal.Results.ViewModels;
 /// Represents a device-specific entry for V5 devices in the image results view.
 /// This class manages the state, data, and operations for images and sectors from a V5 device.
 /// </summary>
-public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEntry, IDisposable
+public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntry, IDisposable
 {
     /// <summary>
     /// Gets the parent image result entry.
@@ -164,10 +164,10 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
     [ObservableProperty] private bool isSelected = false;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ResultsDeviceEntry_V5"/> class.
+    /// Initializes a new instance of the <see cref="ResultsDeviceEntryV5"/> class.
     /// </summary>
     /// <param name="imageResultsEntry">The parent image result entry.</param>
-    public ResultsDeviceEntry_V5(ResultsEntry imageResultsEntry)
+    public ResultsDeviceEntryV5(ResultsEntry imageResultsEntry)
     {
         ResultsEntry = imageResultsEntry;
         _IsWorkingTimer.AutoReset = false;
@@ -594,7 +594,7 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
     public void RefreshCurrentOverlay() => CurrentImageOverlay = IResultsDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
 
     /// <summary>
-    /// Releases the resources used by the <see cref="ResultsDeviceEntry_V5"/> object.
+    /// Releases the resources used by the <see cref="ResultsDeviceEntryV5"/> object.
     /// </summary>
     public void Dispose()
     {
@@ -603,7 +603,7 @@ public partial class ResultsDeviceEntry_V5 : ObservableObject, IResultsDeviceEnt
     }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the <see cref="ResultsDeviceEntry_V5"/> and optionally releases the managed resources.
+    /// Releases the unmanaged resources used by the <see cref="ResultsDeviceEntryV5"/> and optionally releases the managed resources.
     /// </summary>
     /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
     protected virtual void Dispose(bool disposing)

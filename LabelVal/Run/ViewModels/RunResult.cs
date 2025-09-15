@@ -123,17 +123,17 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
         if (string.IsNullOrEmpty(path)) return;
         try
         {
-            var bmp = type == "v275Stored"
+            var bmp = type == "V275Stored"
                     ? V275StoredImage.ImageBytes
-                    : type == "v275Current"
+                    : type == "V275Current"
                     ? V275CurrentImage.ImageBytes
-                    : type == "v5Stored"
+                    : type == "V5Stored"
                     ? V5StoredImage.ImageBytes
-                    : type == "v5Current"
+                    : type == "V5Current"
                     ? V5CurrentImage.ImageBytes
-                    //: type == "l95Stored"
+                    //: type == "L95Stored"
                     //? L95StoredImage.OriginalImage
-                    //: type == "l95Current"
+                    //: type == "L95Current"
                     //? L95CurrentImage.OriginalImage
                     : SourceImage.ImageBytes;
             if (bmp != null)

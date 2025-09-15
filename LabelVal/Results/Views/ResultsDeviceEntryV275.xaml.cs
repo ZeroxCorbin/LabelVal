@@ -69,9 +69,30 @@ public partial class ResultsDeviceEntry_V275 : UserControl
     }
     #endregion
 
-    // Existing event handlers below (still used by other buttons in main XAML):
+    [RelayCommand]
+    private void SaveSectorDetailsImage(SectorDetails sectorDetails)
+    {
+        if (sectorDetails != null)
+        {
+            string path;
+            if ((path = Utilities.FileUtilities.SaveFileDialog($"{((Sectors.Interfaces.ISector)sectorDetails.DataContext).Template.Username}", "PNG|*.png", "Save sector details.")) != "")
+            {
+                try { SaveToPng(sectorDetails, path); } catch { }
+            }
+        }
+    }
 
-    private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
+    [RelayCommand]
+    private void CopySectorDetailsImage(SectorDetails sectorDetails)
+    {
+        if (sectorDetails != null)
+        {
+            try { CopyToClipboard(sectorDetails); } catch { }
+        }
+    }
+
+    [RelayCommand]
+    private void CloseSectorDetails(string type)
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
@@ -91,7 +112,7 @@ public partial class ResultsDeviceEntry_V275 : UserControl
         }
         else
         {
-            switch ((string)((Button)sender).Tag)
+            switch (type)
             {
                 case "Stored":
                     foreach (ViewModels.IResultsDeviceEntry device in _viewModel.ResultsEntry.ResultsDeviceEntries.Where(x => x.Device == _viewModel.Device))
@@ -121,7 +142,23 @@ public partial class ResultsDeviceEntry_V275 : UserControl
         }
     }
 
-    // (StoredSectors_Click / CurrentSectors_Click / btnCopyToClipboard_Click replaced by commands.)
+    [RelayCommand]
+    private void Show3DImage(byte[] image)
+    {
+        var img = new ImageViewer3D.ViewModels.ImageViewer3D_SingleMesh(image);
+
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+
+        img.Width = yourParentWindow.ActualWidth - 100;
+        img.Height = yourParentWindow.ActualHeight - 100;
+
+        var tmp = new ImageViewer3DDialogView() { DataContext = img };
+        tmp.Unloaded += (s, e) =>
+        img.Dispose();
+        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, tmp);
+
+    }
+
 
     private void ScrollStoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
@@ -145,26 +182,6 @@ public partial class ResultsDeviceEntry_V275 : UserControl
         if (e.Handled) return;
         e.Handled = ScrollCurrentSectors.ComputedVerticalScrollBarVisibility == Visibility.Visible;
         ScrollCurrentSectors.ScrollToVerticalOffset(ScrollCurrentSectors.VerticalOffset - e.Delta);
-    }
-
-    private void btnSaveImage_Click(object sender, RoutedEventArgs e)
-    {
-        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
-        if (sectorDetails != null)
-        {
-            string path;
-            if ((path = Utilities.FileUtilities.SaveFileDialog($"{((Sectors.Interfaces.ISector)sectorDetails.DataContext).Template.Username}", "PNG|*.png", "Save sector details.")) != "")
-            {
-                try { SaveToPng(sectorDetails, path); } catch { }
-            }
-        }
-    }
-    private void btnCopyImage_Click(object sender, RoutedEventArgs e)
-    {
-        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
-        if (sectorDetails != null) CopyToClipboard(sectorDetails);
     }
 
     public void SaveToPng(FrameworkElement visual, string fileName)
@@ -249,23 +266,6 @@ public partial class ResultsDeviceEntry_V275 : UserControl
         if (sender is Sector sectorView && sectorView.DataContext is Sectors.Interfaces.ISector sector)
             sector.IsMouseOver = false;
         _ = Application.Current.Dispatcher.BeginInvoke(() => _viewModel.RefreshStoredOverlay());
-    }
-
-    [RelayCommand]
-    private void Show3DImage(byte[] image)
-    {
-        var img = new ImageViewer3D.ViewModels.ImageViewer3D_SingleMesh(image);
-
-        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
-
-        img.Width = yourParentWindow.ActualWidth - 100;
-        img.Height = yourParentWindow.ActualHeight - 100;
-
-        var tmp = new ImageViewer3DDialogView() { DataContext = img };
-        tmp.Unloaded += (s, e) =>
-        img.Dispose();
-        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, tmp);
-
     }
 
     private void Show3DViewerCurrent(object sender, RoutedEventArgs e) => Show3DImage(_viewModel.CurrentImage.ImageBytes);

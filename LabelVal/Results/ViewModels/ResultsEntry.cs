@@ -175,8 +175,8 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
         ResultsDeviceEntries =
         [
             new ResultsDeviceEntryV275(this),
-            new ResultsDeviceEntry_V5(this),
-            new ResultsDeviceEntry_L95(this),
+            new ResultsDeviceEntryV5(this),
+            new ResultsDeviceEntryL95(this),
         ];
 
         IsActive = true;

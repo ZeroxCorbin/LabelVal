@@ -46,30 +46,6 @@
             CommandParameter="{Binding StoredImage.BitmapBytes}"
             Style="{StaticResource Show3DViewerButtonStyle}" />
 
-        <!--  Sectors Only: Load (device online & Tag != Image)  -->
-        <DockPanel>
-            <DockPanel.Style>
-                <Style TargetType="DockPanel">
-                    <Setter Property="Visibility" Value="Visible" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.Offline}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DockPanel.Style>
-
-            <Button
-                Command="{Binding LoadCommand}"
-                Content="{iconPacks:Material Kind=Download}"
-                Style="{StaticResource ResultsToolbarButtonBase}"
-                ToolTip="Overwrite the template sectors with the stored data from the database." />
-
-            <Border Margin="1,0" Style="{StaticResource imageBar}" />
-        </DockPanel>
 
         <!--  Sectors Only: Show All  -->
         <Button

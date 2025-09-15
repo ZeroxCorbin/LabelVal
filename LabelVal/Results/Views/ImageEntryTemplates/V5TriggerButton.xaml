@@ -15,7 +15,7 @@
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
-    <DataTemplate x:Key="V5TriggerButton" DataType="{x:Type vm:ResultsDeviceEntry_V5}">
+    <DataTemplate x:Key="V5TriggerButton" DataType="{x:Type vm:ResultsDeviceEntryV5}">
 
         <Button BorderBrush="{DynamicResource V5_Brush_Active}" Command="{Binding ProcessCommand}">
             <Button.Style>

@@ -407,7 +407,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         }
         else if (img.NewData is V5_REST_Lib.Controllers.FullReport v5)
         {
-            if (ire.ResultsDeviceEntries.FirstOrDefault((e) => e.Device == ResultsEntryDevices.V5) is ResultsDeviceEntry_V5 ird)
+            if (ire.ResultsDeviceEntries.FirstOrDefault((e) => e.Device == ResultsEntryDevices.V5) is ResultsDeviceEntryV5 ird)
             {
                 ird.ProcessFullReport(v5);
                 WorkingUpdate(ird.Device, false);
@@ -416,7 +416,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         else if (img.NewData is FullReport l95)
         {
             System.Drawing.Point center = new(l95.Template.GetParameter<int>("Report.X1") + (l95.Template.GetParameter<int>("Report.SizeX") / 2), l95.Template.GetParameter<int>("Report.Y1") + (l95.Template.GetParameter<int>("Report.SizeY") / 2));
-            if (ire.ResultsDeviceEntries.FirstOrDefault((e) => e.Device == ResultsEntryDevices.L95) is ResultsDeviceEntry_L95 ird)
+            if (ire.ResultsDeviceEntries.FirstOrDefault((e) => e.Device == ResultsEntryDevices.L95) is ResultsDeviceEntryL95 ird)
             {
                 string name = null;
                 if ((name = ire.GetName(center)) == null)

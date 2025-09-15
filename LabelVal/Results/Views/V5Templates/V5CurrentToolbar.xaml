@@ -33,28 +33,6 @@
             </Button.Style>
         </Button>
 
-        <!--  Sectors Only: Read  -->
-        <Button Command="{Binding ReadCommand}">
-            <Button.Style>
-                <Style BasedOn="{StaticResource ReadButtonStyle}" TargetType="Button">
-                    <Setter Property="Visibility" Value="Visible" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Handler}" Value="Offline">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <!--  Hide when Tag=Image AND sectors collection not empty (original logic)  -->
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image" />
-                                <Condition Binding="{Binding CurrentSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </MultiDataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-
         <!--  Sectors-only separator  -->
         <ContentControl ContentTemplate="{StaticResource SectorsOnlySeparator}" />
 

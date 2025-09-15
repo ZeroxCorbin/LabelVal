@@ -483,7 +483,7 @@
 
                                 <Style.Triggers>
                                     <!--<DataTrigger Binding="{Binding IsV275ImageStored}" Value="False">
-                                        <Setter Property="CommandParameter" Value="v275Current"/>
+                                        <Setter Property="CommandParameter" Value="V275Current"/>
                                         <Setter Property="ToolTip" Value="Save the current image."/>
                                     </DataTrigger>-->
 
@@ -860,7 +860,7 @@
 
                                 <Style.Triggers>
                                     <!--<DataTrigger Binding="{Binding IsV275ImageStored}" Value="False">
-                                        <Setter Property="CommandParameter" Value="v275Current"/>
+                                        <Setter Property="CommandParameter" Value="V275Current"/>
                                         <Setter Property="ToolTip" Value="Save the current image."/>
                                     </DataTrigger>-->
 
@@ -1233,7 +1233,7 @@
 
                                 <Style.Triggers>
                                     <!--<DataTrigger Binding="{Binding IsV5ImageStored}" Value="False">
-                                        <Setter Property="CommandParameter" Value="v5Current"/>
+                                        <Setter Property="CommandParameter" Value="V5Current"/>
                                         <Setter Property="ToolTip" Value="Save the current image."/>
                                     </DataTrigger>-->
 
@@ -1608,7 +1608,7 @@
 
                                 <Style.Triggers>
                                     <!--<DataTrigger Binding="{Binding IsV5ImageStored}" Value="False">
-                                        <Setter Property="CommandParameter" Value="v5Current"/>
+                                        <Setter Property="CommandParameter" Value="V5Current"/>
                                         <Setter Property="ToolTip" Value="Save the current image."/>
                                     </DataTrigger>-->
 
