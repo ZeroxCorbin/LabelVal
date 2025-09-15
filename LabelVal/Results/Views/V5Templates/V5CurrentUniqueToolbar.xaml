@@ -23,7 +23,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        
+
         <!--  Sectors Only: Read  -->
         <Button Command="{Binding ReadCommand}">
             <Button.Style>

@@ -64,7 +64,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        
+
         <!--  Sectors Only: Read (visibility logic per original)  -->
         <Button Command="{Binding ReadCommand}">
             <Button.Style>

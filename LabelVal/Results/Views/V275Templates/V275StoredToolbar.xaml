@@ -30,7 +30,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        
+
         <!--  Image Only: Save stored image  -->
         <Button
             Command="{Binding ResultsEntry.SaveCommand}"

@@ -52,6 +52,14 @@
                         Text="Source" />
 
                     <DockPanel HorizontalAlignment="Right">
+
+                        <Button
+                            Margin="3"
+                            Click="btnCopyToClipboard_Click"
+                            Content="{iconPacks:Modern Kind=PageCopy}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" /> 
+                        
                         <!--  Save Image  -->
                         <Button
                             Margin="3"
@@ -61,13 +69,7 @@
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                             ToolTip="Save the image." />
-
-                        <Button
-                            Margin="3"
-                            Click="btnCopyToClipboard_Click"
-                            Content="{iconPacks:Modern Kind=PageCopy}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+                        
                     </DockPanel>
 
                 </DockPanel>

@@ -37,7 +37,7 @@
             Style="{StaticResource SaveImageButtonStyle}">
             <Button.ToolTip>Save the stored image to a file.</Button.ToolTip>
         </Button>
-        
+
         <Button
             Command="{Binding Show3DImageCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
             CommandParameter="{Binding StoredImage.BitmapBytes}"

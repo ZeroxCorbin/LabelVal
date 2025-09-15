@@ -12,7 +12,7 @@
 
     <!--  Stored Toolbar (V5)  -->
     <DockPanel x:Key="V5StoredToolbar" x:Shared="False">
-        
+
         <!--  Both: Copy  -->
         <Button
             Command="{Binding CopyToClipboardCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V5}}"

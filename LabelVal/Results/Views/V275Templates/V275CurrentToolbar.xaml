@@ -33,7 +33,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        
+
         <!--  Image Only: Save  -->
         <Button
             Command="{Binding ResultsEntry.SaveCommand}"
@@ -41,7 +41,7 @@
             Style="{StaticResource SaveImageButtonStyle}">
             <Button.ToolTip>Save the current image to a file.</Button.ToolTip>
         </Button>
-        
+
         <!--  Sectors Only: Show All  -->
         <Button
             Command="{Binding ShowCurrentSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V275}}"
