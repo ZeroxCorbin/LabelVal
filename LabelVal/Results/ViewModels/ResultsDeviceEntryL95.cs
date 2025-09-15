@@ -12,6 +12,7 @@ using LabelVal.Results.Databases;
 using LabelVal.Results.Helpers;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
+using LabelVal.Utilities;
 using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
@@ -238,19 +239,25 @@ public partial class ResultsDeviceEntryL95
 
             List<Sectors.Interfaces.ISector> tempSectors = [];
             foreach (JToken rSec in row.Report.GetParameter<JArray>("AllReports"))
-                tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
+            {
+                tempSectors.Add(new Sector(
+                    ((JObject)rSec).GetParameter<JObject>("Template"),
+                    ((JObject)rSec).GetParameter<JObject>("Report"),
+                    [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard],
+                    ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard,
+                    ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table,
+                    ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
+            }
 
             if (tempSectors.Count > 0)
             {
                 tempSectors = ResultsEntry.SortList3(tempSectors);
-
                 foreach (ISector sec in tempSectors)
                     StoredSectors.Add(sec);
             }
 
             ResultRow = row;
             RefreshStoredOverlay();
-
         }
         catch (Exception ex)
         {
@@ -270,7 +277,6 @@ public partial class ResultsDeviceEntryL95
             Logger.Error("No sectors to store.");
             return;
         }
-
         if (ResultsEntry.SelectedResultsDatabase == null)
         {
             Logger.Error("No image results database selected.");
@@ -280,16 +286,16 @@ public partial class ResultsDeviceEntryL95
         ISector old = StoredSectors.FirstOrDefault(x => x.Template.Name == CurrentSelectedSector.Template.Name);
         if (old != null)
         {
-            if (await ResultsEntry.OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+            if (await ResultsEntry.OkCancelDialog("Overwrite Stored Sector",
+                    "The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
         }
 
-        //Save the list to the database.
         List<FullReport> temp = [];
         foreach (ISector sector in StoredSectors)
-            temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
+            temp.Add(new FullReport(((Sector)sector).Template.Original, ((Sector)sector).Report.Original));
 
-        temp.Add(new FullReport(((L95.Sectors.Sector)CurrentSelectedSector).Template.Original, ((L95.Sectors.Sector)CurrentSelectedSector).Report.Original));
+        temp.Add(new FullReport(((Sector)CurrentSelectedSector).Template.Original, ((Sector)CurrentSelectedSector).Report.Original));
 
         JObject report = new()
         {
@@ -302,7 +308,6 @@ public partial class ResultsDeviceEntryL95
             ImageRollUID = ResultsEntry.ImageRollUID,
             SourceImageUID = ResultsEntry.SourceImageUID,
             RunUID = ResultsEntry.ImageRollUID,
-
             Template = CurrentTemplate,
             Report = report,
             Stored = CurrentImage,
@@ -322,7 +327,6 @@ public partial class ResultsDeviceEntryL95
             Logger.Error("No sectors to store.");
             return;
         }
-
         if (ResultsEntry.SelectedResultsDatabase == null)
         {
             Logger.Error("No image results database selected.");
@@ -330,7 +334,8 @@ public partial class ResultsDeviceEntryL95
         }
 
         if (StoredSectors.Count > 0)
-            if (await ResultsEntry.OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+            if (await ResultsEntry.OkCancelDialog("Overwrite Stored Sectors",
+                    "Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
 
         Result res = GetCurrentReport();
@@ -340,108 +345,29 @@ public partial class ResultsDeviceEntryL95
 
         GetStored();
         ClearCurrent();
-
-        //        else if (device == ResultsEntryDevices.L95)
-        //{
-
-        //    if (L95CurrentSectorSelected == null)
-        //    {
-        //        Logger.Error("No sector selected to store.");
-        //        return;
-        //    }
-        //    //Does the selected sector exist in the Stored sectors list?
-        //    //If so, prompt to overwrite or cancel.
-
-        //    Sectors.Interfaces.ISector old = L95StoredSectors.FirstOrDefault(x => x.Template.Name == L95CurrentSectorSelected.Template.Name);
-        //    if (old != null)
-        //    {
-        //        if (await OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
-        //            return;
-        //    }
-
-        //    //Save the list to the database.
-        //    List<FullReport> temp = [];
-        //    if (L95ResultRow != null)
-        //        temp = L95ResultRow._AllSectors;
-
-        //    temp.Add(new FullReport(((L95.Sectors.Sector)L95CurrentSectorSelected).Template.Original, ((L95.Sectors.Sector)L95CurrentSectorSelected).Report.Original));
-
-        //    _ = SelectedResultsDatabase.InsertOrReplace_L95Result(new Databases.L95Result
-        //    {
-        //        ImageRollUID = ImageRollUID,
-        //        RunUID = ImageRollUID,
-        //        Source = SourceImage,
-        //        Stored = L95CurrentImage,
-
-        //        _AllSectors = temp,
-        //    });
-
-        //    ClearRead(device);
-
-        //    L95GetStored();
-        //}
-        //else if (device == ResultsEntryDevices.L95All)
-        //{
-
-        //    if (L95CurrentSectors.Count == 0)
-        //    {
-        //        Logger.Debug($"There are no sectors to store for: {device}");
-        //        return;
-        //    }
-        //    //Does the selected sector exist in the Stored sectors list?
-        //    //If so, prompt to overwrite or cancel.
-
-        //    if (L95StoredSectors.Count > 0)
-        //        if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
-        //            return;
-
-        //    //Save the list to the database.
-        //    List<FullReport> temp = [];
-        //    foreach (Sectors.Interfaces.ISector sector in L95CurrentSectors)
-
-        //        temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
-
-        //    _ = SelectedResultsDatabase.InsertOrReplace_L95Result(new Databases.L95Result
-        //    {
-        //        ImageRollUID = ImageRollUID,
-        //        RunUID = ImageRollUID,
-        //        Source = SourceImage,
-        //        Stored = L95CurrentImage,
-
-        //        _AllSectors = temp,
-        //    });
-
-        //    ClearRead(device);
-
-        //    L95GetStored();
-        //}
     }
 
     private Result GetCurrentReport()
     {
-        //Save the list to the database.
         List<FullReport> temp = [];
         foreach (ISector sector in CurrentSectors)
-            temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
+            temp.Add(new FullReport(((Sector)sector).Template.Original, ((Sector)sector).Report.Original));
 
         JObject report = new()
         {
             ["AllReports"] = JArray.FromObject(temp)
         };
 
-        var res = new Databases.Result
+        return new Databases.Result
         {
             Device = Device,
             ImageRollUID = ResultsEntry.ImageRollUID,
             SourceImageUID = ResultsEntry.SourceImageUID,
             RunUID = ResultsEntry.ImageRollUID,
-
             Template = CurrentTemplate,
             Report = report,
             Stored = CurrentImage,
         };
-
-        return res;
     }
 
     /// <summary>
@@ -454,34 +380,39 @@ public partial class ResultsDeviceEntryL95
 
         Label lab = new()
         {
-            Config = new Lvs95xx.lib.Core.Controllers.Config()
+            Config = new Config
             {
                 ApplicationStandard = ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard.GetDescription(),
             },
-            RepeatAvailable = ProcessFullReport,
+            RepeatAvailable = (fr, replace) => ProcessFullReport(fr, replace),
         };
 
         if (ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard == ApplicationStandards.GS1)
             lab.Config.Table = ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table.GetTableName();
 
+        int fallback = ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600;
         double srcDpiX, srcDpiY;
+
         if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Source)
-            lab.Image = GlobalAppSettings.Instance.PreseveImageFormat ? ResultsEntry.SourceImage.BitmapBytes : ConvertImageToBgr32PreserveDpi.Convert(ResultsEntry.SourceImage.BitmapBytes, out srcDpiX, out srcDpiY);
+        {
+            lab.Image = GlobalAppSettings.Instance.PreseveImageFormat
+                ? ImageFormatHelpers.EnsureDpi(ResultsEntry.SourceImage.OriginalImage, fallback, fallback, out srcDpiX, out srcDpiY)
+                : ConvertImageToBgr32PreserveDpi.Convert(ResultsEntry.SourceImage.OriginalImage, fallback, out srcDpiX, out srcDpiY);
+        }
         else if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
         {
-            if(ResultRow == null || ResultRow.Stored == null)
+            if (ResultRow?.Stored == null)
             {
                 Logger.Error("No stored image to process.");
                 return;
             }
-
-            lab.Image = GlobalAppSettings.Instance.PreseveImageFormat ? ResultRow.Stored.BitmapBytes : ConvertImageToBgr32PreserveDpi.Convert(ResultRow.Stored.BitmapBytes, out srcDpiX, out srcDpiY); 
+            lab.Image = GlobalAppSettings.Instance.PreseveImageFormat
+                ? ImageFormatHelpers.EnsureDpi(ResultRow.Stored.ImageBytes, fallback, fallback, out srcDpiX, out srcDpiY)
+                : ConvertImageToBgr32PreserveDpi.Convert(ResultRow.Stored.ImageBytes, fallback, out srcDpiX, out srcDpiY);
         }
-            
 
         IsWorking = true;
         IsFaulted = false;
-
         _ = Task.Run(() => ResultsEntry.ResultsManagerView.SelectedL95.Controller.ProcessLabelAsync(lab));
     }
     /// <summary>
@@ -499,7 +430,7 @@ public partial class ResultsDeviceEntryL95
 
         try
         {
-            if (message == null || message.Report == null)// || message.Report.OverallGrade.StartsWith("Bar"))
+            if (message == null || message.Report == null)
             {
                 IsFaulted = true;
                 return;
@@ -508,25 +439,30 @@ public partial class ResultsDeviceEntryL95
             if (message.Report.GetParameter<string>(Parameters.OverallGrade.GetPath(Devices.L95, Symbologies.DataMatrix)) != "Bar Code Not Detected")
             {
 
-                System.Drawing.Point center = new(message.Template.GetParameter<int>("Report.X1") + (message.Template.GetParameter<int>("Report.SizeX") / 2), message.Template.GetParameter<int>("Report.Y1") + (message.Template.GetParameter<int>("Report.SizeY") / 2));
+                System.Drawing.Point center = new(
+                    message.Template.GetParameter<int>("Report.X1") + (message.Template.GetParameter<int>("Report.SizeX") / 2),
+                    message.Template.GetParameter<int>("Report.Y1") + (message.Template.GetParameter<int>("Report.SizeY") / 2));
 
-                string name = null;
-                if ((name = ResultsEntry.GetName(center)) == null)
-                    name ??= $"Verify_{CurrentSectors.Count + 1}";
-
-                _ = message.Template.SetParameter<string>("Name", name);
+                string name = ResultsEntry.GetName(center) ?? $"Verify_{CurrentSectors.Count + 1}";
+                _ = message.Template.SetParameter("Name", name);
 
                 if (replaceSectors)
                     CurrentSectors.Clear();
 
-                CurrentSectors.Add(new Sector(message.Template, message.Report, [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
+                CurrentSectors.Add(new Sector(
+                    message.Template,
+                    message.Report,
+                    [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard],
+                    ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard,
+                    ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table,
+                    message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
             }
             else if (GlobalAppSettings.Instance.LvsIgnoreNoResults)
                 return;
 
             List<FullReport> temp = [];
             foreach (ISector sector in CurrentSectors)
-                temp.Add(new FullReport(((L95.Sectors.Sector)sector).Template.Original, ((L95.Sectors.Sector)sector).Report.Original));
+                temp.Add(new FullReport(((Sector)sector).Template.Original, ((Sector)sector).Report.Original));
 
             JObject report = new()
             {
@@ -536,7 +472,6 @@ public partial class ResultsDeviceEntryL95
             CurrentTemplate = null;
 
             var tempSectors = CurrentSectors.ToList();
-
             if (tempSectors.Count > 0)
             {
                 tempSectors = ResultsEntry.SortList3(tempSectors);
@@ -545,10 +480,24 @@ public partial class ResultsDeviceEntryL95
 
             GetSectorDiff();
 
-            var img = GlobalAppSettings.Instance.PreseveImageFormat ? message.Template.GetParameter<byte[]>("Report.Image") : ConvertImageToBgr32PreserveDpi.Convert(message.Template.GetParameter<byte[]>("Report.Image"), out _, out _);
-            CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, message.Template.GetParameter<byte[]>("Report.Thumbnail"));
-            RefreshCurrentOverlay();
+            int fallback = ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600;
 
+            // Full image (if needed later)
+            var fullImgBytesOriginal = message.Template.GetParameter<byte[]>("Report.Image");
+            var fullImgBytes = GlobalAppSettings.Instance.PreseveImageFormat
+                ? ImageFormatHelpers.EnsureDpi(fullImgBytesOriginal, fallback, fallback, out _, out _)
+                : ConvertImageToBgr32PreserveDpi.Convert(fullImgBytesOriginal, fallback, out _, out _);
+
+            // Thumbnail
+            var thumbBytesOriginal = message.Template.GetParameter<byte[]>("Report.Thumbnail");
+            var thumbBytes = GlobalAppSettings.Instance.PreseveImageFormat
+                ? ImageFormatHelpers.EnsureDpi(thumbBytesOriginal, fallback, fallback, out _, out _)
+                : ConvertImageToBgr32PreserveDpi.Convert(thumbBytesOriginal, fallback, out _, out _);
+
+            CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, thumbBytes);
+            CurrentImage.EnsureDpi(fallback);
+
+            RefreshCurrentOverlay();
             IsFaulted = false;
         }
         catch (Exception ex)
@@ -610,7 +559,6 @@ public partial class ResultsDeviceEntryL95
 
         CurrentSectors.Clear();
         DiffSectors.Clear();
-
         CurrentImageOverlay = null;
         CurrentImage = null;
     }
@@ -621,7 +569,8 @@ public partial class ResultsDeviceEntryL95
     [RelayCommand]
     public async Task ClearStored()
     {
-        if (await ResultsEntry.OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
+        if (await ResultsEntry.OkCancelDialog("Clear Stored Sectors",
+                "Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
             _ = ResultsEntry.SelectedResultsDatabase.Delete_Result(Device, ResultsEntry.ImageRollUID, ResultsEntry.SourceImageUID, ResultsEntry.ImageRollUID);
             GetStored();
@@ -632,10 +581,8 @@ public partial class ResultsDeviceEntryL95
     private void GetSectorDiff()
     {
         DiffSectors.Clear();
-
         List<SectorDifferences> diff = [];
 
-        //Compare; Do not check for missing her. To keep found at top of list.
         foreach (Sector sec in StoredSectors)
         {
             foreach (Sector cSec in CurrentSectors)
@@ -644,73 +591,51 @@ public partial class ResultsDeviceEntryL95
                     if (sec.Report.Symbology == cSec.Report.Symbology)
                     {
                         SectorDifferences res = sec.SectorDetails.Compare(cSec.SectorDetails);
-                        if (res == null)
-                            continue;
-                        diff.Add(res);
-                        continue;
+                        if (res != null)
+                            diff.Add(res);
                     }
                     else
                     {
-                        SectorDifferences dat = new()
+                        diff.Add(new SectorDifferences
                         {
                             Username = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
                             SectorMissingText = $"Stored Sector {sec.Report.Symbology.GetDescription()} : Current Sector {cSec.Report.Symbology.GetDescription()}"
-                        };
-                        diff.Add(dat);
+                        });
                     }
                 }
         }
 
-        //Check for missing
         foreach (Sector sec in StoredSectors)
         {
-            var found = false;
-            foreach (Sector cSec in CurrentSectors)
-                if (sec.Template.Name == cSec.Template.Name)
-                {
-                    found = true;
-                    continue;
-                }
-
+            var found = CurrentSectors.Any(cSec => cSec.Template.Name == sec.Template.Name);
             if (!found)
             {
-                SectorDifferences dat = new()
+                diff.Add(new SectorDifferences
                 {
                     Username = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
                     SectorMissingText = "Not found in current Sectors"
-                };
-                diff.Add(dat);
+                });
             }
         }
 
-        //check for missing
         if (StoredSectors.Count > 0)
             foreach (Sector sec in CurrentSectors)
             {
-                var found = false;
-                foreach (Sector cSec in StoredSectors)
-                    if (sec.Template.Name == cSec.Template.Name)
-                    {
-                        found = true;
-                        continue;
-                    }
-
+                var found = StoredSectors.Any(cSec => cSec.Template.Name == sec.Template.Name);
                 if (!found)
                 {
-                    SectorDifferences dat = new()
+                    diff.Add(new SectorDifferences
                     {
                         Username = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
                         SectorMissingText = "Not found in Stored Sectors"
-                    };
-                    diff.Add(dat);
+                    });
                 }
             }
 
-        foreach (SectorDifferences d in diff)
-
+        foreach (var d in diff)
             DiffSectors.Add(d);
     }
 
@@ -744,9 +669,7 @@ public partial class ResultsDeviceEntryL95
             ISector item = list[i];
             var currentIndex = observableCollection.IndexOf(item);
             if (currentIndex != i)
-            {
                 observableCollection.Move(currentIndex, i);
-            }
         }
     }
 

@@ -1,16 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace LabelVal.Results.Helpers;
 public class ConvertImageToBgr32PreserveDpi
 {
-    // Helper: ensure BGR32 (32bpp) and preserve or reconstruct DPI
     public static byte[] Convert(byte[] image, out double dpiX, out double dpiY)
+    {
+        return ConvertInternal(image, null, out dpiX, out dpiY);
+    }
+
+    public static byte[] Convert(byte[] image, int fallbackDpi, out double dpiX, out double dpiY)
+    {
+        return ConvertInternal(image, fallbackDpi, out dpiX, out dpiY);
+    }
+
+    private static byte[] ConvertInternal(byte[] image, int? fallback, out double dpiX, out double dpiY)
     {
         dpiX = dpiY = 0;
         if (image == null || image.Length == 0)
@@ -25,27 +30,45 @@ public class ConvertImageToBgr32PreserveDpi
             dpiX = frame.DpiX;
             dpiY = frame.DpiY;
 
-            // If already Bgr32 with valid DPI just return original bytes
-            if (frame.Format == System.Windows.Media.PixelFormats.Bgr32 && dpiX >= 10 && dpiY >= 10)
-                return image;
+            bool dpiInvalid = dpiX < 10 || dpiY < 10;
 
-            // Convert format if needed
             BitmapSource working = frame.Format == System.Windows.Media.PixelFormats.Bgr32
                 ? frame
                 : new FormatConvertedBitmap(frame, System.Windows.Media.PixelFormats.Bgr32, null, 0);
 
-            // If DPI invalid, leave (we will fallback later in caller); otherwise we keep it
-            if (dpiX < 10 || dpiY < 10)
+            double outDpiX = dpiInvalid && fallback.HasValue ? fallback.Value : working.DpiX;
+            double outDpiY = dpiInvalid && fallback.HasValue ? fallback.Value : working.DpiY;
+
+            if (!dpiInvalid)
             {
-                // Keep placeholder (caller supplies fallback); do not force here to avoid assuming context
-                dpiX = dpiY = 0;
+                // If already BGR32 + valid DPI just return original bytes
+                if (frame.Format == System.Windows.Media.PixelFormats.Bgr32)
+                    return image;
             }
 
-            // Re-pack to guarantee 32bpp BGR byte ordering (BMP stores pixels-per-meter for DPI)
+            int stride = (working.PixelWidth * working.Format.BitsPerPixel + 7) / 8;
+            var pixels = new byte[stride * working.PixelHeight];
+            working.CopyPixels(pixels, stride, 0);
+
+            var bmpSource = BitmapSource.Create(
+                working.PixelWidth,
+                working.PixelHeight,
+                outDpiX,
+                outDpiY,
+                working.Format,
+                working.Palette,
+                pixels,
+                stride);
+
             var encoder = new BmpBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(CloneWithOptionalDpi(working, dpiX, dpiY)));
+            encoder.Frames.Add(BitmapFrame.Create(bmpSource));
             using var outMs = new MemoryStream();
             encoder.Save(outMs);
+
+            // Report final DPI
+            dpiX = outDpiX;
+            dpiY = outDpiY;
+
             return outMs.ToArray();
         }
         catch (Exception ex)
@@ -53,18 +76,5 @@ public class ConvertImageToBgr32PreserveDpi
             Logger.Warning($"ConvertImageToBgr32PreserveDpi failed: {ex.Message}");
             return image;
         }
-
-        static BitmapSource CloneWithOptionalDpi(BitmapSource src, double dpiX, double dpiY)
-        {
-            // If dpiX/dpiY are zero or invalid we just keep pixel data; DPI fallback applied later.
-            if (dpiX < 10 || dpiY < 10)
-                (dpiX, dpiY) = (src.DpiX, src.DpiY);
-
-            int stride = (src.PixelWidth * src.Format.BitsPerPixel + 7) / 8;
-            var pixels = new byte[stride * src.PixelHeight];
-            src.CopyPixels(pixels, stride, 0);
-            return BitmapSource.Create(src.PixelWidth, src.PixelHeight, dpiX, dpiY, src.Format, src.Palette, pixels, stride);
-        }
     }
-
 }

@@ -18,6 +18,9 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using LabelVal.Sectors.Interfaces;
+using LabelVal.Main.ViewModels;
+using LabelVal.Results.Helpers;
+using LabelVal.Utilities;
 
 namespace LabelVal.Results.ViewModels;
 
@@ -96,12 +99,12 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
     /// <summary>
     /// Gets the collection of sectors from the current processing result.
     /// </summary>
-    public ObservableCollection<Sectors.Interfaces.ISector> CurrentSectors { get; } = [];
+    public ObservableCollection<ISector> CurrentSectors { get; } = [];
 
     /// <summary>
     /// Gets the collection of sectors from the stored result.
     /// </summary>
-    public ObservableCollection<Sectors.Interfaces.ISector> StoredSectors { get; } = [];
+    public ObservableCollection<ISector> StoredSectors { get; } = [];
 
     /// <summary>
     /// Gets the collection of differences between stored and current sectors.
@@ -111,17 +114,17 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
     /// <summary>
     /// Gets or sets the currently selected sector in the UI.
     /// </summary>
-    [ObservableProperty] private Sectors.Interfaces.ISector currentSelectedSector = null;
+    [ObservableProperty] private ISector currentSelectedSector = null;
 
     /// <summary>
     /// Gets or sets the stored sector that has focus.
     /// </summary>
-    [ObservableProperty] private Sectors.Interfaces.ISector focusedStoredSector = null;
+    [ObservableProperty] private ISector focusedStoredSector = null;
 
     /// <summary>
     /// Gets or sets the current sector that has focus.
     /// </summary>
-    [ObservableProperty] private Sectors.Interfaces.ISector focusedCurrentSector = null;
+    [ObservableProperty] private ISector focusedCurrentSector = null;
 
     /// <summary>
     /// Gets or sets a value indicating whether a process is currently running.
@@ -162,41 +165,33 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
     /// Gets or sets a value indicating whether this device entry is selected in the UI.
     /// </summary>
     [ObservableProperty] private bool isSelected = false;
+    partial void OnIsSelectedChanging(bool value) { if (value) ResultsEntry.ResultsManagerView.ResetSelected(Device); }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ResultsDeviceEntryV5"/> class.
+    /// Gets the appropriate label handler based on the current state and settings.
     /// </summary>
-    /// <param name="imageResultsEntry">The parent image result entry.</param>
-    public ResultsDeviceEntryV5(ResultsEntry imageResultsEntry)
-    {
-        ResultsEntry = imageResultsEntry;
-        _IsWorkingTimer.AutoReset = false;
-        _IsWorkingTimer.Elapsed += _IsWorkingTimer_Elapsed;
-    }
+    public LabelHandlers Handler => ResultsManagerView?.SelectedV5?.Controller != null && ResultsManagerView.SelectedV5.Controller.IsConnected
+        ? ResultsManagerView.SelectedV5.Controller.IsSimulator
+            ? ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+                ? !string.IsNullOrEmpty(ResultRow?.TemplateString) ? LabelHandlers.SimulatorRestore : LabelHandlers.SimulatorDetect
+                : LabelHandlers.SimulatorTrigger
+            : ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+                ? !string.IsNullOrEmpty(ResultRow?.TemplateString) ? LabelHandlers.CameraRestore : LabelHandlers.CameraDetect
+                : LabelHandlers.CameraTrigger
+        : LabelHandlers.Offline;
 
+    public ResultsDeviceEntryV5(ResultsEntry resultsEntry)
+    {
+        ResultsEntry = resultsEntry ?? throw new ArgumentNullException(nameof(resultsEntry));
+        _IsWorkingTimer.Elapsed += _IsWorkingTimer_Elapsed;
+        _IsWorkingTimer.AutoReset = false;
+    }
     private void _IsWorkingTimer_Elapsed(object sender, ElapsedEventArgs e)
     {
         Logger.Error($"Working timer elapsed for {Device}.");
         IsWorking = false;
         IsFaulted = true;
     }
-    partial void OnIsSelectedChanging(bool value) { if (value) ResultsEntry.ResultsManagerView.ResetSelected(Device); }
-
-    /// <summary>
-    /// Gets the appropriate label handler based on the current state and settings.
-    /// </summary>
-    public LabelHandlers Handler => ResultsManagerView?.SelectedV5?.Controller != null && ResultsManagerView.SelectedV5.Controller.IsConnected ? ResultsManagerView.SelectedV5.Controller.IsSimulator
-            ? ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
-                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
-                    ? LabelHandlers.SimulatorRestore
-                    : LabelHandlers.SimulatorDetect
-                : LabelHandlers.SimulatorTrigger
-            : ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
-                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
-                    ? LabelHandlers.CameraRestore
-                    : LabelHandlers.CameraDetect
-                : LabelHandlers.CameraTrigger
-        : LabelHandlers.Offline;
 
     /// <summary>
     /// Notifies the UI that the <see cref="Handler"/> property has changed.
@@ -217,7 +212,6 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
         StoredSectors.Clear();
 
         var row = ResultsEntry.SelectedResultsDatabase.Select_Result(Device, ResultsEntry.ImageRollUID, ResultsEntry.SourceImageUID, ResultsEntry.ImageRollUID);
-
         if (row == null)
         {
             ResultRow = null;
@@ -226,25 +220,31 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
 
         if (row.Report == null || row.Template == null)
         {
-            Logger.Debug(" result is missing data.");
+            Logger.Debug("V5 stored result is missing template or report.");
             return;
         }
 
-        List<Sectors.Interfaces.ISector> tempSectors = [];
+        List<ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(row.ReportString))
         {
             foreach (var toolResult in row.Report.GetParameter<JArray>("event.data.toolResults"))
             {
-
                 try
                 {
-                    tempSectors.AddRange(((JObject)toolResult).GetParameter<JArray>("results").Select(result => new V5.Sectors.Sector((JObject)result, row.Template, [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, row.Template.GetParameter<string>("response.message"))).Cast<ISector>());
+                    tempSectors.AddRange(((JObject)toolResult)
+                        .GetParameter<JArray>("results")
+                        .Select(result => (ISector)new V5.Sectors.Sector(
+                            (JObject)result,
+                            row.Template,
+                            [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard],
+                            ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard,
+                            ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table,
+                            row.Template.GetParameter<string>("response.message"))));
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
-                    Logger.Error(ex, ex.StackTrace);
-                    Logger.Warning($"Error while loading stored results from: {ResultsEntry.SelectedResultsDatabase.File.Name}");
-                    continue;
+                    Logger.Error(ex);
+                    Logger.Warning($"Error while loading stored V5 results from: {ResultsEntry.SelectedResultsDatabase.File.Name}");
                 }
             }
         }
@@ -252,14 +252,12 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
         if (tempSectors.Count > 0)
         {
             _ = ResultsEntry.SortList3(tempSectors);
-
             foreach (var sec in tempSectors)
                 StoredSectors.Add(sec);
         }
 
         ResultRow = row;
         RefreshStoredOverlay();
-
     }
 
     /// <summary>
@@ -278,9 +276,9 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
             Logger.Error("No image results database selected.");
             return;
         }
-
         if (StoredSectors.Count > 0)
-            if (await ResultsEntry.OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+            if (await ResultsEntry.OkCancelDialog("Overwrite Stored Sectors",
+                    "Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
 
         var res = new Databases.Result
@@ -295,7 +293,7 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
         };
 
         if (ResultsEntry.SelectedResultsDatabase.InsertOrReplace_Result(res) == null)
-            Logger.Error($"Error while storing results to: {ResultsEntry.SelectedResultsDatabase.File.Name}");
+            Logger.Error($"Error while storing V5 results to: {ResultsEntry.SelectedResultsDatabase.File.Name}");
 
         GetStored();
         ClearCurrent();
@@ -307,15 +305,32 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
     [RelayCommand]
     public void Process()
     {
+        int fallback =  ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI
+                       ?? 600;
 
-        V5_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? ResultRow.Template : null, Handler, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table);
+        var lab = new V5_REST_Lib.Controllers.Label(
+            ProcessRepeat,
+            Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? ResultRow?.Template : null,
+            Handler,
+            ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table);
 
+        // Simulator path requires we supply the image bytes
         if (Handler is LabelHandlers.SimulatorRestore or LabelHandlers.SimulatorDetect or LabelHandlers.SimulatorTrigger)
         {
-            if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Source || (ResultRow?.SourceImage == null && ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored))
-                lab.Image = ResultsEntry.SourceImage.BitmapBytes;
+            if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Source ||
+                (ResultRow?.Stored == null && ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored))
+            {
+                // Source image
+                lab.Image = GlobalAppSettings.Instance.PreseveImageFormat
+                    ? ImageFormatHelpers.EnsureDpi(ResultsEntry.SourceImage.OriginalImage, fallback, fallback, out _, out _)
+                    : ConvertImageToBgr32PreserveDpi.Convert(ResultsEntry.SourceImage.OriginalImage, fallback, out _, out _);
+            }
             else if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
-                lab.Image = ResultRow.Stored.ImageBytes;
+            {
+                lab.Image = GlobalAppSettings.Instance.PreseveImageFormat
+                    ? ImageFormatHelpers.EnsureDpi(ResultRow.Stored.ImageBytes, fallback, fallback, out _, out _)
+                    : ConvertImageToBgr32PreserveDpi.Convert(ResultRow.Stored.ImageBytes, fallback, out _, out _);
+            }
         }
 
         _ = ResultsEntry.ResultsManagerView.SelectedV5.Controller.ProcessLabel(lab);
@@ -340,45 +355,63 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
 
         try
         {
-
             if (report == null || report.Image == null)
             {
-                Logger.Error("Can not proces null results.");
+                Logger.Error("Cannot process null V5 report/image.");
                 IsFaulted = true;
                 return;
             }
 
-            if (!ResultsEntry.ResultsManagerView.SelectedV5.Controller.IsSimulator)
+            int fallback =  ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI
+                           ?? 600;
+
+            byte[] processedBytes;
+            if (GlobalAppSettings.Instance.PreseveImageFormat)
             {
-                CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, report.Image);
+                processedBytes = ImageFormatHelpers.EnsureDpi(report.Image, fallback, fallback, out _, out _);
+                try { report.Image = processedBytes; } catch { }
             }
             else
             {
-                using var img = new ImageMagick.MagickImage(report.Image);
-                CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, report.Image);
+                processedBytes = ConvertImageToBgr32PreserveDpi.Convert(report.Image, fallback, out _, out _);
+                try { report.Image = processedBytes; } catch { }
             }
+
+            if (!ResultsEntry.ResultsManagerView.SelectedV5.Controller.IsSimulator)
+            {
+                CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, processedBytes);
+            }
+            else
+            {
+                // Kept pattern (Magick still optional if later you manipulate)
+                CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, processedBytes);
+            }
+            CurrentImage.EnsureDpi(fallback);
 
             CurrentTemplate = ResultsEntry.ResultsManagerView.SelectedV5.Controller.Config;
             CurrentReport = report.Report;
 
             CurrentSectors.Clear();
 
-            List<Sectors.Interfaces.ISector> tempSectors = [];
-            //Tray and match a toolResult to a toolList
+            List<ISector> tempSectors = [];
             foreach (var toolResult in CurrentReport.GetParameter<JArray>("event.data.toolResults"))
             {
-
                 foreach (var result in ((JObject)toolResult).GetParameter<JArray>("results"))
                 {
                     try
                     {
-                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, CurrentTemplate, [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, CurrentTemplate.GetParameter<string>("response.message")));
+                        tempSectors.Add(new V5.Sectors.Sector(
+                            (JObject)result,
+                            CurrentTemplate,
+                            [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard],
+                            ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard,
+                            ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table,
+                            CurrentTemplate.GetParameter<string>("response.message")));
                     }
-                    catch (System.Exception ex)
+                    catch (Exception ex)
                     {
-                        Logger.Error(ex, ex.StackTrace);
-                        Logger.Warning("Error while processing results.");
-                        continue;
+                        Logger.Error(ex);
+                        Logger.Warning("Error while processing V5 sector result.");
                     }
                 }
             }
@@ -386,21 +419,18 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
             if (tempSectors.Count > 0)
             {
                 tempSectors = ResultsEntry.SortList3(tempSectors);
-
                 foreach (var sec in tempSectors)
                     CurrentSectors.Add(sec);
             }
 
             GetSectorDiff();
-
             RefreshCurrentOverlay();
-
             IsFaulted = false;
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
-            Logger.Error(ex, ex.StackTrace);
-            Logger.Warning("Error while processing results.");
+            Logger.Error(ex);
+            Logger.Warning("V5 processing failed.");
             IsFaulted = true;
         }
         finally
@@ -424,7 +454,6 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
 
         CurrentSectors.Clear();
         DiffSectors.Clear();
-
         CurrentTemplate = null;
         CurrentReport = null;
         CurrentImage = null;
@@ -437,7 +466,8 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
     [RelayCommand]
     public async Task ClearStored()
     {
-        if (await ResultsEntry.OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
+        if (await ResultsEntry.OkCancelDialog("Clear Stored Sectors",
+                "Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
             _ = ResultsEntry.SelectedResultsDatabase.Delete_Result(Device, ResultsEntry.ImageRollUID, ResultsEntry.SourceImageUID, ResultsEntry.ImageRollUID);
             GetStored();
@@ -448,13 +478,12 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
     private void GetSectorDiff()
     {
         DiffSectors.Clear();
-
         List<SectorDifferences> diff = [];
 
-        //Compare; Do not check for missing here. To keep found at top of list.
         foreach (var sec in StoredSectors)
         {
             foreach (var cSec in CurrentSectors)
+            {
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     if (sec.Report.Symbology == cSec.Report.Symbology)
@@ -465,63 +494,47 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
                     }
                     else
                     {
-                        SectorDifferences dat = new()
+                        diff.Add(new SectorDifferences
                         {
                             Username = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
                             SectorMissingText = $"Stored Sector {sec.Report.Symbology.GetDescription()}  : Current Sector  {cSec.Report.Symbology.GetDescription()}"
-                        };
-                        diff.Add(dat);
+                        });
                     }
                 }
+            }
         }
 
-        //Check for missing
         foreach (var sec in StoredSectors)
         {
-            var found = false;
-            foreach (var cSec in CurrentSectors)
-                if (sec.Template.Name == cSec.Template.Name)
-                {
-                    found = true;
-                    continue;
-                }
-
+            bool found = CurrentSectors.Any(c => c.Template.Name == sec.Template.Name);
             if (!found)
             {
-                SectorDifferences dat = new()
+                diff.Add(new SectorDifferences
                 {
                     Username = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
                     SectorMissingText = "Not found in current Sectors"
-                };
-                diff.Add(dat);
+                });
             }
         }
 
-        //check for missing
         if (StoredSectors.Count > 0)
+        {
             foreach (var sec in CurrentSectors)
             {
-                var found = false;
-                foreach (var cSec in StoredSectors)
-                    if (sec.Template.Name == cSec.Template.Name)
-                    {
-                        found = true;
-                        continue;
-                    }
-
+                bool found = StoredSectors.Any(c => c.Template.Name == sec.Template.Name);
                 if (!found)
                 {
-                    SectorDifferences dat = new()
+                    diff.Add(new SectorDifferences
                     {
                         Username = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
                         SectorMissingText = "Not found in Stored Sectors"
-                    };
-                    diff.Add(dat);
+                    });
                 }
             }
+        }
 
         foreach (var d in diff)
             if (d.IsSectorMissing)
@@ -559,14 +572,11 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
     {
         if (ResultRow == null)
         {
-            Logger.Error("No  result row selected.");
+            Logger.Error("No V5 result row selected.");
             return -1;
         }
-
         if (StoredSectors.Count == 0)
-        {
             return 0;
-        }
 
         if (await ResultsEntry.ResultsManagerView.SelectedV5.Controller.CopySectorsSetConfig(null, ResultRow.Template) == V5_REST_Lib.Controllers.RestoreSectorsResults.Failure)
             return -1;
@@ -587,7 +597,6 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
     /// Refreshes the overlay for the stored image.
     /// </summary>
     public void RefreshStoredOverlay() => StoredImageOverlay = IResultsDeviceEntry.CreateSectorsImageOverlay(StoredImage, StoredSectors);
-
     /// <summary>
     /// Refreshes the overlay for the current image.
     /// </summary>
@@ -610,11 +619,8 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
     {
         if (disposing)
         {
-            if (_IsWorkingTimer != null)
-            {
-                _IsWorkingTimer.Elapsed -= _IsWorkingTimer_Elapsed;
-                _IsWorkingTimer.Dispose();
-            }
+            _IsWorkingTimer.Elapsed -= _IsWorkingTimer_Elapsed;
+            _IsWorkingTimer.Dispose();
         }
     }
 }

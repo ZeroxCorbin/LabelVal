@@ -760,26 +760,29 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         {
             if (res == null) return;
 
-            // 1. Normalize to 32bpp BGR while preserving (or reconstructing) DPI
-            double srcDpiX, srcDpiY;
-            var convertedImage = GlobalAppSettings.Instance.PreseveImageFormat ? res.Image : ConvertImageToBgr32PreserveDpi.Convert(res.Image, out srcDpiX, out srcDpiY);
-
-            
-            // Fallback DPI logic (device DPI -> roll target -> 600)
             int fallback = SelectedV275Node?.Controller?.Dpi
                            ?? ActiveImageRoll?.TargetDPI
                            ?? 600;
 
-            // If decoded DPI invalid (<10) use fallback
-            //int finalDpi = (int)Math.Round(srcDpiX >= 10 ? srcDpiX : fallback);
+            byte[] workingBytes;
+            double srcDpiX, srcDpiY;
 
-            // Keep FullReport bytes consistent if property is writable
-            try { res.Image = convertedImage; } catch { /* ignore if immutable */ }
+            if (GlobalAppSettings.Instance.PreseveImageFormat)
+            {
+                // Keep original bytes; only patch DPI if missing
+                workingBytes = ImageFormatHelpers.EnsureDpi(res.Image, fallback, fallback, out srcDpiX, out srcDpiY);
+                try { res.Image = workingBytes; } catch { }
+            }
+            else
+            {
+                // Normalize to BGR32 BMP with guaranteed DPI
+                workingBytes = ConvertImageToBgr32PreserveDpi.Convert(res.Image, fallback, out srcDpiX, out srcDpiY);
+                try { res.Image = workingBytes; } catch { }
+            }
 
-            // 2. Locked roll path (only allowed if image already exists)
             if (ActiveImageRoll.IsLocked)
             {
-                var testEntry = new ImageEntry(ActiveImageRoll.UID, convertedImage);
+                var testEntry = new ImageEntry(ActiveImageRoll.UID, workingBytes);
                 if (ActiveImageRoll.ImageEntries.FirstOrDefault(x => x.UID == testEntry.UID) == null)
                 {
                     Logger.Warning("The database is locked. Cannot add image.");
@@ -787,11 +790,13 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
                 }
             }
 
-            // 3. Retrieve/create ImageEntry based on normalized bytes
-            (ImageEntry entry, var isNew) = ActiveImageRoll.GetImageEntry(convertedImage);
+            (ImageEntry entry, var isNew) = ActiveImageRoll.GetImageEntry(workingBytes);
             if (entry == null) return;
 
             entry.NewData = res;
+
+            // Ensure DPI on entry (important if PreseveImageFormat & image lacked DPI)
+            entry.EnsureDpi(fallback);
 
             if (isNew)
                 ActiveImageRoll.AddImage(ActiveImageRoll.ImageAddPosition, entry);

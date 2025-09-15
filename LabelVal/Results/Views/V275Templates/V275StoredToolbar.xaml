@@ -34,7 +34,7 @@
         <!--  Image Only: Save stored image  -->
         <Button
             Command="{Binding ResultsEntry.SaveCommand}"
-            CommandParameter="{Binding StoredImage.BitmapBytes}"
+            CommandParameter="{Binding StoredImage}"
             Style="{StaticResource SaveImageButtonStyle}">
             <Button.ToolTip>Save the stored image to a file.</Button.ToolTip>
         </Button>

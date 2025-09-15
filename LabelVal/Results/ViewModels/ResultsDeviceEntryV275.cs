@@ -8,6 +8,7 @@ using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Results.Helpers;
 using LabelVal.Sectors.Classes;
+using LabelVal.Utilities;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -314,10 +315,24 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
         V275_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? [.. ResultRow.Template["sectors"]] : null, Handler, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table);
 
         double srcDpiX, srcDpiY;
-        if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Source || Handler is LabelHandlers.CameraTrigger or LabelHandlers.CameraRestore or LabelHandlers.CameraDetect || (ResultRow?.Stored == null && ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored))
-            lab.Image = GlobalAppSettings.Instance.PreseveImageFormat ? ResultsEntry.SourceImage.BitmapBytes : ConvertImageToBgr32PreserveDpi.Convert(ResultsEntry.SourceImage.BitmapBytes, out srcDpiX, out srcDpiY); 
+        int fallback = ResultsEntry.ResultsManagerView.SelectedV275Node?.Controller?.Dpi
+                       ?? ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI
+                       ?? 600;
+
+        if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Source
+            || Handler is LabelHandlers.CameraTrigger or LabelHandlers.CameraRestore or LabelHandlers.CameraDetect
+            || (ResultRow?.Stored == null && ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored))
+        {
+            lab.Image = GlobalAppSettings.Instance.PreseveImageFormat
+                ? ImageFormatHelpers.EnsureDpi(ResultsEntry.SourceImage.OriginalImage, fallback, fallback, out srcDpiX, out srcDpiY)
+                : ConvertImageToBgr32PreserveDpi.Convert(ResultsEntry.SourceImage.OriginalImage, fallback, out srcDpiX, out srcDpiY);
+        }
         else if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
-            lab.Image = GlobalAppSettings.Instance.PreseveImageFormat ? ResultRow.Stored.ImageBytes : ConvertImageToBgr32PreserveDpi.Convert(ResultRow.Stored.ImageBytes, out srcDpiX, out srcDpiY);
+        {
+            lab.Image = GlobalAppSettings.Instance.PreseveImageFormat
+                ? ImageFormatHelpers.EnsureDpi(ResultRow.Stored.ImageBytes, fallback, fallback, out srcDpiX, out srcDpiY)
+                : ConvertImageToBgr32PreserveDpi.Convert(ResultRow.Stored.ImageBytes, fallback, out srcDpiX, out srcDpiY);
+        }
 
         _ = ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.IsSimulator
             ? ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.ProcessLabel_Simulator(lab)
@@ -351,8 +366,13 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
 
             var jobString = JsonConvert.SerializeObject(report.Report);
 
-            var img = GlobalAppSettings.Instance.PreseveImageFormat ? report.Image : ConvertImageToBgr32PreserveDpi.Convert(report.Image, out var dpiX, out var dpiY);
+            var img = GlobalAppSettings.Instance.PreseveImageFormat
+                ? ImageFormatHelpers.EnsureDpi(report.Image, ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600,
+                    ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600, out var dpiX, out var dpiY)
+                : ConvertImageToBgr32PreserveDpi.Convert(report.Image,
+                    ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600, out var dpiX2, out var dpiY2);
             CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, img);
+            CurrentImage.EnsureDpi(ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600);
 
             CurrentSectors.Clear();
 

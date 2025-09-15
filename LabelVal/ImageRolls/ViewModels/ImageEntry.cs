@@ -104,7 +104,7 @@ public partial class ImageEntry : ObservableObject
     /// <summary>
     /// The raw, original image data.
     /// </summary>
-    private byte[] OriginalImage { get; set; }
+    public byte[] OriginalImage { get; private  set; }
 
     /// <summary>
     /// Gets the full-resolution BitmapImage. It is loaded on-demand.
@@ -148,6 +148,8 @@ public partial class ImageEntry : ObservableObject
             OriginalImage = value;
             if (OriginalImage != null)
             {
+                ImageFormat = ImageFormatHelpers.DetectFormat(OriginalImage).ToString();
+
                 ImageLow = BitmapHelpers.CreateBitmapImage(OriginalImage, decodePixelWidth: 200);
                 using var stream = new MemoryStream(OriginalImage);
                 (var width, var height, var dpiX, var dpiY, PixelFormat format, var bitDepth) = BitmapHelpers.GetImageMetadata(stream);
@@ -161,12 +163,6 @@ public partial class ImageEntry : ObservableObject
             }
         }
     }
-
-    /// <summary>
-    /// Gets the image data as a byte array, suitable for saving.
-    /// </summary>
-    [Ignore]
-    public byte[] BitmapBytes => OriginalImage;
 
     /// <summary>
     /// Gets or sets the DPI of the image along the X-axis.
@@ -223,6 +219,14 @@ public partial class ImageEntry : ObservableObject
     [ObservableProperty]
     [property: JsonProperty]
     private int imageBitDepth;
+
+    [ObservableProperty]
+    [property: JsonProperty]
+    private string imageFormat;
+
+    [Ignore]
+    public ImageContainerFormat ContainerFormat =>
+    Enum.TryParse<ImageContainerFormat>(ImageFormat, out var f) ? f : ImageContainerFormat.Unknown;
 
     /// <summary>
     /// The pixel format of the image, not stored in the database directly.
@@ -360,6 +364,22 @@ public partial class ImageEntry : ObservableObject
     }
 
     #endregion
+
+    public void EnsureDpi(int fallbackDpi)
+    {
+        if (OriginalImage == null) return;
+        if (ImageDpiX >= 10 && ImageDpiY >= 10) return;
+
+        var updated = ImageFormatHelpers.EnsureDpi(OriginalImage, fallbackDpi, fallbackDpi, out var fx, out var fy);
+        if (!ReferenceEquals(updated, OriginalImage))
+        {
+            OriginalImage = updated;
+            _image = null; // force reload if needed
+            ImageLow = BitmapHelpers.CreateBitmapImage(OriginalImage, decodePixelWidth: 200);
+        }
+        ImageDpiX = fx;
+        ImageDpiY = fy;
+    }
 
     /// <summary>
     /// Creates a shallow copy of the current <see cref="ImageEntry"/>.

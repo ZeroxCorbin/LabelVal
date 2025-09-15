@@ -8,6 +8,7 @@ using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
+using LabelVal.Utilities;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
@@ -215,20 +216,28 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
     /// </summary>
     /// <param name="bmp">The image data in BMP format.</param>
     [RelayCommand]
-    private void Save(byte[] bmp)
+    private void Save(ImageEntry img)
     {
         var path = GetSaveFilePath();
 
         if (string.IsNullOrEmpty(path)) return;
 
+        var targetPathWithoutExtension = Path.GetFileNameWithoutExtension(path);
+
         try
         {
-            if (bmp == null) return;
-            using var img = new ImageMagick.MagickImage(bmp);
-            File.WriteAllBytes(path,
-                Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase)
-                    ? img.ToByteArray(ImageMagick.MagickFormat.Png)
-                    : img.ToByteArray(ImageMagick.MagickFormat.Bmp3));
+            if (img.OriginalImage == null) return;
+            var ext = img.ContainerFormat switch
+            {
+                ImageContainerFormat.Png => ".png",
+                ImageContainerFormat.Jpeg => ".jpg",
+                ImageContainerFormat.Bmp => ".bmp",
+                ImageContainerFormat.Gif => ".gif",
+                ImageContainerFormat.Tiff => ".tiff",
+                _ => ".bin"
+            };
+            var full = targetPathWithoutExtension + ext;
+            File.WriteAllBytes(full, img.OriginalImage);
 
             Clipboard.SetText(path);
         }

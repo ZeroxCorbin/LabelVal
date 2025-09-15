@@ -484,7 +484,7 @@ public partial class Controller : ObservableObject
                 ApplicationStandard = ire.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard.GetDescription(),
             },
 
-            Image = ire.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored ? ire.ResultsEntry.SourceImage.BitmapBytes : ire.StoredImage.BitmapBytes
+            Image = ire.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored ? ire.ResultsEntry.SourceImage.OriginalImage : ire.StoredImage.OriginalImage
         };
 
         if (ire.ResultsManagerView.ActiveImageRoll.SelectedGS1Table != GS1Tables.Unknown)
