@@ -11,89 +11,6 @@
 
     <DockPanel x:Key="L95CurrentToolbar" x:Shared="False">
 
-        <!--  Image Only: Save  -->
-        <Button
-            Command="{Binding ResultsEntry.SaveCommand}"
-            CommandParameter="{Binding CurrentImage.BitmapBytes}"
-            Style="{StaticResource SaveImageButtonStyle}">
-            <Button.ToolTip>Save the current image to a file.</Button.ToolTip>
-        </Button>
-
-        <!--  Sectors Only: Store  -->
-        <Button Command="{Binding StoreCommand}">
-            <Button.Style>
-                <Style BasedOn="{StaticResource StoreButtonStyle}" TargetType="Button">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ResultsManagerView.SelectedResultsDatabase.IsLocked}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-
-        <!--  Sectors Only: Store Single Sector  -->
-        <Button Command="{Binding StoreSingleCommand}">
-            <Button.Style>
-                <Style BasedOn="{StaticResource ResultsToolbarButtonBase}" TargetType="Button">
-                    <Setter Property="Content" Value="{iconPacks:Material Kind=ChevronDoubleLeft}" />
-                    <Setter Property="ToolTip" Value="Store the selected sector to the database." />
-                    <Setter Property="Visibility" Value="Visible" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ResultsManagerView.SelectedResultsDatabase.IsLocked}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding CurrentSelectedSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-
-        <!--  Sectors Only: Clear Single Sector  -->
-        <Button Command="{Binding ClearSingleCommand}">
-            <Button.Style>
-                <Style BasedOn="{StaticResource ResultsToolbarButtonBase}" TargetType="Button">
-                    <Setter Property="Content" Value="{iconPacks:MaterialDesign Kind=Clear}" />
-                    <Setter Property="ToolTip" Value="Clear the selected sector." />
-                    <Setter Property="Visibility" Value="Visible" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding CurrentSelectedSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-
-        <!--  Sectors Only: Read  -->
-        <!--<Button Command="{Binding ReadCommand}">
-            <Button.Style>
-                <Style BasedOn="{StaticResource ReadButtonStyle}" TargetType="Button">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ResultsManagerView.SelectedL95.Controller.IsConnected}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image" />
-                                <Condition Binding="{Binding CurrentSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </MultiDataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>-->
-
         <!--  Sectors-only separator  -->
         <ContentControl ContentTemplate="{StaticResource SectorsOnlySeparator}" />
 
@@ -116,6 +33,13 @@
             </Button.Style>
         </Button>
 
+        <!--  Image Only: Save  -->
+        <Button
+            Command="{Binding ResultsEntry.SaveCommand}"
+            CommandParameter="{Binding CurrentImage.BitmapBytes}"
+            Style="{StaticResource SaveImageButtonStyle}">
+            <Button.ToolTip>Save the current image to a file.</Button.ToolTip>
+        </Button>
 
         <Button
             Command="{Binding Show3DImageCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"

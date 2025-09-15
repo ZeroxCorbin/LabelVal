@@ -10,6 +10,21 @@
     </ResourceDictionary.MergedDictionaries>
 
     <DockPanel x:Key="V275CurrentUniqueToolbar" x:Shared="False">
+
+        <!--  Sectors Only: Store (with DB lock trigger and original parameter)  -->
+        <Button Command="{Binding StoreCommand}" CommandParameter="{x:Static vm:ResultsEntryDevices.V275}">
+            <Button.Style>
+                <Style BasedOn="{StaticResource StoreButtonStyle}" TargetType="Button">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ResultsEntry.SelectedResultsDatabase.IsLocked}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <!--  StoreButtonStyle already collapses when Tag=Image  -->
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        
         <!--  Sectors Only: Read (visibility logic per original)  -->
         <Button Command="{Binding ReadCommand}">
             <Button.Style>

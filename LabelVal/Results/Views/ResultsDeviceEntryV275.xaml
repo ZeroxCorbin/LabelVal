@@ -136,7 +136,7 @@
                                 <TextBlock
                                     Margin="3,0"
                                     FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
-                                    Text="Stored Image" />
+                                    Text="Stored" />
 
                                 <ContentControl
                                     HorizontalAlignment="Right"

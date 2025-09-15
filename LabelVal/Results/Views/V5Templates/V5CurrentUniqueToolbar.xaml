@@ -10,6 +10,20 @@
     </ResourceDictionary.MergedDictionaries>
 
     <DockPanel x:Key="V5CurrentUniqueToolbar" x:Shared="False">
+
+        <!--  Sectors Only: Store (adds DB lock visibility trigger)  -->
+        <Button Command="{Binding StoreCommand}">
+            <Button.Style>
+                <Style BasedOn="{StaticResource StoreButtonStyle}" TargetType="Button">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ResultsManagerView.SelectedResultsDatabase.IsLocked}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        
         <!--  Sectors Only: Read  -->
         <Button Command="{Binding ReadCommand}">
             <Button.Style>

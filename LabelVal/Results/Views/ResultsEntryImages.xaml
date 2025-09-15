@@ -49,7 +49,7 @@
                     <TextBlock
                         Margin="3,0"
                         FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
-                        Text="Source Image" />
+                        Text="Source" />
 
                     <DockPanel HorizontalAlignment="Right">
                         <!--  Save Image  -->

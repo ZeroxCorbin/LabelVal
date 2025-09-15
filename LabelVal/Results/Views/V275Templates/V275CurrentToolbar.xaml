@@ -12,28 +12,6 @@
     <!--  Current Toolbar (V275)  -->
     <DockPanel x:Key="V275CurrentToolbar" x:Shared="False">
 
-        <!--  Image Only: Save  -->
-        <Button
-            Command="{Binding ResultsEntry.SaveCommand}"
-            CommandParameter="{Binding CurrentImage.BitmapBytes}"
-            Style="{StaticResource SaveImageButtonStyle}">
-            <Button.ToolTip>Save the current image to a file.</Button.ToolTip>
-        </Button>
-
-        <!--  Sectors Only: Store (with DB lock trigger and original parameter)  -->
-        <Button Command="{Binding StoreCommand}" CommandParameter="{x:Static vm:ResultsEntryDevices.V275}">
-            <Button.Style>
-                <Style BasedOn="{StaticResource StoreButtonStyle}" TargetType="Button">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ResultsEntry.SelectedResultsDatabase.IsLocked}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <!--  StoreButtonStyle already collapses when Tag=Image  -->
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-
         <!--  Sectors-only separator  -->
         <ContentControl ContentTemplate="{StaticResource SectorsOnlySeparator}" />
 
@@ -55,7 +33,15 @@
                 </Style>
             </Button.Style>
         </Button>
-
+        
+        <!--  Image Only: Save  -->
+        <Button
+            Command="{Binding ResultsEntry.SaveCommand}"
+            CommandParameter="{Binding CurrentImage.BitmapBytes}"
+            Style="{StaticResource SaveImageButtonStyle}">
+            <Button.ToolTip>Save the current image to a file.</Button.ToolTip>
+        </Button>
+        
         <!--  Sectors Only: Show All  -->
         <Button
             Command="{Binding ShowCurrentSectorsCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V275}}"

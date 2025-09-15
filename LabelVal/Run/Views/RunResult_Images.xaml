@@ -74,7 +74,7 @@
                         Padding="4,1"
                         HorizontalAlignment="Left"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Source Image" />
+                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Source" />
                     </md:Card>
 
                     <DockPanel HorizontalAlignment="Right">
@@ -504,7 +504,7 @@
                         <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Foreground="White">
                             <TextBlock.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Text" Value="Stored Image" />
+                                    <Setter Property="Text" Value="Stored" />
                                     <!--<Style.Triggers>
                                         <DataTrigger Binding="{Binding IsV275StoredImageStored}" Value="True">
                                             <Setter Property="Text" Value="Stored Image"/>
@@ -1259,7 +1259,7 @@
                         <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Foreground="White">
                             <TextBlock.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Text" Value="Stored Image" />
+                                    <Setter Property="Text" Value="Stored" />
                                     <!--<Style.Triggers>
                                         <DataTrigger Binding="{Binding IsV5ImageStored}" Value="True">
                                             <Setter Property="Text" Value="Stored Image"/>

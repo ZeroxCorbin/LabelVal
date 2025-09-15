@@ -12,27 +12,6 @@
     <!--  Current Toolbar (V5)  -->
     <DockPanel x:Key="V5CurrentToolbar" x:Shared="False">
 
-        <!--  Image Only: Save  -->
-        <Button
-            Command="{Binding ResultsEntry.SaveCommand}"
-            CommandParameter="{Binding CurrentImage.BitmapBytes}"
-            Style="{StaticResource SaveImageButtonStyle}">
-            <Button.ToolTip>Save the current image to a file.</Button.ToolTip>
-        </Button>
-
-        <!--  Sectors Only: Store (adds DB lock visibility trigger)  -->
-        <Button Command="{Binding StoreCommand}">
-            <Button.Style>
-                <Style BasedOn="{StaticResource StoreButtonStyle}" TargetType="Button">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ResultsManagerView.SelectedResultsDatabase.IsLocked}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-
         <!--  Sectors-only separator  -->
         <ContentControl ContentTemplate="{StaticResource SectorsOnlySeparator}" />
 
@@ -53,6 +32,14 @@
                     </Style.Triggers>
                 </Style>
             </Button.Style>
+        </Button>
+
+        <!--  Image Only: Save  -->
+        <Button
+            Command="{Binding ResultsEntry.SaveCommand}"
+            CommandParameter="{Binding CurrentImage.BitmapBytes}"
+            Style="{StaticResource SaveImageButtonStyle}">
+            <Button.ToolTip>Save the current image to a file.</Button.ToolTip>
         </Button>
 
         <!--  Sectors Only: Show All  -->

@@ -12,16 +12,7 @@
 
     <!--  Stored Toolbar (V5)  -->
     <DockPanel x:Key="V5StoredToolbar" x:Shared="False">
-
-
-        <!--  Image Only: Save stored image  -->
-        <Button
-            Command="{Binding ResultsEntry.SaveCommand}"
-            CommandParameter="{Binding StoredImage.BitmapBytes}"
-            Style="{StaticResource SaveImageButtonStyle}">
-            <Button.ToolTip>Save the stored image to a file.</Button.ToolTip>
-        </Button>
-
+        
         <!--  Both: Copy  -->
         <Button
             Command="{Binding CopyToClipboardCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V5}}"
@@ -41,11 +32,18 @@
             </Button.Style>
         </Button>
 
+        <!--  Image Only: Save stored image  -->
+        <Button
+            Command="{Binding ResultsEntry.SaveCommand}"
+            CommandParameter="{Binding StoredImage.BitmapBytes}"
+            Style="{StaticResource SaveImageButtonStyle}">
+            <Button.ToolTip>Save the stored image to a file.</Button.ToolTip>
+        </Button>
+
         <Button
             Command="{Binding Show3DImageCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_V5}}"
             CommandParameter="{Binding StoredImage.BitmapBytes}"
             Style="{StaticResource Show3DViewerButtonStyle}" />
-
 
         <!--  Sectors Only: Show All  -->
         <Button
