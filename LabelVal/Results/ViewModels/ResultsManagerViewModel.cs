@@ -721,26 +721,46 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     }
 
     private void ProcessRepeat(V5_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat.FullReport);
+
+    // Updated: V5 image processing now preserves or normalizes format + DPI
     public void ProcessFullReport(V5_REST_Lib.Controllers.FullReport res)
     {
         try
         {
             if (res == null) return;
 
+            int fallback = ActiveImageRoll?.TargetDPI
+                           ?? 600;
+
+            byte[] workingBytes;
+            double srcDpiX, srcDpiY;
+
+            if (GlobalAppSettings.Instance.PreseveImageFormat)
+            {
+                workingBytes = ImageFormatHelpers.EnsureDpi(res.Image, fallback, fallback, out srcDpiX, out srcDpiY);
+                try { res.Image = workingBytes; } catch { /* ignore if immutable */ }
+            }
+            else
+            {
+                workingBytes = ConvertImageToBgr32PreserveDpi.Convert(res.Image, fallback, out srcDpiX, out srcDpiY);
+                try { res.Image = workingBytes; } catch { }
+            }
+
             if (ActiveImageRoll.IsLocked)
             {
-                var ire = new ImageEntry(ActiveImageRoll.UID, res.Image);
-                if (ActiveImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
+                var probe = new ImageEntry(ActiveImageRoll.UID, workingBytes);
+                if (ActiveImageRoll.ImageEntries.FirstOrDefault(x => x.UID == probe.UID) == null)
                 {
                     Logger.Warning("The database is locked. Cannot add image.");
                     return;
                 }
             }
 
-            (ImageEntry entry, var isNew) = ActiveImageRoll.GetImageEntry(res.Image);
+            (ImageEntry entry, var isNew) = ActiveImageRoll.GetImageEntry(workingBytes);
             if (entry == null) return;
 
             entry.NewData = res;
+            entry.EnsureDpi(fallback);
 
             if (isNew)
                 ActiveImageRoll.AddImage(ActiveImageRoll.ImageAddPosition, entry);
@@ -754,6 +774,8 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     }
 
     private void ProcessRepeat(V275_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat.FullReport);
+
+    // (V275 version already updated previously)
     public void ProcessFullReport(V275_REST_Lib.Controllers.FullReport res)
     {
         try
@@ -769,13 +791,11 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
 
             if (GlobalAppSettings.Instance.PreseveImageFormat)
             {
-                // Keep original bytes; only patch DPI if missing
                 workingBytes = ImageFormatHelpers.EnsureDpi(res.Image, fallback, fallback, out srcDpiX, out srcDpiY);
                 try { res.Image = workingBytes; } catch { }
             }
             else
             {
-                // Normalize to BGR32 BMP with guaranteed DPI
                 workingBytes = ConvertImageToBgr32PreserveDpi.Convert(res.Image, fallback, out srcDpiX, out srcDpiY);
                 try { res.Image = workingBytes; } catch { }
             }
@@ -794,8 +814,6 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
             if (entry == null) return;
 
             entry.NewData = res;
-
-            // Ensure DPI on entry (important if PreseveImageFormat & image lacked DPI)
             entry.EnsureDpi(fallback);
 
             if (isNew)
@@ -809,31 +827,47 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         }
     }
 
+    // Updated: L95 thumbnail acquisition with DPI/format preservation
     public void ProcessFullReport(FullReport res)
     {
         try
         {
             if (res == null || res.Report == null) return;
 
-            if (res.Report.GetParameter<string>(Parameters.OverallGrade.GetPath(BarcodeVerification.lib.Common.Devices.L95, BarcodeVerification.lib.Common.Symbologies.DataMatrix)) == "Bar Code Not Detected"
+            if (res.Report.GetParameter<string>(
+                    Parameters.OverallGrade.GetPath(BarcodeVerification.lib.Common.Devices.L95,
+                                                    BarcodeVerification.lib.Common.Symbologies.DataMatrix)) == "Bar Code Not Detected"
                 && GlobalAppSettings.Instance.LvsIgnoreNoResults)
-                return; // Ignore reports where no barcode was detected
+                return;
 
-            var thumbnail = res.Template.GetParameter<byte[]>("Report.Thumbnail");
+            int fallback = ActiveImageRoll?.TargetDPI ?? 600;
+
+            var thumbnailOriginal = res.Template.GetParameter<byte[]>("Report.Thumbnail");
+            byte[] thumbBytes;
+            if (GlobalAppSettings.Instance.PreseveImageFormat)
+            {
+                thumbBytes = ImageFormatHelpers.EnsureDpi(thumbnailOriginal, fallback, fallback, out _, out _);
+            }
+            else
+            {
+                thumbBytes = ConvertImageToBgr32PreserveDpi.Convert(thumbnailOriginal, fallback, out _, out _);
+            }
+
             if (ActiveImageRoll.IsLocked)
             {
-                var ire = new ImageEntry(ActiveImageRoll.UID, thumbnail);
-                if (ActiveImageRoll.ImageEntries.FirstOrDefault(x => x.UID == ire.UID) == null)
+                var probe = new ImageEntry(ActiveImageRoll.UID, thumbBytes);
+                if (ActiveImageRoll.ImageEntries.FirstOrDefault(x => x.UID == probe.UID) == null)
                 {
                     Logger.Warning("The database is locked. Cannot add image.");
                     return;
                 }
             }
 
-            (ImageEntry entry, var isNew) = ActiveImageRoll.GetImageEntry(thumbnail);
+            (ImageEntry entry, var isNew) = ActiveImageRoll.GetImageEntry(thumbBytes);
             if (entry == null) return;
 
             entry.NewData = res;
+            entry.EnsureDpi(fallback);
 
             if (isNew)
                 ActiveImageRoll.AddImage(ActiveImageRoll.ImageAddPosition, entry);
@@ -845,7 +879,6 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
             WorkingUpdate(ResultsEntryDevices.L95, false);
         }
     }
-
 
     #endregion
 

@@ -36,14 +36,14 @@
         <!--  Image Only: Save  -->
         <Button
             Command="{Binding ResultsEntry.SaveCommand}"
-            CommandParameter="{Binding CurrentImage.BitmapBytes}"
+            CommandParameter="{Binding CurrentImage.OriginalImage}"
             Style="{StaticResource SaveImageButtonStyle}">
             <Button.ToolTip>Save the current image to a file.</Button.ToolTip>
         </Button>
 
         <Button
             Command="{Binding Show3DImageCommand, RelativeSource={RelativeSource AncestorType=local:ResultsDeviceEntry_L95}}"
-            CommandParameter="{Binding CurrentImage.BitmapBytes}"
+            CommandParameter="{Binding CurrentImage.OriginalImage}"
             Style="{StaticResource Show3DViewerButtonStyle}" />
 
         <!--  Sectors Only: Show All  -->

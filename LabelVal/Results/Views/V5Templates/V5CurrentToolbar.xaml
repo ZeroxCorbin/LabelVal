@@ -37,7 +37,7 @@
         <!--  Image Only: Save  -->
         <Button
             Command="{Binding ResultsEntry.SaveCommand}"
-            CommandParameter="{Binding CurrentImage.BitmapBytes}"
+            CommandParameter="{Binding CurrentImage.OriginalImage}"
             Style="{StaticResource SaveImageButtonStyle}">
             <Button.ToolTip>Save the current image to a file.</Button.ToolTip>
         </Button>

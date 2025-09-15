@@ -76,7 +76,7 @@
                         <Button
                             Margin="3"
                             Command="{Binding SaveCommand}"
-                            CommandParameter="{Binding SourceImage.BitmapBytes}"
+                            CommandParameter="{Binding SourceImage}"
                             Content="{iconPacks:Material Kind=ContentSave}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             Style="{StaticResource MahApps.Styles.Button.Hamburger}"

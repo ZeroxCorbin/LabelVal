@@ -6,6 +6,7 @@ using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
+using LabelVal.Results.Helpers;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using LabelVal.Utilities;
@@ -218,31 +219,60 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
     [RelayCommand]
     private void Save(ImageEntry img)
     {
+        if (img == null || img.OriginalImage == null)
+            return;
+
         var path = GetSaveFilePath();
-
-        if (string.IsNullOrEmpty(path)) return;
-
-        var targetPathWithoutExtension = Path.GetFileNameWithoutExtension(path);
+        if (string.IsNullOrEmpty(path))
+            return;
 
         try
         {
-            if (img.OriginalImage == null) return;
-            var ext = img.ContainerFormat switch
-            {
-                ImageContainerFormat.Png => ".png",
-                ImageContainerFormat.Jpeg => ".jpg",
-                ImageContainerFormat.Bmp => ".bmp",
-                ImageContainerFormat.Gif => ".gif",
-                ImageContainerFormat.Tiff => ".tiff",
-                _ => ".bin"
-            };
-            var full = targetPathWithoutExtension + ext;
-            File.WriteAllBytes(full, img.OriginalImage);
+            bool preserve = AppSettings.PreseveImageFormat; // Global setting
 
-            Clipboard.SetText(path);
+            // Determine fallback DPI (TargetDPI on roll if set, otherwise 600)
+            int fallbackDpi = ResultsManagerView.ActiveImageRoll?.TargetDPI > 0
+                ? ResultsManagerView.ActiveImageRoll.TargetDPI
+                : 600;
+
+            byte[] bytesToWrite;
+            string extension;
+
+            if (preserve)
+            {
+                // Keep original container & bytes (already patched elsewhere if missing DPI)
+                bytesToWrite = img.OriginalImage;
+                extension = img.ContainerFormat switch
+                {
+                    ImageContainerFormat.Png => ".png",
+                    ImageContainerFormat.Jpeg => ".jpg",
+                    ImageContainerFormat.Bmp => ".bmp",
+                    ImageContainerFormat.Gif => ".gif",
+                    ImageContainerFormat.Tiff => ".tiff",
+                    _ => ".bin"
+                };
+            }
+            else
+            {
+                // Force normalize to 32bpp BGR BMP with guaranteed DPI
+                bytesToWrite = ConvertImageToBgr32PreserveDpi.Convert(img.OriginalImage, fallbackDpi, out _, out _);
+                extension = ".bmp";
+            }
+
+            // Honor user-selected directory but enforce our chosen extension
+            var directory = System.IO.Path.GetDirectoryName(path);
+            var baseName = System.IO.Path.GetFileNameWithoutExtension(path);
+            var finalPath = System.IO.Path.Combine(directory ?? "", baseName + extension);
+
+            File.WriteAllBytes(finalPath, bytesToWrite);
+
+            // Put the saved path on clipboard for convenience
+            Clipboard.SetText(finalPath);
         }
         catch (Exception ex)
-        { Logger.Error(ex); }
+        {
+            Logger.Error(ex);
+        }
     }
 
     /// <summary>

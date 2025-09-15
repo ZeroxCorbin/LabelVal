@@ -7,6 +7,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.Databases;
 using LabelVal.Main.ViewModels;
+using LabelVal.Results.Helpers;
+using LabelVal.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
@@ -421,6 +423,8 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
 
     /// <summary>
     /// Loads images from a file system directory.
+    /// Adds support for preserving original container format & DPI (if present) or
+    /// normalizing to BGR32 with enforced fallback DPI when GlobalAppSettings.PreseveImageFormat is false.
     /// </summary>
     public async Task LoadImagesFromDirectory()
     {
@@ -429,14 +433,17 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
 
         Logger.Info($"Loading label images from standards directory: {App.AssetsImageRollsRoot}\\{Name}\\");
 
+        // Accept broader set of common raster formats
+        var allowedExt = new HashSet<string>(new[] { ".png", ".bmp", ".jpg", ".jpeg", ".tif", ".tiff", ".gif" }, System.StringComparer.OrdinalIgnoreCase);
+
         List<string> images = [];
         foreach (var f in Directory.EnumerateFiles(Path))
-            if (System.IO.Path.GetExtension(f) == ".png")
+            if (allowedExt.Contains(System.IO.Path.GetExtension(f)))
                 images.Add(f);
 
+        var sorted = images.OrderBy(x => x).ToList();
         List<Task> taskList = [];
 
-        var sorted = images.OrderBy(x => x).ToList();
         foreach (var f in sorted)
         {
             (ImageEntry entry, var isNew) = GetImageEntry(f);
@@ -445,6 +452,10 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
 
             if (isNew)
             {
+                // Ensure DPI if preserving format (patch missing), or if normalized we already enforced during creation
+                var fallback = TargetDPI > 0 ? TargetDPI : 600;
+                entry.EnsureDpi(fallback);
+
                 Task tsk = Application.Current.Dispatcher.BeginInvoke(() => AddImage(ImageAddPositions.Bottom, entry)).Task;
                 taskList.Add(tsk);
             }
@@ -455,6 +466,7 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
 
     /// <summary>
     /// Loads images from the associated database.
+    /// Ensures DPI is patched (if missing) when preserving original format.
     /// </summary>
     public async Task LoadImagesFromDatabase()
     {
@@ -472,9 +484,24 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
         List<ImageEntry> images = ImageRollsDatabase.SelectAllImages(UID);
         List<Task> taskList = [];
 
+        var fallback = TargetDPI > 0 ? TargetDPI : 600;
+
         foreach (ImageEntry f in images)
         {
             f.SaveRequested += OnImageEntrySaveRequested;
+
+            if (GlobalAppSettings.Instance.PreseveImageFormat)
+            {
+                // Patch DPI only if missing
+                f.EnsureDpi(fallback);
+            }
+            else
+            {
+                // If the roll is set to NOT preserve format but existing entries were stored previously
+                // in original formats, we leave as-is to avoid changing persisted content silently.
+                // (Normalization happens for new device/import additions.)
+            }
+
             Task tsk = Application.Current.Dispatcher.BeginInvoke(() => ImageEntries.Add(f)).Task;
             taskList.Add(tsk);
         }
@@ -482,6 +509,109 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
         await Task.WhenAll([.. taskList]);
 
         ResetImageOrderAndSort();
+    }
+
+    /// <summary>
+    /// Gets an existing or new ImageEntry for a given file path.
+    /// Applies PreseveImageFormat logic and optional normalization/DPI patch.
+    /// </summary>
+    public (ImageEntry entry, bool isNew) GetImageEntry(string path)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+                return (null, false);
+
+            byte[] bytes = File.ReadAllBytes(path);
+
+            var fallback = TargetDPI > 0 ? TargetDPI : 600;
+
+            ImageEntry ire;
+            if (GlobalAppSettings.Instance.PreseveImageFormat)
+            {
+                // Keep original bytes; patch DPI only if missing
+                bytes = ImageFormatHelpers.EnsureDpi(bytes, fallback, fallback, out _, out _);
+                ire = new ImageEntry(UID, bytes)
+                {
+                    Path = path,
+                    Name = System.IO.Path.GetFileNameWithoutExtension(path)
+                };
+                // EnsureDpi will be idempotent (already patched above).
+                ire.EnsureDpi(fallback);
+            }
+            else
+            {
+                // Normalize to BGR32 bitmap (BMP encoder) with enforced DPI
+                bytes = ConvertImageToBgr32PreserveDpi.Convert(bytes, fallback, out _, out _);
+                ire = new ImageEntry(UID, bytes)
+                {
+                    Path = path,
+                    Name = System.IO.Path.GetFileNameWithoutExtension(path)
+                };
+                // Normalized bytes are guaranteed to include DPI now.
+            }
+
+            ire.SaveRequested += OnImageEntrySaveRequested;
+
+            ImageEntry existing = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
+            if (existing != null)
+            {
+                Logger.Warning($"Image already exists in roll: {path}");
+                return (existing, false);
+            }
+
+            return (ire, true);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, $"Failed to load image: {path}");
+        }
+
+        return (null, false);
+    }
+
+    /// <summary>
+    /// Gets an existing or new ImageEntry for raw in-memory bytes (e.g., device acquisition).
+    /// Ensures DPI patch or normalization consistent with global setting.
+    /// </summary>
+    public (ImageEntry entry, bool isNew) GetImageEntry(byte[] rawImage)
+    {
+        try
+        {
+            if (rawImage == null || rawImage.Length == 0)
+                return (null, false);
+
+            var fallback = TargetDPI > 0 ? TargetDPI : 600;
+            byte[] bytes = rawImage;
+
+            if (GlobalAppSettings.Instance.PreseveImageFormat)
+            {
+                bytes = ImageFormatHelpers.EnsureDpi(bytes, fallback, fallback, out _, out _);
+            }
+            else
+            {
+                bytes = ConvertImageToBgr32PreserveDpi.Convert(bytes, fallback, out _, out _);
+            }
+
+            var ire = new ImageEntry(UID, bytes);
+            ire.EnsureDpi(fallback);
+            ire.SaveRequested += OnImageEntrySaveRequested;
+
+            ImageEntry existing = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
+            if (existing != null)
+            {
+                Logger.Warning("Image already exists in roll (raw image).");
+                return (existing, false);
+            }
+
+            return (ire, true);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Failed to load image from raw bytes.");
+        }
+
+        return (null, false);
     }
 
     #endregion
@@ -711,64 +841,6 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
 
         ImageCount = ImageEntries.Count;
         SaveRoll();
-    }
-
-    /// <summary>
-    /// Gets an existing or new <see cref="ImageEntry"/> for a given file path.
-    /// </summary>
-    /// <param name="path">The file path of the image.</param>
-    /// <returns>A tuple containing the image entry and a boolean indicating if it's new.</returns>
-    public (ImageEntry entry, bool isNew) GetImageEntry(string path)
-    {
-        try
-        {
-            var ire = new ImageEntry(UID, path);
-            ire.SaveRequested += OnImageEntrySaveRequested;
-
-            ImageEntry imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
-            if (imageEntry != null)
-            {
-                Logger.Warning($"Image already exists in roll: {Path}");
-                return (imageEntry, false);
-            }
-
-            return (ire, true);
-        }
-        catch (Exception ex)
-        {
-            Logger.Error(ex, $"Failed to load image: {Path}");
-        }
-
-        return (null, false);
-    }
-
-    /// <summary>
-    /// Gets an existing or new <see cref="ImageEntry"/> for a given byte array of image data.
-    /// </summary>
-    /// <param name="rawImage">The raw byte data of the image.</param>
-    /// <returns>A tuple containing the image entry and a boolean indicating if it's new.</returns>
-    public (ImageEntry entry, bool isNew) GetImageEntry(byte[] rawImage)
-    {
-        try
-        {
-            var ire = new ImageEntry(UID, rawImage);
-            ire.SaveRequested += OnImageEntrySaveRequested;
-
-            ImageEntry imageEntry = ImageEntries.FirstOrDefault(x => x.UID == ire.UID);
-            if (imageEntry != null)
-            {
-                Logger.Warning($"Image already exists in roll: {Path}");
-                return (imageEntry, false);
-            }
-
-            return (ire, true);
-        }
-        catch (Exception ex)
-        {
-            Logger.Error(ex, $"Failed to load image: {Path}");
-        }
-
-        return (null, false);
     }
 
     /// <summary>
