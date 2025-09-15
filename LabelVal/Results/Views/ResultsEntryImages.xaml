@@ -22,7 +22,19 @@
     </UserControl.Resources>
 
     <DockPanel>
-
+        <DockPanel.Style>
+            <Style TargetType="DockPanel">
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding ResultsManagerView.ActiveImageRoll.ImageType}" Value="Stored" />
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+        </DockPanel.Style>
+        
         <!--  Source Image  -->
         <DockPanel>
 
@@ -58,8 +70,8 @@
                             Click="btnCopyToClipboard_Click"
                             Content="{iconPacks:Modern Kind=PageCopy}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" /> 
-                        
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+
                         <!--  Save Image  -->
                         <Button
                             Margin="3"
@@ -69,7 +81,7 @@
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                             ToolTip="Save the image." />
-                        
+
                     </DockPanel>
 
                 </DockPanel>
@@ -132,38 +144,6 @@
                 </Grid>
 
             </DockPanel>
-
-            <!--<StackPanel HorizontalAlignment="Left">
-
-            -->
-            <!--  Show 2D  -->
-            <!--
-                <Button
-                    Width="28"
-                    Height="28"
-                    Margin="0,3"
-                    Click="Show2DViewer"
-                    CommandParameter="{Binding SourceImage.BitmapBytes}"
-                    Content="{iconPacks:Material Kind=Video2d}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                    ToolTip="Open the image in the 2D viewer." />
-
-            -->
-            <!--  Show 3D  -->
-            <!--
-                <Button
-                    Width="28"
-                    Height="28"
-                    Margin="0,3"
-                    Click="Show3DViewer"
-                    CommandParameter="{Binding SourceImage.BitmapBytes}"
-                    Content="{iconPacks:Material Kind=Video3d}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                    ToolTip="Open the image in the 3D viewer." />
-
-            </StackPanel>-->
 
         </DockPanel>
 

@@ -466,7 +466,15 @@ public partial class ResultsDeviceEntryL95
         if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Source)
             lab.Image = ResultsEntry.SourceImage.BitmapBytes;
         else if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
+        {
+            if(ResultRow == null || ResultRow.Stored == null)
+            {
+                Logger.Error("No stored image to process.");
+                return;
+            }
             lab.Image = ResultRow.Stored.BitmapBytes;
+        }
+            
 
         IsWorking = true;
         IsFaulted = false;

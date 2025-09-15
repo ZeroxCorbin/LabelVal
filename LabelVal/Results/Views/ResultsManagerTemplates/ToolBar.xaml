@@ -51,6 +51,7 @@
                 </Button>
 
                 <Separator Margin="6,0,3,0" Visibility="{Binding ActiveImageRoll.IsLocked, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
+
                 <!--  Device-specific buttons are loaded here from resources.  -->
                 <ContentControl Content="{StaticResource V275TriggerButton}" />
                 <ContentControl Content="{StaticResource V5TriggerButton}" />
@@ -58,8 +59,6 @@
                     <ContentControl Content="{StaticResource L95TriggerButton}" />
                     <ContentControl Content="{StaticResource L95RedirectButton}" />
                 </StackPanel>
-
-
 
                 <Separator Margin="6,0,3,0" Visibility="{Binding ActiveImageRoll.IsLocked, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
 
