@@ -1,9 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!--
-        Results Color Group (Cyan / Azure family)
-        Previously conflicted with LabelBuilder (both purple). Now reassigned to cyan.
-    -->
+    <!-- Results: Only Monochrome darkened -->
 
     <!-- Standard -->
     <Color x:Key="Results">#0C89D4</Color>
@@ -17,7 +14,7 @@
     <Color x:Key="Results_BY">#0E9FDA</Color>
     <SolidColorBrush x:Key="Results_BY_Brush" Color="{StaticResource Results_BY}" />
 
-    <!-- Monochrome -->
-    <Color x:Key="Results_M">#B2B2B2</Color>
+    <!-- Monochrome (Darker) -->
+    <Color x:Key="Results_M">#8F8F8F</Color>
     <SolidColorBrush x:Key="Results_M_Brush" Color="{StaticResource Results_M}" />
 </ResourceDictionary>

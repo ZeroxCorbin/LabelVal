@@ -2,12 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Device Colors (Refactored)
-        Distinct base hues:
-          V275 = Royal Blue
-          V5   = Vivid Orange
-          L95  = Deep Wine
-        Variants tuned for RG / BY color vision deficiencies.
+        Device Colors (Refactored Monochrome variants darker)
     -->
 
     <!-- Standard -->
@@ -18,7 +13,7 @@
     <Color x:Key="L95">#7A0032</Color>
     <SolidColorBrush x:Key="L95_Brush" Color="{StaticResource L95}" />
 
-    <!-- Red-Green (RG) -->
+    <!-- Red-Green -->
     <Color x:Key="V275_RG">#0072B2</Color>
     <SolidColorBrush x:Key="V275_RG_Brush" Color="{StaticResource V275_RG}" />
     <Color x:Key="V5_RG">#E69F00</Color>
@@ -26,7 +21,7 @@
     <Color x:Key="L95_RG">#000000</Color>
     <SolidColorBrush x:Key="L95_RG_Brush" Color="{StaticResource L95_RG}" />
 
-    <!-- Blue-Yellow (BY) -->
+    <!-- Blue-Yellow -->
     <Color x:Key="V275_BY">#D81B60</Color>
     <SolidColorBrush x:Key="V275_BY_Brush" Color="{StaticResource V275_BY}" />
     <Color x:Key="V5_BY">#004D40</Color>
@@ -34,11 +29,11 @@
     <Color x:Key="L95_BY">#1E88E5</Color>
     <SolidColorBrush x:Key="L95_BY_Brush" Color="{StaticResource L95_BY}" />
 
-    <!-- Monochrome -->
-    <Color x:Key="V275_M">#FFFFFF</Color>
+    <!-- Monochrome (Darker) -->
+    <Color x:Key="V275_M">#B8B8B8</Color>
     <SolidColorBrush x:Key="V275_M_Brush" Color="{StaticResource V275_M}" />
-    <Color x:Key="V5_M">#A9A9A9</Color>
+    <Color x:Key="V5_M">#6E6E6E</Color>
     <SolidColorBrush x:Key="V5_M_Brush" Color="{StaticResource V5_M}" />
-    <Color x:Key="L95_M">#000000</Color>
+    <Color x:Key="L95_M">#2B2B2B</Color>
     <SolidColorBrush x:Key="L95_M_Brush" Color="{StaticResource L95_M}" />
 </ResourceDictionary>

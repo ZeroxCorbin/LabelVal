@@ -1,6 +1,7 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!--  Base Status Colors  -->
+    <!-- Base Status (unchanged non-M) -->
     <Color x:Key="StatusGreen">#4CAF50</Color>
     <SolidColorBrush x:Key="StatusGreen_Brush" Color="{StaticResource StatusGreen}" />
     <Color x:Key="StatusYellow">#FFC107</Color>
@@ -8,7 +9,7 @@
     <Color x:Key="StatusRed">#F44336</Color>
     <SolidColorBrush x:Key="StatusRed_Brush" Color="{StaticResource StatusRed}" />
 
-    <!--  Red-Green Colorblind Friendly Status Colors  -->
+    <!-- RG -->
     <Color x:Key="StatusGreen_RG">#0072B2</Color>
     <SolidColorBrush x:Key="StatusGreen_RG_Brush" Color="{StaticResource StatusGreen_RG}" />
     <Color x:Key="StatusYellow_RG">#F0E442</Color>
@@ -16,7 +17,7 @@
     <Color x:Key="StatusRed_RG">#D55E00</Color>
     <SolidColorBrush x:Key="StatusRed_RG_Brush" Color="{StaticResource StatusRed_RG}" />
 
-    <!--  Blue-Yellow Colorblind Friendly Status Colors  -->
+    <!-- BY -->
     <Color x:Key="StatusGreen_BY">#D81B60</Color>
     <SolidColorBrush x:Key="StatusGreen_BY_Brush" Color="{StaticResource StatusGreen_BY}" />
     <Color x:Key="StatusYellow_BY">#004D40</Color>
@@ -24,11 +25,11 @@
     <Color x:Key="StatusRed_BY">#8B0000</Color>
     <SolidColorBrush x:Key="StatusRed_BY_Brush" Color="{StaticResource StatusRed_BY}" />
 
-    <!--  Monochrome Colorblind Friendly Status Colors  -->
-    <Color x:Key="StatusGreen_M">#FFFFFF</Color>
+    <!-- Monochrome (Darker) -->
+    <Color x:Key="StatusGreen_M">#CFCFCF</Color>
     <SolidColorBrush x:Key="StatusGreen_M_Brush" Color="{StaticResource StatusGreen_M}" />
-    <Color x:Key="StatusYellow_M">#A9A9A9</Color>
+    <Color x:Key="StatusYellow_M">#8C8C8C</Color>
     <SolidColorBrush x:Key="StatusYellow_M_Brush" Color="{StaticResource StatusYellow_M}" />
-    <Color x:Key="StatusRed_M">#000000</Color>
+    <Color x:Key="StatusRed_M">#2B2B2B</Color>
     <SolidColorBrush x:Key="StatusRed_M_Brush" Color="{StaticResource StatusRed_M}" />
 </ResourceDictionary>

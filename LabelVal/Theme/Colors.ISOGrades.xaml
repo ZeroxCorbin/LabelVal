@@ -1,6 +1,7 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!--  Standard ISO Grade Colors  -->
+    <!-- Standard -->
     <Color x:Key="ISO_GradeA">Green</Color>
     <SolidColorBrush x:Key="ISO_GradeA_Brush" Color="{StaticResource ISO_GradeA}" />
     <Color x:Key="ISO_GradeB">Teal</Color>
@@ -12,7 +13,7 @@
     <Color x:Key="ISO_GradeF">Red</Color>
     <SolidColorBrush x:Key="ISO_GradeF_Brush" Color="{StaticResource ISO_GradeF}" />
 
-    <!--  Red-Green Colorblind Friendly ISO Grade Colors  -->
+    <!-- RG -->
     <Color x:Key="ISO_GradeA_RG">#0072B2</Color>
     <SolidColorBrush x:Key="ISO_GradeA_RG_Brush" Color="{StaticResource ISO_GradeA_RG}" />
     <Color x:Key="ISO_GradeB_RG">#56B4E9</Color>
@@ -24,7 +25,7 @@
     <Color x:Key="ISO_GradeF_RG">#D55E00</Color>
     <SolidColorBrush x:Key="ISO_GradeF_RG_Brush" Color="{StaticResource ISO_GradeF_RG}" />
 
-    <!--  Blue-Yellow Colorblind Friendly ISO Grade Colors  -->
+    <!-- BY -->
     <Color x:Key="ISO_GradeA_BY">#D81B60</Color>
     <SolidColorBrush x:Key="ISO_GradeA_BY_Brush" Color="{StaticResource ISO_GradeA_BY}" />
     <Color x:Key="ISO_GradeB_BY">#FFC107</Color>
@@ -36,15 +37,15 @@
     <Color x:Key="ISO_GradeF_BY">#8B0000</Color>
     <SolidColorBrush x:Key="ISO_GradeF_BY_Brush" Color="{StaticResource ISO_GradeF_BY}" />
 
-    <!--  Monochrome Colorblind Friendly ISO Grade Colors  -->
-    <Color x:Key="ISO_GradeA_M">#FFFFFF</Color>
+    <!-- Monochrome (Refactored Darker Ramp) -->
+    <Color x:Key="ISO_GradeA_M">#D6D6D6</Color>
     <SolidColorBrush x:Key="ISO_GradeA_M_Brush" Color="{StaticResource ISO_GradeA_M}" />
-    <Color x:Key="ISO_GradeB_M">#D3D3D3</Color>
+    <Color x:Key="ISO_GradeB_M">#AFAFAF</Color>
     <SolidColorBrush x:Key="ISO_GradeB_M_Brush" Color="{StaticResource ISO_GradeB_M}" />
-    <Color x:Key="ISO_GradeC_M">#A9A9A9</Color>
+    <Color x:Key="ISO_GradeC_M">#888888</Color>
     <SolidColorBrush x:Key="ISO_GradeC_M_Brush" Color="{StaticResource ISO_GradeC_M}" />
-    <Color x:Key="ISO_GradeD_M">#808080</Color>
+    <Color x:Key="ISO_GradeD_M">#616161</Color>
     <SolidColorBrush x:Key="ISO_GradeD_M_Brush" Color="{StaticResource ISO_GradeD_M}" />
-    <Color x:Key="ISO_GradeF_M">#000000</Color>
+    <Color x:Key="ISO_GradeF_M">#2B2B2B</Color>
     <SolidColorBrush x:Key="ISO_GradeF_M_Brush" Color="{StaticResource ISO_GradeF_M}" />
 </ResourceDictionary>

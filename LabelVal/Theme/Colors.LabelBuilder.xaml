@@ -1,9 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!--
-        LabelBuilder Color Group (Violet family)
-        Separated from Results (cyan), ImageRoll (teal), Devices (blue/orange/wine).
-    -->
+    <!-- LabelBuilder: Only Monochrome darkened -->
 
     <!-- Standard -->
     <Color x:Key="LabelBuilder">#6B2FC9</Color>
@@ -17,7 +14,7 @@
     <Color x:Key="LabelBuilder_BY">#7F41D8</Color>
     <SolidColorBrush x:Key="LabelBuilder_BY_Brush" Color="{StaticResource LabelBuilder_BY}" />
 
-    <!-- Monochrome -->
-    <Color x:Key="LabelBuilder_M">#7A7A7A</Color>
+    <!-- Monochrome (Darker) -->
+    <Color x:Key="LabelBuilder_M">#636363</Color>
     <SolidColorBrush x:Key="LabelBuilder_M_Brush" Color="{StaticResource LabelBuilder_M}" />
 </ResourceDictionary>
