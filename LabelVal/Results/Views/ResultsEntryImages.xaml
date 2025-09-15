@@ -34,7 +34,7 @@
                 </Style.Triggers>
             </Style>
         </DockPanel.Style>
-        
+
         <!--  Source Image  -->
         <DockPanel>
 

@@ -730,7 +730,11 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
             if (res == null) return;
 
             int fallback = ActiveImageRoll?.TargetDPI
-                           ?? 600;
+               ?? 600;
+
+            //int fallback = SelectedV5?.Controller?.Dpi
+            //               ?? ActiveImageRoll?.TargetDPI
+            //               ?? 600;
 
             byte[] workingBytes;
             double srcDpiX, srcDpiY;
@@ -897,7 +901,10 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     {
         FileUtilities.LoadFileDialogSettings settings = new()
         {
-            Filters = [new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"])],
+            Filters =
+            [
+                new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png","bmp","jpg","jpeg","tif","tiff","gif"])
+            ],
             Title = "Select image(s).",
             Multiselect = true,
         };
