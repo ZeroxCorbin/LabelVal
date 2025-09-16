@@ -392,7 +392,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
                     catch (System.Exception ex)
                     {
                         Logger.Error(ex);
-                        Logger.Error("Error while processing the repeat report.");
+
                     }
                 }
             }
@@ -414,7 +414,12 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
         catch (System.Exception ex)
         {
             Logger.Error(ex);
-            Logger.Error("Error while processing the repeat report.");
+
+            CurrentImage = null;
+            CurrentTemplate = null;
+            CurrentReport = null;
+            CurrentSectors.Clear();
+            CurrentImageOverlay = null;
 
             IsFaulted = true;
         }
