@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<mah:MetroWindow
     x:Class="LabelVal.LabelBuilder.Views.LabelBuilderView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -11,9 +11,25 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:vm="clr-namespace:LabelVal.LabelBuilder.ViewModels"
     d:DataContext="{d:DesignInstance Type=vm:LabelBuilderViewModel}"
+    Icon="/favicon.ico"
+    SaveWindowPosition="True"
     mc:Ignorable="d">
 
-    <UserControl.Resources>
+    <mah:MetroWindow.IconTemplate>
+        <DataTemplate>
+            <Image
+                Width="24"
+                Height="24"
+                Margin="4,0,0,0"
+                Source="{Binding}" />
+        </DataTemplate>
+    </mah:MetroWindow.IconTemplate>
+
+    <mah:MetroWindow.DataContext>
+        <vm:LabelBuilderViewModel />
+    </mah:MetroWindow.DataContext>
+
+    <mah:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
@@ -22,7 +38,65 @@
             </ResourceDictionary.MergedDictionaries>
 
         </ResourceDictionary>
-    </UserControl.Resources>
+    </mah:MetroWindow.Resources>
+
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>
+
+            <DockPanel>
+                <TextBlock
+                    Margin="3,0"
+                    VerticalAlignment="Center"
+                    Text="{Binding ColorBlindnessType, Converter={StaticResource EnumValueToDescription}}" />
+
+                <Button
+                    x:Name="btnColorBlind"
+                    BorderThickness="0"
+                    Click="btnColorBlind_Click">
+                    <iconPacks:PackIconModern
+                        Width="20"
+                        Height="20"
+                        Kind="Eye" />
+                </Button>
+            </DockPanel>
+
+
+            <Button
+                x:Name="btnLightTheme"
+                BorderThickness="0"
+                Click="btnLightTheme_Click">
+                <iconPacks:PackIconModern
+                    Width="20"
+                    Height="20"
+                    Kind="WeatherSun" />
+            </Button>
+
+            <Button
+                x:Name="btnDarkTheme"
+                BorderThickness="0"
+                Click="btnDarkTheme_Click">
+                <iconPacks:PackIconModern
+                    Width="20"
+                    Height="20"
+                    Kind="MoonWaningCrescent" />
+            </Button>
+
+            <Button
+                x:Name="btnSyncOSTheme"
+                BorderThickness="0"
+                Click="btnSyncOSTheme_Click">
+                <iconPacks:PackIconModern
+                    Width="20"
+                    Height="20"
+                    Kind="OsWindows" />
+            </Button>
+
+            <!--<ComboBox
+                BorderThickness="0"
+                ItemsSource="{Binding Languages}"
+                SelectedValue="{Binding SelectedLanguage}" />-->
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
 
     <!--  Pass style into children  -->
     <DockPanel Margin="0,3,0,0" VerticalAlignment="Top">
@@ -78,20 +152,11 @@
                         VerticalAlignment="Center"
                         Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
                         Text="Label Builder" />
-
-                    <Button
-                        Padding="8,0"
-                        HorizontalAlignment="Right"
-                        Click="btnCollapseContent"
-                        Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
                 </DockPanel>
 
 
                 <ToolBarTray Grid.Row="1">
                     <ToolBar Padding="0,3" ToolBarTray.IsLocked="True">
-
 
                         <Button
                             Command="{Binding BarcodeBuilderViewModel.GenerateBarcodeCommand}"
@@ -175,4 +240,4 @@
         </StatusBar>
 
     </DockPanel>
-</UserControl>
+</mah:MetroWindow>

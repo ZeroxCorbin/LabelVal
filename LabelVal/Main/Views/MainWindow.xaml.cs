@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using LabelVal.LabelBuilder.Views;
 
 namespace LabelVal.Main.Views;
 
@@ -18,8 +19,15 @@ public partial class MainWindow : MetroWindow
     public ICommand OpenRunWindowCommand { get; }
 
     private Run.Views.MainWindow RunWindow;
+
+    // ADD: Label Builder window tracking
+    private LabelBuilderView _labelBuilderWindow;
+
     private WindowState _lastWindowState = WindowState.Normal;
     private WindowState _currentWindowState = WindowState.Normal;
+
+    // Track last real (selectable) menu item so command items can revert
+    private ViewModels.HamburgerMenuItem _lastSelectableMenuItem;
 
     public MainWindow()
     {
@@ -49,7 +57,8 @@ public partial class MainWindow : MetroWindow
             RunWindow.Show();
         });
 
-        
+        // Initialize last selectable item
+        _lastSelectableMenuItem = ((ViewModels.MainWindow)DataContext).SelectedMenuItem;
     }
 
     public void ClearSelectedMenuItem() => ((ViewModels.MainWindow)this.DataContext).SetDeafultMenuItem();
@@ -71,12 +80,60 @@ public partial class MainWindow : MetroWindow
 
     private void MetroWindow_Closed(object sender, System.EventArgs e) => DialogParticipation.SetRegister(this, null);
 
+    // NEW: Open (or activate) Label Builder window
+    private void OpenLabelBuilderWindow()
+    {
+        var vm = (ViewModels.MainWindow)DataContext;
+
+        if (_labelBuilderWindow != null)
+        {
+            if (_labelBuilderWindow.WindowState == WindowState.Minimized)
+                _labelBuilderWindow.WindowState = WindowState.Normal;
+            _labelBuilderWindow.Activate();
+            return;
+        }
+
+        _labelBuilderWindow = new LabelBuilderView
+        {
+            Owner = this
+        };
+
+        // Reuse existing ViewModel instance so state is shared
+        _labelBuilderWindow.DataContext = vm.LabelBuilderViewModel;
+
+        _labelBuilderWindow.Closed += (s, e) => _labelBuilderWindow = null;
+        _labelBuilderWindow.Show();
+    }
+
     private void hamMenu_ItemClick(object sender, ItemClickEventArgs args)
     {
-        if (args.ClickedItem is Main.ViewModels.HamburgerMenuItem menuItem && menuItem.IsNotSelectable)
+        if (args.ClickedItem is ViewModels.HamburgerMenuItem menuItem)
         {
-            hamMenu.IsPaneOpen = true;
-            args.Handled = true;
+            var vm = (ViewModels.MainWindow)DataContext;
+
+            // Command-style (window opening) item
+            if (menuItem.OpensWindow && menuItem.Content is LabelVal.LabelBuilder.ViewModels.LabelBuilderViewModel)
+            {
+                OpenLabelBuilderWindow();
+
+                // Revert selection to last selectable item
+                vm.SelectedMenuItem = _lastSelectableMenuItem ?? vm.MenuItems[0];
+                args.Handled = true;
+                return;
+            }
+
+            // Non-selectable (e.g., Printer) keeps pane open but stays selected as current logic
+            if (menuItem.IsNotSelectable)
+            {
+                hamMenu.IsPaneOpen = true;
+                // For Printer we allow it to remain showing its inline control, so do not revert
+                // Only LabelBuilder (handled above) reverts.
+                args.Handled = true;
+                return;
+            }
+
+            // Update last selectable
+            _lastSelectableMenuItem = menuItem;
         }
     }
 
@@ -101,7 +158,6 @@ public partial class MainWindow : MetroWindow
         {
             hamMenu.Focus();
         }
-
 
         foreach (var item in res)
         {

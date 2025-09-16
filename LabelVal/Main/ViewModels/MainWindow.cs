@@ -211,7 +211,8 @@ public partial class MainWindow : ObservableRecipient
             new HamburgerMenuItem { Label = "Results", Content = ResultssDatabases },
             new HamburgerMenuItem { Label = "Printer", Content = Printer, IsNotSelectable = true },
             //new HamburgerMenuItem { Label = "Run", Content = RunManager },
-            new HamburgerMenuItem { Label = "Label", Content = LabelBuilderViewModel },
+            // Mark Label Builder as command-style: open separate window, do not remain selected
+            new HamburgerMenuItem { Label = "Label", Content = LabelBuilderViewModel, IsNotSelectable = true, OpensWindow = true },
             new HamburgerMenuItem { Label = "V275", Content = V275Manager },
             new HamburgerMenuItem { Label = "V5", Content = ScannerManager },
             new HamburgerMenuItem { Label = "L95", Content = VerifierManager },

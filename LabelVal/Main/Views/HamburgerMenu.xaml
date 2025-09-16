@@ -72,7 +72,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="LabelBuilderContent">
-        <labelBuilder:LabelBuilderView />
+        <Grid Visibility="Collapsed" />
     </DataTemplate>
 
     <viewModels:TemplateSelector

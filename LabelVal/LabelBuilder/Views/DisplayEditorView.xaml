@@ -20,34 +20,54 @@
     mc:Ignorable="d">
 
     <UserControl.Resources>
-        <Style x:Key="HorizontalDividerBorder" TargetType="{x:Type Border}">
-            <Setter Property="Background" Value="{DynamicResource MaterialDesignDivider}" />
-            <Setter Property="Height" Value="1" />
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="UseLayoutRounding" Value="True" />
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
+                <ResourceDictionary Source="/LabelBuilder/Templates/LabelBuilderSectionContainerStyle.xaml" />
+                <ResourceDictionary Source="/LabelBuilder/Templates/LabelBuilderSectionExpanderStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <CollectionViewSource x:Key="BarcodeEntries" Source="{Binding BarcodeEntities}">
-            <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription Direction="Ascending" PropertyName="ParentDir" />
+            <Style x:Key="HorizontalDividerBorder" TargetType="{x:Type Border}">
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignDivider}" />
+                <Setter Property="Height" Value="1" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="UseLayoutRounding" Value="True" />
+            </Style>
 
-            </CollectionViewSource.SortDescriptions>
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="ParentDir" />
-            </CollectionViewSource.GroupDescriptions>
-        </CollectionViewSource>
+            <CollectionViewSource x:Key="BarcodeEntries" Source="{Binding BarcodeEntities}">
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription Direction="Ascending" PropertyName="ParentDir" />
 
-        <CollectionViewSource
-            x:Key="DisplayBarcodeEntries"
-            IsLiveSortingRequested="True"
-            Source="{Binding SelectedDisplay.BarcodeEntities}">
-            <CollectionViewSource.LiveSortingProperties>
-                <clr:String>Position.Top</clr:String>
-            </CollectionViewSource.LiveSortingProperties>
-            <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription Direction="Ascending" PropertyName="Position.Top" />
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
+                </CollectionViewSource.SortDescriptions>
+                <CollectionViewSource.GroupDescriptions>
+                    <PropertyGroupDescription PropertyName="ParentDir" />
+                </CollectionViewSource.GroupDescriptions>
+            </CollectionViewSource>
+
+            <CollectionViewSource
+                x:Key="DisplayBarcodeEntries"
+                IsLiveSortingRequested="True"
+                Source="{Binding SelectedDisplay.BarcodeEntities}">
+                <CollectionViewSource.LiveSortingProperties>
+                    <clr:String>Position.Top</clr:String>
+                </CollectionViewSource.LiveSortingProperties>
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription Direction="Ascending" PropertyName="Position.Top" />
+                </CollectionViewSource.SortDescriptions>
+            </CollectionViewSource>
+
+            <Style
+                x:Key="ToolbarButtonBase"
+                BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}"
+                TargetType="Button">
+                <Setter Property="Margin" Value="3,1" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Foreground" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" />
+            </Style>
+        </ResourceDictionary>
+
+
 
     </UserControl.Resources>
 
@@ -140,76 +160,103 @@
             </md:DrawerHost.BottomDrawerContent>
 
             <DockPanel>
-
-                <!--  Menu  -->
-                <DockPanel VerticalAlignment="Top">
-
-                    <Button
-                        x:Name="btnShowSettings"
-                        Margin="0"
-                        BorderThickness="0"
-                        Click="btnShowSettings_Click"
-                        Style="{StaticResource MaterialDesignFlatButton}">
-                        <iconPacks:Modern
-                            Width="16"
-                            Height="16"
-                            Kind="Cog" />
-                    </Button>
-
-                </DockPanel>
-
-                <!--  Display List  -->
-                <GroupBox
-                    Margin="3"
-                    Padding="3"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                    md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
-                    md:ColorZoneAssist.Mode="Custom"
-                    BorderThickness="0"
-                    Style="{StaticResource MaterialDesignCardGroupBox}">
+                <!--  Barcode Thumbnail List  -->
+                <GroupBox Margin="0,5" Style="{StaticResource LabelBuilderSectionContainerStyle}">
 
                     <GroupBox.Header>
                         <StackPanel Orientation="Horizontal">
 
-                            <md:Card
-                                Padding="1"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom"
-                                Background="{DynamicResource MahApps.Brushes.Control.Background}">
-                                <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Display List" />
-                            </md:Card>
+                            <TextBlock Text="Barcode Images" />
 
-                            <Button
-                                Width="22"
-                                Height="22"
-                                Margin="10,-5"
-                                Padding="0"
-                                BorderThickness="0"
-                                Command="{Binding NewDisplayEntityCommand}"
-                                Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                <iconPacks:Modern
-                                    Width="11"
-                                    Height="11"
-                                    Kind="Add" />
+                            <Button Command="{Binding LoadBarcodeLibraryFilesCommand}" Style="{StaticResource ToolbarButtonBase}">
+                                <iconPacks:Modern Kind="Refresh" />
                             </Button>
-
-                            <Button
-                                Width="22"
-                                Height="22"
-                                Margin="0,-5"
-                                Padding="0"
-                                BorderThickness="0"
-                                Command="{Binding SaveDisplayEntitiesCommand}"
-                                Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                <iconPacks:Modern
-                                    Width="11"
-                                    Height="11"
-                                    Kind="Save" />
-                            </Button>
-
                         </StackPanel>
+
+                    </GroupBox.Header>
+
+                    <md:Card Padding="2" Background="{DynamicResource MahApps.Brushes.Control.Background}">
+
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+                            <ItemsControl Grid.Row="1" ItemsSource="{Binding Source={StaticResource ResourceKey=BarcodeEntries}}">
+                                <ItemsControl.GroupStyle>
+                                    <GroupStyle>
+                                        <GroupStyle.ContainerStyle>
+                                            <Style TargetType="{x:Type GroupItem}">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                            <Expander Margin="1">
+                                                                <Expander.Style>
+                                                                    <Style BasedOn="{StaticResource {x:Type Expander}}" TargetType="{x:Type Expander}">
+                                                                        <Setter Property="BorderBrush" Value="Orange" />
+                                                                        <Setter Property="Margin" Value="5" />
+                                                                    </Style>
+                                                                </Expander.Style>
+                                                                <Expander.Header>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <TextBlock Margin="5,2,5,2" Text="{Binding Name}" />
+                                                                        <!--<TextBlock Text=":" Margin="0 2 5 2"/>
+                                                            <TextBlock Text="{Binding ItemCount}" Margin="0 2 0 2"/>-->
+                                                                    </StackPanel>
+                                                                </Expander.Header>
+
+                                                                <ItemsPresenter />
+
+                                                            </Expander>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </GroupStyle.ContainerStyle>
+                                    </GroupStyle>
+                                </ItemsControl.GroupStyle>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+
+                                            <Button
+                                                Margin="0"
+                                                BorderThickness="0"
+                                                Command="{Binding Path=DataContext.AddBarcodeToCanvasCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource MaterialDesignFlatButton}">
+                                                <iconPacks:Modern
+                                                    Width="16"
+                                                    Height="16"
+                                                    Kind="Add" />
+                                            </Button>
+
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding FileName}" />
+                                                <Image Source="{Binding ThumbPath}" />
+                                            </StackPanel>
+
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </md:Card>
+                </GroupBox>
+                <!--  Display List  -->
+                <GroupBox Margin="0,5" Style="{StaticResource LabelBuilderSectionContainerStyle}">
+
+                    <GroupBox.Header>
+                        <DockPanel>
+
+                            <TextBlock Text="Display List" />
+
+                            <Button Command="{Binding NewDisplayEntityCommand}" Style="{StaticResource ToolbarButtonBase}">
+                                <iconPacks:Modern Kind="Add" />
+                            </Button>
+
+                            <Button Command="{Binding SaveDisplayEntitiesCommand}" Style="{StaticResource ToolbarButtonBase}">
+                                <iconPacks:Modern Kind="Save" />
+                            </Button>
+
+                        </DockPanel>
                     </GroupBox.Header>
 
                     <md:Card Padding="2" Background="{DynamicResource MahApps.Brushes.Control.Background}">
@@ -316,35 +363,12 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
 
                     <!--  Display Canvas  -->
-                    <GroupBox
-                        Margin="3"
-                        Padding="3"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                        md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
-                        md:ColorZoneAssist.Mode="Custom"
-                        BorderThickness="0"
-                        Style="{StaticResource MaterialDesignCardGroupBox}">
+                    <GroupBox Margin="0,5" Style="{StaticResource LabelBuilderSectionContainerStyle}">
 
                         <GroupBox.Header>
-                            <StackPanel Orientation="Horizontal">
-
-                                <md:Card
-                                    Padding="1"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Bottom"
-                                    Background="{DynamicResource MahApps.Brushes.Control.Background}">
-                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="{Binding SelectedDisplay.Name}" />
-                                </md:Card>
-
-                                <TextBlock
-                                    Margin="10,3"
-                                    extensions:FrameworkElement_ClickProcessStart.IsExternal="True"
-                                    Tag="{Binding WebServerURL}"
-                                    Text="{Binding WebServerURL, Mode=OneWay}" />
-
-                            </StackPanel>
+                            <DockPanel>
+                                <TextBlock Text="{Binding SelectedDisplay.Name}" />
+                            </DockPanel>
                         </GroupBox.Header>
 
                         <md:Card Padding="2" Background="{DynamicResource MahApps.Brushes.Control.Background}">
@@ -562,109 +586,7 @@
 
                 </ScrollViewer>
 
-                <!--  Barcode Thumbnail List  -->
-                <GroupBox
-                    Margin="3"
-                    Padding="3"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                    md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
-                    md:ColorZoneAssist.Mode="Custom"
-                    BorderThickness="0"
-                    Style="{StaticResource MaterialDesignCardGroupBox}">
 
-                    <GroupBox.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <md:Card
-                                Padding="1"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom"
-                                Background="{DynamicResource MahApps.Brushes.Control.Background}">
-                                <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Barcode Images" />
-                            </md:Card>
-                            <Button
-                                Width="22"
-                                Height="22"
-                                Margin="10,-5"
-                                Padding="0"
-                                BorderThickness="0"
-                                Command="{Binding LoadBarcodeLibraryFilesCommand}"
-                                Style="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                <iconPacks:Modern
-                                    Width="11"
-                                    Height="11"
-                                    Kind="Refresh" />
-                            </Button>
-                        </StackPanel>
-
-                    </GroupBox.Header>
-
-                    <md:Card Padding="2" Background="{DynamicResource MahApps.Brushes.Control.Background}">
-
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-
-                            <ItemsControl Grid.Row="1" ItemsSource="{Binding Source={StaticResource ResourceKey=BarcodeEntries}}">
-                                <ItemsControl.GroupStyle>
-                                    <GroupStyle>
-                                        <GroupStyle.ContainerStyle>
-                                            <Style TargetType="{x:Type GroupItem}">
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                            <Expander Margin="1">
-                                                                <Expander.Style>
-                                                                    <Style BasedOn="{StaticResource {x:Type Expander}}" TargetType="{x:Type Expander}">
-                                                                        <Setter Property="BorderBrush" Value="Orange" />
-                                                                        <Setter Property="Margin" Value="5" />
-                                                                    </Style>
-                                                                </Expander.Style>
-                                                                <Expander.Header>
-                                                                    <StackPanel Orientation="Horizontal">
-                                                                        <TextBlock Margin="5,2,5,2" Text="{Binding Name}" />
-                                                                        <!--<TextBlock Text=":" Margin="0 2 5 2"/>
-                                                            <TextBlock Text="{Binding ItemCount}" Margin="0 2 0 2"/>-->
-                                                                    </StackPanel>
-                                                                </Expander.Header>
-
-                                                                <ItemsPresenter />
-
-                                                            </Expander>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </GroupStyle.ContainerStyle>
-                                    </GroupStyle>
-                                </ItemsControl.GroupStyle>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-
-                                            <Button
-                                                Margin="0"
-                                                BorderThickness="0"
-                                                Command="{Binding Path=DataContext.AddBarcodeToCanvasCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                CommandParameter="{Binding}"
-                                                Style="{StaticResource MaterialDesignFlatButton}">
-                                                <iconPacks:Modern
-                                                    Width="16"
-                                                    Height="16"
-                                                    Kind="Add" />
-                                            </Button>
-
-                                            <StackPanel>
-                                                <TextBlock Text="{Binding FileName}" />
-                                                <Image Source="{Binding ThumbPath}" />
-                                            </StackPanel>
-
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                    </md:Card>
-                </GroupBox>
 
             </DockPanel>
         </md:DrawerHost>
