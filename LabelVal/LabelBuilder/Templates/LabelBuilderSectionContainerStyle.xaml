@@ -5,7 +5,7 @@
 
     <!--  Central container style  -->
     <Style x:Key="LabelBuilderSectionContainerStyle" TargetType="GroupBox">
-        <Setter Property="Margin" Value="3,3,0,0" />
+
         <Setter Property="Padding" Value="0" />
         <Setter Property="BorderBrush" Value="{DynamicResource LabelBuilder_Brush_Active}" />
         <Setter Property="BorderThickness" Value="0" />
@@ -37,7 +37,27 @@
                             </DockPanel>
                         </md:Card>
 
-                        <ContentPresenter Margin="2" />
+                        <DockPanel>
+                            <Border Style="{StaticResource groupLeft}" Margin="0,0,3,0">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="1,1" EndPoint="0.2,0.2">
+                                        <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
+                                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                            <Border Style="{StaticResource groupBottom}" Margin="-3,3,0,0">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0.8,0.8">
+                                        <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
+                                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                            
+                            <ContentPresenter Margin="2" />
+                        </DockPanel>
+                        
                     </DockPanel>
                 </ControlTemplate>
             </Setter.Value>

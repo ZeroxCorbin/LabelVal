@@ -19,25 +19,20 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                  
-                            <md:Card    Grid.Row="0"
+                        <md:Card
+                            Grid.Row="0"
                             Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-              
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                                <!--  Header  -->
                             <Border
                                 x:Name="HeaderBorder"
-                            
                                 CornerRadius="3"
                                 Cursor="Hand"
                                 Focusable="True">
                                 <Border.InputBindings>
-                                    <!--  Mouse click  -->
                                     <MouseBinding
                                         Command="{Binding ExpanderHeaderClickCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         CommandParameter="{Binding ElementName=HeaderBorder}"
                                         Gesture="LeftClick" />
-                                    <!--  Keyboard accessibility  -->
                                     <KeyBinding
                                         Key="Enter"
                                         Command="{Binding ExpanderHeaderClickCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -87,14 +82,40 @@
                                 </Grid>
                             </Border>
                         </md:Card>
-                        <!--  Content  -->
-                        <ContentPresenter
+
+                        <!-- Expandable content container (was ContentPresenter) -->
+                        <Border
                             x:Name="ExpandSite"
                             Grid.Row="1"
-                            Margin="6,4,6,6"
-                            ContentSource="Content"
-                            Focusable="False"
-                            Visibility="Collapsed" />
+                            Visibility="Collapsed"
+                            Margin="0">
+                            <DockPanel>
+                                <!-- Decorative left/top backgrounds -->
+                                <Border Margin="0,0,3,0" Style="{StaticResource groupLeft}">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="1,1" EndPoint="0.2,0.2">
+                                            <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
+                                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                                <Border Margin="-3,3,0,0" Style="{StaticResource groupBottom}">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0.8,0.8">
+                                            <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
+                                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+
+                                <!-- Actual user content -->
+                                <ContentPresenter
+                                    Margin="6,4,6,6"
+                                    ContentSource="Content"
+                                    Focusable="False" />
+                            </DockPanel>
+                        </Border>
+
                     </Grid>
 
                     <ControlTemplate.Triggers>

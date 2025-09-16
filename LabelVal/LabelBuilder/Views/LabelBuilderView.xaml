@@ -99,28 +99,25 @@
     </mah:MetroWindow.RightWindowCommands>
 
     <!--  Pass style into children  -->
-    <DockPanel Margin="0,3,0,0" VerticalAlignment="Top">
-        <Border Style="{StaticResource groupLeft}">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="1,1" EndPoint="0.2,0.2">
-                    <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
-                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
-                </LinearGradientBrush>
-            </Border.Background>
-        </Border>
-        <Border Style="{StaticResource groupBottom}">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0.8,0.8">
-                    <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
-                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
-                </LinearGradientBrush>
-            </Border.Background>
-        </Border>
+    <Grid Margin="0,3,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
 
         <md:Card
+            Grid.Row="0"
+            Grid.Column="1"
             Margin="3,3,0,0"
             Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-            DockPanel.Dock="Top"
             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
             <DockPanel>
@@ -187,7 +184,7 @@
 
         </md:Card>
 
-        <DockPanel Grid.Row="1" Margin="3,0,3,0">
+        <DockPanel Grid.Row="1" Grid.Column="1" Margin="3,0,3,0">
             <ScrollViewer
                 Margin="0,0,3,0"
                 HorizontalScrollBarVisibility="Auto"
@@ -235,9 +232,9 @@
 
         </DockPanel>
 
-        <StatusBar Grid.Row="2" Margin="0,3,0,0">
+        <StatusBar Grid.Column="1" Grid.Row="2" Margin="0,3,0,0">
             <TextBlock Text="{Binding BarcodeBuilderViewModel.OutputErrorText}" />
         </StatusBar>
 
-    </DockPanel>
+    </Grid>
 </mah:MetroWindow>

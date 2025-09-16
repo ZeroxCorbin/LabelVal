@@ -15,8 +15,6 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:viewModels="clr-namespace:LabelVal.LabelBuilder.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewModels:DisplayEditorViewModel}"
-    d:Height="630"
-    d:Width="691"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -158,7 +156,7 @@
                 </StackPanel>
             </md:DrawerHost.BottomDrawerContent>
 
-            <DockPanel>
+            <DockPanel VerticalAlignment="Top">
 
                 <!--  Display List  -->
                 <GroupBox Margin="0,5" Style="{StaticResource LabelBuilderSectionContainerStyle}">
