@@ -67,85 +67,65 @@
                 <Setter Property="BorderBrush" Value="{DynamicResource LabelBuilder_Brush_Active}" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Padding" Value="0" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Expander">
-                            <Grid>
+
+                            <Grid SnapsToDevicePixels="True">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
-                                <md:Card
-                                    Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                                    DockPanel.Dock="Top"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                                    <!--  Header  -->
-                                    <DockPanel x:Name="HeaderSite" LastChildFill="True">
-                                        <DockPanel.Background>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
-                                                <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                            </LinearGradientBrush>
-                                        </DockPanel.Background>
+                                <!--  Header  -->
+                                <Border
+                                    x:Name="HeaderBorder"
+                                    Grid.Row="0"
+                                    CornerRadius="3"
+                                    Cursor="Hand"
+                                    MouseLeftButtonUp="OnExpanderHeaderClick">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
+                                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
 
-                                        <!--  Toggle (arrow only now)  -->
-                                        <ToggleButton
-                                            x:Name="PART_Toggle"
-                                            Width="22"
-                                            Height="22"
-                                            BorderThickness="0"
-                                            Cursor="Hand"
-                                            DockPanel.Dock="Left"
-                                            Focusable="False"
-                                            IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}">
-                                            <ToggleButton.Template>
-                                                <ControlTemplate TargetType="ToggleButton">
-                                                    <Border Background="{TemplateBinding Background}">
-                                                        <Path
-                                                            x:Name="Arrow"
-                                                            Width="12"
-                                                            Height="12"
-                                                            HorizontalAlignment="Center"
-                                                            VerticalAlignment="Center"
-                                                            Data="M 0 0 L 8 0 L 4 5 Z"
-                                                            Fill="{DynamicResource LabelBuilder_Brush_Active}"
-                                                            RenderTransformOrigin="0.5,0.5">
-                                                            <Path.RenderTransform>
-                                                                <RotateTransform Angle="0" />
-                                                            </Path.RenderTransform>
-                                                        </Path>
-                                                    </Border>
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsChecked" Value="True">
-                                                            <Setter TargetName="Arrow" Property="RenderTransform">
-                                                                <Setter.Value>
-                                                                    <RotateTransform Angle="180" />
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </Trigger>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="{DynamicResource LabelBuilder_Brush_Active50}" />
-                                                        </Trigger>
-                                                        <Trigger Property="IsEnabled" Value="False">
-                                                            <Setter Property="Opacity" Value="0.55" />
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </ToggleButton.Template>
-                                        </ToggleButton>
+                                    <Grid MinHeight="24" Margin="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="28" />
+                                        </Grid.ColumnDefinitions>
 
-                                        <!--  Header content now outside (not inside toggle area)  -->
+                                        <Viewbox
+                                            Grid.Column="1"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="6,0,6,0"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                            <Path
+                                                x:Name="Arrow"
+                                                Data="M 0 0 L 8 0 L 4 6 Z"
+                                                Fill="{DynamicResource LabelBuilder_Brush_Active}"
+                                                RenderTransformOrigin="0.5,0.5">
+                                                <Path.RenderTransform>
+                                                    <RotateTransform Angle="0" />
+                                                </Path.RenderTransform>
+                                            </Path>
+                                        </Viewbox>
+
                                         <ContentPresenter
-                                            Margin="3"
+                                            Grid.Column="0"
+                                            Margin="2,2,6,2"
                                             VerticalAlignment="Center"
-                                            Content="{TemplateBinding Header}"
-                                            ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                            ContentSource="Header"
                                             RecognizesAccessKey="True" />
-                                    </DockPanel>
-                                </md:Card>
+                                    </Grid>
+                                </Border>
 
-                                <!--  Expanded Content  -->
+                                <!--  Content  -->
                                 <ContentPresenter
                                     x:Name="ExpandSite"
                                     Grid.Row="1"
@@ -158,6 +138,26 @@
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsExpanded" Value="True">
                                     <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
+                                    <Setter TargetName="Arrow" Property="RenderTransform">
+                                        <Setter.Value>
+                                            <RotateTransform Angle="180" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+
+                                <Trigger SourceName="HeaderBorder" Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="HeaderBorder" Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active50}" />
+                                                <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.55" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -271,7 +271,7 @@
                 Margin="0,0,3,0"
                 HorizontalScrollBarVisibility="Auto"
                 VerticalScrollBarVisibility="Auto">
-                <barcodeViews:BarcodeSettingsView
+                <barcodeViews:ZintSettingsView
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     DataContext="{Binding BarcodeBuilderViewModel}"

@@ -17,8 +17,10 @@
 
     <DataTemplate x:Key="V5TriggerButton" DataType="{x:Type vm:ResultsDeviceEntryV5}">
 
-        <Button BorderBrush="{DynamicResource V5_Brush_Active}" Command="{Binding ProcessCommand}"
-                IsEnabled="{Binding ResultsManagerView.IsV5Working, Converter={StaticResource InvertBool}}">
+        <Button
+            BorderBrush="{DynamicResource V5_Brush_Active}"
+            Command="{Binding ProcessCommand}"
+            IsEnabled="{Binding ResultsManagerView.IsV5Working, Converter={StaticResource InvertBool}}">
             <Button.Style>
                 <Style BasedOn="{StaticResource DeviceButton}" TargetType="{x:Type Button}">
                     <Style.Triggers>
