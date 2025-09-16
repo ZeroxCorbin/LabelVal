@@ -1,4 +1,5 @@
-﻿using LabelVal.Main.Views;
+﻿using CommunityToolkit.Mvvm.Input;
+using LabelVal.Main.Views;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,12 +15,12 @@ public partial class LabelBuilderView : UserControl
 
     private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)Application.Current.MainWindow).ClearSelectedMenuItem();
 
-    private void OnExpanderHeaderClick(object sender, MouseButtonEventArgs e)
+    [RelayCommand]
+    private void ExpanderHeaderClick(Border b)
     {
-        if (sender is Border b && b.TemplatedParent is Expander exp)
+        if (b.TemplatedParent is Expander exp)
         {
             exp.IsExpanded = !exp.IsExpanded;
-            e.Handled = true;
         }
     }
 }
