@@ -18,6 +18,7 @@
     xmlns:run="clr-namespace:LabelVal.Run.Views"
     xmlns:sectorOutput="clr-namespace:LabelVal.Sectors.Views"
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
+    xmlns:theme="clr-namespace:LabelVal.Theme"
     xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"
     Title="{Binding ApplicationTitle}"
     Width="auto"
@@ -86,21 +87,28 @@
 
         </ResourceDictionary>
 
-
-
     </mah:MetroWindow.Resources>
 
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
-            <Button
-                x:Name="btnColorBlind"
-                BorderThickness="0"
-                Click="btnColorBlind_Click">
-                <iconPacks:PackIconModern
-                    Width="20"
-                    Height="20"
-                    Kind="Eye" />
-            </Button>
+
+            <DockPanel>
+                <TextBlock
+                    Margin="3,0"
+                    VerticalAlignment="Center"
+                    Text="{Binding ColorBlindnessType, Converter={StaticResource EnumValueToDescription}}" />
+
+                <Button
+                    x:Name="btnColorBlind"
+                    BorderThickness="0"
+                    Click="btnColorBlind_Click">
+                    <iconPacks:PackIconModern
+                        Width="20"
+                        Height="20"
+                        Kind="Eye" />
+                </Button>
+            </DockPanel>
+
 
             <Button
                 x:Name="btnLightTheme"
@@ -132,10 +140,10 @@
                     Kind="OsWindows" />
             </Button>
 
-            <ComboBox
+            <!--<ComboBox
                 BorderThickness="0"
                 ItemsSource="{Binding Languages}"
-                SelectedValue="{Binding SelectedLanguage}" />
+                SelectedValue="{Binding SelectedLanguage}" />-->
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
 

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Messaging;
 using ControlzEx.Theming;
 using LabelVal.Main.Messages;
+using LabelVal.Theme;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;

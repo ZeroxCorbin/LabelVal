@@ -5,6 +5,7 @@ using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Main.Messages;
 using LabelVal.Main.Views;
 using LabelVal.Sectors.Classes;
+using LabelVal.Theme;
 using LibSimpleDatabase;
 using Lvs95xx.Producer.Watchers;
 using MaterialDesignThemes.Wpf;
@@ -27,15 +28,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace LabelVal;
-
-public enum ColorBlindnessType
-{
-    None,
-    RedGreen,
-    BlueYellow,
-    Monochrome
-}
-
 
 /// <summary>
 ///     Interaction logic for App.xaml
@@ -322,7 +314,7 @@ public partial class App : Application
     private void UpdateMaterialDesignTheme()
     {
         PaletteHelper hel = new();
-        Theme theme = new();
+        MaterialDesignThemes.Wpf.Theme theme = new();
         var the = ControlzEx.Theming.ThemeManager.Current.DetectTheme();
 
         theme.SetPrimaryColor(the.PrimaryAccentColor);

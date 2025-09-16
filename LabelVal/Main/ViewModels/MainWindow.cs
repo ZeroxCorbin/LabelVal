@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Output;
+using LabelVal.Theme;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
@@ -114,6 +115,9 @@ public partial class MainWindow : ObservableRecipient
     // Enum Browser
     public EnumBrowserViewModel EnumBrowserViewModel { get; }
 
+
+    public ColorBlindnessType ColorBlindnessType => App.Settings.GetValue("App.ColorBlindnessType", ColorBlindnessType.None);
+
     #endregion
 
     #region Parameters and Localization
@@ -214,7 +218,16 @@ public partial class MainWindow : ObservableRecipient
         ];
 
         SelectedMenuItem = MenuItems[0];
+
+        App.Settings.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == "App.ColorBlindnessType")
+            {
+                OnPropertyChanged(nameof(ColorBlindnessType));
+            }
+        };
     }
+
 
     #endregion
 
