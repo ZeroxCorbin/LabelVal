@@ -79,6 +79,8 @@ public partial class App : Application
         }
     }
 
+    public static SimpleDatabase DisplayDatabase { get; private set; }
+
 #if DEBUG
     public static string WorkingDir => Directory.GetCurrentDirectory();
 #else
@@ -95,6 +97,7 @@ public partial class App : Application
     public static string SettingsDatabaseName => $"ApplicationSettings{DatabaseExtension}";
 
     public static string ResultssDatabaseDefaultName => "ResultssDatabase";
+    public static string DisplaysDatabaseName => $"Displays{DatabaseExtension}";
 
     //public static string AssetsResultssDatabasesRoot => $@"{Directory.GetCurrentDirectory()}\Assets\ResultssDatabases";
 
@@ -159,6 +162,12 @@ public partial class App : Application
             Logger.Error("The ApplicationSettings database is null. Shutdown!");
             Shutdown();
         }
+
+        DisplayDatabase = new SimpleDatabase();
+        if (!DisplayDatabase.Open(Path.Combine(UserDataDirectory, DisplaysDatabaseName)))
+        {
+            Logger.Error("The DisplayDatabase database is null. Shutdown!");
+        }
     }
 
     protected override void OnStartup(StartupEventArgs e)
@@ -169,7 +178,10 @@ public partial class App : Application
 
         base.OnStartup(e);
 
-               // Wait until the splash screen is created and its dispatcher is running
+        DisplayDatabase = new SimpleDatabase();
+
+
+        // Wait until the splash screen is created and its dispatcher is running
         _splashScreenReady.WaitOne();
 
         UpdateSplashScreen("Loading settings...");
