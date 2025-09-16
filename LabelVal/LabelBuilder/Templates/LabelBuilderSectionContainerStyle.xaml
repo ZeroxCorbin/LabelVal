@@ -38,7 +38,7 @@
                         </md:Card>
 
                         <DockPanel>
-                            <Border Style="{StaticResource groupLeft}" Margin="0,0,3,0">
+                            <Border Margin="0,0,3,0" Style="{StaticResource groupLeft}">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="1,1" EndPoint="0.2,0.2">
                                         <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
@@ -46,7 +46,7 @@
                                     </LinearGradientBrush>
                                 </Border.Background>
                             </Border>
-                            <Border Style="{StaticResource groupBottom}" Margin="-3,3,0,0">
+                            <Border Margin="-3,3,0,0" Style="{StaticResource groupBottom}">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="0.8,0.8">
                                         <GradientStop Offset="0" Color="{DynamicResource LabelBuilder_Color_Active}" />
@@ -54,10 +54,10 @@
                                     </LinearGradientBrush>
                                 </Border.Background>
                             </Border>
-                            
+
                             <ContentPresenter Margin="2" />
                         </DockPanel>
-                        
+
                     </DockPanel>
                 </ControlTemplate>
             </Setter.Value>

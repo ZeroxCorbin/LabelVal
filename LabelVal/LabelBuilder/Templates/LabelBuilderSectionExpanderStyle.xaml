@@ -83,14 +83,14 @@
                             </Border>
                         </md:Card>
 
-                        <!-- Expandable content container (was ContentPresenter) -->
+                        <!--  Expandable content container (was ContentPresenter)  -->
                         <Border
                             x:Name="ExpandSite"
                             Grid.Row="1"
-                            Visibility="Collapsed"
-                            Margin="0">
+                            Margin="0"
+                            Visibility="Collapsed">
                             <DockPanel>
-                                <!-- Decorative left/top backgrounds -->
+                                <!--  Decorative left/top backgrounds  -->
                                 <Border Margin="0,0,3,0" Style="{StaticResource groupLeft}">
                                     <Border.Background>
                                         <LinearGradientBrush StartPoint="1,1" EndPoint="0.2,0.2">
@@ -108,7 +108,7 @@
                                     </Border.Background>
                                 </Border>
 
-                                <!-- Actual user content -->
+                                <!--  Actual user content  -->
                                 <ContentPresenter
                                     Margin="6,4,6,6"
                                     ContentSource="Content"
