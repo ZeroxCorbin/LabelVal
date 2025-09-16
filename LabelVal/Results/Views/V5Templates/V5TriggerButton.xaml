@@ -16,7 +16,8 @@
         x:Key="V5TriggerButton"
         BorderBrush="{DynamicResource V5_Brush_Active}"
         Command="{Binding AddDeviceImageCommand}"
-        CommandParameter="{x:Static vm:ResultsEntryDevices.V5}">
+        CommandParameter="{x:Static vm:ResultsEntryDevices.V5}"
+        IsEnabled="{Binding IsV5Working, Converter={StaticResource InvertBool}}">
         <Button.Style>
             <Style BasedOn="{StaticResource DeviceButton}" TargetType="{x:Type Button}">
                 <Style.Triggers>

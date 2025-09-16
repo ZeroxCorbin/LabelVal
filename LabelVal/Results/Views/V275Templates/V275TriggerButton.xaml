@@ -11,14 +11,15 @@
         <ResourceDictionary Source="/Templates/SharedButtonStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <!--  Resource for V275 device-specific buttons. This is dynamically loaded into the main toolbar.  -->
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
     <!--  V275  -->
     <Button
         x:Key="V275TriggerButton"
         BorderBrush="{DynamicResource V275_Brush_Active}"
         Command="{Binding AddDeviceImageCommand}"
-        CommandParameter="{x:Static vm:ResultsEntryDevices.V275}">
+        CommandParameter="{x:Static vm:ResultsEntryDevices.V275}"
+        IsEnabled="{Binding IsV275Working, Converter={StaticResource InvertBool}}">
 
         <Button.Style>
             <Style BasedOn="{StaticResource DeviceButton}" TargetType="{x:Type Button}">
