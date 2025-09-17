@@ -542,7 +542,7 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
             else
             {
                 // Normalize to BGR32 bitmap (BMP encoder) with enforced DPI
-                bytes = ConvertImageToBgr32PreserveDpi.Convert(bytes, fallback, out _, out _);
+                bytes = ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(bytes, fallback, out _, out _);
                 ire = new ImageEntry(UID, bytes)
                 {
                     Path = path,
@@ -590,7 +590,7 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
             }
             else
             {
-                bytes = ConvertImageToBgr32PreserveDpi.Convert(bytes, fallback, out _, out _);
+                bytes = ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(bytes, fallback, out _, out _);
             }
 
             var ire = new ImageEntry(UID, bytes);

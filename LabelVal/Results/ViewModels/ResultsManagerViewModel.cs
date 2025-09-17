@@ -746,7 +746,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
             }
             else
             {
-                workingBytes = ConvertImageToBgr32PreserveDpi.Convert(res.Image, fallback, out srcDpiX, out srcDpiY);
+                workingBytes = ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(res.Image, fallback, out srcDpiX, out srcDpiY);
                 try { res.Image = workingBytes; } catch { }
             }
 
@@ -800,7 +800,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
             }
             else
             {
-                workingBytes = ConvertImageToBgr32PreserveDpi.Convert(res.Image, fallback, out srcDpiX, out srcDpiY);
+                workingBytes = ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(res.Image, fallback, out srcDpiX, out srcDpiY);
                 try { res.Image = workingBytes; } catch { }
             }
 
@@ -854,7 +854,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
             }
             else
             {
-                thumbBytes = ConvertImageToBgr32PreserveDpi.Convert(thumbnailOriginal, fallback, out _, out _);
+                thumbBytes = ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(thumbnailOriginal, fallback, out _, out _);
             }
 
             if (ActiveImageRoll.IsLocked)

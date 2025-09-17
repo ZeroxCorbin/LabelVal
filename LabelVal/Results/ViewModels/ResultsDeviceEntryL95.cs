@@ -397,7 +397,7 @@ public partial class ResultsDeviceEntryL95
         {
             lab.Image = GlobalAppSettings.Instance.PreseveImageFormat
                 ? ImageFormatHelpers.EnsureDpi(ResultsEntry.SourceImage.OriginalImage, fallback, fallback, out srcDpiX, out srcDpiY)
-                : ConvertImageToBgr32PreserveDpi.Convert(ResultsEntry.SourceImage.OriginalImage, fallback, out srcDpiX, out srcDpiY);
+                : ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(ResultsEntry.SourceImage.OriginalImage, fallback, out srcDpiX, out srcDpiY);
         }
         else if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
         {
@@ -408,7 +408,7 @@ public partial class ResultsDeviceEntryL95
             }
             lab.Image = GlobalAppSettings.Instance.PreseveImageFormat
                 ? ImageFormatHelpers.EnsureDpi(ResultRow.Stored.ImageBytes, fallback, fallback, out srcDpiX, out srcDpiY)
-                : ConvertImageToBgr32PreserveDpi.Convert(ResultRow.Stored.ImageBytes, fallback, out srcDpiX, out srcDpiY);
+                : ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(ResultRow.Stored.ImageBytes, fallback, out srcDpiX, out srcDpiY);
         }
 
         IsWorking = true;
@@ -486,13 +486,13 @@ public partial class ResultsDeviceEntryL95
             var fullImgBytesOriginal = message.Template.GetParameter<byte[]>("Report.Image");
             var fullImgBytes = GlobalAppSettings.Instance.PreseveImageFormat
                 ? ImageFormatHelpers.EnsureDpi(fullImgBytesOriginal, fallback, fallback, out _, out _)
-                : ConvertImageToBgr32PreserveDpi.Convert(fullImgBytesOriginal, fallback, out _, out _);
+                : ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(fullImgBytesOriginal, fallback, out _, out _);
 
             // Thumbnail
             var thumbBytesOriginal = message.Template.GetParameter<byte[]>("Report.Thumbnail");
             var thumbBytes = GlobalAppSettings.Instance.PreseveImageFormat
                 ? ImageFormatHelpers.EnsureDpi(thumbBytesOriginal, fallback, fallback, out _, out _)
-                : ConvertImageToBgr32PreserveDpi.Convert(thumbBytesOriginal, fallback, out _, out _);
+                : ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(thumbBytesOriginal, fallback, out _, out _);
 
             CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, thumbBytes);
             CurrentImage.EnsureDpi(fallback);

@@ -325,13 +325,13 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
         {
             lab.Image = GlobalAppSettings.Instance.PreseveImageFormat
                 ? ImageFormatHelpers.EnsureDpi(ResultsEntry.SourceImage.OriginalImage, fallback, fallback, out srcDpiX, out srcDpiY)
-                : ConvertImageToBgr32PreserveDpi.Convert(ResultsEntry.SourceImage.OriginalImage, fallback, out srcDpiX, out srcDpiY);
+                : ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(ResultsEntry.SourceImage.OriginalImage, fallback, out srcDpiX, out srcDpiY);
         }
         else if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
         {
             lab.Image = GlobalAppSettings.Instance.PreseveImageFormat
                 ? ImageFormatHelpers.EnsureDpi(ResultRow.Stored.ImageBytes, fallback, fallback, out srcDpiX, out srcDpiY)
-                : ConvertImageToBgr32PreserveDpi.Convert(ResultRow.Stored.ImageBytes, fallback, out srcDpiX, out srcDpiY);
+                : ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(ResultRow.Stored.ImageBytes, fallback, out srcDpiX, out srcDpiY);
         }
 
         _ = ResultsEntry.ResultsManagerView.SelectedV275Node.Controller.IsSimulator
@@ -369,7 +369,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
             var img = GlobalAppSettings.Instance.PreseveImageFormat
                 ? ImageFormatHelpers.EnsureDpi(report.Image, ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600,
                     ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600, out var dpiX, out var dpiY)
-                : ConvertImageToBgr32PreserveDpi.Convert(report.Image,
+                : ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(report.Image,
                     ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600, out var dpiX2, out var dpiY2);
             CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, img);
             CurrentImage.EnsureDpi(ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600);

@@ -323,13 +323,13 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
                 // Source image
                 lab.Image = GlobalAppSettings.Instance.PreseveImageFormat
                     ? ImageFormatHelpers.EnsureDpi(ResultsEntry.SourceImage.OriginalImage, fallback, fallback, out _, out _)
-                    : ConvertImageToBgr32PreserveDpi.Convert(ResultsEntry.SourceImage.OriginalImage, fallback, out _, out _);
+                    : ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(ResultsEntry.SourceImage.OriginalImage, fallback, out _, out _);
             }
             else if (ResultsEntry.ResultsManagerView.ActiveImageRoll.ImageType == ImageRollImageTypes.Stored)
             {
                 lab.Image = GlobalAppSettings.Instance.PreseveImageFormat
                     ? ImageFormatHelpers.EnsureDpi(ResultRow.Stored.ImageBytes, fallback, fallback, out _, out _)
-                    : ConvertImageToBgr32PreserveDpi.Convert(ResultRow.Stored.ImageBytes, fallback, out _, out _);
+                    : ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(ResultRow.Stored.ImageBytes, fallback, out _, out _);
             }
         }
 
@@ -373,7 +373,7 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
             }
             else
             {
-                processedBytes = ConvertImageToBgr32PreserveDpi.Convert(report.Image, fallback, out _, out _);
+                processedBytes = ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(report.Image, fallback, out _, out _);
                 try { report.Image = processedBytes; } catch { }
             }
 

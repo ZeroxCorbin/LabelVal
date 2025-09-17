@@ -220,7 +220,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     DataContext="{Binding BarcodeBuilderViewModel.BarcodeBuilderImagesViewModel}"
-                    SectionContainerStyle="{StaticResource LabelBuilderSectionContainerStyle}"/>
+                    SectionContainerStyle="{StaticResource LabelBuilderSectionContainerStyle}" />
             </ScrollViewer>
 
             <ScrollViewer
@@ -230,7 +230,7 @@
                 <barcodeViews:DisplayEditorView
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
-                    DataContext="{Binding BarcodeBuilderViewModel.DisplayEditorViewModel}" 
+                    DataContext="{Binding BarcodeBuilderViewModel.DisplayEditorViewModel}"
                     SectionContainerStyle="{StaticResource LabelBuilderSectionContainerStyle}"
                     SectionExpanderStyle="{StaticResource LabelBuilderSectionExpanderStyle}" />
             </ScrollViewer>

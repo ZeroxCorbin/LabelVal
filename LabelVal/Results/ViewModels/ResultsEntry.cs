@@ -255,7 +255,7 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
             else
             {
                 // Force normalize to 32bpp BGR BMP with guaranteed DPI
-                bytesToWrite = ConvertImageToBgr32PreserveDpi.Convert(img.OriginalImage, fallbackDpi, out _, out _);
+                bytesToWrite = ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(img.OriginalImage, fallbackDpi, out _, out _);
                 extension = ".bmp";
             }
 

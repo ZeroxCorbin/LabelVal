@@ -6,7 +6,7 @@ namespace LabelVal.LabelBuilder.ViewModels;
 
 public class LabelBuilderViewModel : ObservableObject
 {
-    public BarcodeBuilder.lib.Wpf.ViewModels.BarcodeBuilderViewModel BarcodeBuilderViewModel { get; } = new BarcodeBuilder.lib.Wpf.ViewModels.BarcodeBuilderViewModel(App.DisplayDatabase, App.Settings);
+    public BarcodeBuilder.lib.Wpf.ViewModels.BarcodeBuilderViewModel BarcodeBuilderViewModel { get; } = new BarcodeBuilder.lib.Wpf.ViewModels.BarcodeBuilderViewModel(App.UserDataDirectory, App.Settings);
 
 
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
