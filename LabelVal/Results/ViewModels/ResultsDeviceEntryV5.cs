@@ -21,6 +21,7 @@ using LabelVal.Sectors.Interfaces;
 using LabelVal.Main.ViewModels;
 using LabelVal.Results.Helpers;
 using LabelVal.Utilities;
+using ImageUtilities.lib.Wpf;
 
 namespace LabelVal.Results.ViewModels;
 

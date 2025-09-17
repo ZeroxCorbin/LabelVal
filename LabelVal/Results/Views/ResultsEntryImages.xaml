@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:LabelVal.Results.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:viewModels="clr-namespace:LabelVal.Results.ViewModels"
@@ -70,6 +71,13 @@
                             Click="btnCopyToClipboard_Click"
                             Content="{iconPacks:Modern Kind=PageCopy}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+
+                        <Button
+                            Margin="3"
+                            Command="{Binding Show3DImageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding SourceImage.OriginalImage}"
+                            Content="{iconPacks:Material Kind=Video3d}"
                             Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
 
                         <!--  Save Image  -->

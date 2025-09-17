@@ -2,6 +2,7 @@
 using BarcodeVerification.lib.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ImageUtilities.lib.Wpf;
 using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Main.ViewModels;

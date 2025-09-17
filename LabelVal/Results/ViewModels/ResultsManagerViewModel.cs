@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Gma.System.MouseKeyHook;
+using ImageUtilities.lib.Wpf;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.L95.ViewModels;
 using LabelVal.Main.Messages;

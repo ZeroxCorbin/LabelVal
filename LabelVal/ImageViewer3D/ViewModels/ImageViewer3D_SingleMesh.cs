@@ -78,7 +78,7 @@ public partial class ImageViewer3D_SingleMesh : BaseViewModel
         BitmapArray = Utilities.DotImagingUtilities.GetBmp(image, PixelFormat.Format8bppIndexed);
 
         // Convert the image to a BitmapImage for display
-        Image = BitmapImage.CreateBitmapImage(image);
+        Image = BitmapHelpers.CreateBitmapImage(image);
 
         EffectsManager = new DefaultEffectsManager();
 

@@ -1,4 +1,5 @@
-﻿using LabelVal.Dialogs;
+﻿using CommunityToolkit.Mvvm.Input;
+using LabelVal.Dialogs;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.ImageViewer3D.Views;
 using MahApps.Metro.Controls.Dialogs;
@@ -44,6 +45,7 @@ public partial class ResultsEntryImages : UserControl
 
     }
 
+    [RelayCommand]
     private void Show3DImage(byte[] image)
     {
         var img = new ImageViewer3D.ViewModels.ImageViewer3D_SingleMesh(image);
@@ -61,10 +63,6 @@ public partial class ResultsEntryImages : UserControl
     }
 
     private void btnShowPrinterAreaOverSourceToggle(object sender, RoutedEventArgs e) => ((ViewModels.ResultsEntry)DataContext).ShowPrinterAreaOverSource = !((ViewModels.ResultsEntry)DataContext).ShowPrinterAreaOverSource;
-
-    private void Show3DViewer(object sender, RoutedEventArgs e) => Show3DImage(((ViewModels.ResultsEntry)DataContext).SourceImage.ImageBytes);
-
-    private void Show2DViewer(object sender, RoutedEventArgs e) => ShowImage(((ViewModels.ResultsEntry)DataContext).SourceImage, ((ViewModels.ResultsEntry)DataContext).ShowPrinterAreaOverSource ? ((ViewModels.ResultsEntry)DataContext).CreatePrinterAreaOverlay(false) : null);
 
     private void btnCopyToClipboard_Click(object sender, RoutedEventArgs e) => Clipboard.SetImage(((ViewModels.ResultsEntry)DataContext).SourceImage.Image);
 }
