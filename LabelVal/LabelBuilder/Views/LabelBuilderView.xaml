@@ -44,10 +44,10 @@
         <mah:WindowCommands>
 
             <DockPanel>
-                <TextBlock
+                <!--<TextBlock
                     Margin="3,0"
                     VerticalAlignment="Center"
-                    Text="{Binding ColorBlindnessType, Converter={StaticResource EnumValueToDescription}}" />
+                    Text="{Binding ColorBlindnessType, Converter={StaticResource EnumValueToDescription}}" />-->
 
                 <Button
                     x:Name="btnColorBlind"
