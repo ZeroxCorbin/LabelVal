@@ -22,7 +22,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!--  Existing  -->
-                <ResourceDictionary Source="ImageDetailsTemplate.xaml" />
+                <ResourceDictionary Source="/Templates/ImageDetailsTemplate.xaml" />
                 <!--  New extracted toolbars  -->
                 <ResourceDictionary Source="L95Templates/L95StoredToolbar.xaml" />
                 <ResourceDictionary Source="L95Templates/L95CurrentToolbar.xaml" />

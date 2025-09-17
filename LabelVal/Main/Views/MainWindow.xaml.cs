@@ -1,16 +1,14 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using BarcodeBuilder.lib.Wpf.ViewModels;
+using BarcodeBuilder.lib.Wpf.Views;
+using CommunityToolkit.Mvvm.Input;
 using ControlzEx.Theming;
-using LabelVal.Main.Messages;
 using LabelVal.Theme;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using LabelVal.LabelBuilder.Views;
 
 namespace LabelVal.Main.Views;
 
@@ -112,7 +110,7 @@ public partial class MainWindow : MetroWindow
             var vm = (ViewModels.MainWindow)DataContext;
 
             // Command-style (window opening) item
-            if (menuItem.OpensWindow && menuItem.Content is LabelVal.LabelBuilder.ViewModels.LabelBuilderViewModel)
+            if (menuItem.OpensWindow && menuItem.Content is LabelBuilderViewModel)
             {
                 OpenLabelBuilderWindow();
 

@@ -16,7 +16,7 @@
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ImageDetailsTemplate.xaml" />
+                <ResourceDictionary Source="/Templates/ImageDetailsTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 

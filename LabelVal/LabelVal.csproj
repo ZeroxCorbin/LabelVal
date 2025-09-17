@@ -27,21 +27,25 @@
 	  <Compile Remove="Assets\Image Rolls\VALIDATION\**" />
 	  <Compile Remove="ImageViewer3D\Models\**" />
 	  <Compile Remove="ImageViewer3D\Processing\**" />
+	  <Compile Remove="LabelBuilder\**" />
 	  <Compile Remove="Results\Controls\**" />
 	  <Compile Remove="Sectors\Messages\**" />
 	  <EmbeddedResource Remove="Assets\Image Rolls\VALIDATION\**" />
 	  <EmbeddedResource Remove="ImageViewer3D\Models\**" />
 	  <EmbeddedResource Remove="ImageViewer3D\Processing\**" />
+	  <EmbeddedResource Remove="LabelBuilder\**" />
 	  <EmbeddedResource Remove="Results\Controls\**" />
 	  <EmbeddedResource Remove="Sectors\Messages\**" />
 	  <None Remove="Assets\Image Rolls\VALIDATION\**" />
 	  <None Remove="ImageViewer3D\Models\**" />
 	  <None Remove="ImageViewer3D\Processing\**" />
+	  <None Remove="LabelBuilder\**" />
 	  <None Remove="Results\Controls\**" />
 	  <None Remove="Sectors\Messages\**" />
 	  <Page Remove="Assets\Image Rolls\VALIDATION\**" />
 	  <Page Remove="ImageViewer3D\Models\**" />
 	  <Page Remove="ImageViewer3D\Processing\**" />
+	  <Page Remove="LabelBuilder\**" />
 	  <Page Remove="Results\Controls\**" />
 	  <Page Remove="Sectors\Messages\**" />
 	</ItemGroup>

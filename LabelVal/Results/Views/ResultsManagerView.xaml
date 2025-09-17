@@ -155,9 +155,9 @@
 
                 <ListBox
                     x:Name="ImageRollThumbnails"
-                              Grid.Row="1"
-                    Margin="3"
+                    Grid.Row="1"
                     MaxWidth="140"
+                    Margin="3"
                     DockPanel.Dock="Left"
                     ItemsSource="{Binding Source={StaticResource CvsResultssEntries}}"
                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"

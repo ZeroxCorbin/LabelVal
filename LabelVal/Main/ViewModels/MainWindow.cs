@@ -89,7 +89,7 @@ public partial class MainWindow : ObservableRecipient
     public V275.ViewModels.NodeDetails NodeDetails { get; }
 
     // Label Builder Section
-    public LabelBuilder.ViewModels.LabelBuilderViewModel LabelBuilderViewModel { get; }
+    public LabelBuilderViewModel LabelBuilderViewModel { get; }
 
     // Printer Section
     public Printer.ViewModels.Printer Printer { get; }
@@ -202,7 +202,7 @@ public partial class MainWindow : ObservableRecipient
 
         RunManager = new Run.ViewModels.RunManager(ResultsManagerView);
 
-        LabelBuilderViewModel = new LabelBuilder.ViewModels.LabelBuilderViewModel();
+        LabelBuilderViewModel = new LabelBuilderViewModel(App.Settings, App.UserDataDirectory);
 
         // Setup navigation menu items
         MenuItems =

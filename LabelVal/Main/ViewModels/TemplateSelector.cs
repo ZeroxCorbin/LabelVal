@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows;
+using BarcodeBuilder.lib.Wpf.ViewModels;
 
 namespace LabelVal.Main.ViewModels
 {
@@ -56,7 +57,7 @@ namespace LabelVal.Main.ViewModels
                 {
                     return ImageRolls;
                 }
-                else if (hmi.Content is LabelBuilder.ViewModels.LabelBuilderViewModel)
+                else if (hmi.Content is LabelBuilderViewModel)
                 {
                     return LabelBuilder;
                 }

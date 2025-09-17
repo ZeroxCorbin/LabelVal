@@ -79,8 +79,6 @@ public partial class App : Application
         }
     }
 
-    public static SimpleDatabase DisplayDatabase { get; private set; }
-
 #if DEBUG
     public static string WorkingDir => Directory.GetCurrentDirectory();
 #else
@@ -163,11 +161,6 @@ public partial class App : Application
             Shutdown();
         }
 
-        DisplayDatabase = new SimpleDatabase();
-        if (!DisplayDatabase.Open(Path.Combine(UserDataDirectory, DisplaysDatabaseName)))
-        {
-            Logger.Error("The DisplayDatabase database is null. Shutdown!");
-        }
     }
 
     protected override void OnStartup(StartupEventArgs e)
@@ -177,9 +170,6 @@ public partial class App : Application
         _host.Start();
 
         base.OnStartup(e);
-
-        DisplayDatabase = new SimpleDatabase();
-
 
         // Wait until the splash screen is created and its dispatcher is running
         _splashScreenReady.WaitOne();
