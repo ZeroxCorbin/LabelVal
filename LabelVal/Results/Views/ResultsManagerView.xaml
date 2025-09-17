@@ -130,7 +130,7 @@
                 </Grid.RowDefinitions>
                 <md:Card
                     Height="24"
-                    Margin="3,3,0,0"
+                    Margin="0,3,3,3"
                     HorizontalAlignment="Stretch"
                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                     DockPanel.Dock="Top"
@@ -155,7 +155,8 @@
 
                 <ListBox
                     x:Name="ImageRollThumbnails"
-                    Grid.Row="1"
+                              Grid.Row="1"
+                    Margin="3"
                     MaxWidth="140"
                     DockPanel.Dock="Left"
                     ItemsSource="{Binding Source={StaticResource CvsResultssEntries}}"
@@ -171,7 +172,7 @@
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Padding" Value="1" />
-                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Margin" Value="1,1,0,0" />
                             <Setter Property="BorderThickness" Value="2" />
                             <Setter Property="BorderBrush" Value="Transparent" />
                             <Setter Property="Focusable" Value="False" />
