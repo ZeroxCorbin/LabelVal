@@ -8,6 +8,11 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:watchers="clr-namespace:Watchers.lib.Process;assembly=Watchers.lib">
 
+    <ResourceDictionary.MergedDictionaries>
+        <!--  New shared toolbar  -->
+        <ResourceDictionary Source="pack://application:,,,/LabelVal;component/L95/Views/Templates/L95VerifierToolbar.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <converters:IsNullOrEmpty x:Key="IsNullOrEmpty" />
 
     <!--  L95  -->
@@ -17,7 +22,6 @@
             <Grid Width="48" MinHeight="82">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.Background>
@@ -36,89 +40,25 @@
                     VerticalAlignment="Center"
                     Source="/Assets/Images/l95-white-outline.ico" />
 
-                <md:Card
+                <!--  Shared toolbar (DataContext is SelectedDevice)  -->
+                <ContentControl
                     Grid.Row="1"
-                    Margin="3,3,3,3"
-                    Padding="3"
-                    Background="{DynamicResource MahApps.Brushes.Accent4}">
-                    <md:Card.Style>
-                        <Style TargetType="{x:Type md:Card}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </md:Card.Style>
-
-                    <Button BorderThickness="0" Command="{Binding SelectedDevice.ConnectCommand}">
-                        <Button.Style>
-                            <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <iconPacks:Modern Kind="Connect" />
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedDevice.Controller.IsConnected}" Value="True">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <iconPacks:Modern Kind="Disconnect" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-
-
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                </md:Card>
-
-                <md:Card
-                    Grid.Row="2"
-                    Margin="3,3,3,3"
-                    Padding="3"
-                    Background="{DynamicResource MahApps.Brushes.Accent4}"
-                    DockPanel.Dock="Top">
-                    <md:Card.Style>
-                        <Style TargetType="{x:Type md:Card}">
+                    Margin="0,4,0,4"
+                    HorizontalAlignment="Center"
+                    Content="{Binding}"
+                    ContentTemplate="{StaticResource L95VerifierToolbarTemplate}"
+                    DataContext="{Binding SelectedDevice}">
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedDevice.Controller.ProcessState}" Value="{x:Static watchers:Win32_ProcessWatcherProcessState.Exited}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                <DataTrigger Binding="{Binding SelectedDevice, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </md:Card.Style>
-
-                    <StackPanel>
-
-                        <Button
-                            Margin="0,0,0,3"
-                            Padding="0"
-                            BorderThickness="0"
-                            Command="{Binding SelectedDevice.EnterLvsCredentialsCommand}"
-                            Style="{StaticResource MahApps.Styles.Button}"
-                            ToolTip="Login as LVS super user">
-                            <iconPacks:PackIconMaterial Kind="AccountStar" />
-                        </Button>
-
-                        <Button
-                            Margin="0,0,0,0"
-                            Padding="0"
-                            BorderThickness="0"
-                            Command="{Binding SelectedDevice.EnterAdminCredentialsCommand}"
-                            Style="{StaticResource MahApps.Styles.Button}"
-                            ToolTip="Login as Admin">
-                            <iconPacks:PackIconMaterial Kind="ShieldAccount" />
-                        </Button>
-                    </StackPanel>
-                </md:Card>
+                    </ContentControl.Style>
+                </ContentControl>
             </Grid>
 
             <Border Style="{StaticResource imageBar}" />
@@ -139,7 +79,6 @@
                 </DockPanel.Style>
 
                 <l95:Verifier DataContext="{Binding SelectedDevice}" IsDocked="True" />
-
             </DockPanel>
         </DockPanel>
     </DataTemplate>

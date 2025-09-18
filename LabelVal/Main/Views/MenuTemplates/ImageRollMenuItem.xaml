@@ -38,7 +38,6 @@
             <md:Card
                 Margin="3"
                 Background="{DynamicResource MahApps.Brushes.Control.Background}"
-
                 Visibility="{Binding ., Converter={StaticResource IsNullOrEmptyVisibility}}">
                 <md:Card.Effect>
                     <DropShadowEffect

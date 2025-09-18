@@ -7,12 +7,16 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:v275="clr-namespace:LabelVal.V275.Views">
 
+    <ResourceDictionary.MergedDictionaries>
+        <!--  Bring in the shared toolbar template  -->
+        <ResourceDictionary Source="pack://application:,,,/LabelVal;component/V275/Views/Templates/V275NodeToolbar.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <converters:IsNullOrEmpty x:Key="IsNullOrEmpty" />
 
     <!--  V275  -->
     <DataTemplate x:Key="V275MenuItem">
         <DockPanel DataContext="{Binding Content}">
-
             <Border Style="{StaticResource hamMenuBottomBar}" />
 
             <Grid Width="48" MinHeight="82">
@@ -35,45 +39,14 @@
                     VerticalAlignment="Center"
                     Source="/Assets/Images/v275-white-outline.ico" />
 
-                <md:Card
+                <!--  Insert shared toolbar (DataContext = SelectedDevice)  -->
+                <ContentControl
                     Grid.Row="1"
-                    Margin="3"
-                    Padding="3"
-                    Background="{DynamicResource MahApps.Brushes.Accent4}">
-                    <md:Card.Style>
-                        <Style TargetType="{x:Type md:Card}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </md:Card.Style>
-
-                    <Button BorderThickness="0" Command="{Binding SelectedDevice.LoginCommand}">
-                        <Button.Style>
-                            <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <iconPacks:Modern Kind="Connect" />
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedDevice.Controller.IsLoggedIn}" Value="True">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <iconPacks:Modern Kind="Disconnect" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-
-
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                </md:Card>
+                    Margin="0,4,0,4"
+                    HorizontalAlignment="Center"
+                    Content="{Binding}"
+                    ContentTemplate="{StaticResource V275NodeToolbarTemplate}"
+                    DataContext="{Binding SelectedDevice}" />
             </Grid>
 
             <Border Style="{StaticResource imageBar}" />
@@ -94,10 +67,7 @@
                 </DockPanel.Style>
 
                 <v275:NodeItem DataContext="{Binding SelectedDevice}" IsDocked="True" />
-
             </DockPanel>
-
         </DockPanel>
     </DataTemplate>
-
 </ResourceDictionary>

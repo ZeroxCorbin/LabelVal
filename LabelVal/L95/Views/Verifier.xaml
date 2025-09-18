@@ -14,6 +14,15 @@
     d:DataContext="{d:DesignInstance Type=ViewModels:Verifier}"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--  New shared L95 toolbar dictionary  -->
+                <ResourceDictionary Source="pack://application:,,,/LabelVal;component/L95/Views/Templates/L95VerifierToolbar.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <md:Card
         Margin="6"
         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
@@ -29,99 +38,8 @@
 
         <DockPanel Margin="3">
 
-            <StackPanel VerticalAlignment="Top">
-                <StackPanel.Style>
-                    <Style TargetType="StackPanel">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </StackPanel.Style>
-
-                <md:Card
-                    Margin="3"
-                    Padding="3"
-                    Background="{DynamicResource MahApps.Brushes.Accent4}"
-                    DockPanel.Dock="Top">
-
-
-                    <Button BorderThickness="0" Command="{Binding ConnectCommand}">
-                        <Button.Style>
-                            <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <iconPacks:Modern Kind="Connect" />
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <iconPacks:Modern Kind="Disconnect" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                </md:Card>
-
-                <md:Card
-                    Margin="3,0,3,0"
-                    Padding="3"
-                    Background="{DynamicResource MahApps.Brushes.Accent4}"
-                    DockPanel.Dock="Top">
-                    <StackPanel>
-
-
-                        <Button
-                            Width="24"
-                            Height="24"
-                            Margin="0,0,0,3"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            BorderThickness="0"
-                            Command="{Binding EnterLvsCredentialsCommand}"
-                            Style="{StaticResource MahApps.Styles.Button}"
-                            ToolTip="Login as LVS super user">
-                            <iconPacks:PackIconMaterial Kind="AccountStar" />
-                        </Button>
-
-                        <Button
-                            Width="24"
-                            Height="24"
-                            Margin="0,0,0,0"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            BorderThickness="0"
-                            Command="{Binding EnterAdminCredentialsCommand}"
-                            Style="{StaticResource MahApps.Styles.Button}"
-                            ToolTip="Login as Admin">
-                            <iconPacks:PackIconMaterial Kind="ShieldAccount" />
-                        </Button>
-                    </StackPanel>
-                </md:Card>
-
-                <!--<Button
-                    Width="24"
-                    Height="24"
-                    Margin="3"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Click="btnShowSettings_Click"
-                    ToolTip="Show Settings">
-
-                    <iconPacks:PackIconMaterial
-                        Width="18"
-                        Height="18"
-                        Kind="Cog" />
-                </Button>-->
-
-            </StackPanel>
+            <!--  Replaced inline ToolBarTray with shared template  -->
+            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource L95VerifierToolbarTemplate}" />
 
             <md:DrawerHost
                 x:Name="drwSettings"
@@ -130,7 +48,6 @@
                 DrawerOpened="drwSettings_DrawerOpened">
 
                 <md:DrawerHost.TopDrawerContent>
-
                     <md:Card
                         Margin="3"
                         Padding="2"
@@ -157,9 +74,7 @@
                                 IsHitTestVisible="false"
                                 Text="{Binding DatabasePath}"
                                 TextWrapping="Wrap" />
-
                         </StackPanel>
-
                     </md:Card>
                 </md:DrawerHost.TopDrawerContent>
 
@@ -170,7 +85,6 @@
                     </Grid.RowDefinitions>
 
                     <DockPanel>
-
                         <TextBox
                             Margin="3,3"
                             d:Text="Camera"
@@ -179,7 +93,6 @@
                             IsHitTestVisible="False"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             Text="Camera" />
-
                         <TextBox
                             Margin="3,3"
                             d:Text="LVS-95xx"
@@ -188,8 +101,6 @@
                             IsHitTestVisible="False"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             Text="LVS-95xx" />
-
-
                         <TextBox
                             Margin="3,3"
                             d:Text="1.0.0.1000"
@@ -198,11 +109,9 @@
                             IsHitTestVisible="False"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             Text="{Binding Path=Controller.Version, Mode=OneWay}" />
-
                     </DockPanel>
 
                     <DockPanel Grid.Row="1">
-
                         <TextBox
                             Margin="3,3,-10,3"
                             VerticalAlignment="Top"
@@ -210,9 +119,8 @@
                             md:HintAssist.Hint="Connection"
                             BorderThickness="0"
                             IsHitTestVisible="False">
-
                             <TextBox.Style>
-                                <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
+                                <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
                                     <Setter Property="Text" Value="Offline" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
@@ -233,7 +141,6 @@
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             Text="{Binding Path=Controller.ProcessState, Mode=OneWay}" />
 
-
                         <TextBox
                             Margin="3,3,0,0"
                             d:Text="LVS1234"
@@ -242,61 +149,9 @@
                             IsHitTestVisible="False"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             Text="{Binding Path=PasswordOfTheDay, Mode=OneWay}" />
-
-
-
                     </DockPanel>
-
-                    <!--<DockPanel>
-
-                        <mah:ToggleSwitch
-                            Margin="3"
-                            IsOn="{Binding Controller.UseOldGT}"
-                            OffContent="New GT"
-                            OnContent="Old GT"
-                            Visibility="{Binding Controller.IsNewGT, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <mah:ToggleSwitch.LayoutTransform>
-                                <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
-                            </mah:ToggleSwitch.LayoutTransform>
-
-                        </mah:ToggleSwitch>
-                    </DockPanel>-->
                 </Grid>
             </md:DrawerHost>
-
-            <!--<Expander
-                MaxHeight="450"
-                VerticalAlignment="Top"
-                md:ExpanderAssist.HorizontalHeaderPadding="3"
-                Background="{DynamicResource MahApps.Brushes.Accent4}"
-                DockPanel.Dock="Top">
-
-                <Expander.Style>
-                    <Style BasedOn="{StaticResource MaterialDesignExpander}" TargetType="Expander">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Expander.Style>
-
-                <Expander.Header>
-                    <TextBlock MinWidth="48" Text="Results" />
-                </Expander.Header>
-
-                <md:Card Padding="1" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-
-                    <ScrollViewer Width="300" Height="400">
-                        <TextBox
-                            BorderThickness="0"
-                            IsReadOnly="True"
-                            Text="{Binding Controller.ReadData.Packet, Mode=OneWay}"
-                            TextWrapping="Wrap" />
-                    </ScrollViewer>
-                </md:Card>
-
-            </Expander>-->
 
             <Button
                 Padding="8,6"
@@ -317,7 +172,5 @@
             </Button>
 
         </DockPanel>
-
     </md:Card>
-
 </UserControl>

@@ -1,4 +1,5 @@
-﻿using LabelVal.Dialogs;
+﻿using CommunityToolkit.Mvvm.Input;
+using LabelVal.Dialogs;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Diagnostics;
@@ -90,7 +91,9 @@ public partial class Scanner : UserControl
         }
     }
 
-    private void btnShowSettings_Click(object sender, RoutedEventArgs e) => drwSettings.IsTopDrawerOpen = !drwSettings.IsTopDrawerOpen;
+    [RelayCommand]
+    private void ShowSettings() => drwSettings.IsTopDrawerOpen = !drwSettings.IsTopDrawerOpen;
+
     private void drwSettings_DrawerClosing(object sender, MaterialDesignThemes.Wpf.DrawerClosingEventArgs e)
     {
         if(e.Dock == Dock.Top)
@@ -99,19 +102,6 @@ public partial class Scanner : UserControl
         }
     }
 
-    private void btnOpenInBrowser_Click(object sender, RoutedEventArgs e)
-    {
-        var addr = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)
-            ? $"http://{((ViewModels.Scanner)DataContext).Controller.Host}:9898"
-            : $"http://{((ViewModels.Scanner)DataContext).Controller.Host}:{((ViewModels.Scanner)DataContext).Controller.Port}";
-
-        ProcessStartInfo ps = new(addr)
-        {
-            UseShellExecute = true,
-            Verb = "open"
-        };
-        _ = Process.Start(ps);
-    }
 
     //private void btnSetResults_Click(object sender, RoutedEventArgs e)
     //{

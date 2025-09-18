@@ -9,10 +9,12 @@ using LabelVal.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using V5_REST_Lib.Cameras;
@@ -746,6 +748,22 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         ActiveImageRoll.AddImage(ImageAddPositions.Top, imagEntry.entry);
     }
+
+    [RelayCommand]
+    private void OpenInBrowser()
+    {
+        var addr = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)
+            ? $"http://{Controller.Host}:9898"
+            : $"http://{Controller.Host}:{Controller.Port}";
+
+        ProcessStartInfo ps = new(addr)
+        {
+            UseShellExecute = true,
+            Verb = "open"
+        };
+        _ = Process.Start(ps);
+    }
+
 
     private void Clear()
     {

@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -210,6 +211,18 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     /// </summary>
     [RelayCommand]
     private Task<bool> SwitchEdit() => Controller.SwitchToEdit();
+
+    [RelayCommand]
+    private void OpenInBrowser()
+    {
+        var v275 = $"http://{Controller.Host}:{Controller.SystemPort}";
+        var ps = new ProcessStartInfo(v275)
+        {
+            UseShellExecute = true,
+            Verb = "open"
+        };
+        _ = Process.Start(ps);
+    }
 
     #endregion
 }

@@ -7,6 +7,11 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:v5="clr-namespace:LabelVal.V5.Views">
 
+    <ResourceDictionary.MergedDictionaries>
+        <!-- Shared V5 toolbar -->
+        <ResourceDictionary Source="pack://application:,,,/LabelVal;component/V5/Views/Templates/V5ScannerToolbar.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <converters:IsNullOrEmpty x:Key="IsNullOrEmpty" />
 
     <!--  V5  -->
@@ -35,45 +40,24 @@
                     VerticalAlignment="Center"
                     Source="/Assets/Images/v5-white-outline.ico" />
 
-                <md:Card
-                    Grid.Row="1"
-                    Margin="3"
-                    Padding="3"
-                    Background="{DynamicResource MahApps.Brushes.Accent4}">
-                    <md:Card.Style>
-                        <Style TargetType="{x:Type md:Card}">
+                <!-- Shared toolbar, DataContext = SelectedDevice -->
+                <ContentControl Grid.Row="1"
+                                Margin="0,4,0,4"
+                                HorizontalAlignment="Center"
+                                DataContext="{Binding SelectedDevice}"
+                                Content="{Binding}"
+                                ContentTemplate="{StaticResource V5ScannerToolbarTemplate}">
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                <DataTrigger Binding="{Binding SelectedDevice, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </md:Card.Style>
-
-                    <Button BorderThickness="0" Command="{Binding SelectedDevice.ConnectCommand}">
-                        <Button.Style>
-                            <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <iconPacks:Modern Kind="Connect" />
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedDevice.Controller.IsConnected}" Value="True">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <iconPacks:Modern Kind="Disconnect" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-
-
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                </md:Card>
+                    </ContentControl.Style>
+                </ContentControl>
             </Grid>
 
             <Border Style="{StaticResource imageBar}" />
@@ -94,9 +78,8 @@
                 </DockPanel.Style>
 
                 <v5:Scanner DataContext="{Binding SelectedDevice}" IsDocked="True" />
-
             </DockPanel>
+
         </DockPanel>
     </DataTemplate>
-
 </ResourceDictionary>

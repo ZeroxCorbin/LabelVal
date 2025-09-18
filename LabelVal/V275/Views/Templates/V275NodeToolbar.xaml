@@ -1,0 +1,101 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
+
+    <!--  Moved from NodeItem.xaml  -->
+    <Style
+        x:Key="FlatToolBarStyle"
+        BasedOn="{StaticResource {x:Type ToolBar}}"
+        TargetType="ToolBar">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolBar">
+                    <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                        <ItemsPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  Shared toolbar template  -->
+    <DataTemplate x:Key="V275NodeToolbarTemplate">
+        <!--  Explicit DataContext binding per requirement  -->
+        <ToolBarTray
+            Margin="3"
+            VerticalAlignment="Top"
+            DataContext="{Binding}"
+            IsLocked="True"
+            Orientation="Vertical">
+            <ToolBar
+                Padding="0"
+                VerticalAlignment="Top"
+                VerticalContentAlignment="Top"
+                Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                Style="{StaticResource FlatToolBarStyle}">
+
+                <!--  Login / Logout  -->
+                <Button
+                    Margin="3"
+                    BorderThickness="0"
+                    Command="{Binding LoginCommand}">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <iconPacks:Modern Kind="Connect" />
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Controller.IsLoggedIn}" Value="True">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <iconPacks:Modern Kind="Disconnect" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!--  Login Monitor Toggle  -->
+                <ToggleButton
+                    BorderThickness="0"
+                    IsChecked="{Binding LoginMonitor}"
+                    ToolTipService.ShowOnDisabled="True">
+                    <ToggleButton.Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.ToggleButton}" TargetType="ToggleButton">
+                            <Setter Property="ToolTip" Value="Login control." />
+                            <Setter Property="IsEnabled" Value="True" />
+                            <Setter Property="Content" Value="{iconPacks:FontAwesome Kind=TerminalSolid}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding LoginMonitor}" Value="True">
+                                    <Setter Property="ToolTip" Value="Login monitor." />
+                                    <Setter Property="Content" Value="{iconPacks:Modern Kind=Monitor}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Controller.IsLoggedIn}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+
+                <!--  Open in Browser  -->
+                <Button
+                    Margin="3"
+                    BorderThickness="0"
+                    Command="{Binding OpenInBrowserCommand}"
+                    ToolTip="Open V275 web interface.">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button" />
+                    </Button.Style>
+                    <iconPacks:PackIconModern Kind="Browser" />
+                </Button>
+
+            </ToolBar>
+        </ToolBarTray>
+    </DataTemplate>
+</ResourceDictionary>

@@ -210,7 +210,7 @@
                             Margin="0,0,0,3"
                             HorizontalAlignment="Left">
 
-                            <Button Margin="3" >
+                            <Button Margin="3">
                                 <Button.Style>
                                     <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                                         <Setter Property="Content">

@@ -27,16 +27,7 @@ namespace LabelVal.V275.Views
             InitializeComponent();
         }
 
-        private void btnOpenInBrowser_Click(object sender, RoutedEventArgs e)
-        {
-            var v275 = $"http://{((ViewModels.Node)DataContext).Controller.Host}:{((ViewModels.Node)DataContext).Controller.SystemPort}";
-            var ps = new ProcessStartInfo(v275)
-            {
-                UseShellExecute = true,
-                Verb = "open"
-            };
-            _ = Process.Start(ps);
-        }
+
 
         private void btnUnselect(object sender, RoutedEventArgs e) =>
             ((ViewModels.Node)this.DataContext).Manager.Manager.SelectedDevice = null;

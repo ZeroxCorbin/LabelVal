@@ -15,23 +15,28 @@
     mc:Ignorable="d">
 
     <UserControl.Resources>
-        <converters:Bytes2BitmapImage x:Key="bytesToImage" />
-        <converters:IPAddressSplitConverter x:Key="ipAddressSplitConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- New shared toolbar dictionary -->
+                <ResourceDictionary Source="pack://application:,,,/LabelVal;component/V5/Views/Templates/V5ScannerToolbar.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:Bytes2BitmapImage x:Key="bytesToImage" />
+            <converters:IPAddressSplitConverter x:Key="ipAddressSplitConverter" />
+        </ResourceDictionary>
     </UserControl.Resources>
 
-    <md:Card
-        Margin="6"
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Top"
-        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-        BorderThickness="1"
-        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
+    <md:Card Margin="6"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Top"
+             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+             BorderThickness="1"
+             Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
         <md:Card.Effect>
-            <DropShadowEffect
-                BlurRadius="2"
-                Opacity="0.5"
-                ShadowDepth="0"
-                Color="{DynamicResource MahApps.Colors.Gray1}" />
+            <DropShadowEffect BlurRadius="2"
+                              Opacity="0.5"
+                              ShadowDepth="0"
+                              Color="{DynamicResource MahApps.Colors.Gray1}" />
         </md:Card.Effect>
         <md:Card.Style>
             <Style BasedOn="{StaticResource {x:Type md:Card}}" TargetType="md:Card">
@@ -45,69 +50,11 @@
 
         <DockPanel Margin="3">
 
-            <DockPanel VerticalAlignment="Top">
+            <!-- Replaced inline ToolBarTray with shared template -->
+            <ContentControl Content="{Binding}"
+                            ContentTemplate="{StaticResource V5ScannerToolbarTemplate}" />
 
-                <md:Card
-                    Margin="3"
-                    Padding="3"
-                    Background="{DynamicResource MahApps.Brushes.Accent4}"
-                    DockPanel.Dock="Top">
-
-                    <Button BorderThickness="0" Command="{Binding ConnectCommand}">
-                        <Button.Style>
-                            <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <iconPacks:Modern Kind="Connect" />
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <iconPacks:Modern Kind="Disconnect" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                </md:Card>
-
-                <Button
-                    Width="24"
-                    Height="24"
-                    Margin="3"
-                    Click="btnShowSettings_Click"
-                    DockPanel.Dock="Top"
-                    ToolTip="Show Settings">
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                    <iconPacks:PackIconMaterial Kind="Cog" />
-                </Button>
-
-                <Button
-                    Width="24"
-                    Height="24"
-                    Margin="3"
-                    Click="btnOpenInBrowser_Click"
-                    DockPanel.Dock="Top"
-                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                    ToolTip="Open V5 WebLink. Shift + Click to open admin UI!">
-                    <iconPacks:PackIconModern Kind="Browser" />
-                </Button>
-
-            </DockPanel>
-
+            <!-- (Rest of original content unchanged) -->
             <md:DrawerHost
                 x:Name="drwSettings"
                 VerticalAlignment="Top"

@@ -16,8 +16,15 @@
     mc:Ignorable="d">
 
     <UserControl.Resources>
-        <converters:LocalizeEnumValue x:Key="LocalizeEnumValue" />
-        <converters:MACAddressSplitConverter x:Key="macAddressSplitConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--  New shared toolbar template dictionary  -->
+                <ResourceDictionary Source="pack://application:,,,/LabelVal;component/V275/Views/Templates/V275NodeToolbar.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:LocalizeEnumValue x:Key="LocalizeEnumValue" />
+            <converters:MACAddressSplitConverter x:Key="macAddressSplitConverter" />
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <md:Card
@@ -44,96 +51,13 @@
             </Style>
         </md:Card.Style>
 
+        <!--  Root DockPanel previously contained inline toolbar; now uses shared template  -->
         <DockPanel Margin="3">
 
-            <DockPanel VerticalAlignment="Top">
+            <!--  Shared toolbar  -->
+            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource V275NodeToolbarTemplate}" />
 
-                <md:Card
-                    Margin="3"
-                    Padding="3"
-                    Background="{DynamicResource MahApps.Brushes.Accent4}"
-                    DockPanel.Dock="Top">
-
-                    <DockPanel>
-
-                        <Button
-                            BorderThickness="0"
-                            Command="{Binding LoginCommand}"
-                            DockPanel.Dock="Top">
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <iconPacks:Modern Kind="Connect" />
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Controller.IsLoggedIn}" Value="True">
-                                            <Setter Property="Content">
-                                                <Setter.Value>
-                                                    <iconPacks:Modern Kind="Disconnect" />
-                                                </Setter.Value>
-                                            </Setter>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <ToggleButton
-                            Width="24"
-                            Height="24"
-                            Padding="0"
-                            BorderThickness="0"
-                            IsChecked="{Binding LoginMonitor}"
-                            ToolTipService.ShowOnDisabled="True">
-
-                            <ToggleButton.Style>
-                                <Style BasedOn="{StaticResource MahApps.Styles.ToggleButton.ToolBar}" TargetType="ToggleButton">
-
-                                    <Setter Property="ToolTip" Value="Login control." />
-                                    <Setter Property="IsEnabled" Value="True" />
-                                    <Setter Property="Content" Value="{iconPacks:FontAwesome Kind=TerminalSolid}" />
-
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding LoginMonitor}" Value="True">
-                                            <Setter Property="ToolTip" Value="Login monitor." />
-
-                                            <Setter Property="Content" Value="{iconPacks:Modern Kind=Monitor}" />
-                                        </DataTrigger>
-
-                                        <DataTrigger Binding="{Binding Controller.IsLoggedIn}" Value="True">
-                                            <Setter Property="IsEnabled" Value="False" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ToggleButton.Style>
-                        </ToggleButton>
-
-                    </DockPanel>
-
-                </md:Card>
-
-                <Button
-                    Width="24"
-                    Height="24"
-                    Margin="3"
-                    Click="btnOpenInBrowser_Click"
-                    ToolTip="Open V275 web interface.">
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                    <iconPacks:PackIconModern Kind="Browser" />
-                </Button>
-
-            </DockPanel>
-
+            <!--  Existing layout unchanged below  -->
             <DockPanel VerticalAlignment="Top">
 
                 <DockPanel DockPanel.Dock="Top">
@@ -459,6 +383,5 @@
             </Button>
 
         </DockPanel>
-
     </md:Card>
 </UserControl>
