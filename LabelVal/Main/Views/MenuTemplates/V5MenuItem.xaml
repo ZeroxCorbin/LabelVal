@@ -18,7 +18,7 @@
     <DataTemplate x:Key="V5MenuItem">
         <DockPanel DataContext="{Binding Content}">
 
-            <Grid Width="48" MinHeight="82">
+            <Grid Width="48">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
@@ -34,6 +34,7 @@
                     Grid.Row="0"
                     Width="36"
                     Height="36"
+                    Margin="3"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Source="/Assets/Images/v5-white-outline.ico" />
@@ -45,7 +46,8 @@
                     HorizontalAlignment="Center"
                     Content="{Binding}"
                     ContentTemplate="{StaticResource V5ScannerToolbarTemplate}"
-                    DataContext="{Binding SelectedDevice}">
+                    DataContext="{Binding SelectedDevice}"
+                    Tag="MenuHost">
                     <ContentControl.Style>
                         <Style TargetType="ContentControl">
                             <Setter Property="Visibility" Value="Collapsed" />

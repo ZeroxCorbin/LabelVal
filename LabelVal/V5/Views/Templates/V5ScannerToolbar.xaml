@@ -61,7 +61,7 @@
                     </Button.Style>
                 </Button>
 
-                <!--  Settings (hidden when docked)  -->
+                <!--  Settings (hidden when docked OR hosted in menu mini bar)  -->
                 <Button
                     Margin="3,3,3,0"
                     BorderThickness="0"
@@ -71,6 +71,10 @@
                         <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <!--  New: hide when hosted inside the menu ContentControl (Tag=MenuHost)  -->
+                                <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="MenuHost">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>

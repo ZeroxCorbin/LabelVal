@@ -19,7 +19,7 @@
     <DataTemplate x:Key="L95MenuItem">
         <DockPanel DataContext="{Binding Content}">
 
-            <Grid Width="48" MinHeight="82">
+            <Grid Width="48">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
@@ -35,7 +35,7 @@
                     Grid.Row="0"
                     Width="36"
                     Height="36"
-                    Margin="0,3,0,0"
+                    Margin="3"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Source="/Assets/Images/l95-white-outline.ico" />
