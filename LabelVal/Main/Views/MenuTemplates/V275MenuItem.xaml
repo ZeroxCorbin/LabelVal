@@ -17,7 +17,6 @@
     <!--  V275  -->
     <DataTemplate x:Key="V275MenuItem">
         <DockPanel DataContext="{Binding Content}">
-            <Border Style="{StaticResource hamMenuBottomBar}" />
 
             <Grid Width="48" MinHeight="82">
                 <Grid.RowDefinitions>
@@ -39,14 +38,34 @@
                     VerticalAlignment="Center"
                     Source="/Assets/Images/v275-white-outline.ico" />
 
-                <!--  Insert shared toolbar (DataContext = SelectedDevice)  -->
+                <!--  Show only when HamburgerMenu is collapsed (IsPaneOpen = False) and there is a SelectedDevice  -->
                 <ContentControl
                     Grid.Row="1"
                     Margin="0,4,0,4"
                     HorizontalAlignment="Center"
                     Content="{Binding}"
                     ContentTemplate="{StaticResource V275NodeToolbarTemplate}"
-                    DataContext="{Binding SelectedDevice}" />
+                    DataContext="{Binding SelectedDevice}">
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <!--  Default hidden  -->
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedDevice, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <!--  Show when pane is collapsed  -->
+                                <DataTrigger Binding="{Binding IsPaneOpen, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <!--  Hide if no SelectedDevice  -->
+                                <DataTrigger Binding="{Binding DataContext, RelativeSource={RelativeSource Self}, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
             </Grid>
 
             <Border Style="{StaticResource imageBar}" />

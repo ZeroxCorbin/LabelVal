@@ -50,9 +50,17 @@
                     DataContext="{Binding SelectedDevice}">
                     <ContentControl.Style>
                         <Style TargetType="ContentControl">
-                            <Setter Property="Visibility" Value="Visible" />
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedDevice, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                <DataTrigger Binding="{Binding SelectedDevice, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <!--  Show when pane is collapsed  -->
+                                <DataTrigger Binding="{Binding IsPaneOpen, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <!--  Hide if no SelectedDevice  -->
+                                <DataTrigger Binding="{Binding DataContext, RelativeSource={RelativeSource Self}, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>

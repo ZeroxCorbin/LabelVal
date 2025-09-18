@@ -8,7 +8,6 @@
     <DataTemplate x:Key="LabelBuilderMenuItem" DataType="{x:Type labelBuilderVm:LabelBuilderViewModel}">
         <!--  DataContext must be set to Content here.  -->
         <DockPanel DataContext="{Binding Content}">
-            <Border Style="{StaticResource hamMenuBottomBar}" />
 
             <DockPanel Width="48" Height="48">
                 <DockPanel.Background>

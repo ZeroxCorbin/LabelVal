@@ -7,7 +7,6 @@
     <!--  Printer Menu  -->
     <DataTemplate x:Key="PrinterMenuItem">
         <DockPanel MaxHeight="68">
-            <Border Style="{StaticResource hamMenuBottomBar}" />
 
             <DockPanel Width="48" Height="48">
                 <iconPacks:PackIconMaterial

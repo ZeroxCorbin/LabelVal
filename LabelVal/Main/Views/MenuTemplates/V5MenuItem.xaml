@@ -8,7 +8,7 @@
     xmlns:v5="clr-namespace:LabelVal.V5.Views">
 
     <ResourceDictionary.MergedDictionaries>
-        <!-- Shared V5 toolbar -->
+        <!--  Shared V5 toolbar  -->
         <ResourceDictionary Source="pack://application:,,,/LabelVal;component/V5/Views/Templates/V5ScannerToolbar.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
@@ -17,8 +17,6 @@
     <!--  V5  -->
     <DataTemplate x:Key="V5MenuItem">
         <DockPanel DataContext="{Binding Content}">
-
-            <Border Style="{StaticResource hamMenuBottomBar}" />
 
             <Grid Width="48" MinHeight="82">
                 <Grid.RowDefinitions>
@@ -40,18 +38,27 @@
                     VerticalAlignment="Center"
                     Source="/Assets/Images/v5-white-outline.ico" />
 
-                <!-- Shared toolbar, DataContext = SelectedDevice -->
-                <ContentControl Grid.Row="1"
-                                Margin="0,4,0,4"
-                                HorizontalAlignment="Center"
-                                DataContext="{Binding SelectedDevice}"
-                                Content="{Binding}"
-                                ContentTemplate="{StaticResource V5ScannerToolbarTemplate}">
+                <!--  Shared toolbar, DataContext = SelectedDevice  -->
+                <ContentControl
+                    Grid.Row="1"
+                    Margin="0,4,0,4"
+                    HorizontalAlignment="Center"
+                    Content="{Binding}"
+                    ContentTemplate="{StaticResource V5ScannerToolbarTemplate}"
+                    DataContext="{Binding SelectedDevice}">
                     <ContentControl.Style>
                         <Style TargetType="ContentControl">
-                            <Setter Property="Visibility" Value="Visible" />
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedDevice, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                <DataTrigger Binding="{Binding SelectedDevice, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <!--  Show when pane is collapsed  -->
+                                <DataTrigger Binding="{Binding IsPaneOpen, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <!--  Hide if no SelectedDevice  -->
+                                <DataTrigger Binding="{Binding DataContext, RelativeSource={RelativeSource Self}, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
