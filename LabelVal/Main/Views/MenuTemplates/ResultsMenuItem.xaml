@@ -13,7 +13,7 @@
     <DataTemplate x:Key="ResultsMenuItem" DataType="{x:Type resultsVm:ResultsDatabasesViewModel}">
         <!--  The DataContext here is an instance of ResultsDatabasesViewModel  -->
         <DockPanel
-            MaxHeight="58"
+            MaxHeight="61"
             d:DataContext="{d:DesignInstance Type=resultsVm:ResultsDatabasesViewModel,
                                              IsDesignTimeCreatable=False}"
             DataContext="{Binding Content}">
@@ -209,30 +209,42 @@
                             Grid.Column="1"
                             Margin="0,0,0,3"
                             HorizontalAlignment="Left">
-                            <iconPacks:PackIconMaterial
-                                Margin="3"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center">
-                                <iconPacks:PackIconMaterial.Style>
-                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                                        <Setter Property="Kind" Value="LockOpenVariant" />
-                                        <Setter Property="ToolTip" Value="Database is unlocked." />
+
+                            <Button Margin="3" >
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <iconPacks:PackIconMaterial Kind="LockOpenVariant" />
+                                            </Setter.Value>
+                                        </Setter>
+
+                                        <Setter Property="ToolTip" Value="Database is unlocked. Click to lock." />
 
                                         <Style.Triggers>
 
                                             <DataTrigger Binding="{Binding SelectedResultsDatabase.IsLocked}" Value="True">
-                                                <Setter Property="Kind" Value="Lock" />
-                                                <Setter Property="ToolTip" Value="Database is locked." />
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <iconPacks:PackIconMaterial Kind="Lock" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="ToolTip" Value="Database is locked. Click to unlock." />
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding SelectedResultsDatabase.IsPermLocked}" Value="True">
-                                                <Setter Property="Kind" Value="DatabaseLock" />
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <iconPacks:PackIconMaterial Kind="DatabaseLock" />
+                                                    </Setter.Value>
+                                                </Setter>
                                                 <Setter Property="ToolTip" Value="Database is premanently locked." />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </iconPacks:PackIconMaterial.Style>
-                            </iconPacks:PackIconMaterial>
+                                </Button.Style>
+                            </Button>
+
                         </DockPanel>
 
                     </Grid>

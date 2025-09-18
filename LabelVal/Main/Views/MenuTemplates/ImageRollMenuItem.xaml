@@ -38,7 +38,7 @@
             <md:Card
                 Margin="3"
                 Background="{DynamicResource MahApps.Brushes.Control.Background}"
-                BorderThickness="0"
+
                 Visibility="{Binding ., Converter={StaticResource IsNullOrEmptyVisibility}}">
                 <md:Card.Effect>
                     <DropShadowEffect
@@ -211,6 +211,7 @@
                         <DockPanel
                             Grid.Row="1"
                             Grid.Column="1"
+                            Margin="0,0,0,3"
                             HorizontalAlignment="Left">
 
                             <TextBlock Margin="6,0" VerticalAlignment="Center">

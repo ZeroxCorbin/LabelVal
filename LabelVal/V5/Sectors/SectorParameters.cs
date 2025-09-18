@@ -2,6 +2,7 @@
 using BarcodeVerification.lib.Extensions;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using CommunityToolkit.Mvvm.ComponentModel;
+using LabelVal.V5.Sectors;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using System.Collections.ObjectModel;
@@ -37,40 +38,93 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
             return;
 
         Sector = sector;
-        var report = Sector.Report.Original;
-        var template = Sector.Template.Original;
 
         if (Sector.Report.Symbology == Symbologies.Unknown)
         {
-            if (!report.GetParameter<bool>("read"))
-            {
-                Alarms.Add(new Alarm(AvaailableAlarmCategories.Error, "Read failed"));
-            }
-
             IsSectorMissing = true;
             SectorMissingText = "Sector is missing";
             return;
         }
 
-        //Get the parameters list based on the region type.
-        var parameters = Sector.Report.Symbology.GetParameters(Sector.Report.Device, Sector.Report.GradingStandard, Sector.Report.ApplicationStandard);
+        var parameters = Sector.Report.Symbology.GetParameters(Sector.Report.Device, Sector.Report.GradingStandard, Sector.Report.ApplicationStandard).ToList();
 
+        var symPars = Sector.Report.Symbology.GetParameters(Sector.Report.Device);
+        var gradingPars = Sector.Report.GradingStandard.GetParameters(Sector.Report.Specification);
+        var applicationPars = Sector.Report.ApplicationStandard.GetParameters();
+
+        //Add the symbology parameters
+        var tempSymPars = new List<IParameterValue>();
+        foreach (var parameter in symPars)
+        {
+            try
+            {
+                ParameterHandling.AddParameter(parameter, Sector.Report.Symbology, tempSymPars, Sector.Report.Original, Sector.Template.Original);
+            }
+            catch (System.Exception ex)
+            {
+                Logger.Error(ex, $"Error processing symbology parameter: {parameter}");
+            }
+        }
+        tempSymPars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
+        foreach (var p in tempSymPars)
+            SymbologyParameters.Add(p);
+
+        //Add the grading parameters
+        var tempGradingPars = new List<IParameterValue>();
+        foreach (var parameter in gradingPars)
+        {
+            try
+            {
+                ParameterHandling.AddParameter(parameter, Sector.Report.Symbology, tempGradingPars, Sector.Report.Original, Sector.Template.Original);
+            }
+            catch (System.Exception ex)
+            {
+                Logger.Error(ex, $"Error processing grading parameter: {parameter}");
+            }
+        }
+        tempGradingPars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
+        foreach (var p in tempGradingPars)
+            GradingParameters.Add(p);
+
+        //Add the application parameters
+        var tempApplicationPars = new List<IParameterValue>();
+        foreach (var parameter in applicationPars)
+        {
+            try
+            {
+                ParameterHandling.AddParameter(parameter, Sector.Report.Symbology, tempApplicationPars, Sector.Report.Original, Sector.Template.Original);
+            }
+            catch (System.Exception ex)
+            {
+                Logger.Error(ex, $"Error processing application parameter: {parameter}");
+            }
+        }
+        tempApplicationPars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
+        foreach (var p in tempApplicationPars)
+            ApplicationParameters.Add(p);
+
+        var report = Sector.Report.Original;
+        var template = Sector.Template.Original;
+        var pars = new List<IParameterValue>();
+        //Interate through the parameters
         foreach (var parameter in parameters)
         {
             try
             {
-                ParamterHandling.AddParameter(parameter, Sector.Report.Symbology, Parameters, report, template);
+
+                ParameterHandling.AddParameter(parameter, Sector.Report.Symbology, pars, report, template);
             }
             catch (System.Exception ex)
             {
                 Logger.Error(ex, $"Error processing parameter: {parameter}");
             }
         }
+        pars.Sort((x, y) => x.Parameter.ToString().CompareTo(y.Parameter.ToString()));
 
-        if (sec.Report.GS1Results is null)
-            return;
+        foreach (var p in pars)
+            Parameters.Add(p);
 
-        if (!sec.Report.GS1Results.PassFail.Value)
+        if (sec.Report.GS1Results != null && !sec.Report.GS1Results.PassFail.Value)
         {
             Alarms.Add(new Alarm(AvaailableAlarmCategories.Error, sec.Report.GS1Results.FormattedOut));
         }

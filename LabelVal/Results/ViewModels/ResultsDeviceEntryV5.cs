@@ -2,26 +2,20 @@
 using BarcodeVerification.lib.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LabelVal.ImageRolls.Databases;
+using ImageUtilities.lib.Wpf;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
+using LabelVal.Sectors.Interfaces;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Media;
-using LabelVal.Sectors.Interfaces;
-using LabelVal.Main.ViewModels;
-using LabelVal.Results.Helpers;
-using LabelVal.Utilities;
-using ImageUtilities.lib.Wpf;
 
 namespace LabelVal.Results.ViewModels;
 
@@ -187,6 +181,7 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
         _IsWorkingTimer.Elapsed += _IsWorkingTimer_Elapsed;
         _IsWorkingTimer.AutoReset = false;
     }
+
     private void _IsWorkingTimer_Elapsed(object sender, ElapsedEventArgs e)
     {
         Logger.Error($"Working timer elapsed for {Device}.");
@@ -306,14 +301,17 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
     [RelayCommand]
     public void Process()
     {
-        int fallback =  ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI
-                       ?? 600;
+        IsWorking = true;
+        IsFaulted = false;
 
         var lab = new V5_REST_Lib.Controllers.Label(
             ProcessRepeat,
             Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? ResultRow?.Template : null,
             Handler,
             ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table);
+
+        int fallback = ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI
+                       ?? 600;
 
         // Simulator path requires we supply the image bytes
         if (Handler is LabelHandlers.SimulatorRestore or LabelHandlers.SimulatorDetect or LabelHandlers.SimulatorTrigger)
@@ -334,10 +332,8 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
             }
         }
 
-        _ = ResultsEntry.ResultsManagerView.SelectedV5.Controller.ProcessLabel(lab);
+        _ = Task.Run(() => ResultsEntry.ResultsManagerView.SelectedV5.Controller.ProcessLabel(lab));
 
-        IsWorking = true;
-        IsFaulted = false;
     }
 
     private void ProcessRepeat(V5_REST_Lib.Controllers.Repeat repeat) => ProcessFullReport(repeat?.FullReport);
@@ -358,39 +354,29 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
         {
             if (report == null || report.Image == null)
             {
-                Logger.Error("Cannot process null V5 report/image.");
+                Logger.Error("No report data or image received.");
                 IsFaulted = true;
                 return;
             }
 
-            int fallback =  ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI
-                           ?? 600;
-
-            byte[] processedBytes;
-            if (GlobalAppSettings.Instance.PreseveImageFormat)
-            {
-                processedBytes = ImageFormatHelpers.EnsureDpi(report.Image, fallback, fallback, out _, out _);
-                try { report.Image = processedBytes; } catch { }
-            }
-            else
-            {
-                processedBytes = ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(report.Image, fallback, out _, out _);
-                try { report.Image = processedBytes; } catch { }
-            }
-
-            if (!ResultsEntry.ResultsManagerView.SelectedV5.Controller.IsSimulator)
-            {
-                CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, processedBytes);
-            }
-            else
-            {
-                // Kept pattern (Magick still optional if later you manipulate)
-                CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, processedBytes);
-            }
-            CurrentImage.EnsureDpi(fallback);
-
             CurrentTemplate = ResultsEntry.ResultsManagerView.SelectedV5.Controller.Config;
             CurrentReport = report.Report;
+
+            if (report.Image == null || report.Image.Length == 0)
+            {
+                Logger.Error("No image data received.");
+                IsFaulted = true;
+                return;
+            }
+
+            var img = GlobalAppSettings.Instance.PreseveImageFormat
+                ? ImageFormatHelpers.EnsureDpi(report.Image, ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600,
+                    ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600, out var dpiX, out var dpiY)
+                : ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(report.Image,
+                    ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600, out var dpiX2, out var dpiY2);
+
+            CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, img);
+            CurrentImage.EnsureDpi(ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600);
 
             CurrentSectors.Clear();
 
@@ -408,11 +394,11 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
                             ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard,
                             ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table,
                             CurrentTemplate.GetParameter<string>("response.message")));
+                        break;
                     }
                     catch (Exception ex)
                     {
                         Logger.Error(ex);
-                        Logger.Warning("Error while processing V5 sector result.");
                     }
                 }
             }
@@ -420,18 +406,27 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
             if (tempSectors.Count > 0)
             {
                 tempSectors = ResultsEntry.SortList3(tempSectors);
+
                 foreach (var sec in tempSectors)
                     CurrentSectors.Add(sec);
             }
 
             GetSectorDiff();
+
             RefreshCurrentOverlay();
+
             IsFaulted = false;
         }
         catch (Exception ex)
         {
             Logger.Error(ex);
-            Logger.Warning("V5 processing failed.");
+
+            CurrentImage = null;
+            CurrentTemplate = null;
+            CurrentReport = null;
+            CurrentSectors.Clear();
+            CurrentImageOverlay = null;
+
             IsFaulted = true;
         }
         finally

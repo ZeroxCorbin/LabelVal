@@ -157,7 +157,7 @@ public partial class Sector : ObservableObject, ISector, IDisposable
                 }
                 else
                 {
-                    ParamterHandling.AddParameter(parameter, Report.Symbology, FocusedParameters, Report.Original, Template.Original);
+                    ParameterHandling.AddParameter(parameter, Report.Symbology, FocusedParameters, Report.Original, Template.Original);
                 }
             }
         }

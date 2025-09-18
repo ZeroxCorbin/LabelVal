@@ -3,20 +3,14 @@ using BarcodeVerification.lib.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImageUtilities.lib.Wpf;
-using LabelVal.ImageRolls.Databases;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
-using LabelVal.Results.Helpers;
 using LabelVal.Sectors.Classes;
-using LabelVal.Utilities;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -44,8 +38,12 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     /// </summary>
     public ResultsEntryDevices Device { get; } = ResultsEntryDevices.V275;
 
+    /// <summary>
+    /// Gets or sets the database result row associated with this entry.
+    /// </summary>
     [ObservableProperty] private Databases.Result resultRow;
     partial void OnResultRowChanged(Result value) { StoredImage = value?.Stored; HandlerUpdate(); }
+
     /// <summary>
     /// Gets or sets the database result record for the stored image.
     /// </summary>
@@ -55,6 +53,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     /// Gets or sets the stored image entry.
     /// </summary>
     [ObservableProperty] private ImageEntry storedImage;
+
     /// <summary>
     /// Gets or sets the overlay for the stored image, typically showing sector boundaries.
     /// </summary>
@@ -64,6 +63,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     /// Gets or sets the currently processed image entry.
     /// </summary>
     [ObservableProperty] private ImageEntry currentImage;
+
     /// <summary>
     /// Gets or sets the overlay for the current image, typically showing sector boundaries.
     /// </summary>
@@ -73,6 +73,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     /// Gets or sets the JSON template for the current image processing job.
     /// </summary>
     public JObject CurrentTemplate { get; set; }
+
     /// <summary>
     /// Gets the serialized JSON string of the current template.
     /// </summary>
@@ -82,6 +83,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     /// Gets the JSON report from the current image processing.
     /// </summary>
     public JObject CurrentReport { get; private set; }
+
     /// <summary>
     /// Gets the serialized JSON string of the current report.
     /// </summary>
@@ -91,20 +93,36 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     /// Gets the collection of sectors from the currently processed image.
     /// </summary>
     public ObservableCollection<Sectors.Interfaces.ISector> CurrentSectors { get; } = [];
+
     /// <summary>
     /// Gets the collection of sectors from the stored image.
     /// </summary>
     public ObservableCollection<Sectors.Interfaces.ISector> StoredSectors { get; } = [];
+
     /// <summary>
     /// Gets the collection of differences between stored and current sectors.
     /// </summary>
     public ObservableCollection<SectorDifferences> DiffSectors { get; } = [];
 
+    /// <summary>
+    /// Gets or sets the currently selected sector in the UI.
+    /// </summary>
     [ObservableProperty] private Sectors.Interfaces.ISector currentSelectedSector = null;
 
+    /// <summary>
+    /// Gets or sets the stored sector that has focus.
+    /// </summary>
     [ObservableProperty] private Sectors.Interfaces.ISector focusedStoredSector = null;
+
+    /// <summary>
+    /// Gets or sets the current sector that has focus.
+    /// </summary>
     [ObservableProperty] private Sectors.Interfaces.ISector focusedCurrentSector = null;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether a process is currently running.
+    /// A timer will set this to false if the operation takes too long.
+    /// </summary>
     [ObservableProperty] private bool isWorking = false;
     partial void OnIsWorkingChanged(bool value)
     {
@@ -116,6 +134,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
         ResultsManagerView.WorkingUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotWorking));
     }
+
     /// <summary>
     /// Gets a value indicating whether the device is not currently processing.
     /// </summary>
@@ -123,18 +142,42 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     private const int _isWorkingTimerInterval = 30000;
     private readonly Timer _IsWorkingTimer = new(_isWorkingTimerInterval);
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the last operation resulted in a fault.
+    /// </summary>
     [ObservableProperty] private bool isFaulted = false;
     partial void OnIsFaultedChanged(bool value)
     {
         ResultsManagerView.FaultedUpdate(Device, value);
         OnPropertyChanged(nameof(IsNotFaulted));
     }
+
     /// <summary>
     /// Gets a value indicating whether the device is not in a faulted state.
     /// </summary>
     public bool IsNotFaulted => !IsFaulted;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether this device entry is selected in the UI.
+    /// </summary>
     [ObservableProperty] private bool isSelected = false;
+    partial void OnIsSelectedChanging(bool value) { if (value) ResultsEntry.ResultsManagerView.ResetSelected(Device); }
+
+    /// <summary>
+    /// Gets the appropriate label handler based on the current state and settings.
+    /// </summary>
+    public LabelHandlers Handler => ResultsManagerView?.SelectedV275Node?.Controller != null && ResultsManagerView.SelectedV275Node.Controller.IsLoggedIn_Control ? ResultsManagerView.SelectedV275Node.Controller.IsSimulator
+            ? ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
+                    ? LabelHandlers.SimulatorRestore
+                    : LabelHandlers.SimulatorDetect
+                : LabelHandlers.SimulatorTrigger
+            : ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
+                    ? LabelHandlers.CameraRestore
+                    : LabelHandlers.CameraDetect
+                : LabelHandlers.CameraTrigger
+        : LabelHandlers.Offline;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResultsDeviceEntryV275"/> class.
@@ -155,24 +198,6 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
         IsFaulted = true;
     }
 
-    partial void OnIsSelectedChanging(bool value) { if (value) ResultsEntry.ResultsManagerView.ResetSelected(Device); }
-
-    /// <summary>
-    /// Gets the appropriate label handler based on the current state and settings.
-    /// </summary>
-    public LabelHandlers Handler => ResultsManagerView?.SelectedV275Node?.Controller != null && ResultsManagerView.SelectedV275Node.Controller.IsLoggedIn_Control ? ResultsManagerView.SelectedV275Node.Controller.IsSimulator
-            ? ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
-                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
-                    ? LabelHandlers.SimulatorRestore
-                    : LabelHandlers.SimulatorDetect
-                : LabelHandlers.SimulatorTrigger
-            : ResultsManagerView.ActiveImageRoll.SectorType == ImageRollSectorTypes.Dynamic
-                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
-                    ? LabelHandlers.CameraRestore
-                    : LabelHandlers.CameraDetect
-                : LabelHandlers.CameraTrigger
-        : LabelHandlers.Offline;
-
     /// <summary>
     /// Notifies that the <see cref="Handler"/> property has changed.
     /// </summary>
@@ -184,6 +209,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
     /// <param name="imageResults">The image result entry being processed.</param>
     /// <param name="type">The type of processing requested.</param>
     public delegate void ProcessImageDelegate(ResultsEntry imageResults, string type);
+
     /// <summary>
     /// Occurs when an image needs to be processed.
     /// </summary>
@@ -357,7 +383,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
         {
             if (report == null)
             {
-                Logger.Error("Full Report is null.");
+                Logger.Error("No report data received.");
                 IsFaulted = true;
                 return;
             }
@@ -365,7 +391,12 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
             CurrentTemplate = report.Job;
             CurrentReport = report.Report;
 
-            var jobString = JsonConvert.SerializeObject(report.Report);
+            if(report.Image == null || report.Image.Length == 0)
+            {
+                Logger.Error("No image data received.");
+                IsFaulted = true;
+                return;
+            }
 
             var img = GlobalAppSettings.Instance.PreseveImageFormat
                 ? ImageFormatHelpers.EnsureDpi(report.Image, ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600,
@@ -386,7 +417,13 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
                     {
                         if (templateSec["name"].ToString() == currentSect["name"].ToString())
                         {
-                            tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, report.Job["jobVersion"].ToString()));
+                            tempSectors.Add(new V275.Sectors.Sector(
+                                (JObject)templateSec, 
+                                (JObject)currentSect, 
+                                [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], 
+                                ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, 
+                                ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, 
+                                report.Job["jobVersion"].ToString()));
                             break;
                         }
                     }

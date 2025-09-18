@@ -7,10 +7,14 @@ using V5_REST_Lib.Models;
 
 namespace LabelVal.V5.Sectors;
 
-public static class ParamterHandling
+public static class ParameterHandling
 {
-    public static void AddParameter(Parameters parameter, Symbologies symbology, ObservableCollection<IParameterValue> target, JObject report, JObject template)
+    public static void AddParameter(Parameters parameter, Symbologies symbology, ICollection<IParameterValue> target, JObject report, JObject template)
     {
+        try
+        {
+
+      
         var type = parameter.GetDataType(Devices.V5, symbology);
 
         if (type == typeof(GradeValue) || type == typeof(Grade))
@@ -78,6 +82,11 @@ public static class ParamterHandling
             //        continue;
             //    }
             //}
+        }
+  }
+        catch(Exception ex)
+        {
+            Logger.Error(ex, $"Error adding parameter: '{parameter}' @ Path: '{parameter.GetPath(Devices.V5, symbology)}'");
         }
 
         target.Add(new Missing(parameter));

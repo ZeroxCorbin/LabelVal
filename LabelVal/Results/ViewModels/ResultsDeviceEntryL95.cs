@@ -433,9 +433,38 @@ public partial class ResultsDeviceEntryL95
         {
             if (message == null || message.Report == null)
             {
+                Logger.Error("No report data received.");
+                IsFaulted = true;
+                return;
+            }  
+            List<FullReport> temp = [];
+            foreach (ISector sector in CurrentSectors)
+                temp.Add(new FullReport(((Sector)sector).Template.Original, ((Sector)sector).Report.Original));
+
+            JObject report = new()
+            {
+                ["AllReports"] = JArray.FromObject(temp)
+            };
+            CurrentReport = report;
+            CurrentTemplate = null;
+
+            // Thumbnail
+            var thumbBytesOriginal = message.Template.GetParameter<byte[]>("Report.Thumbnail");
+            if(thumbBytesOriginal == null || thumbBytesOriginal.Length == 0)
+            {
+                Logger.Error("No thumbnail image in report.");
                 IsFaulted = true;
                 return;
             }
+
+            var img = GlobalAppSettings.Instance.PreseveImageFormat
+                ? ImageFormatHelpers.EnsureDpi(thumbBytesOriginal, ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600,
+                    ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600, out var dpiX, out var dpiY)
+                : ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(thumbBytesOriginal,
+                    ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600, out var dpiX2, out var dpiY2);
+
+            CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, thumbBytesOriginal);
+            CurrentImage.EnsureDpi(ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600);
 
             if (message.Report.GetParameter<string>(Parameters.OverallGrade.GetPath(Devices.L95, Symbologies.DataMatrix)) != "Bar Code Not Detected")
             {
@@ -461,17 +490,6 @@ public partial class ResultsDeviceEntryL95
             else if (GlobalAppSettings.Instance.LvsIgnoreNoResults)
                 return;
 
-            List<FullReport> temp = [];
-            foreach (ISector sector in CurrentSectors)
-                temp.Add(new FullReport(((Sector)sector).Template.Original, ((Sector)sector).Report.Original));
-
-            JObject report = new()
-            {
-                ["AllReports"] = JArray.FromObject(temp)
-            };
-            CurrentReport = report;
-            CurrentTemplate = null;
-
             var tempSectors = CurrentSectors.ToList();
             if (tempSectors.Count > 0)
             {
@@ -481,29 +499,20 @@ public partial class ResultsDeviceEntryL95
 
             GetSectorDiff();
 
-            int fallback = ResultsEntry.ResultsManagerView.ActiveImageRoll?.TargetDPI ?? 600;
-
-            // Full image (if needed later)
-            var fullImgBytesOriginal = message.Template.GetParameter<byte[]>("Report.Image");
-            var fullImgBytes = GlobalAppSettings.Instance.PreseveImageFormat
-                ? ImageFormatHelpers.EnsureDpi(fullImgBytesOriginal, fallback, fallback, out _, out _)
-                : ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(fullImgBytesOriginal, fallback, out _, out _);
-
-            // Thumbnail
-            var thumbBytesOriginal = message.Template.GetParameter<byte[]>("Report.Thumbnail");
-            var thumbBytes = GlobalAppSettings.Instance.PreseveImageFormat
-                ? ImageFormatHelpers.EnsureDpi(thumbBytesOriginal, fallback, fallback, out _, out _)
-                : ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(thumbBytesOriginal, fallback, out _, out _);
-
-            CurrentImage = new ImageEntry(ResultsEntry.ImageRollUID, thumbBytes);
-            CurrentImage.EnsureDpi(fallback);
-
             RefreshCurrentOverlay();
+
             IsFaulted = false;
         }
         catch (Exception ex)
         {
             Logger.Error(ex);
+
+            CurrentImage = null;
+            CurrentTemplate = null;
+            CurrentReport = null;
+            CurrentSectors.Clear();
+            CurrentImageOverlay = null;
+
             IsFaulted = true;
         }
         finally
