@@ -236,10 +236,12 @@
                 <Setter Property="Height" Value="auto" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="VerticalAlignment" Value="Stretch" />
-                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
-                <Setter Property="RenderTransform">
+                <Setter Property="Background">
                     <Setter.Value>
-                        <TranslateTransform Y="0" />
+                        <LinearGradientBrush StartPoint="1,1" EndPoint="0.2,0.2">
+                            <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent}" />
+                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                        </LinearGradientBrush>
                     </Setter.Value>
                 </Setter>
             </Style>
@@ -251,7 +253,14 @@
                 <Setter Property="Height" Value="1" />
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
                 <Setter Property="VerticalAlignment" Value="Top" />
-                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush  StartPoint="0,0" EndPoint="0.8,0.8">
+                            <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent}" />
+                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
                 <Setter Property="RenderTransform">
                     <Setter.Value>
                         <TranslateTransform X="-3" />
