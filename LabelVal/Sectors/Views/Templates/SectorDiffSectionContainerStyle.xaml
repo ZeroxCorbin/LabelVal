@@ -7,16 +7,16 @@
     <Style x:Key="SectorDiffSectionContainerStyle" TargetType="GroupBox">
         <Setter Property="Padding" Value="0" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="GroupBox">
 
                     <DockPanel>
-                        
+
                         <md:Card
-                            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                            DockPanel.Dock="Top">
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                            DockPanel.Dock="Top"
+                            Foreground="{DynamicResource MahApps.Brushes.Text}">
 
                             <DockPanel>
                                 <DockPanel.Background>

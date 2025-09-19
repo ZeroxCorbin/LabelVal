@@ -214,8 +214,10 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
 
-                        <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}"
-                                 Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
+                        <md:Card
+                            Margin="3"
+                            Background="{DynamicResource MahApps.Brushes.Control.Background}"
+                            Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
                             <md:Card.Effect>
                                 <DropShadowEffect
                                     BlurRadius="2"

@@ -161,6 +161,9 @@
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl>
             <mah:Flyout x:Name="ApplicationSettings" Position="Left">
+                <mah:Flyout.Resources>
+                    <SolidColorBrush x:Key="MyFlyoutForegroundBrush" Color="#FFD8D8D8" />
+                </mah:Flyout.Resources>
                 <mah:Flyout.Header>
 
                     <StackPanel>
