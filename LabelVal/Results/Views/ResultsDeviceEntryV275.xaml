@@ -152,12 +152,14 @@
 
                     <DockPanel
                         Margin="3"
-                        HorizontalAlignment="Stretch"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
                         Background="Black">
 
                         <Grid
                             MaxWidth="{Binding ResultsEntry.ImagesMaxHeight}"
                             MaxHeight="{Binding ResultsEntry.ImagesMaxHeight}"
+                            Margin="3"
                             MouseDown="StoredImage_MouseDown"
                             ToolTip="Click to open a larger view of the image.&#x0a;Hold Shift and click to open a 3D view of the image.">
 
@@ -345,7 +347,7 @@
 
                                 <ListBox.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource MahApps.Styles.ListBoxItem}" TargetType="ListBoxItem">
-                                        <!--<Setter Property="VerticalContentAlignment" Value="Stretch" />-->
+                                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
                                         <Setter Property="Padding" Value="1" />
                                     </Style>
                                 </ListBox.ItemContainerStyle>
@@ -381,7 +383,10 @@
 
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <sectors:Sector MouseEnter="storedSectorMouseEnter" MouseLeave="storedSectorMouseLeave" />
+                                        <sectors:Sector
+                                            Background="{DynamicResource AccentColorBrush}"
+                                            MouseEnter="storedSectorMouseEnter"
+                                            MouseLeave="storedSectorMouseLeave" />
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
@@ -519,12 +524,14 @@
 
                     <DockPanel
                         Margin="3"
-                        HorizontalAlignment="Stretch"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
                         Background="Black">
 
                         <Grid
                             MaxWidth="{Binding ResultsEntry.ImagesMaxHeight}"
                             MaxHeight="{Binding ResultsEntry.ImagesMaxHeight}"
+                            Margin="3"
                             MouseDown="CurrentImage_MouseDown"
                             ToolTip="Click to open a larger view of the image.&#x0a;Hold Shift and click to open a 3D view of the image.">
 

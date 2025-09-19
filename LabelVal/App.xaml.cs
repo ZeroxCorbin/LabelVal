@@ -296,10 +296,12 @@ public partial class App : Application
 
         var resourceKeys = new[]
         {
-            "ISO_GradeA", "ISO_GradeB", "ISO_GradeC", "ISO_GradeD", "ISO_GradeF",
-            "SectorWarning", "SectorError",
-            "StatusGreen", "StatusYellow", "StatusRed",
-            "V275", "V5", "L95", "ImageRoll", "Results", "LabelBuilder"
+            "ISO_GradeA","ISO_GradeB","ISO_GradeC","ISO_GradeD","ISO_GradeF",
+            "SectorWarning","SectorError",
+            "StatusGreen","StatusYellow","StatusRed",
+            "V275","V5","L95","ImageRoll","Results","LabelBuilder",
+            // New app brand keys
+            "AppPrimary","AppSecondary","AppAccent","AppInfo","AppNeutral"
         };
 
         foreach (var key in resourceKeys)
@@ -308,9 +310,11 @@ public partial class App : Application
             var baseColor = (System.Windows.Media.Color)Current.Resources[$"{key}{suffix}"];
 
             Current.Resources[$"{key}_Brush_Active"] = baseBrush;
-            Current.Resources[$"{key}_Brush_Active50"] = new SolidColorBrush(System.Windows.Media.Color.FromArgb(164, baseColor.R, baseColor.G, baseColor.B));
+            Current.Resources[$"{key}_Brush_Active50"] =
+                new SolidColorBrush(System.Windows.Media.Color.FromArgb(164, baseColor.R, baseColor.G, baseColor.B));
             Current.Resources[$"{key}_Color_Active"] = Current.Resources[$"{key}{suffix}"];
-            Current.Resources[$"{key}_Color_Active50"] = System.Windows.Media.Color.FromArgb(164, baseColor.R, baseColor.G, baseColor.B);
+            Current.Resources[$"{key}_Color_Active50"] =
+                System.Windows.Media.Color.FromArgb(164, baseColor.R, baseColor.G, baseColor.B);
         }
     }
     private void UpdateMaterialDesignTheme()

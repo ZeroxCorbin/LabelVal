@@ -9,11 +9,11 @@
     xmlns:vm="clr-namespace:LabelVal.Sectors.Classes"
     mc:Ignorable="d">
 
-    <UserControl.Resources >
+    <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Sectors/Views/Templates/SectorDiffSectionContainerStyle.xaml" />
-            </ResourceDictionary.MergedDictionaries>            
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 
     </UserControl.Resources>
@@ -21,7 +21,10 @@
 
     <UniformGrid Rows="1">
 
-        <GroupBox Header="Output Settings" Style="{StaticResource SectorDiffSectionContainerStyle}" Margin="3,3,0,0">
+        <GroupBox
+            Margin="3,3,0,0"
+            Header="Output Settings"
+            Style="{StaticResource SectorDiffSectionContainerStyle}">
             <ListBox ItemsSource="{Binding Source={StaticResource SectorOutputType}}" SelectedItem="{Binding OutputType}" />
         </GroupBox>
 
@@ -37,12 +40,18 @@
                 </Style>
             </StackPanel.Style>
 
-            <GroupBox Header="Delimeter" Style="{StaticResource SectorDiffSectionContainerStyle}" Margin="3,3,0,0">
+            <GroupBox
+                Margin="3,3,0,0"
+                Header="Delimeter"
+                Style="{StaticResource SectorDiffSectionContainerStyle}">
                 <ListBox ItemsSource="{Binding Source={StaticResource SectorOutputDelimiter}}" SelectedItem="{Binding Delimiter}" />
             </GroupBox>
         </StackPanel>
 
-        <GroupBox Header="Parameters" Style="{StaticResource SectorDiffSectionContainerStyle}" Margin="3">
+        <GroupBox
+            Margin="3"
+            Header="Parameters"
+            Style="{StaticResource SectorDiffSectionContainerStyle}">
             <ListBox ItemsSource="{Binding Source={StaticResource SectorOutputIncludeParameters}}" SelectedItem="{Binding IncludeParameters}" />
         </GroupBox>
 

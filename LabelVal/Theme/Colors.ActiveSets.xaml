@@ -23,7 +23,14 @@
     <SolidColorBrush x:Key="Results_Brush_Active" Color="{StaticResource Results}" />
     <SolidColorBrush x:Key="LabelBuilder_Brush_Active" Color="{StaticResource LabelBuilder}" />
 
-    <!--  Active Color values (use element content; no 'Color=' attribute on Color struct).  -->
+    <!--  App Brand Active Brushes  -->
+    <SolidColorBrush x:Key="AppPrimary_Brush_Active" Color="{StaticResource AppPrimary}" />
+    <SolidColorBrush x:Key="AppSecondary_Brush_Active" Color="{StaticResource AppSecondary}" />
+    <SolidColorBrush x:Key="AppAccent_Brush_Active" Color="{StaticResource AppAccent}" />
+    <SolidColorBrush x:Key="AppInfo_Brush_Active" Color="{StaticResource AppInfo}" />
+    <SolidColorBrush x:Key="AppNeutral_Brush_Active" Color="{StaticResource AppNeutral}" />
+
+    <!--  Active Color values  -->
     <Color x:Key="ISO_GradeA_Color_Active" />
     <Color x:Key="ISO_GradeB_Color_Active" />
     <Color x:Key="ISO_GradeC_Color_Active" />
@@ -41,12 +48,18 @@
     <Color x:Key="V5_Color_Active" />
     <Color x:Key="L95_Color_Active" />
 
-    <!--  New Active Colors  -->
     <Color x:Key="ImageRoll_Color_Active" />
     <Color x:Key="Results_Color_Active" />
     <Color x:Key="LabelBuilder_Color_Active" />
 
-    <!--  Active (runtime-adjustable) brushes. Initially point at standard sets.  -->
+    <!--  App Brand Active Colors  -->
+    <Color x:Key="AppPrimary_Color_Active" />
+    <Color x:Key="AppSecondary_Color_Active" />
+    <Color x:Key="AppAccent_Color_Active" />
+    <Color x:Key="AppInfo_Color_Active" />
+    <Color x:Key="AppNeutral_Color_Active" />
+
+    <!--  Active50 (semi-transparent) brushes  -->
     <SolidColorBrush x:Key="ISO_GradeA_Brush_Active50" Color="{StaticResource ISO_GradeA}" />
     <SolidColorBrush x:Key="ISO_GradeB_Brush_Active50" Color="{StaticResource ISO_GradeB}" />
     <SolidColorBrush x:Key="ISO_GradeC_Brush_Active50" Color="{StaticResource ISO_GradeC}" />
@@ -64,12 +77,18 @@
     <SolidColorBrush x:Key="V5_Brush_Active50" Color="{StaticResource V5}" />
     <SolidColorBrush x:Key="L95_Brush_Active50" Color="{StaticResource L95}" />
 
-    <!--  New Active Brushes (point to Standard variants by default)  -->
     <SolidColorBrush x:Key="ImageRoll_Brush_Active50" Color="{StaticResource ImageRoll}" />
     <SolidColorBrush x:Key="Results_Brush_Active50" Color="{StaticResource Results}" />
     <SolidColorBrush x:Key="LabelBuilder_Brush_Active50" Color="{StaticResource LabelBuilder}" />
 
-    <!--  Active Color values (use element content; no 'Color=' attribute on Color struct).  -->
+    <!--  App Brand Active50 Brushes  -->
+    <SolidColorBrush x:Key="AppPrimary_Brush_Active50" Color="{StaticResource AppPrimary}" />
+    <SolidColorBrush x:Key="AppSecondary_Brush_Active50" Color="{StaticResource AppSecondary}" />
+    <SolidColorBrush x:Key="AppAccent_Brush_Active50" Color="{StaticResource AppAccent}" />
+    <SolidColorBrush x:Key="AppInfo_Brush_Active50" Color="{StaticResource AppInfo}" />
+    <SolidColorBrush x:Key="AppNeutral_Brush_Active50" Color="{StaticResource AppNeutral}" />
+
+    <!--  Active50 Color values  -->
     <Color x:Key="ISO_GradeA_Color_Active50" />
     <Color x:Key="ISO_GradeB_Color_Active50" />
     <Color x:Key="ISO_GradeC_Color_Active50" />
@@ -87,9 +106,15 @@
     <Color x:Key="V5_Color_Active50" />
     <Color x:Key="L95_Color_Active50" />
 
-    <!--  New Active Colors  -->
     <Color x:Key="ImageRoll_Color_Active50" />
     <Color x:Key="Results_Color_Active50" />
     <Color x:Key="LabelBuilder_Color_Active50" />
+
+    <!--  App Brand Active50 Colors  -->
+    <Color x:Key="AppPrimary_Color_Active50" />
+    <Color x:Key="AppSecondary_Color_Active50" />
+    <Color x:Key="AppAccent_Color_Active50" />
+    <Color x:Key="AppInfo_Color_Active50" />
+    <Color x:Key="AppNeutral_Color_Active50" />
 
 </ResourceDictionary>

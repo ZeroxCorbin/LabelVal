@@ -1,0 +1,78 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Application Brand / UI Functional Palette
+        Keys follow existing pattern so they can plug into Active (runtime-adjustable) system.
+        Standard + Red-Green (RG) + Blue-Yellow (BY) + Monochrome (M).
+        Semantic roles:
+        AppPrimary   : Core brand / primary emphasis
+        AppSecondary : Secondary actionable / selection emphasis
+        AppAccent    : Alerts / highlight / call-to-action (non-error)
+        AppInfo      : Informational / neutral highlight
+        AppNeutral   : Neutral chrome accent / frames
+    -->
+
+    <!--  Standard  -->
+    <Color x:Key="AppPrimary">#1E88E5</Color>
+    <SolidColorBrush x:Key="AppPrimary_Brush" Color="{StaticResource AppPrimary}" />
+
+    <Color x:Key="AppSecondary">#43A047</Color>
+    <SolidColorBrush x:Key="AppSecondary_Brush" Color="{StaticResource AppSecondary}" />
+
+    <Color x:Key="AppAccent">#FB8C00</Color>
+    <SolidColorBrush x:Key="AppAccent_Brush" Color="{StaticResource AppAccent}" />
+
+    <Color x:Key="AppInfo">#8E24AA</Color>
+    <SolidColorBrush x:Key="AppInfo_Brush" Color="{StaticResource AppInfo}" />
+
+    <Color x:Key="AppNeutral">#546E7A</Color>
+    <SolidColorBrush x:Key="AppNeutral_Brush" Color="{StaticResource AppNeutral}" />
+
+    <!--  Red-Green Friendly  -->
+    <Color x:Key="AppPrimary_RG">#0072B2</Color>
+    <SolidColorBrush x:Key="AppPrimary_RG_Brush" Color="{StaticResource AppPrimary_RG}" />
+
+    <Color x:Key="AppSecondary_RG">#56B4E9</Color>
+    <SolidColorBrush x:Key="AppSecondary_RG_Brush" Color="{StaticResource AppSecondary_RG}" />
+
+    <Color x:Key="AppAccent_RG">#E69F00</Color>
+    <SolidColorBrush x:Key="AppAccent_RG_Brush" Color="{StaticResource AppAccent_RG}" />
+
+    <Color x:Key="AppInfo_RG">#CC79A7</Color>
+    <SolidColorBrush x:Key="AppInfo_RG_Brush" Color="{StaticResource AppInfo_RG}" />
+
+    <Color x:Key="AppNeutral_RG">#666666</Color>
+    <SolidColorBrush x:Key="AppNeutral_RG_Brush" Color="{StaticResource AppNeutral_RG}" />
+
+    <!--  Blue-Yellow Friendly  -->
+    <Color x:Key="AppPrimary_BY">#D81B60</Color>
+    <SolidColorBrush x:Key="AppPrimary_BY_Brush" Color="{StaticResource AppPrimary_BY}" />
+
+    <Color x:Key="AppSecondary_BY">#1E88E5</Color>
+    <SolidColorBrush x:Key="AppSecondary_BY_Brush" Color="{StaticResource AppSecondary_BY}" />
+
+    <Color x:Key="AppAccent_BY">#004D40</Color>
+    <SolidColorBrush x:Key="AppAccent_BY_Brush" Color="{StaticResource AppAccent_BY}" />
+
+    <Color x:Key="AppInfo_BY">#7B1FA2</Color>
+    <SolidColorBrush x:Key="AppInfo_BY_Brush" Color="{StaticResource AppInfo_BY}" />
+
+    <Color x:Key="AppNeutral_BY">#5F5F5F</Color>
+    <SolidColorBrush x:Key="AppNeutral_BY_Brush" Color="{StaticResource AppNeutral_BY}" />
+
+    <!--  Monochrome  -->
+    <Color x:Key="AppPrimary_M">#D6D6D6</Color>
+    <SolidColorBrush x:Key="AppPrimary_M_Brush" Color="{StaticResource AppPrimary_M}" />
+
+    <Color x:Key="AppSecondary_M">#AFAFAF</Color>
+    <SolidColorBrush x:Key="AppSecondary_M_Brush" Color="{StaticResource AppSecondary_M}" />
+
+    <Color x:Key="AppAccent_M">#888888</Color>
+    <SolidColorBrush x:Key="AppAccent_M_Brush" Color="{StaticResource AppAccent_M}" />
+
+    <Color x:Key="AppInfo_M">#616161</Color>
+    <SolidColorBrush x:Key="AppInfo_M_Brush" Color="{StaticResource AppInfo_M}" />
+
+    <Color x:Key="AppNeutral_M">#2B2B2B</Color>
+    <SolidColorBrush x:Key="AppNeutral_M_Brush" Color="{StaticResource AppNeutral_M}" />
+</ResourceDictionary>

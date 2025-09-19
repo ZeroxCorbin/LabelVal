@@ -99,7 +99,7 @@
             <!--  Images  -->
             <DockPanel
                 Margin="3"
-                HorizontalAlignment="Left"
+                HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 Background="Black">
 

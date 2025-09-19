@@ -44,6 +44,7 @@
                 <ResourceDictionary Source="/Theme/Colors.ImageRolls.xaml" />
                 <ResourceDictionary Source="/Theme/Colors.Results.xaml" />
                 <ResourceDictionary Source="/Theme/Colors.LabelBuilder.xaml" />
+                <ResourceDictionary Source="/Theme/Colors.App.xaml" />
                 <ResourceDictionary Source="/Theme/Colors.ActiveSets.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
@@ -255,7 +256,7 @@
                 <Setter Property="VerticalAlignment" Value="Top" />
                 <Setter Property="Background">
                     <Setter.Value>
-                        <LinearGradientBrush  StartPoint="0,0" EndPoint="0.8,0.8">
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0.8,0.8">
                             <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent}" />
                             <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
                         </LinearGradientBrush>
