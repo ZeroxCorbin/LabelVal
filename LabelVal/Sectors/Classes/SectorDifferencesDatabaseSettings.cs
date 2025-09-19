@@ -11,31 +11,31 @@ namespace LabelVal.Sectors.Classes;
 public partial class SectorDifferencesDatabaseSettings : ObservableObject
 {
     [ObservableProperty]
-    private GradeValueCompareSettings gradeValueCompareSettings;
+    private GradeValueCompareSettings gradeValueCompareSettings = new();
 
     [ObservableProperty]
-    private GradeCompareSettings gradeCompareSettings;
+    private GradeCompareSettings gradeCompareSettings= new();
 
     [ObservableProperty]
-    private ValuePassFailCompareSettings valuePassFailCompareSettings;
+    private ValuePassFailCompareSettings valuePassFailCompareSettings = new();
 
     [ObservableProperty]
-    private ValueDoubleCompareSettings valueDoubleCompareSettings;
+    private ValueDoubleCompareSettings valueDoubleCompareSettings = new();
 
     [ObservableProperty]
-    private PassFailCompareSettings passFailCompareSettings;
+    private PassFailCompareSettings passFailCompareSettings = new();
 
     [ObservableProperty]
-    private GS1DecodeCompareSettings gs1DecodeCompareSettings;
+    private GS1DecodeCompareSettings gs1DecodeCompareSettings = new();
 
     [ObservableProperty]
-    private OverallGradeCompareSettings overallGradeCompareSettings;
+    private OverallGradeCompareSettings overallGradeCompareSettings = new();
 
     [ObservableProperty]
-    private ValueStringCompareSettings valueStringCompareSettings;
+    private ValueStringCompareSettings valueStringCompareSettings = new();
 
     [ObservableProperty]
-    private MissingCompareSettings missingCompareSettings;
+    private MissingCompareSettings missingCompareSettings = new();
 
     partial void OnGradeValueCompareSettingsChanged(GradeValueCompareSettings oldValue, GradeValueCompareSettings newValue)
     {
@@ -107,6 +107,19 @@ public partial class SectorDifferencesDatabaseSettings : ObservableObject
             oldValue.PropertyChanged -= Child_PropertyChanged;
         if (newValue != null)
             newValue.PropertyChanged += Child_PropertyChanged;
+    }
+
+    public SectorDifferencesDatabaseSettings()
+    {
+        GradeValueCompareSettings.PropertyChanged += Child_PropertyChanged;
+        GradeCompareSettings.PropertyChanged += Child_PropertyChanged;
+        ValuePassFailCompareSettings.PropertyChanged += Child_PropertyChanged;
+        ValueDoubleCompareSettings.PropertyChanged += Child_PropertyChanged;
+        PassFailCompareSettings.PropertyChanged += Child_PropertyChanged;
+        Gs1DecodeCompareSettings.PropertyChanged += Child_PropertyChanged;
+        OverallGradeCompareSettings.PropertyChanged += Child_PropertyChanged;
+        ValueStringCompareSettings.PropertyChanged += Child_PropertyChanged;
+        MissingCompareSettings.PropertyChanged += Child_PropertyChanged;
     }
 
     private void Child_PropertyChanged(object? sender, PropertyChangedEventArgs e)

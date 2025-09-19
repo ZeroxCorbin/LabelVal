@@ -55,12 +55,12 @@ public static class ParameterHandling
         {
             if (parameter is BarcodeVerification.lib.Common.Parameters.CellSize or BarcodeVerification.lib.Common.Parameters.CellWidth or BarcodeVerification.lib.Common.Parameters.CellHeight)
             {
-                ValueDouble valueDouble = new(parameter, Devices.V5, symbology, GetValueDouble(Parameters.Xdim, symbology, report.GetParameter<string>(parameter.GetPath(Devices.V5, symbology))).Value);
-                if (valueDouble != null)
-                {
-                    target.Add(valueDouble);
-                    return;
-                }
+                //ValueDouble valueDouble = new(parameter, Devices.V5, symbology, GetValueDouble(Parameters.Xdim, symbology, report.GetParameter<string>(parameter.GetPath(Devices.V5, symbology))).Value);
+                //if (valueDouble != null)
+                //{
+                //    target.Add(valueDouble);
+                //    return;
+                //}
             }
 
             //if (parameter is AvailableParameters.UnusedEC)

@@ -192,10 +192,24 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <TextBlock
-                            Grid.Row="0"
-                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                        <DockPanel HorizontalAlignment="Stretch" DockPanel.Dock="Top">
+                            <DockPanel.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Offset="0" Color="{DynamicResource ImageRoll_Color_Active50}" />
+                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                </LinearGradientBrush>
+                            </DockPanel.Background>
+
+
+                            <TextBlock
+                            Margin="6,0,6,3"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Top"
+                            Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
                             Text="Compare Settings" />
+
+                        </DockPanel>
 
                         <sectors:SectorDifferencesDatabaseSettingsView Grid.Row="1" />
 

@@ -17,7 +17,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- New shared toolbar dictionary -->
+                <!--  New shared toolbar dictionary  -->
                 <ResourceDictionary Source="pack://application:,,,/LabelVal;component/V5/Views/Templates/V5ScannerToolbar.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -26,17 +26,19 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <md:Card Margin="6"
-             HorizontalAlignment="Stretch"
-             VerticalAlignment="Top"
-             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-             BorderThickness="1"
-             Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
+    <md:Card
+        Margin="6"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Top"
+        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+        BorderThickness="1"
+        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
         <md:Card.Effect>
-            <DropShadowEffect BlurRadius="2"
-                              Opacity="0.5"
-                              ShadowDepth="0"
-                              Color="{DynamicResource MahApps.Colors.Gray1}" />
+            <DropShadowEffect
+                BlurRadius="2"
+                Opacity="0.5"
+                ShadowDepth="0"
+                Color="{DynamicResource MahApps.Colors.Gray1}" />
         </md:Card.Effect>
         <md:Card.Style>
             <Style BasedOn="{StaticResource {x:Type md:Card}}" TargetType="md:Card">
@@ -50,11 +52,10 @@
 
         <DockPanel Margin="3">
 
-            <!-- Replaced inline ToolBarTray with shared template -->
-            <ContentControl Content="{Binding}"
-                            ContentTemplate="{StaticResource V5ScannerToolbarTemplate}" />
+            <!--  Replaced inline ToolBarTray with shared template  -->
+            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource V5ScannerToolbarTemplate}" />
 
-            <!-- (Rest of original content unchanged) -->
+            <!--  (Rest of original content unchanged)  -->
             <md:DrawerHost
                 x:Name="drwSettings"
                 VerticalAlignment="Top"
