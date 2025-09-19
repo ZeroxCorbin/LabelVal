@@ -59,14 +59,8 @@
                         </Style>
                     </DockPanel.Style>
 
-                    <Border
-                        Margin="0,0,6,0"
-                        Background="{DynamicResource MahApps.Brushes.Accent2}"
-                        Style="{StaticResource groupLeft}" />
-                    <Border
-                        Margin="-6,3,0,0"
-                        Background="{DynamicResource MahApps.Brushes.Accent2}"
-                        Style="{StaticResource groupBottom}" />
+                    <Border Style="{StaticResource groupLeft}" />
+                    <Border Style="{StaticResource groupBottom}" />
 
                     <Grid>
                         <Grid.ColumnDefinitions>

@@ -27,6 +27,7 @@
         </md:Card.Effect>
 
         <DockPanel
+            MaxWidth="260"
             Margin="3"
             HorizontalAlignment="Stretch"
             Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
@@ -34,16 +35,15 @@
             <DockPanel.Style>
                 <Style TargetType="DockPanel">
                     <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
-
                 </Style>
             </DockPanel.Style>
 
-            <StackPanel Margin="3">
+            <Border Style="{StaticResource groupLeft}" />
+            <Border Style="{StaticResource groupBottom}" />
 
-                <TextBlock
-                    Margin="0,0,0,3"
-                    HorizontalAlignment="Center"
-                    Style="{StaticResource MaterialDesignBodyMediumTextBlock}">
+            <StackPanel>
+
+                <TextBlock HorizontalAlignment="Center" Style="{StaticResource MaterialDesignBodyMediumTextBlock}">
                     <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Width, StringFormat=N2, Converter={StaticResource PrinterSettingThousandthsToInches}}" />
                     <Run Text="x" />
                     <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Height, StringFormat=N2, Converter={StaticResource PrinterSettingThousandthsToInches}}" />
@@ -52,10 +52,7 @@
                     <Run Text="DPI )" />
                 </TextBlock>
 
-                <Border
-                    MaxWidth="260"
-                    BorderBrush="{DynamicResource MahApps.Brushes.Button.Border}"
-                    BorderThickness="1">
+                <Border BorderBrush="{DynamicResource MahApps.Brushes.Button.Border}" BorderThickness="1">
                     <ComboBox
                         Margin="3,0"
                         HorizontalContentAlignment="Center"

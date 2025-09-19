@@ -8,7 +8,8 @@
     xmlns:local="clr-namespace:LabelVal.Sectors.Views"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DataContext="{d:DesignInstance local:SectorDifferencesDatabaseSettingsView, IsDesignTimeCreatable=False}"
+    d:DataContext="{d:DesignInstance local:SectorDifferencesDatabaseSettingsView,
+                                     IsDesignTimeCreatable=False}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -26,7 +27,7 @@
                 <Setter Property="Margin" Value="0,0,0,5" />
             </Style>
 
-            <!-- Spacing / form styles -->
+            <!--  Spacing / form styles  -->
             <Style x:Key="SettingsCheckBoxStyle" TargetType="CheckBox">
                 <Setter Property="Margin" Value="0,6,0,0" />
             </Style>
@@ -42,7 +43,7 @@
                 <Setter Property="Width" Value="110" />
             </Style>
 
-            <!-- Reusable 2-column grid for label + editor -->
+            <!--  Reusable 2-column grid for label + editor  -->
             <Style x:Key="FormRowGridStyle" TargetType="Grid">
                 <Setter Property="Margin" Value="0,0,0,0" />
             </Style>
@@ -75,13 +76,16 @@
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="6">
-                <!-- Grades -->
-                <GroupBox Margin="0,0,0,12" Header="Grades" Style="{StaticResource SectorDiffSectionContainerStyle}">
+                <!--  Grades  -->
+                <GroupBox
+                    Margin="0,0,0,12"
+                    Header="Grades"
+                    Style="{StaticResource SectorDiffSectionContainerStyle}">
                     <StackPanel>
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Grade Value"
-                            IsChecked="{Binding ViewModel.GradeCompareSettings.CompareLetterValue}" />
+                            IsChecked="{Binding ViewModel.GradeCompareSettings.CompareLetterValue}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                         <Grid Style="{StaticResource FormRowGridStyle}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -93,25 +97,28 @@
                                 Text="Grade Value Tolerance" />
                             <mah:NumericUpDown
                                 Grid.Column="1"
-                                Style="{StaticResource SettingsNumericStyle}"
                                 Interval="0.1"
+                                IsEnabled="{Binding ViewModel.GradeCompareSettings.CompareLetterValue}"
                                 Maximum="4"
                                 Minimum="0"
                                 SnapToMultipleOfInterval="True"
                                 StringFormat="F1"
-                                IsEnabled="{Binding ViewModel.GradeCompareSettings.CompareLetterValue}"
+                                Style="{StaticResource SettingsNumericStyle}"
                                 Value="{Binding ViewModel.GradeCompareSettings.LetterValueTolerance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </Grid>
                     </StackPanel>
                 </GroupBox>
 
-                <!-- Graded Values -->
-                <GroupBox Margin="0,0,0,12" Header="Graded Values" Style="{StaticResource SectorDiffSectionContainerStyle}">
+                <!--  Graded Values  -->
+                <GroupBox
+                    Margin="0,0,0,12"
+                    Header="Graded Values"
+                    Style="{StaticResource SectorDiffSectionContainerStyle}">
                     <StackPanel>
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Value"
-                            IsChecked="{Binding ViewModel.GradeValueCompareSettings.CompareValue}" />
+                            IsChecked="{Binding ViewModel.GradeValueCompareSettings.CompareValue}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                         <Grid Style="{StaticResource FormRowGridStyle}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -123,20 +130,20 @@
                                 Text="Value Tolerance" />
                             <mah:NumericUpDown
                                 Grid.Column="1"
-                                Style="{StaticResource SettingsNumericStyle}"
                                 Interval="1"
+                                IsEnabled="{Binding ViewModel.GradeValueCompareSettings.CompareValue}"
                                 Maximum="100"
                                 Minimum="0"
                                 SnapToMultipleOfInterval="True"
                                 StringFormat="F1"
-                                IsEnabled="{Binding ViewModel.GradeValueCompareSettings.CompareValue}"
+                                Style="{StaticResource SettingsNumericStyle}"
                                 Value="{Binding ViewModel.GradeValueCompareSettings.ValueTolerance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </Grid>
 
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Grade Value"
-                            IsChecked="{Binding ViewModel.GradeValueCompareSettings.Grade.CompareLetterValue}" />
+                            IsChecked="{Binding ViewModel.GradeValueCompareSettings.Grade.CompareLetterValue}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                         <Grid Style="{StaticResource FormRowGridStyle}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -148,35 +155,41 @@
                                 Text="Grade Value Tolerance" />
                             <mah:NumericUpDown
                                 Grid.Column="1"
-                                Style="{StaticResource SettingsNumericStyle}"
                                 Interval="0.1"
+                                IsEnabled="{Binding ViewModel.GradeValueCompareSettings.Grade.CompareLetterValue}"
                                 Maximum="4"
                                 Minimum="0"
                                 SnapToMultipleOfInterval="True"
                                 StringFormat="F1"
-                                IsEnabled="{Binding ViewModel.GradeValueCompareSettings.Grade.CompareLetterValue}"
+                                Style="{StaticResource SettingsNumericStyle}"
                                 Value="{Binding ViewModel.GradeValueCompareSettings.Grade.LetterValueTolerance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </Grid>
                     </StackPanel>
                 </GroupBox>
 
-                <!-- Pass/Fail -->
-                <GroupBox Margin="0,0,0,12" Header="Pass/Fail" Style="{StaticResource SectorDiffSectionContainerStyle}">
+                <!--  Pass/Fail  -->
+                <GroupBox
+                    Margin="0,0,0,12"
+                    Header="Pass/Fail"
+                    Style="{StaticResource SectorDiffSectionContainerStyle}">
                     <StackPanel>
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare"
-                            IsChecked="{Binding ViewModel.PassFailCompareSettings.Compare}" />
+                            IsChecked="{Binding ViewModel.PassFailCompareSettings.Compare}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                     </StackPanel>
                 </GroupBox>
 
-                <!-- Pass/Fail Values -->
-                <GroupBox Margin="0,0,0,12" Header="Pass/Fail Values" Style="{StaticResource SectorDiffSectionContainerStyle}">
+                <!--  Pass/Fail Values  -->
+                <GroupBox
+                    Margin="0,0,0,12"
+                    Header="Pass/Fail Values"
+                    Style="{StaticResource SectorDiffSectionContainerStyle}">
                     <StackPanel>
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Value"
-                            IsChecked="{Binding ViewModel.ValuePassFailCompareSettings.CompareValue}" />
+                            IsChecked="{Binding ViewModel.ValuePassFailCompareSettings.CompareValue}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                         <Grid Style="{StaticResource FormRowGridStyle}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -188,30 +201,33 @@
                                 Text="Value Tolerance" />
                             <mah:NumericUpDown
                                 Grid.Column="1"
-                                Style="{StaticResource SettingsNumericStyle}"
                                 Interval="1"
+                                IsEnabled="{Binding ViewModel.ValuePassFailCompareSettings.CompareValue}"
                                 Maximum="100"
                                 Minimum="0"
                                 SnapToMultipleOfInterval="True"
                                 StringFormat="F1"
-                                IsEnabled="{Binding ViewModel.ValuePassFailCompareSettings.CompareValue}"
+                                Style="{StaticResource SettingsNumericStyle}"
                                 Value="{Binding ViewModel.ValuePassFailCompareSettings.ValueTolerance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </Grid>
 
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Pass/Fail"
-                            IsChecked="{Binding ViewModel.ValuePassFailCompareSettings.PassFail.Compare}" />
+                            IsChecked="{Binding ViewModel.ValuePassFailCompareSettings.PassFail.Compare}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                     </StackPanel>
                 </GroupBox>
 
-                <!-- Value -->
-                <GroupBox Margin="0,0,0,12" Header="Value" Style="{StaticResource SectorDiffSectionContainerStyle}">
+                <!--  Value  -->
+                <GroupBox
+                    Margin="0,0,0,12"
+                    Header="Value"
+                    Style="{StaticResource SectorDiffSectionContainerStyle}">
                     <StackPanel>
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Value"
-                            IsChecked="{Binding ViewModel.ValueDoubleCompareSettings.CompareValue}" />
+                            IsChecked="{Binding ViewModel.ValueDoubleCompareSettings.CompareValue}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                         <Grid Style="{StaticResource FormRowGridStyle}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -223,69 +239,78 @@
                                 Text="Value Tolerance" />
                             <mah:NumericUpDown
                                 Grid.Column="1"
-                                Style="{StaticResource SettingsNumericStyle}"
                                 Interval="1"
+                                IsEnabled="{Binding ViewModel.ValueDoubleCompareSettings.CompareValue}"
                                 Maximum="100"
                                 Minimum="0"
                                 SnapToMultipleOfInterval="True"
                                 StringFormat="F1"
-                                IsEnabled="{Binding ViewModel.ValueDoubleCompareSettings.CompareValue}"
+                                Style="{StaticResource SettingsNumericStyle}"
                                 Value="{Binding ViewModel.ValueDoubleCompareSettings.ValueTolerance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </Grid>
                     </StackPanel>
                 </GroupBox>
 
-                <!-- GS1 Decode -->
-                <GroupBox Margin="0,0,0,12" Header="GS1 Decode" Style="{StaticResource SectorDiffSectionContainerStyle}">
+                <!--  GS1 Decode  -->
+                <GroupBox
+                    Margin="0,0,0,12"
+                    Header="GS1 Decode"
+                    Style="{StaticResource SectorDiffSectionContainerStyle}">
                     <StackPanel>
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Pass/Fail"
-                            IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.PassFail.Compare}" />
+                            IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.PassFail.Compare}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Input"
-                            IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareInput}" />
+                            IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareInput}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Formatted Out"
-                            IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareFormattedOut}" />
+                            IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareFormattedOut}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Fields"
-                            IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareFields}" />
+                            IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareFields}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Errors"
-                            IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareError}" />
+                            IsChecked="{Binding ViewModel.Gs1DecodeCompareSettings.CompareError}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                     </StackPanel>
                 </GroupBox>
 
-                <!-- Overall Grade -->
-                <GroupBox Margin="0,0,0,12" Header="Overall Grade" Style="{StaticResource SectorDiffSectionContainerStyle}">
+                <!--  Overall Grade  -->
+                <GroupBox
+                    Margin="0,0,0,12"
+                    Header="Overall Grade"
+                    Style="{StaticResource SectorDiffSectionContainerStyle}">
                     <StackPanel>
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Grade"
-                            IsChecked="{Binding ViewModel.OverallGradeCompareSettings.GradeSettings.CompareLetterValue}" />
+                            IsChecked="{Binding ViewModel.OverallGradeCompareSettings.GradeSettings.CompareLetterValue}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Aperture"
-                            IsChecked="{Binding ViewModel.OverallGradeCompareSettings.CompareAperture}" />
+                            IsChecked="{Binding ViewModel.OverallGradeCompareSettings.CompareAperture}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare Wave Length"
-                            IsChecked="{Binding ViewModel.OverallGradeCompareSettings.CompareWaveLength}" />
+                            IsChecked="{Binding ViewModel.OverallGradeCompareSettings.CompareWaveLength}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                     </StackPanel>
                 </GroupBox>
 
-                <!-- Strings -->
-                <GroupBox Margin="0,0,0,12" Header="Strings" Style="{StaticResource SectorDiffSectionContainerStyle}">
+                <!--  Strings  -->
+                <GroupBox
+                    Margin="0,0,0,12"
+                    Header="Strings"
+                    Style="{StaticResource SectorDiffSectionContainerStyle}">
                     <StackPanel>
                         <CheckBox
-                            Style="{StaticResource SettingsCheckBoxStyle}"
                             Content="Compare String"
-                            IsChecked="{Binding ViewModel.ValueStringCompareSettings.CompareString}" />
+                            IsChecked="{Binding ViewModel.ValueStringCompareSettings.CompareString}"
+                            Style="{StaticResource SettingsCheckBoxStyle}" />
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
