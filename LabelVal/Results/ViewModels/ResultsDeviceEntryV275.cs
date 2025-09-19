@@ -258,7 +258,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
                             if (jSec["name"].ToString() == rSec["name"].ToString())
                             {
 
-                                tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, rSec, [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, row.Template["jobVersion"].ToString()));
+                                StoredSectors.Add(new V275.Sectors.Sector((JObject)jSec, rSec, [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard, ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table, row.Template["jobVersion"].ToString()));
 
                                 break;
                             }
@@ -272,13 +272,13 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
                 }
             }
 
-            if (tempSectors.Count > 0)
-            {
-                tempSectors = ResultsEntry.SortList3(tempSectors);
+            //if (tempSectors.Count > 0)
+            //{
+            //    tempSectors = ResultsEntry.SortList3(tempSectors);
 
-                foreach (var sec in tempSectors)
-                    StoredSectors.Add(sec);
-            }
+            //    foreach (var sec in tempSectors)
+            //        StoredSectors.Add(sec);
+            //}
 
             ResultRow = row;
             RefreshStoredOverlay();
@@ -408,7 +408,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
 
             CurrentSectors.Clear();
 
-            List<Sectors.Interfaces.ISector> tempSectors = [];
+            //List<Sectors.Interfaces.ISector> tempSectors = [];
             foreach (var templateSec in CurrentTemplate["sectors"])
             {
                 foreach (var currentSect in CurrentReport["inspectLabel"]["inspectSector"])
@@ -417,7 +417,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
                     {
                         if (templateSec["name"].ToString() == currentSect["name"].ToString())
                         {
-                            tempSectors.Add(new V275.Sectors.Sector(
+                            CurrentSectors.Add(new V275.Sectors.Sector(
                                 (JObject)templateSec, 
                                 (JObject)currentSect, 
                                 [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard], 
@@ -435,13 +435,13 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
                 }
             }
 
-            if (tempSectors.Count > 0)
-            {
-                tempSectors = ResultsEntry.SortList3(tempSectors);
+            //if (tempSectors.Count > 0)
+            //{
+            //    tempSectors = ResultsEntry.SortList3(tempSectors);
 
-                foreach (var sec in tempSectors)
-                    CurrentSectors.Add(sec);
-            }
+            //    foreach (var sec in tempSectors)
+            //        CurrentSectors.Add(sec);
+            //}
 
             GetSectorDiff();
 

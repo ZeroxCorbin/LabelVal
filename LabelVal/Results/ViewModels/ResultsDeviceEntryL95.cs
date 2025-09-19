@@ -238,10 +238,10 @@ public partial class ResultsDeviceEntryL95
                 return;
             }
 
-            List<Sectors.Interfaces.ISector> tempSectors = [];
+            //List<Sectors.Interfaces.ISector> tempSectors = [];
             foreach (JToken rSec in row.Report.GetParameter<JArray>("AllReports"))
             {
-                tempSectors.Add(new Sector(
+                StoredSectors.Add(new Sector(
                     ((JObject)rSec).GetParameter<JObject>("Template"),
                     ((JObject)rSec).GetParameter<JObject>("Report"),
                     [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard],
@@ -250,12 +250,12 @@ public partial class ResultsDeviceEntryL95
                     ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
             }
 
-            if (tempSectors.Count > 0)
-            {
-                tempSectors = ResultsEntry.SortList3(tempSectors);
-                foreach (ISector sec in tempSectors)
-                    StoredSectors.Add(sec);
-            }
+            //if (tempSectors.Count > 0)
+            //{
+            //    tempSectors = ResultsEntry.SortList3(tempSectors);
+            //    foreach (ISector sec in tempSectors)
+            //        StoredSectors.Add(sec);
+            //}
 
             ResultRow = row;
             RefreshStoredOverlay();
@@ -490,12 +490,12 @@ public partial class ResultsDeviceEntryL95
             else if (GlobalAppSettings.Instance.LvsIgnoreNoResults)
                 return;
 
-            var tempSectors = CurrentSectors.ToList();
-            if (tempSectors.Count > 0)
-            {
-                tempSectors = ResultsEntry.SortList3(tempSectors);
-                SortObservableCollectionByList(tempSectors, CurrentSectors);
-            }
+            //var tempSectors = CurrentSectors.ToList();
+            //if (tempSectors.Count > 0)
+            //{
+            //    tempSectors = ResultsEntry.SortList3(tempSectors);
+            //    SortObservableCollectionByList(tempSectors, CurrentSectors);
+            //}
 
             GetSectorDiff();
 

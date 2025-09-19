@@ -33,15 +33,15 @@
             <!--  (All other existing resources retained: CollectionViewSources etc.)  -->
             <CollectionViewSource x:Key="StoredSectorsViewSource" Source="{Binding StoredSectors}">
                 <CollectionViewSource.SortDescriptions>
-                    <componentmodel:SortDescription PropertyName="CenterPoint.X" />
-                    <componentmodel:SortDescription PropertyName="CenterPoint.Y" />
+                    <componentmodel:SortDescription PropertyName="Report.Top" />
+                    <componentmodel:SortDescription PropertyName="Report.Left" />
                 </CollectionViewSource.SortDescriptions>
             </CollectionViewSource>
 
             <CollectionViewSource x:Key="CurrentSectorsViewSource" Source="{Binding CurrentSectors}">
                 <CollectionViewSource.SortDescriptions>
-                    <componentmodel:SortDescription PropertyName="CenterPoint.X" />
-                    <componentmodel:SortDescription PropertyName="CenterPoint.Y" />
+                    <componentmodel:SortDescription PropertyName="Report.Top" />
+                    <componentmodel:SortDescription PropertyName="Report.Left" />
                 </CollectionViewSource.SortDescriptions>
             </CollectionViewSource>
 
@@ -353,10 +353,9 @@
 
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel ItemWidth="200" Orientation="Horizontal">
+                                        <WrapPanel>
                                             <WrapPanel.Style>
                                                 <Style TargetType="WrapPanel">
-                                                    <Setter Property="ItemWidth" Value="200" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding ResultsEntry.ImagesMaxHeight}" Value="400">
                                                             <Setter Property="MaxWidth" Value="400" />
@@ -383,6 +382,7 @@
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <sectors:Sector
+                                            Width="198"
                                             Background="{DynamicResource AccentColorBrush}"
                                             MouseEnter="storedSectorMouseEnter"
                                             MouseLeave="storedSectorMouseLeave" />
@@ -727,10 +727,9 @@
 
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                        <WrapPanel>
                                             <WrapPanel.Style>
                                                 <Style TargetType="WrapPanel">
-                                                    <Setter Property="ItemWidth" Value="200" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding ResultsEntry.ImagesMaxHeight}" Value="400">
                                                             <Setter Property="MaxWidth" Value="400" />
@@ -761,6 +760,7 @@
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <sectors:Sector
+                                            Width="198"
                                             Background="{DynamicResource AccentColorBrush}"
                                             MouseEnter="currentSectorMouseEnter"
                                             MouseLeave="currentSectorMouseLeave" />

@@ -220,22 +220,30 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
             return;
         }
 
-        List<ISector> tempSectors = [];
+        //List<ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(row.ReportString))
         {
             foreach (var toolResult in row.Report.GetParameter<JArray>("event.data.toolResults"))
             {
                 try
                 {
-                    tempSectors.AddRange(((JObject)toolResult)
-                        .GetParameter<JArray>("results")
-                        .Select(result => (ISector)new V5.Sectors.Sector(
-                            (JObject)result,
-                            row.Template,
-                            [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard],
-                            ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard,
-                            ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table,
-                            row.Template.GetParameter<string>("response.message"))));
+                    foreach(var result in ((JObject)toolResult).GetParameter<JArray>("results"))
+                    {
+                        try
+                        {
+                            StoredSectors.Add((ISector)new V5.Sectors.Sector(
+                                (JObject)result,
+                                row.Template,
+                                [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard],
+                                ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedApplicationStandard,
+                                ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGS1Table,
+                                row.Template.GetParameter<string>("response.message")));
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error(ex);
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -245,12 +253,12 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
             }
         }
 
-        if (tempSectors.Count > 0)
-        {
-            _ = ResultsEntry.SortList3(tempSectors);
-            foreach (var sec in tempSectors)
-                StoredSectors.Add(sec);
-        }
+        //if (tempSectors.Count > 0)
+        //{
+        //    _ = ResultsEntry.SortList3(tempSectors);
+        //    foreach (var sec in tempSectors)
+        //        StoredSectors.Add(sec);
+        //}
 
         ResultRow = row;
         RefreshStoredOverlay();
@@ -380,14 +388,14 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
 
             CurrentSectors.Clear();
 
-            List<ISector> tempSectors = [];
+            //List<ISector> tempSectors = [];
             foreach (var toolResult in CurrentReport.GetParameter<JArray>("event.data.toolResults"))
             {
                 foreach (var result in ((JObject)toolResult).GetParameter<JArray>("results"))
                 {
                     try
                     {
-                        tempSectors.Add(new V5.Sectors.Sector(
+                        CurrentSectors.Add(new V5.Sectors.Sector(
                             (JObject)result,
                             CurrentTemplate,
                             [ResultsEntry.ResultsManagerView.ActiveImageRoll.SelectedGradingStandard],
@@ -403,13 +411,13 @@ public partial class ResultsDeviceEntryV5 : ObservableObject, IResultsDeviceEntr
                 }
             }
 
-            if (tempSectors.Count > 0)
-            {
-                tempSectors = ResultsEntry.SortList3(tempSectors);
+            //if (tempSectors.Count > 0)
+            //{
+            //    tempSectors = ResultsEntry.SortList3(tempSectors);
 
-                foreach (var sec in tempSectors)
-                    CurrentSectors.Add(sec);
-            }
+            //    foreach (var sec in tempSectors)
+            //        CurrentSectors.Add(sec);
+            //}
 
             GetSectorDiff();
 
