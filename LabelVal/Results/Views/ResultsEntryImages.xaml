@@ -78,6 +78,7 @@
                             Command="{Binding Show3DImageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             CommandParameter="{Binding SourceImage.OriginalImage}"
                             Content="{iconPacks:Material Kind=Video3d}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
 
                         <!--  Save Image  -->

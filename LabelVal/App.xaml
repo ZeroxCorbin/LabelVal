@@ -232,7 +232,7 @@
 
             <Style x:Key="groupLeft" TargetType="Border">
                 <Setter Property="DockPanel.Dock" Value="Left" />
-                <Setter Property="Margin" Value="0,0,3,0" />
+                <Setter Property="Margin" Value="0,0,0,0" />
                 <Setter Property="Width" Value="1" />
                 <Setter Property="Height" Value="auto" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
@@ -245,11 +245,16 @@
                         </LinearGradientBrush>
                     </Setter.Value>
                 </Setter>
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <TranslateTransform Y="0" />
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <Style x:Key="groupBottom" TargetType="Border">
                 <Setter Property="DockPanel.Dock" Value="Bottom" />
-                <Setter Property="Margin" Value="0,3,0,0" />
+                <Setter Property="Margin" Value="0,0,0,0" />
                 <Setter Property="Width" Value="auto" />
                 <Setter Property="Height" Value="1" />
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -264,7 +269,7 @@
                 </Setter>
                 <Setter Property="RenderTransform">
                     <Setter.Value>
-                        <TranslateTransform X="-3" />
+                        <TranslateTransform X="0" />
                     </Setter.Value>
                 </Setter>
             </Style>

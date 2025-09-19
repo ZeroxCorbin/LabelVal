@@ -28,7 +28,7 @@
             </Style>
 
             <!--  Spacing / form styles  -->
-            <Style x:Key="SettingsCheckBoxStyle" TargetType="CheckBox">
+            <Style x:Key="SettingsCheckBoxStyle" TargetType="CheckBox" BasedOn="{StaticResource MahApps.Styles.CheckBox}">
                 <Setter Property="Margin" Value="0,6,0,0" />
             </Style>
 
@@ -86,6 +86,7 @@
                             Content="Compare Grade Value"
                             IsChecked="{Binding ViewModel.GradeCompareSettings.CompareLetterValue}"
                             Style="{StaticResource SettingsCheckBoxStyle}" />
+                        
                         <Grid Style="{StaticResource FormRowGridStyle}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />

@@ -5,6 +5,7 @@
     xmlns:converters="clr-namespace:Wpf.lib.Converters;assembly=Wpf.lib"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:imageRollEnums="clr-namespace:LabelVal.ImageRolls.ViewModels"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
@@ -13,7 +14,7 @@
 
     <!--  Image Rolls  -->
     <DataTemplate x:Key="ImageRollMenuItem">
-        <DockPanel MaxHeight="58" DataContext="{Binding Content.ActiveImageRoll}">
+        <DockPanel MinHeight="48" DataContext="{Binding Content.ActiveImageRoll}">
 
             <DockPanel Width="48">
                 <DockPanel.Background>
@@ -33,122 +34,114 @@
 
             </DockPanel>
 
-            <Border Style="{StaticResource imageBar}" />
+            <DockPanel>
+                <DockPanel.Style>
+                    <Style TargetType="DockPanel">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsPaneOpen, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
 
-            <md:Card
-                Margin="3"
-                Background="{DynamicResource MahApps.Brushes.Control.Background}"
-                Visibility="{Binding ., Converter={StaticResource IsNullOrEmptyVisibility}}">
-                <md:Card.Effect>
-                    <DropShadowEffect
-                        BlurRadius="2"
-                        Opacity="0.5"
-                        ShadowDepth="0"
-                        Color="{DynamicResource MahApps.Colors.Gray1}" />
-                </md:Card.Effect>
-                <DockPanel
-                    MaxWidth="260"
+                <md:Card
                     Margin="3"
-                    HorizontalAlignment="Stretch">
+                    Background="{DynamicResource MahApps.Brushes.Control.Background}"
+                    Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                    Visibility="{Binding ., Converter={StaticResource IsNullOrEmptyVisibility}}">
+                    <md:Card.Effect>
+                        <DropShadowEffect
+                            BlurRadius="0"
+                            Opacity="0.5"
+                            ShadowDepth="2"
+                            Color="{DynamicResource MahApps.Colors.Accent4}" />
+                    </md:Card.Effect>
 
-                    <DockPanel.Style>
-                        <Style TargetType="DockPanel">
-                            <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
+                    <DockPanel
+                        MaxWidth="260"
+                        Margin="3"
+                        HorizontalAlignment="Stretch">
 
-                        </Style>
-                    </DockPanel.Style>
+                        <Border Style="{StaticResource groupLeft}" />
+                        <Border Style="{StaticResource groupBottom}" />
 
-                    <Border Style="{StaticResource groupLeft}" />
-                    <Border Style="{StaticResource groupBottom}" />
-
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <iconPacks:PackIconMaterial
-                            Margin="0,3,6,0"
-                            VerticalAlignment="Center"
-                            Kind="ImageMultiple" />
-
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
-                            Text="{Binding ImageCount}" />
-
-                        <Grid
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Margin="3,0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top">
+                        <Grid Margin="6,0" DockPanel.Dock="Left">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
 
-                            <md:SmartHint
-                                Grid.Column="0"
-                                Margin="3,0"
-                                FontSize="14"
-                                Hint="...">
-                                <md:SmartHint.Style>
-                                    <Style TargetType="md:SmartHint">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding RightAlignOverflow}" Value="True" />
-                                                    <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=srcName2}" Value="Visible" />
-                                                </MultiDataTrigger.Conditions>
-                                                <MultiDataTrigger.Setters>
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </MultiDataTrigger.Setters>
-                                            </MultiDataTrigger>
-
-                                        </Style.Triggers>
-                                    </Style>
-                                </md:SmartHint.Style>
-                            </md:SmartHint>
-
-                            <ScrollViewer
-                                x:Name="srcName2"
-                                Grid.Column="1"
-                                Padding="3,0"
+                            <iconPacks:PackIconMaterial
+                                Margin="0,3,6,0"
                                 VerticalAlignment="Center"
-                                md:ScrollViewerAssist.BubbleVerticalScroll="True"
-                                md:ScrollViewerAssist.IsAutoHideEnabled="True"
-                                Focusable="False"
-                                HorizontalScrollBarVisibility="Auto"
-                                VerticalScrollBarVisibility="Disabled">
-                                <ScrollViewer.Resources>
-                                    <Style TargetType="ScrollBar" />
-                                    <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">8</sys:Double>
-                                </ScrollViewer.Resources>
+                                Kind="ImageMultiple" />
 
-                                <ScrollViewer.Style>
-                                    <Style BasedOn="{StaticResource MaterialDesignScrollViewer}" TargetType="ScrollViewer">
-                                        <Setter Property="FlowDirection" Value="LeftToRight" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ImageRollsManager.RightAlignOverflow}" Value="True">
-                                                <Setter Property="FlowDirection" Value="RightToLeft" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ScrollViewer.Style>
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                                Text="{Binding ImageCount}" />
 
+                            <Grid
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="3,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="{Binding Name}">
-                                    <TextBlock.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}" TargetType="TextBlock">
+                                <md:SmartHint
+                                    Grid.Column="0"
+                                    Margin="3,0"
+                                    FontSize="14"
+                                    Hint="...">
+                                    <md:SmartHint.Style>
+                                        <Style TargetType="md:SmartHint">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RightAlignOverflow}" Value="True" />
+                                                        <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=srcName2}" Value="Visible" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <MultiDataTrigger.Setters>
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </MultiDataTrigger.Setters>
+                                                </MultiDataTrigger>
+
+                                            </Style.Triggers>
+                                        </Style>
+                                    </md:SmartHint.Style>
+                                </md:SmartHint>
+
+                                <ScrollViewer
+                                    x:Name="srcName2"
+                                    Grid.Column="1"
+                                    Padding="3,0"
+                                    VerticalAlignment="Center"
+                                    md:ScrollViewerAssist.BubbleVerticalScroll="True"
+                                    md:ScrollViewerAssist.IsAutoHideEnabled="True"
+                                    Focusable="False"
+                                    HorizontalScrollBarVisibility="Auto"
+                                    VerticalScrollBarVisibility="Disabled">
+                                    <ScrollViewer.Resources>
+                                        <Style TargetType="ScrollBar" />
+                                        <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">8</sys:Double>
+                                    </ScrollViewer.Resources>
+
+                                    <ScrollViewer.Style>
+                                        <Style BasedOn="{StaticResource MaterialDesignScrollViewer}" TargetType="ScrollViewer">
                                             <Setter Property="FlowDirection" Value="LeftToRight" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ImageRollsManager.RightAlignOverflow}" Value="True">
@@ -156,139 +149,153 @@
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
+                                    </ScrollViewer.Style>
+
+
+                                    <TextBlock Text="{Binding Name}">
+                                        <TextBlock.Style>
+                                            <Style BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}" TargetType="TextBlock">
+                                                <Setter Property="FlowDirection" Value="LeftToRight" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImageRollsManager.RightAlignOverflow}" Value="True">
+                                                        <Setter Property="FlowDirection" Value="RightToLeft" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </ScrollViewer>
+
+                                <md:SmartHint
+                                    Grid.Column="2"
+                                    Margin="3,0"
+                                    FontSize="14"
+                                    Hint="...">
+                                    <md:SmartHint.Style>
+                                        <Style TargetType="md:SmartHint">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding ImageRollsManager.RightAlignOverflow}" Value="False" />
+                                                        <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=srcName2}" Value="Visible" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <MultiDataTrigger.Setters>
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </MultiDataTrigger.Setters>
+                                                </MultiDataTrigger>
+
+                                            </Style.Triggers>
+                                        </Style>
+                                    </md:SmartHint.Style>
+                                </md:SmartHint>
+
+                                <TextBlock
+                                    Grid.Column="3"
+                                    Margin="6,3"
+                                    Text="{Binding SelectedGS1Table, Converter={StaticResource EnumValueToDescription}, StringFormat={}Table {0}}">
+                                    <TextBlock.Style>
+                                        <Style BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}" TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedApplicationStandard}" Value="{x:Static barCommon:ApplicationStandards.GS1}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                            </ScrollViewer>
+                            </Grid>
 
-                            <md:SmartHint
-                                Grid.Column="2"
-                                Margin="3,0"
-                                FontSize="14"
-                                Hint="...">
-                                <md:SmartHint.Style>
-                                    <Style TargetType="md:SmartHint">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding ImageRollsManager.RightAlignOverflow}" Value="False" />
-                                                    <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=srcName2}" Value="Visible" />
-                                                </MultiDataTrigger.Conditions>
-                                                <MultiDataTrigger.Setters>
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </MultiDataTrigger.Setters>
-                                            </MultiDataTrigger>
+                            <DockPanel
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="0,0,0,3"
+                                HorizontalAlignment="Left">
 
-                                        </Style.Triggers>
-                                    </Style>
-                                </md:SmartHint.Style>
-                            </md:SmartHint>
+                                <TextBlock Margin="6,0" VerticalAlignment="Center">
+                                    <TextBlock.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent2}" />
+                                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.Accent4}" />
+                                        </LinearGradientBrush>
+                                    </TextBlock.Background>
 
-                            <TextBlock
-                                Grid.Column="3"
-                                Margin="6,3"
-                                Text="{Binding SelectedGS1Table, Converter={StaticResource EnumValueToDescription}, StringFormat={}Table {0}}">
-                                <TextBlock.Style>
-                                    <Style BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}" TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedApplicationStandard}" Value="{x:Static barCommon:ApplicationStandards.GS1}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                                    <TextBlock.Style>
+                                        <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="TextBlock">
+                                            <Setter Property="Text" Value="{Binding TargetDPI, StringFormat={}{0} DPI}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding TargetDPI}" Value="0">
+                                                    <Setter Property="Text" Value="Any DPI" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
+                                <iconPacks:PackIconMaterial
+                                    Margin="3"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center">
+                                    <iconPacks:PackIconMaterial.Style>
+                                        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                            <Setter Property="Kind" Value="FormatListNumbered" />
+                                            <Setter Property="ToolTip" Value="The template sectors are shared." />
+
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SectorType}" Value="{x:Static imageRollEnums:ImageRollSectorTypes.Dynamic}">
+                                                    <Setter Property="Kind" Value="PlaylistEdit" />
+                                                    <Setter Property="ToolTip" Value="The template sectors are independant." />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </iconPacks:PackIconMaterial.Style>
+                                </iconPacks:PackIconMaterial>
+
+                                <iconPacks:PackIconMaterial
+                                    Margin="3"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center">
+                                    <iconPacks:PackIconMaterial.Style>
+                                        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                            <Setter Property="Kind" Value="LockOpenVariant" />
+                                            <Setter Property="ToolTip" Value="Image Roll is unlocked." />
+
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                                                    <Setter Property="Kind" Value="Lock" />
+                                                    <Setter Property="ToolTip" Value="Image Roll is locked." />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </iconPacks:PackIconMaterial.Style>
+                                </iconPacks:PackIconMaterial>
+
+
+                                <iconPacks:PackIconMaterial
+                                    Margin="3"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center">
+                                    <iconPacks:PackIconMaterial.Style>
+                                        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                            <Setter Property="Kind" Value="Database" />
+                                            <Setter Property="ToolTip" Value="Images are stored in a database." />
+
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RollType}" Value="Directory">
+                                                    <Setter Property="Kind" Value="Folder" />
+                                                    <Setter Property="ToolTip" Value="Images are loaded from a directory. Read Only!" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </iconPacks:PackIconMaterial.Style>
+                                </iconPacks:PackIconMaterial>
+
+                            </DockPanel>
                         </Grid>
-
-                        <DockPanel
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Margin="0,0,0,3"
-                            HorizontalAlignment="Left">
-
-                            <TextBlock Margin="6,0" VerticalAlignment="Center">
-                                <TextBlock.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent2}" />
-                                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.Accent4}" />
-                                    </LinearGradientBrush>
-                                </TextBlock.Background>
-
-                                <TextBlock.Style>
-                                    <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="TextBlock">
-                                        <Setter Property="Text" Value="{Binding TargetDPI, StringFormat={}{0} DPI}" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding TargetDPI}" Value="0">
-                                                <Setter Property="Text" Value="Any DPI" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-
-                            <iconPacks:PackIconMaterial
-                                Margin="3"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center">
-                                <iconPacks:PackIconMaterial.Style>
-                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                                        <Setter Property="Kind" Value="FormatListNumbered" />
-                                        <Setter Property="ToolTip" Value="The template sectors are shared." />
-
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SectorType}" Value="{x:Static imageRollEnums:ImageRollSectorTypes.Dynamic}">
-                                                <Setter Property="Kind" Value="PlaylistEdit" />
-                                                <Setter Property="ToolTip" Value="The template sectors are independant." />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </iconPacks:PackIconMaterial.Style>
-                            </iconPacks:PackIconMaterial>
-
-                            <iconPacks:PackIconMaterial
-                                Margin="3"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center">
-                                <iconPacks:PackIconMaterial.Style>
-                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                                        <Setter Property="Kind" Value="LockOpenVariant" />
-                                        <Setter Property="ToolTip" Value="Image Roll is unlocked." />
-
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsLocked}" Value="True">
-                                                <Setter Property="Kind" Value="Lock" />
-                                                <Setter Property="ToolTip" Value="Image Roll is locked." />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </iconPacks:PackIconMaterial.Style>
-                            </iconPacks:PackIconMaterial>
-
-
-                            <iconPacks:PackIconMaterial
-                                Margin="3"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center">
-                                <iconPacks:PackIconMaterial.Style>
-                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                                        <Setter Property="Kind" Value="Database" />
-                                        <Setter Property="ToolTip" Value="Images are stored in a database." />
-
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding RollType}" Value="Directory">
-                                                <Setter Property="Kind" Value="Folder" />
-                                                <Setter Property="ToolTip" Value="Images are loaded from a directory. Read Only!" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </iconPacks:PackIconMaterial.Style>
-                            </iconPacks:PackIconMaterial>
-
-                        </DockPanel>
-                    </Grid>
-                </DockPanel>
-            </md:Card>
+                    </DockPanel>
+                </md:Card>
+            </DockPanel>
         </DockPanel>
     </DataTemplate>
 

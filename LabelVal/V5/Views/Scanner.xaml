@@ -27,7 +27,7 @@
     </UserControl.Resources>
 
     <md:Card
-        Margin="6"
+        Margin="3"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Top"
         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"

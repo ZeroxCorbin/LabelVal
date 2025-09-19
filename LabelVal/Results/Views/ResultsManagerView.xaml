@@ -44,9 +44,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <DockPanel VerticalAlignment="Top">
+    <DockPanel Margin="3" VerticalAlignment="Top">
 
-        <DockPanel Margin="3,3,0,0" DockPanel.Dock="Top">
+        <DockPanel DockPanel.Dock="Top">
             <md:Card
                 Margin="3,3,0,0"
                 HorizontalAlignment="Left"

@@ -15,29 +15,28 @@
     <!--  DataTemplate for individual items in the Image Roll ListViews.  -->
     <DataTemplate x:Key="ImageRollListItemTemplate" DataType="viewModels:ImageRollEntry">
 
-        <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
+        <md:Card
+            Margin="3"
+            Background="{DynamicResource MahApps.Brushes.Control.Background}"
+            Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
             <md:Card.Effect>
                 <DropShadowEffect
-                    BlurRadius="2"
+                    BlurRadius="0"
                     Opacity="0.5"
-                    ShadowDepth="0"
-                    Color="{DynamicResource MahApps.Colors.Gray1}" />
+                    ShadowDepth="2"
+                    Color="{DynamicResource MahApps.Colors.Accent4}" />
             </md:Card.Effect>
+
             <DockPanel
                 MaxWidth="260"
                 Margin="3"
                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                <DockPanel.Style>
-                    <Style TargetType="DockPanel">
-                        <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
-                    </Style>
-                </DockPanel.Style>
 
                 <!--  Decorative borders for group styling.  -->
                 <Border Style="{StaticResource groupLeft}" />
                 <Border Style="{StaticResource groupBottom}" />
 
-                <Grid>
+                <Grid Margin="6,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />

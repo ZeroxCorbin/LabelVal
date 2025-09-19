@@ -42,7 +42,7 @@
                 <CollectionViewSource.SortDescriptions>
                     <componentmodel:SortDescription PropertyName="Report.Top" />
                     <componentmodel:SortDescription PropertyName="Report.Left" />
-                </CollectionViewSource.SortDescriptions>  
+                </CollectionViewSource.SortDescriptions>
             </CollectionViewSource>
 
         </ResourceDictionary>
@@ -353,7 +353,7 @@
 
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel >
+                                        <WrapPanel>
                                             <WrapPanel.Style>
                                                 <Style TargetType="WrapPanel">
                                                     <Style.Triggers>
@@ -381,7 +381,8 @@
 
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <sectors:Sector Width="198"
+                                        <sectors:Sector
+                                            Width="198"
                                             Background="{DynamicResource AccentColorBrush}"
                                             MouseEnter="storedSectorMouseEnter"
                                             MouseLeave="storedSectorMouseLeave" />

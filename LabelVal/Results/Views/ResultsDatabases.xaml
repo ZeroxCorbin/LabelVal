@@ -201,7 +201,7 @@
             </Border>
 
             <ListView
-                Margin="3,3,0,0"
+                Margin="3"
                 ItemsSource="{Binding Databases}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 SelectedItem="{Binding SelectedResultsDatabase}"
@@ -214,7 +214,8 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
 
-                        <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
+                        <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}"
+                                 Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
                             <md:Card.Effect>
                                 <DropShadowEffect
                                     BlurRadius="2"
@@ -222,20 +223,16 @@
                                     ShadowDepth="0"
                                     Color="{DynamicResource MahApps.Colors.Gray1}" />
                             </md:Card.Effect>
+
                             <DockPanel
                                 MaxWidth="240"
                                 Margin="3"
                                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                                <DockPanel.Style>
-                                    <Style TargetType="DockPanel">
-                                        <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
-                                    </Style>
-                                </DockPanel.Style>
 
                                 <Border Style="{StaticResource groupLeft}" />
                                 <Border Style="{StaticResource groupBottom}" />
 
-                                <Grid>
+                                <Grid Margin="6,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />

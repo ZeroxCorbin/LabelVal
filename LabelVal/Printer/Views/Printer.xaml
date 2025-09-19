@@ -32,16 +32,10 @@
             HorizontalAlignment="Stretch"
             Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-            <DockPanel.Style>
-                <Style TargetType="DockPanel">
-                    <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
-                </Style>
-            </DockPanel.Style>
-
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}" />
 
-            <StackPanel>
+            <StackPanel Margin="3">
 
                 <TextBlock HorizontalAlignment="Center" Style="{StaticResource MaterialDesignBodyMediumTextBlock}">
                     <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Width, StringFormat=N2, Converter={StaticResource PrinterSettingThousandthsToInches}}" />

@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:resultsVm="clr-namespace:LabelVal.Results.ViewModels"
@@ -13,7 +14,7 @@
     <DataTemplate x:Key="ResultsMenuItem" DataType="{x:Type resultsVm:ResultsDatabasesViewModel}">
         <!--  The DataContext here is an instance of ResultsDatabasesViewModel  -->
         <DockPanel
-            MaxHeight="61"
+            MinHeight="48"
             d:DataContext="{d:DesignInstance Type=resultsVm:ResultsDatabasesViewModel,
                                              IsDesignTimeCreatable=False}"
             DataContext="{Binding Content}">
@@ -38,46 +39,54 @@
 
             <Border Style="{StaticResource imageBar}" />
 
-            <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
-                <md:Card.Effect>
-                    <DropShadowEffect
-                        BlurRadius="2"
-                        Opacity="0.5"
-                        ShadowDepth="0"
-                        Color="{DynamicResource MahApps.Colors.Gray1}" />
-                </md:Card.Effect>
+            <DockPanel>
+                <DockPanel.Style>
+                    <Style TargetType="DockPanel">
+                        <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.Text}" />
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsPaneOpen, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
 
-                <DockPanel
-                    MaxWidth="260"
-                    Margin="3"
-                    HorizontalAlignment="Stretch"
-                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-                    <DockPanel.Style>
-                        <Style TargetType="DockPanel">
-                            <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
-                        </Style>
-                    </DockPanel.Style>
+                <md:Card Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
+                    <md:Card.Effect>
+                        <DropShadowEffect
+                            BlurRadius="2"
+                            Opacity="0.5"
+                            ShadowDepth="0"
+                            Color="{DynamicResource MahApps.Colors.Gray1}" />
+                    </md:Card.Effect>
 
-                    <Border Style="{StaticResource groupLeft}" />
-                    <Border Style="{StaticResource groupBottom}" />
+                    <DockPanel
+                        MaxWidth="260"
+                        Margin="3"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
+                        <Border Style="{StaticResource groupLeft}" />
+                        <Border Style="{StaticResource groupBottom}" />
 
-                        <iconPacks:PackIconMaterial
-                            Margin="0,3,6,0"
-                            VerticalAlignment="Center"
-                            Kind="Database" />
+                        <Grid Margin="6,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
 
-                        <!--<TextBlock
+                            <iconPacks:PackIconMaterial
+                                Margin="0,3,6,0"
+                                VerticalAlignment="Center"
+                                Kind="Database" />
+
+                            <!--<TextBlock
                         Grid.Row="0"
                         Grid.Column="1"
                         HorizontalAlignment="Left"
@@ -95,72 +104,59 @@
                         </TextBlock.Style>
                     </TextBlock>-->
 
-                        <Grid
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Margin="3,0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <md:SmartHint
-                                Grid.Column="0"
-                                Margin="3,0"
-                                FontSize="14"
-                                Hint="...">
-                                <md:SmartHint.Style>
-                                    <Style TargetType="md:SmartHint">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding RightAlignOverflow}" Value="True" />
-                                                    <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=srcName3}" Value="Visible" />
-                                                </MultiDataTrigger.Conditions>
-                                                <MultiDataTrigger.Setters>
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </MultiDataTrigger.Setters>
-                                            </MultiDataTrigger>
-
-                                        </Style.Triggers>
-                                    </Style>
-                                </md:SmartHint.Style>
-                            </md:SmartHint>
-
-                            <ScrollViewer
-                                x:Name="srcName3"
+                            <Grid
+                                Grid.Row="0"
                                 Grid.Column="1"
-                                Padding="3,0"
-                                VerticalAlignment="Center"
-                                md:ScrollViewerAssist.BubbleVerticalScroll="True"
-                                md:ScrollViewerAssist.IsAutoHideEnabled="True"
-                                Focusable="False"
-                                HorizontalScrollBarVisibility="Auto"
-                                VerticalScrollBarVisibility="Disabled">
-                                <ScrollViewer.Resources>
-                                    <Style TargetType="ScrollBar" />
-                                    <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">8</sys:Double>
-                                </ScrollViewer.Resources>
+                                Margin="3,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
 
-                                <ScrollViewer.Style>
-                                    <Style BasedOn="{StaticResource MaterialDesignScrollViewer}" TargetType="ScrollViewer">
-                                        <Setter Property="FlowDirection" Value="LeftToRight" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding RightAlignOverflow}" Value="True">
-                                                <Setter Property="FlowDirection" Value="RightToLeft" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ScrollViewer.Style>
+                                <md:SmartHint
+                                    Grid.Column="0"
+                                    Margin="3,0"
+                                    FontSize="14"
+                                    Hint="...">
+                                    <md:SmartHint.Style>
+                                        <Style TargetType="md:SmartHint">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RightAlignOverflow}" Value="True" />
+                                                        <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=srcName3}" Value="Visible" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <MultiDataTrigger.Setters>
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </MultiDataTrigger.Setters>
+                                                </MultiDataTrigger>
 
+                                            </Style.Triggers>
+                                        </Style>
+                                    </md:SmartHint.Style>
+                                </md:SmartHint>
 
-                                <TextBlock Text="{Binding SelectedResultsDatabase.File.Name}">
-                                    <TextBlock.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}" TargetType="TextBlock">
+                                <ScrollViewer
+                                    x:Name="srcName3"
+                                    Grid.Column="1"
+                                    Padding="3,0"
+                                    VerticalAlignment="Center"
+                                    md:ScrollViewerAssist.BubbleVerticalScroll="True"
+                                    md:ScrollViewerAssist.IsAutoHideEnabled="True"
+                                    Focusable="False"
+                                    HorizontalScrollBarVisibility="Auto"
+                                    VerticalScrollBarVisibility="Disabled">
+                                    <ScrollViewer.Resources>
+                                        <Style TargetType="ScrollBar" />
+                                        <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">8</sys:Double>
+                                    </ScrollViewer.Resources>
+
+                                    <ScrollViewer.Style>
+                                        <Style BasedOn="{StaticResource MaterialDesignScrollViewer}" TargetType="ScrollViewer">
                                             <Setter Property="FlowDirection" Value="LeftToRight" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding RightAlignOverflow}" Value="True">
@@ -168,83 +164,97 @@
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </ScrollViewer>
+                                    </ScrollViewer.Style>
 
-                            <md:SmartHint
-                                Grid.Column="2"
-                                Margin="3,0"
-                                FontSize="14"
-                                Hint="...">
-                                <md:SmartHint.Style>
-                                    <Style TargetType="md:SmartHint">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding RightAlignOverflow}" Value="False" />
-                                                    <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=srcName3}" Value="Visible" />
-                                                </MultiDataTrigger.Conditions>
-                                                <MultiDataTrigger.Setters>
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </MultiDataTrigger.Setters>
-                                            </MultiDataTrigger>
 
-                                        </Style.Triggers>
-                                    </Style>
-                                </md:SmartHint.Style>
-                            </md:SmartHint>
+                                    <TextBlock Text="{Binding SelectedResultsDatabase.File.Name}">
+                                        <TextBlock.Style>
+                                            <Style BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}" TargetType="TextBlock">
+                                                <Setter Property="FlowDirection" Value="LeftToRight" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding RightAlignOverflow}" Value="True">
+                                                        <Setter Property="FlowDirection" Value="RightToLeft" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </ScrollViewer>
+
+                                <md:SmartHint
+                                    Grid.Column="2"
+                                    Margin="3,0"
+                                    FontSize="14"
+                                    Hint="...">
+                                    <md:SmartHint.Style>
+                                        <Style TargetType="md:SmartHint">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RightAlignOverflow}" Value="False" />
+                                                        <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=srcName3}" Value="Visible" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <MultiDataTrigger.Setters>
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </MultiDataTrigger.Setters>
+                                                </MultiDataTrigger>
+
+                                            </Style.Triggers>
+                                        </Style>
+                                    </md:SmartHint.Style>
+                                </md:SmartHint>
+
+                            </Grid>
+
+                            <DockPanel
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="0,0,0,3"
+                                HorizontalAlignment="Left">
+
+                                <Button Margin="3">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="LockOpenVariant" />
+                                                </Setter.Value>
+                                            </Setter>
+
+                                            <Setter Property="ToolTip" Value="Database is unlocked. Click to lock." />
+
+                                            <Style.Triggers>
+
+                                                <DataTrigger Binding="{Binding SelectedResultsDatabase.IsLocked}" Value="True">
+                                                    <Setter Property="Content">
+                                                        <Setter.Value>
+                                                            <iconPacks:PackIconMaterial Kind="Lock" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="ToolTip" Value="Database is locked. Click to unlock." />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding SelectedResultsDatabase.IsPermLocked}" Value="True">
+                                                    <Setter Property="Content">
+                                                        <Setter.Value>
+                                                            <iconPacks:PackIconMaterial Kind="DatabaseLock" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="ToolTip" Value="Database is premanently locked." />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                            </DockPanel>
 
                         </Grid>
 
-                        <DockPanel
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Margin="0,0,0,3"
-                            HorizontalAlignment="Left">
-
-                            <Button Margin="3">
-                                <Button.Style>
-                                    <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <iconPacks:PackIconMaterial Kind="LockOpenVariant" />
-                                            </Setter.Value>
-                                        </Setter>
-
-                                        <Setter Property="ToolTip" Value="Database is unlocked. Click to lock." />
-
-                                        <Style.Triggers>
-
-                                            <DataTrigger Binding="{Binding SelectedResultsDatabase.IsLocked}" Value="True">
-                                                <Setter Property="Content">
-                                                    <Setter.Value>
-                                                        <iconPacks:PackIconMaterial Kind="Lock" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Setter Property="ToolTip" Value="Database is locked. Click to unlock." />
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding SelectedResultsDatabase.IsPermLocked}" Value="True">
-                                                <Setter Property="Content">
-                                                    <Setter.Value>
-                                                        <iconPacks:PackIconMaterial Kind="DatabaseLock" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Setter Property="ToolTip" Value="Database is premanently locked." />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-
-                        </DockPanel>
-
-                    </Grid>
-
-                </DockPanel>
-            </md:Card>
+                    </DockPanel>
+                </md:Card>
+            </DockPanel>
         </DockPanel>
     </DataTemplate>
 
