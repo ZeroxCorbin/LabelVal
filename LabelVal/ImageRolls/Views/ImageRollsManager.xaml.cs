@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System;
+using System.Linq;
 
 namespace LabelVal.ImageRolls.Views;
 
@@ -60,9 +61,10 @@ public partial class ImageRollsManager : UserControl
 
         TabCtlUserIr.Loaded += (s, e) =>
         {
-            if (_viewModel.SelectedUserImageRoll != null)
+            if (_viewModel?.SelectedUserImageRoll != null)
             {
-                CollectionViewGroup item = TabCtlUserIr.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedUserImageRoll));
+                CollectionViewGroup item = TabCtlUserIr.Items.OfType<CollectionViewGroup>()
+                    .FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedUserImageRoll));
                 if (item != null)
                 {
                     TabCtlUserIr.SelectedItem = item;
@@ -72,16 +74,16 @@ public partial class ImageRollsManager : UserControl
 
         TabCtlFixedIr.Loaded += (s, e) =>
         {
-            if (_viewModel.SelectedFixedImageRoll != null)
+            if (_viewModel?.SelectedFixedImageRoll != null)
             {
-                CollectionViewGroup item = TabCtlFixedIr.Items.OfType<CollectionViewGroup>().FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedFixedImageRoll));
+                CollectionViewGroup item = TabCtlFixedIr.Items.OfType<CollectionViewGroup>()
+                    .FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedFixedImageRoll));
                 if (item != null)
                 {
                     TabCtlFixedIr.SelectedItem = item;
                 }
             }
         };
-
     }
 
     private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -161,7 +163,10 @@ public partial class ImageRollsManager : UserControl
         {
             cvs.View?.Refresh();
         }
-        // After data changes, re-evaluate layout
+        if (FindResource("AllImageRolls") is CollectionViewSource cvsAll)
+        {
+            cvsAll.View?.Refresh();
+        }
         Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(UpdateRowHeights));
     }
 
@@ -198,14 +203,12 @@ public partial class ImageRollsManager : UserControl
                     ListView listView = FindVisualChild<ListView>(contentPresenter);
                     if (listView != null)
                     {
-                        // Optionally check if ItemsSource is a CollectionViewGroup
                         if (listView.ItemsSource is CollectionViewGroup group &&
                             group.Items.Count > 0 &&
                             group.Items[0].GetType().Name.Contains("ImageRoll"))
                         {
                             return listView;
                         }
-                        // Or just return the first ListView found
                         return listView;
                     }
                 }
@@ -214,7 +217,6 @@ public partial class ImageRollsManager : UserControl
         return null;
     }
 
-    // Generic visual tree search helper
     private T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
     {
         if (parent == null) return null;
@@ -249,7 +251,6 @@ public partial class ImageRollsManager : UserControl
         if (available <= 0 || ActualWidth <= 0)
             return;
 
-        // Ensure both rows are Auto to capture natural sizes.
         bool forcedAuto = false;
         if (RowUser.Height.GridUnitType != GridUnitType.Auto)
         {
@@ -262,21 +263,18 @@ public partial class ImageRollsManager : UserControl
             forcedAuto = true;
         }
         if (forcedAuto)
-            UpdateLayout(); // let WPF realize natural heights
+            UpdateLayout();
 
         double naturalUser = UserPanel.ActualHeight;
         double naturalFixed = FixedPanel.ActualHeight;
         double total = naturalUser + naturalFixed;
 
-        // Case 1: both fit naturally, keep Auto.
         if (total <= available)
             return;
 
-        // Determine which is larger.
         bool userIsLarger = naturalUser >= naturalFixed;
         double smallNatural = userIsLarger ? naturalFixed : naturalUser;
 
-        // Safety: if the "small" one already consumes almost all the viewport, split 50/50.
         if (smallNatural >= available * 0.9)
         {
             SetStar(RowUser, 1);
@@ -284,16 +282,13 @@ public partial class ImageRollsManager : UserControl
             return;
         }
 
-        // Allocate: small stays Auto, large becomes Star.
         if (userIsLarger)
         {
-            // User bigger
             SetStar(RowUser, 1);
             SetAuto(RowFixed);
         }
         else
         {
-            // Fixed bigger
             SetAuto(RowUser);
             SetStar(RowFixed, 1);
         }
@@ -315,8 +310,18 @@ public partial class ImageRollsManager : UserControl
 
     private void MeasurePanel(FrameworkElement panel)
     {
-        // Width limited by current grid width; height unlimited to get full desired size
         var width = RootGrid.ActualWidth > 0 ? RootGrid.ActualWidth : double.PositiveInfinity;
         panel.Measure(new Size(width, double.PositiveInfinity));
+    }
+
+    private void TreeAllImageRolls_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+    {
+        if (_viewModel == null) return;
+        if (e.NewValue is ImageRoll roll)
+        {
+            // Selecting roll updates unified selection
+            if (_viewModel.SelectedAllImageRoll != roll)
+                _viewModel.SelectedAllImageRoll = roll;
+        }
     }
 }

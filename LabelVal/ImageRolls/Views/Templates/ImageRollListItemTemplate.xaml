@@ -13,7 +13,7 @@
     <converters:ContentGeneratorConverter x:Key="ContentGeneratorConverter" />
 
     <!--  DataTemplate for individual items in the Image Roll ListViews.  -->
-    <DataTemplate x:Key="ImageRollListItemTemplate" DataType="viewModels:ImageRollEntry">
+    <DataTemplate x:Key="ImageRollListItemTemplate" DataType="viewModels:ImageRoll">
 
         <md:Card
             Margin="3"

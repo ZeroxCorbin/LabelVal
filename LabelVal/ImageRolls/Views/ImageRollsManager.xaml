@@ -15,6 +15,7 @@
     xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:converters="clr-namespace:LabelVal.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:data="clr-namespace:System.Windows.Data;assembly=PresentationFramework"
     xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:imageRollEnums="clr-namespace:LabelVal.ImageRolls.ViewModels"
@@ -87,20 +88,16 @@
                 </ListView>
             </DataTemplate>
 
-            <!--  Style for the Fixed Image Roll TabItems.  -->
+            <!--  RE-ADDED: FixedImageRollTabItemStyle  -->
             <Style
                 x:Key="FixedImageRollTabItemStyle"
                 BasedOn="{StaticResource MahApps.Styles.TabItem}"
                 TargetType="TabItem">
-
-                <!--  This generates the content (the ListView) for the tab item when it's selected.  -->
+                <!--  Generate ListView content only when selected via converter  -->
                 <Setter Property="Content" Value="{Binding Converter={StaticResource ContentGeneratorConverter}, ConverterParameter={StaticResource FixedImageRollsListViewTemplate}}" />
-
                 <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
                 <Setter Property="BorderThickness" Value="1,1,1,0" />
                 <Setter Property="Margin" Value="0" />
-
-                <!--  Sets tooltips for the tab headers based on the group name.  -->
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Name}" Value="{x:Static barCommon:ApplicationStandards.GS1}">
                         <Setter Property="ToolTip" Value="GS1" />
@@ -115,23 +112,17 @@
                         <Setter Property="ToolTip" Value="None" />
                     </DataTrigger>
                 </Style.Triggers>
-
             </Style>
 
-            <!--  Style for the User Image Roll TabItems.  -->
+            <!--  RE-ADDED: UserImageRollTabItemStyle  -->
             <Style
                 x:Key="UserImageRollTabItemStyle"
                 BasedOn="{StaticResource MahApps.Styles.TabItem}"
                 TargetType="TabItem">
-
-                <!--  This generates the content (the ListView) for the tab item when it's selected.  -->
                 <Setter Property="Content" Value="{Binding Converter={StaticResource ContentGeneratorConverter}, ConverterParameter={StaticResource UserImageRollsListViewTemplate}}" />
-
                 <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
                 <Setter Property="BorderThickness" Value="1,1,1,0" />
                 <Setter Property="Margin" Value="0" />
-
-                <!--  Sets tooltips for the tab headers based on the group name.  -->
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Name}" Value="{x:Static barCommon:ApplicationStandards.GS1}">
                         <Setter Property="ToolTip" Value="GS1" />
@@ -146,23 +137,20 @@
                         <Setter Property="ToolTip" Value="None" />
                     </DataTrigger>
                 </Style.Triggers>
-
             </Style>
 
-            <!--  CollectionViewSource for Fixed Image Rolls. This provides sorting and grouping for the read-only image rolls.  -->
+            <!--  CollectionViewSources (unchanged)  -->
             <CollectionViewSource x:Key="FixedImageRolls" Source="{Binding FixedImageRolls}">
                 <CollectionViewSource.SortDescriptions>
                     <componentmodel:SortDescription Direction="Ascending" PropertyName="SelectedApplicationStandard" />
                     <componentmodel:SortDescription Direction="Ascending" PropertyName="GS1TableNumber" />
                     <componentmodel:SortDescription Direction="Ascending" PropertyName="Name" />
                 </CollectionViewSource.SortDescriptions>
-
                 <CollectionViewSource.GroupDescriptions>
                     <PropertyGroupDescription PropertyName="SelectedApplicationStandard" />
                 </CollectionViewSource.GroupDescriptions>
             </CollectionViewSource>
 
-            <!--  CollectionViewSource for User Image Rolls. This provides sorting and grouping for the user-created image rolls.  -->
             <CollectionViewSource x:Key="UserImageRolls" Source="{Binding UserImageRolls}">
                 <CollectionViewSource.SortDescriptions>
                     <componentmodel:SortDescription Direction="Ascending" PropertyName="SelectedApplicationStandard" />
@@ -170,22 +158,60 @@
                     <componentmodel:SortDescription Direction="Ascending" PropertyName="GS1TableNumber" />
                     <componentmodel:SortDescription Direction="Ascending" PropertyName="Name" />
                 </CollectionViewSource.SortDescriptions>
-
                 <CollectionViewSource.GroupDescriptions>
                     <PropertyGroupDescription PropertyName="StandardGroup" />
                 </CollectionViewSource.GroupDescriptions>
             </CollectionViewSource>
+
+            <CollectionViewSource x:Key="AllImageRolls" Source="{Binding AllImageRolls}">
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription Direction="Ascending" PropertyName="RollType" />
+                    <componentmodel:SortDescription Direction="Ascending" PropertyName="SelectedApplicationStandard" />
+                    <componentmodel:SortDescription Direction="Ascending" PropertyName="SelectedGradingStandard" />
+                    <componentmodel:SortDescription Direction="Ascending" PropertyName="GS1TableNumber" />
+                    <componentmodel:SortDescription Direction="Ascending" PropertyName="Name" />
+                </CollectionViewSource.SortDescriptions>
+                <CollectionViewSource.GroupDescriptions>
+                    <PropertyGroupDescription PropertyName="RollType" />
+                    <PropertyGroupDescription PropertyName="StandardGroup" />
+                </CollectionViewSource.GroupDescriptions>
+            </CollectionViewSource>
+
+            <!--  TreeView Item Templates for AllImageRolls  -->
+
+            <!--  Leaf template for ImageRoll (re-uses existing list item template)  -->
+            <DataTemplate DataType="{x:Type viewModels:ImageRoll}">
+                <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource ImageRollListItemTemplate}" />
+            </DataTemplate>
+
+            <!--  (Optional) Style to slightly tighten TreeViewItem spacing  -->
+            <Style
+                x:Key="AllImageRollsTreeViewItemStyle"
+                BasedOn="{StaticResource MahApps.Styles.TreeViewItem}"
+                TargetType="TreeViewItem">
+                <Setter Property="IsExpanded" Value="False" />
+                <Setter Property="Margin" Value="0,1,0,1" />
+            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
     <!--  Main layout grid, dividing the view into User and Fixed Image Roll sections.  -->
-    <Grid x:Name="RootGrid" Margin="3,3,0,0" Loaded="RootGrid_Loaded" SizeChanged="RootGrid_SizeChanged">
+    <Grid
+        x:Name="RootGrid"
+        Margin="3,3,0,0"
+        Loaded="RootGrid_Loaded"
+        SizeChanged="RootGrid_SizeChanged">
         <Grid.RowDefinitions>
             <RowDefinition x:Name="RowUser" Height="Auto" />
             <RowDefinition x:Name="RowFixed" Height="Auto" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
 
-        <!-- User Image Rolls Section -->
+        <!--  User Image Rolls Section  -->
         <DockPanel x:Name="UserPanel">
 
             <!--  Card containing the header and action buttons for User Image Rolls.  -->
@@ -357,9 +383,7 @@
                                             <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                                 <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding NewImageRoll.HasErrors}" Value="True">
-                                                <Setter Property="IsEnabled" Value="False" />
-                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding NewImageRoll.HasErrors}" Value="True" />
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
@@ -542,7 +566,7 @@
             </DockPanel>
         </DockPanel>
 
-        <!-- Fixed Image Rolls Section -->
+        <!--  Fixed Image Rolls Section  -->
         <DockPanel x:Name="FixedPanel" Grid.Row="1">
 
             <!--  Card containing the header for Fixed Image Rolls.  -->
@@ -592,6 +616,7 @@
                             Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
                             Text="Fixed Image Rolls" />
 
+
                     </DockPanel>
 
 
@@ -628,6 +653,322 @@
                     TabStripPlacement="Left" />
 
 
+            </DockPanel>
+        </DockPanel>
+
+        <!--  Combined (All Image Rolls) Section  -->
+        <DockPanel Grid.RowSpan="2" Grid.Column="1">
+
+            <md:Card
+                Margin="3,3,0,0"
+                Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                DockPanel.Dock="Top"
+                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                <DockPanel>
+
+                    <!--  Left icon stack (unchanged replicated pattern)  -->
+                    <Grid Width="47">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <DockPanel Grid.Row="0" Background="{DynamicResource ImageRoll_Brush_Active50}">
+                            <iconPacks:PackIconMaterial
+                                Width="32"
+                                Height="32"
+                                Padding="3"
+                                HorizontalAlignment="Center"
+                                Kind="FilmstripBoxMultiple" />
+                        </DockPanel>
+
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Button
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                BorderThickness="0"
+                                Click="btnOpenImageRollsLocation"
+                                Style="{StaticResource MahApps.Styles.DropDownButton.Button.WindowCommands}"
+                                ToolTip="Open the image roll database location.">
+                                <iconPacks:Modern
+                                    Width="22"
+                                    Height="22"
+                                    Kind="FolderOpen" />
+                            </Button>
+
+                            <!--  Dropdown for managing database sources.  -->
+                            <mah:DropDownButton
+                                Grid.Row="1"
+                                BorderThickness="0"
+                                ButtonStyle="{StaticResource MahApps.Styles.DropDownButton.Button.WindowCommands}"
+                                ItemsSource="{Binding FileRoot.Children}"
+                                ToolTip="Control which databases are loaded or ignored.">
+                                <mah:DropDownButton.ItemTemplate>
+                                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                        <DockPanel>
+                                            <CheckBox IsChecked="{Binding IsSelected}" />
+                                            <TextBlock Text="{Binding Name}" />
+                                        </DockPanel>
+                                    </HierarchicalDataTemplate>
+                                </mah:DropDownButton.ItemTemplate>
+
+                                <mah:DropDownButton.Icon>
+                                    <iconPacks:PackIconMaterial Kind="Database" />
+                                </mah:DropDownButton.Icon>
+                            </mah:DropDownButton>
+                        </Grid>
+                    </Grid>
+
+                    <DockPanel
+                        Height="32"
+                        HorizontalAlignment="Stretch"
+                        DockPanel.Dock="Top">
+                        <DockPanel.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Offset="0" Color="{DynamicResource ImageRoll_Color_Active50}" />
+                                <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                            </LinearGradientBrush>
+                        </DockPanel.Background>
+
+                        <TextBlock
+                            Margin="6,0,6,3"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Top"
+                            Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                            Text="All Image Rolls" />
+
+                    </DockPanel>
+
+                    <!--  Right side toolbar area retained (buttons already tied to New/Edit logic)  -->
+                    <ToolBarTray>
+                        <ToolBar Padding="0,3" ToolBarTray.IsLocked="True">
+                            <Button Command="{Binding AddCommand}" ToolTip="Add a new Image Roll to the current database.">
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <DockPanel>
+                                    <TextBlock
+                                        Margin="0,0,0,3"
+                                        Text="New"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <iconPacks:PackIconMaterial
+                                        Width="24"
+                                        Height="24"
+                                        Kind="Plus" />
+                                </DockPanel>
+                            </Button>
+
+                            <Button Command="{Binding EditCommand}" ToolTip="Edit the selected Image Roll.">
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedUserImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <DockPanel>
+                                    <TextBlock
+                                        Margin="0,0,0,3"
+                                        Text="Edit"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <iconPacks:PackIconMaterial
+                                        Width="24"
+                                        Height="24"
+                                        Kind="SquareEditOutline" />
+                                </DockPanel>
+                            </Button>
+
+                            <Button Command="{Binding SaveCommand}" ToolTip="Save Image Roll">
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding NewImageRoll.HasErrors}" Value="True" />
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <DockPanel>
+                                    <TextBlock
+                                        Margin="0,0,0,3"
+                                        Text="Save"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <iconPacks:PackIconMaterial
+                                        Width="24"
+                                        Height="24"
+                                        Kind="ContentSave" />
+                                </DockPanel>
+                            </Button>
+
+                            <Button Command="{Binding CancelCommand}" ToolTip="Cancel">
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <DockPanel>
+                                    <TextBlock
+                                        Margin="0,0,0,3"
+                                        Text="Cancel"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <iconPacks:PackIconMaterial
+                                        Width="24"
+                                        Height="24"
+                                        Kind="Cancel" />
+                                </DockPanel>
+                            </Button>
+
+                            <Button Command="{Binding DeleteCommand}" ToolTip="Delete">
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
+                                                    <Condition Binding="{Binding NewImageRoll.IsSaved}" Value="True" />
+                                                </MultiDataTrigger.Conditions>
+                                                <MultiDataTrigger.Setters>
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </MultiDataTrigger.Setters>
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <DockPanel>
+                                    <TextBlock
+                                        Margin="0,0,0,3"
+                                        Text="Delete"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <iconPacks:PackIconMaterial
+                                        Width="24"
+                                        Height="24"
+                                        Kind="Delete" />
+                                </DockPanel>
+                            </Button>
+                        </ToolBar>
+                    </ToolBarTray>
+
+                    <DockPanel Background="{DynamicResource MaterialDesign.Brush.ToolBar.Background}">
+                        <StackPanel
+                            Margin="0,0,6,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock
+                                Margin="0,0,0,2"
+                                FontSize="10"
+                                FontWeight="DemiBold"
+                                Foreground="{DynamicResource MahApps.Brushes.Text}"
+                                Text="Text Align"
+                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <ToggleButton
+                                HorizontalAlignment="Center"
+                                md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}"
+                                Content="{iconPacks:Modern Kind=AlignLeft}"
+                                IsChecked="{Binding RightAlignOverflow}"
+                                ToolTip="Toggle name aligned left or right.">
+                                <ToggleButton.LayoutTransform>
+                                    <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
+                                </ToggleButton.LayoutTransform>
+                            </ToggleButton>
+                        </StackPanel>
+                    </DockPanel>
+
+                </DockPanel>
+            </md:Card>
+
+            <DockPanel DockPanel.Dock="Top">
+                <Border Style="{StaticResource groupLeft}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="1,1" EndPoint="0.2,0.2">
+                            <GradientStop Offset="0" Color="{DynamicResource ImageRoll_Color_Active}" />
+                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+                <Border Style="{StaticResource groupBottom}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0.8,0.8">
+                            <GradientStop Offset="0" Color="{DynamicResource ImageRoll_Color_Active}" />
+                            <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.ThemeBackground}" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+
+                <!--
+                    DrawerHost that contains the editing UI for an image roll.
+                    It appears from the top when a new image roll is being created or an existing one is edited.
+                -->
+                <md:DrawerHost
+                    x:Name="DrwEditImageRollAll"
+                    OpenMode="Modal"
+                    TopDrawerCloseOnClickAway="False">
+                    <md:DrawerHost.Style>
+                        <Style TargetType="md:DrawerHost">
+                            <Setter Property="IsTopDrawerOpen" Value="False" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                    <Setter Property="IsTopDrawerOpen" Value="True" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </md:DrawerHost.Style>
+
+                    <md:DrawerHost.TopDrawerContent>
+                        <local:ImageRollEntryEdit DataContext="{Binding NewImageRoll}" Visibility="{Binding ., Converter={StaticResource IsNullOrEmptyVisibility}}" />
+                    </md:DrawerHost.TopDrawerContent>
+
+                    <!--  New TreeView replacing previous TabCtlAllIr  -->
+                    <TreeView
+                        x:Name="TreeAllImageRolls"
+                        Margin="3,3,0,0"
+                        md:ScrollViewerAssist.IsAutoHideEnabled="True"
+                        ItemsSource="{Binding Source={StaticResource AllImageRolls}, Path=Groups}"
+                        SelectedItemChanged="TreeAllImageRolls_SelectedItemChanged">
+                        <TreeView.Resources>
+                            <!--  Correct namespace: CollectionViewGroup is in System.Windows.Data (PresentationFramework)  -->
+                            <HierarchicalDataTemplate DataType="{x:Type data:CollectionViewGroup}" ItemsSource="{Binding Items}">
+                                <DockPanel>
+                                    <TextBlock FontWeight="Bold" Text="{Binding Name}" />
+                                    <TextBlock
+                                        Margin="6,0,0,0"
+                                        FontSize="10"
+                                        Foreground="{DynamicResource MahApps.Brushes.Gray7}"
+                                        Text="{Binding ItemCount, StringFormat='({0})'}" />
+                                </DockPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                        <TreeView.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource AllImageRollsTreeViewItemStyle}" TargetType="TreeViewItem" />
+                        </TreeView.ItemContainerStyle>
+                    </TreeView>
+                </md:DrawerHost>
             </DockPanel>
         </DockPanel>
     </Grid>
