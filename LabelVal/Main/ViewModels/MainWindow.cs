@@ -9,6 +9,7 @@ using LabelVal.Sectors.Output;
 using LabelVal.Theme;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 
 namespace LabelVal.Main.ViewModels;
@@ -169,6 +170,30 @@ public partial class MainWindow : ObservableRecipient
 
     #endregion
 
+    #region Themes
+
+    /// <summary>
+    /// Available themes for the application.
+    /// </summary>
+    public IReadOnlyList<string> AvailableThemes { get; }
+
+    /// <summary>
+    /// Currently selected theme.
+    /// </summary>
+    [ObservableProperty]
+    private string selectedTheme;
+
+    /// <summary>
+    /// Applies the selected theme.
+    /// </summary>
+    partial void OnSelectedThemeChanged(string value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+            ThemeSupport.ApplyTheme(value);
+    }
+
+    #endregion
+
     #region Constructor
 
     /// <summary>
@@ -219,6 +244,21 @@ public partial class MainWindow : ObservableRecipient
         ];
 
         SelectedMenuItem = MenuItems[0];
+
+        AvailableThemes = ThemeSupport.GetAvailableThemeNames();
+
+        SelectedTheme = App.Settings.GetValue("App.Theme", "Dark.Steel", true);
+
+        // Map legacy "#" stored value to new sentinel if needed
+        if (SelectedTheme.Contains("#", StringComparison.Ordinal) && SelectedTheme != ThemeSupport.SystemSyncSentinel)
+            SelectedTheme = ThemeSupport.SystemSyncSentinel;
+
+        // Fallback if invalid
+        if (SelectedTheme != ThemeSupport.SystemSyncSentinel &&
+            !AvailableThemes.Contains(SelectedTheme, StringComparer.OrdinalIgnoreCase))
+        {
+            SelectedTheme = "Dark.Steel";
+        }
 
         App.Settings.PropertyChanged += (s, e) =>
         {

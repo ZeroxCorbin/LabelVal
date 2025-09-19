@@ -28,7 +28,10 @@
             </Style>
 
             <!--  Spacing / form styles  -->
-            <Style x:Key="SettingsCheckBoxStyle" TargetType="CheckBox" BasedOn="{StaticResource MaterialDesignCheckBox}">
+            <Style
+                x:Key="SettingsCheckBoxStyle"
+                BasedOn="{StaticResource MaterialDesignCheckBox}"
+                TargetType="CheckBox">
                 <Setter Property="Margin" Value="0,6,0,0" />
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
@@ -87,7 +90,7 @@
                             Content="Compare Grade Value"
                             IsChecked="{Binding ViewModel.GradeCompareSettings.CompareLetterValue}"
                             Style="{StaticResource SettingsCheckBoxStyle}" />
-                        
+
                         <Grid Style="{StaticResource FormRowGridStyle}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />

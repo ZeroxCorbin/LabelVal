@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System;
 
 namespace LabelVal.ImageRolls.Views;
 
@@ -16,10 +17,21 @@ public partial class ImageRollsManager : UserControl
 {
     private ViewModels.ImageRollsManager _viewModel;
     private readonly SelectionService _selectionService = new();
+    private readonly DispatcherTimer _layoutDebounce;
 
     public ImageRollsManager()
     {
         InitializeComponent();
+
+        _layoutDebounce = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(60)
+        };
+        _layoutDebounce.Tick += (_, __) =>
+        {
+            _layoutDebounce.Stop();
+            UpdateRowHeights();
+        };
 
         DataContextChanged += (s, e) =>
         {
@@ -143,7 +155,15 @@ public partial class ImageRollsManager : UserControl
         _viewModel.SelectedFixedImageRoll = ir;
     }
 
-    public void Refresh() { if (FindResource("UserImageRolls") is CollectionViewSource cvs) { cvs.View?.Refresh(); } }
+    public void Refresh()
+    {
+        if (FindResource("UserImageRolls") is CollectionViewSource cvs)
+        {
+            cvs.View?.Refresh();
+        }
+        // After data changes, re-evaluate layout
+        Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(UpdateRowHeights));
+    }
 
     private void btnOpenImageRollsLocation(object sender, RoutedEventArgs e) => System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
     {
@@ -209,5 +229,94 @@ public partial class ImageRollsManager : UserControl
                 return result;
         }
         return null;
+    }
+
+    private void RootGrid_Loaded(object sender, RoutedEventArgs e)
+    {
+        UpdateRowHeights();
+    }
+
+    private void RootGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        // Debounce rapid resize events
+        if (!_layoutDebounce.IsEnabled)
+            _layoutDebounce.Start();
+    }
+
+    private void UpdateRowHeights()
+    {
+        double available = ActualHeight;
+        if (available <= 0 || ActualWidth <= 0)
+            return;
+
+        // Ensure both rows are Auto to capture natural sizes.
+        bool forcedAuto = false;
+        if (RowUser.Height.GridUnitType != GridUnitType.Auto)
+        {
+            RowUser.Height = GridLength.Auto;
+            forcedAuto = true;
+        }
+        if (RowFixed.Height.GridUnitType != GridUnitType.Auto)
+        {
+            RowFixed.Height = GridLength.Auto;
+            forcedAuto = true;
+        }
+        if (forcedAuto)
+            UpdateLayout(); // let WPF realize natural heights
+
+        double naturalUser = UserPanel.ActualHeight;
+        double naturalFixed = FixedPanel.ActualHeight;
+        double total = naturalUser + naturalFixed;
+
+        // Case 1: both fit naturally, keep Auto.
+        if (total <= available)
+            return;
+
+        // Determine which is larger.
+        bool userIsLarger = naturalUser >= naturalFixed;
+        double smallNatural = userIsLarger ? naturalFixed : naturalUser;
+
+        // Safety: if the "small" one already consumes almost all the viewport, split 50/50.
+        if (smallNatural >= available * 0.9)
+        {
+            SetStar(RowUser, 1);
+            SetStar(RowFixed, 1);
+            return;
+        }
+
+        // Allocate: small stays Auto, large becomes Star.
+        if (userIsLarger)
+        {
+            // User bigger
+            SetStar(RowUser, 1);
+            SetAuto(RowFixed);
+        }
+        else
+        {
+            // Fixed bigger
+            SetAuto(RowUser);
+            SetStar(RowFixed, 1);
+        }
+    }
+
+    private static void SetStar(RowDefinition row, double weight)
+    {
+        if (row.Height.GridUnitType != GridUnitType.Star || !DoubleEquals(row.Height.Value, weight))
+            row.Height = new GridLength(weight, GridUnitType.Star);
+    }
+
+    private static void SetAuto(RowDefinition row)
+    {
+        if (row.Height.GridUnitType != GridUnitType.Auto)
+            row.Height = GridLength.Auto;
+    }
+
+    private static bool DoubleEquals(double a, double b) => Math.Abs(a - b) < 0.0001;
+
+    private void MeasurePanel(FrameworkElement panel)
+    {
+        // Width limited by current grid width; height unlimited to get full desired size
+        var width = RootGrid.ActualWidth > 0 ? RootGrid.ActualWidth : double.PositiveInfinity;
+        panel.Measure(new Size(width, double.PositiveInfinity));
     }
 }

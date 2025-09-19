@@ -83,11 +83,9 @@ public partial class App : Application
     public static string WorkingDir => Directory.GetCurrentDirectory();
 #else
     public static string WorkingDir => Directory.GetCurrentDirectory();
-    //public static string WorkingDir { get; set; } = System.IO.Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
 #endif
 
     public static string Version { get; set; }
-    //public static string LocalAppData => System.IO.Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
 
     public static string UserDataDirectory => $"{WorkingDir}\\UserData";
     public static string DatabaseExtension => ".sqlite";
@@ -96,8 +94,6 @@ public partial class App : Application
 
     public static string ResultssDatabaseDefaultName => "ResultssDatabase";
     public static string DisplaysDatabaseName => $"Displays{DatabaseExtension}";
-
-    //public static string AssetsResultssDatabasesRoot => $@"{Directory.GetCurrentDirectory()}\Assets\ResultssDatabases";
 
     public static string ResultssDatabaseRoot => $@"{UserDataDirectory}\Image Results";
 
@@ -133,7 +129,6 @@ public partial class App : Application
             _ = Directory.CreateDirectory(RunsRoot);
 
         NLog.Config.LoggingConfiguration config = new();
-        // Targets where to log to: File and Console
         NLog.Targets.FileTarget logfile = new("logfile")
         {
             FileName = Path.Combine(UserDataDirectory, "log.txt"),
@@ -178,7 +173,7 @@ public partial class App : Application
 
         Logger.Info("Starting: Getting colorblind setting.");
         var colorBlindnessType = Settings.GetValue("App.ColorBlindnessType", ColorBlindnessType.None);
-        Dispatcher.Invoke(() => ChangeColorBlindTheme(colorBlindnessType));
+        Dispatcher.Invoke(() => ThemeSupport.ApplyColorBlindTheme(colorBlindnessType));
 
         UpdateSplashScreen("Initializing main window...");
 
@@ -191,14 +186,18 @@ public partial class App : Application
                 UpdateSplashScreen("Applying themes...");
                 Logger.Info("Starting: Getting color theme.");
                 var themeName = Settings.GetValue("App.Theme", "Dark.Steel", true);
+
+                // Migrate any legacy '#' values that are not the sentinel.
+                if (themeName.Contains("#", StringComparison.Ordinal) && themeName != ThemeSupport.SystemSyncSentinel)
+                    themeName = ThemeSupport.SystemSyncSentinel;
+
                 Dispatcher.Invoke(() =>
                 {
-                    if (themeName.Contains("#"))
-                        ControlzEx.Theming.ThemeManager.Current.SyncTheme(ControlzEx.Theming.ThemeSyncMode.SyncAll);
-                    else
-                        _ = ControlzEx.Theming.ThemeManager.Current.ChangeTheme(this, themeName);
+                    // Centralized apply (covers OS sync or explicit theme)
+                    ThemeSupport.ApplyTheme(themeName);
 
                     UpdateMaterialDesignTheme();
+
                     ControlzEx.Theming.ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
                 });
             });
@@ -279,7 +278,10 @@ public partial class App : Application
 
     private void Current_ThemeChanged(object sender, ControlzEx.Theming.ThemeChangedEventArgs e)
     {
-        Settings.SetValue("App.Theme", e.NewTheme.Name);
+        // If user chose OS sync, keep sentinel instead of overwriting with the resolved concrete theme name.
+        if (Settings.GetValue("App.Theme", ThemeSupport.SystemSyncSentinel, true) != ThemeSupport.SystemSyncSentinel)
+            Settings.SetValue("App.Theme", e.NewTheme.Name);
+
         UpdateMaterialDesignTheme();
     }
     public static void ChangeColorBlindTheme(ColorBlindnessType colorBlindnessType)
@@ -523,10 +525,6 @@ public partial class App : Application
                                         final.Removed++;
                                     else if (action == "void")
                                         final.Voided++;
-                                    else
-                                    {
-
-                                    }
                                     found = true;
                                     break;
                                 }

@@ -140,10 +140,24 @@
                     Kind="OsWindows" />
             </Button>
 
-            <!--<ComboBox
-                BorderThickness="0"
-                ItemsSource="{Binding Languages}"
-                SelectedValue="{Binding SelectedLanguage}" />-->
+            <ComboBox
+                Width="150"
+                Margin="4,0"
+                ItemsSource="{Binding AvailableThemes}"
+                SelectedItem="{Binding SelectedTheme}"
+                ToolTip="Select theme (first item = follow OS)">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0}">
+                                    <Binding />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
 

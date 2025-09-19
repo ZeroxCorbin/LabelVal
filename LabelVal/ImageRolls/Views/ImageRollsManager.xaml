@@ -50,7 +50,7 @@
                     ItemsSource="{Binding Items}"
                     Loaded="ListView_Loaded"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    SelectedItem="{Binding DataContext.SelectedFixedImageRoll, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    SelectedItem="{Binding DataContext.SelectedFixedImageRoll, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
                     SelectionChanged="ListViewFixed_SelectionChanged"
                     Style="{StaticResource MahApps.Styles.ListView}"
                     VirtualizingPanel.IsVirtualizing="False"
@@ -73,7 +73,7 @@
                     ItemTemplate="{StaticResource ImageRollListItemTemplate}"
                     ItemsSource="{Binding Items}"
                     Loaded="ListViewUser_Loaded"
-                    SelectedItem="{Binding DataContext.SelectedUserImageRoll, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    SelectedItem="{Binding DataContext.SelectedUserImageRoll, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
                     SelectionChanged="ListViewUser_SelectionChanged"
                     Style="{StaticResource MahApps.Styles.ListView}"
                     VirtualizingPanel.IsVirtualizing="False"
@@ -179,17 +179,14 @@
     </UserControl.Resources>
 
     <!--  Main layout grid, dividing the view into User and Fixed Image Roll sections.  -->
-    <Grid Margin="3,3,0,0" VerticalAlignment="Top">
+    <Grid x:Name="RootGrid" Margin="3,3,0,0" Loaded="RootGrid_Loaded" SizeChanged="RootGrid_SizeChanged">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition x:Name="RowUser" Height="Auto" />
+            <RowDefinition x:Name="RowFixed" Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!--  =====================================================================================  -->
-        <!--  User Image Rolls Section  -->
-        <!--  This section allows users to create, edit, and manage their own image rolls.  -->
-        <!--  =====================================================================================  -->
-        <DockPanel>
+        <!-- User Image Rolls Section -->
+        <DockPanel x:Name="UserPanel">
 
             <!--  Card containing the header and action buttons for User Image Rolls.  -->
             <md:Card
@@ -545,11 +542,8 @@
             </DockPanel>
         </DockPanel>
 
-        <!--  =====================================================================================  -->
-        <!--  Fixed Image Rolls Section  -->
-        <!--  This section displays read-only, system-provided image rolls.  -->
-        <!--  =====================================================================================  -->
-        <DockPanel Grid.Row="1">
+        <!-- Fixed Image Rolls Section -->
+        <DockPanel x:Name="FixedPanel" Grid.Row="1">
 
             <!--  Card containing the header for Fixed Image Rolls.  -->
             <md:Card
