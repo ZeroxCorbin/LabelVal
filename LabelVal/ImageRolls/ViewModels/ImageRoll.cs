@@ -432,35 +432,94 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
 
         Logger.Info($"Loading label images from standards directory: {App.AssetsImageRollsRoot}\\{Name}\\");
 
-        // Accept broader set of common raster formats
+        // Stage 1: Efficient file enumeration and extension filtering
         var allowedExt = new HashSet<string>(new[] { ".png", ".bmp", ".jpg", ".jpeg", ".tif", ".tiff", ".gif" }, System.StringComparer.OrdinalIgnoreCase);
+        var files = Directory.EnumerateFiles(Path)
+            .Where(f => allowedExt.Contains(System.IO.Path.GetExtension(f)))
+            .OrderBy(f => f) // You may replace with natural sort if needed
+            .ToList();
 
-        List<string> images = [];
-        foreach (var f in Directory.EnumerateFiles(Path))
-            if (allowedExt.Contains(System.IO.Path.GetExtension(f)))
-                images.Add(f);
+        if (files.Count == 0)
+            return;
 
-        var sorted = images.OrderBy(x => x).ToList();
-        List<Task> taskList = [];
+        int fallback = TargetDPI > 0 ? TargetDPI : 600;
+        int maxDegree = Math.Max(1, Environment.ProcessorCount / 2);
+        int batchSize = 32;
+        var imageEntries = new List<ImageEntry>(files.Count);
+        var lockObj = new object();
 
-        foreach (var f in sorted)
+        // Stage 2 & 3: Parallel file reading, buffer pooling, DPI/format patching
+        Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = maxDegree }, file =>
         {
-            (ImageEntry entry, var isNew) = GetImageEntry(f);
-            if (entry == null)
-                continue;
-
-            if (isNew)
+            try
             {
-                // Ensure DPI if preserving format (patch missing), or if normalized we already enforced during creation
-                var fallback = TargetDPI > 0 ? TargetDPI : 600;
-                entry.EnsureDpi(fallback);
+                byte[] buffer = null;
+                try
+                {
+                    var fileInfo = new FileInfo(file);
+                    int length = (int)Math.Min(fileInfo.Length, int.MaxValue);
+                    buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(length);
+                    using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.SequentialScan))
+                    {
+                        int offset = 0;
+                        while (offset < length)
+                        {
+                            int read = fs.Read(buffer, offset, length - offset);
+                            if (read == 0) break;
+                            offset += read;
+                        }
+                        // Copy to exact size
+                        byte[] exact = new byte[offset];
+                        Buffer.BlockCopy(buffer, 0, exact, 0, offset);
 
-                Task tsk = Application.Current.Dispatcher.BeginInvoke(() => AddImage(ImageAddPositions.Bottom, entry)).Task;
-                taskList.Add(tsk);
+                        // Stage 3: DPI/format patching
+                        if (GlobalAppSettings.Instance.PreseveImageFormat)
+                            exact = ImageFormatHelpers.EnsureDpi(exact, fallback, fallback, out _, out _);
+                        else
+                            exact = ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(exact, fallback, out _, out _);
+
+                        var entry = new ImageEntry(UID, exact)
+                        {
+                            Path = file,
+                            Name = System.IO.Path.GetFileNameWithoutExtension(file)
+                        };
+                        entry.EnsureDpi(fallback);
+                        entry.SaveRequested += OnImageEntrySaveRequested;
+
+                        lock (lockObj)
+                        {
+                            imageEntries.Add(entry);
+                        }
+                    }
+                }
+                finally
+                {
+                    if (buffer != null)
+                        System.Buffers.ArrayPool<byte>.Shared.Return(buffer);
+                }
             }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, $"Failed to load image: {file}");
+            }
+        });
+
+        // Stage 4: Batch dispatcher adds
+        int order = 1;
+        for (int i = 0; i < imageEntries.Count; i += batchSize)
+        {
+            var batch = imageEntries.Skip(i).Take(batchSize).ToList();
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                foreach (var entry in batch)
+                {
+                    entry.Order = order++;
+                    ImageEntries.Add(entry);
+                }
+            }, System.Windows.Threading.DispatcherPriority.Background);
         }
 
-        await Task.WhenAll([.. taskList]);
+        ImageCount = ImageEntries.Count;
     }
 
     /// <summary>
