@@ -445,74 +445,96 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
         int fallback = TargetDPI > 0 ? TargetDPI : 600;
         int maxDegree = Math.Max(1, Environment.ProcessorCount / 2);
         int batchSize = 32;
-        var imageEntries = new List<ImageEntry>(files.Count);
-        var lockObj = new object();
         int thumbnailMaxEdge = 512;
 
-        // Stage 2 & 3: Parallel file reading, buffer pooling, DPI/format patching, and low-res preview generation
-        Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = maxDegree }, file =>
+        // Run all CPU-bound work off the UI thread
+        var imageEntries = await Task.Run(() =>
         {
-            try
+            var result = new List<ImageEntry>(files.Count);
+            var lockObj = new object();
+            Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = maxDegree }, file =>
             {
-                byte[] buffer = null;
                 try
                 {
-                    var fileInfo = new FileInfo(file);
-                    int length = (int)Math.Min(fileInfo.Length, int.MaxValue);
-                    buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(length);
-                    using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.SequentialScan))
+                    byte[] buffer = null;
+                    try
                     {
-                        int offset = 0;
-                        while (offset < length)
+                        var fileInfo = new FileInfo(file);
+                        int length = (int)Math.Min(fileInfo.Length, int.MaxValue);
+                        buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(length);
+                        using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.SequentialScan))
                         {
-                            int read = fs.Read(buffer, offset, length - offset);
-                            if (read == 0) break;
-                            offset += read;
-                        }
-                        // Copy to exact size
-                        byte[] exact = new byte[offset];
-                        Buffer.BlockCopy(buffer, 0, exact, 0, offset);
+                            int offset = 0;
+                            while (offset < length)
+                            {
+                                int read = fs.Read(buffer, offset, length - offset);
+                                if (read == 0) break;
+                                offset += read;
+                            }
+                            // Copy to exact size
+                            byte[] exact = new byte[offset];
+                            Buffer.BlockCopy(buffer, 0, exact, 0, offset);
 
-                        // Stage 3: DPI/format patching
-                        if (GlobalAppSettings.Instance.PreseveImageFormat)
-                            exact = ImageFormatHelpers.EnsureDpi(exact, fallback, fallback, out _, out _);
-                        else
-                            exact = ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(exact, fallback, out _, out _);
+                            // Stage 3: DPI/format patching
+                            if (GlobalAppSettings.Instance.PreseveImageFormat)
+                                exact = ImageFormatHelpers.EnsureDpi(exact, fallback, fallback, out _, out _);
+                            else
+                                exact = ImageFormatHelpers.ConvertImageToBgr32PreserveDpi(exact, fallback, out _, out _);
 
-                        var entry = new ImageEntry(UID, exact)
-                        {
-                            Path = file,
-                            Name = System.IO.Path.GetFileNameWithoutExtension(file)
-                        };
-                        // Only ensure DPI if not already valid (avoid double patch)
-                        if (entry.ImageDpiX < 10 || entry.ImageDpiY < 10)
-                            entry.EnsureDpi(fallback);
-                        entry.SaveRequested += OnImageEntrySaveRequested;
+                            var entry = new ImageEntry(UID, exact)
+                            {
+                                Path = file,
+                                Name = System.IO.Path.GetFileNameWithoutExtension(file)
+                            };
+                            // Only ensure DPI if not already valid (avoid double patch)
+                            if (entry.ImageDpiX < 10 || entry.ImageDpiY < 10)
+                                entry.EnsureDpi(fallback);
+                            entry.SaveRequested += OnImageEntrySaveRequested;
 
-                        lock (lockObj)
-                        {
-                            imageEntries.Add(entry);
+                            // Step 6: Generate low-res preview (ImageLow)
+                            try
+                            {
+                                using (var ms = new MemoryStream(exact, false))
+                                {
+                                    var bmp = new System.Windows.Media.Imaging.BitmapImage();
+                                    bmp.BeginInit();
+                                    bmp.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                                    bmp.CreateOptions = System.Windows.Media.Imaging.BitmapCreateOptions.IgnoreColorProfile;
+                                    bmp.StreamSource = ms;
+                                    bmp.DecodePixelWidth = thumbnailMaxEdge;
+                                    bmp.DecodePixelHeight = thumbnailMaxEdge;
+                                    bmp.EndInit();
+                                    bmp.Freeze();
+                                    entry.ImageLow = bmp;
+                                }
+                            }
+                            catch { /* If thumbnail fails, leave null */ }
+
+                            lock (lockObj)
+                            {
+                                result.Add(entry);
+                            }
                         }
                     }
+                    finally
+                    {
+                        if (buffer != null)
+                            System.Buffers.ArrayPool<byte>.Shared.Return(buffer);
+                    }
                 }
-                finally
+                catch (Exception ex)
                 {
-                    if (buffer != null)
-                        System.Buffers.ArrayPool<byte>.Shared.Return(buffer);
+                    Logger.Error(ex, $"Failed to load image: {file}");
                 }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, $"Failed to load image: {file}");
-            }
+            });
+            return result;
         });
 
-        // Stage 4: Batch dispatcher adds
+        // Only marshal to UI thread for the final add
         int order = 1;
         for (int i = 0; i < imageEntries.Count; i += batchSize)
         {
             var batch = imageEntries.Skip(i).Take(batchSize).ToList();
-            // Step 8: Assign Order before adding to collection
             foreach (var entry in batch)
             {
                 entry.Order = order++;
