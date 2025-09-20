@@ -1,16 +1,10 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using LabelVal.ImageRolls.Services;
+﻿using LabelVal.ImageRolls.Services;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Main.Messages;
-using MahApps.Metro.Controls.Dialogs;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Media;
 using System.Windows.Threading;
-using System;
-using System.Linq;
 
 namespace LabelVal.ImageRolls.Views;
 
@@ -19,26 +13,19 @@ public partial class ImageRollsManager : UserControl
     private ViewModels.ImageRollsManager _viewModel;
     private readonly SelectionService _selectionService = new();
     private readonly DispatcherTimer _layoutDebounce;
+    private bool _initialSelectionApplied;
 
     public ImageRollsManager()
     {
         InitializeComponent();
 
-        _layoutDebounce = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromMilliseconds(60)
-        };
-        _layoutDebounce.Tick += (_, __) =>
-        {
-            _layoutDebounce.Stop();
-            UpdateRowHeights();
-        };
-
         DataContextChanged += (s, e) =>
         {
-            if (_viewModel != null)
+            if (_viewModel is not null)
             {
                 _viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                if (_viewModel.AllImageRolls is INotifyCollectionChanged oldObs)
+                    oldObs.CollectionChanged -= AllImageRolls_CollectionChanged;
             }
 
             _viewModel = DataContext as ViewModels.ImageRollsManager;
@@ -46,282 +33,115 @@ public partial class ImageRollsManager : UserControl
                 return;
 
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            if (_viewModel.AllImageRolls is INotifyCollectionChanged obs)
+                obs.CollectionChanged += AllImageRolls_CollectionChanged;
 
-            ImageRoll ir = App.Settings.GetValue<ImageRoll>(nameof(ViewModels.ImageRollsManager.ActiveImageRoll));
-
-            _viewModel.SelectedFixedImageRoll = ir != null ? _viewModel.FixedImageRolls.FirstOrDefault((roll) => roll.UID == ir.UID) : null;
-            _viewModel.SelectedUserImageRoll = ir != null ? _viewModel.UserImageRolls.FirstOrDefault((roll) => roll.UID == ir.UID) : null;
-
-            if (ir != null && _viewModel.SelectedFixedImageRoll == null && _viewModel.SelectedUserImageRoll == null)
-                App.Settings.SetValue(nameof(ViewModels.ImageRollsManager.ActiveImageRoll), null);
-
-            if (ir == null || (ir.RollType == ImageRollTypes.Database && ir.ImageCount == 0))
-                _ = Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage(true))));
-        };
-
-        TabCtlUserIr.Loaded += (s, e) =>
-        {
-            if (_viewModel?.SelectedUserImageRoll != null)
-            {
-                CollectionViewGroup item = TabCtlUserIr.Items.OfType<CollectionViewGroup>()
-                    .FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedUserImageRoll));
-                if (item != null)
-                {
-                    TabCtlUserIr.SelectedItem = item;
-                }
-            }
-        };
-
-        TabCtlFixedIr.Loaded += (s, e) =>
-        {
-            if (_viewModel?.SelectedFixedImageRoll != null)
-            {
-                CollectionViewGroup item = TabCtlFixedIr.Items.OfType<CollectionViewGroup>()
-                    .FirstOrDefault((e1) => e1.Items.Contains(_viewModel.SelectedFixedImageRoll));
-                if (item != null)
-                {
-                    TabCtlFixedIr.SelectedItem = item;
-                }
-            }
+            Dispatcher.BeginInvoke(DispatcherPriority.Loaded, ApplyInitialSelectionIfNeeded);
         };
     }
 
     private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ViewModels.ImageRollsManager.RefreshView))
+        if (e.PropertyName == nameof(ViewModels.ImageRollsManager.ActiveImageRoll))
         {
-            Refresh();
+            if (!_initialSelectionApplied)
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, ApplyInitialSelectionIfNeeded);
         }
     }
 
-    private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+    private void AllImageRolls_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
-        DialogParticipation.SetRegister(this, null);
-        if (sender is ListView lst)
-        {
-            _selectionService.UnregisterListView(lst);
-        }
+        if (!_initialSelectionApplied && _viewModel?.ActiveImageRoll != null)
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, ApplyInitialSelectionIfNeeded);
     }
 
-    private void ListView_Loaded(object sender, RoutedEventArgs e)
+    // TreeView SelectedItem -> ActiveImageRoll
+    private void TreeAllImageRolls_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
-        if (sender is ListView lst)
-        {
-            _selectionService.RegisterListView(lst);
-        }
+        if (e.NewValue is ImageRoll roll && _viewModel is not null && !ReferenceEquals(_viewModel.ActiveImageRoll, roll))
+            _viewModel.ActiveImageRoll = roll;
     }
 
-    private void ListViewUser_Loaded(object sender, RoutedEventArgs e)
+    private void TreeAllImageRolls_Loaded(object sender, RoutedEventArgs e)
     {
-        if (sender is ListView lst)
-        {
-            _selectionService.RegisterListView(lst);
-        }
+        ApplyInitialSelectionIfNeeded();
     }
 
-    private void ListViewUser_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void ApplyInitialSelectionIfNeeded()
     {
-        if (_viewModel == null || _viewModel.IsLoading || (e.RemovedItems.Count > 0 && e.AddedItems.Count == 0))
-        {
-            return;
-        }
-
-        if (sender is not ListView lst) return;
-
-        _selectionService.NotifySelectionChanged(lst);
-
-        if (lst.SelectedItem is not ViewModels.ImageRoll ir)
-        {
-            return;
-        }
-
-        _viewModel.SelectedUserImageRoll = ir;
-    }
-
-    private void ListViewFixed_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (_viewModel == null || _viewModel.IsLoading || (e.RemovedItems.Count > 0 && e.AddedItems.Count == 0))
-        {
-            return;
-        }
-
-        if (sender is not ListView lst) return;
-
-        _selectionService.NotifySelectionChanged(lst);
-
-        if (lst.SelectedItem is not ViewModels.ImageRoll ir)
-        {
-            return;
-        }
-
-        _viewModel.SelectedFixedImageRoll = ir;
-    }
-
-    public void Refresh()
-    {
-        if (FindResource("UserImageRolls") is CollectionViewSource cvs)
-        {
-            cvs.View?.Refresh();
-        }
-        if (FindResource("AllImageRolls") is CollectionViewSource cvsAll)
-        {
-            cvsAll.View?.Refresh();
-        }
-        Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(UpdateRowHeights));
-    }
-
-    private void btnOpenImageRollsLocation(object sender, RoutedEventArgs e) => System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
-    {
-        FileName = $"{App.UserImageRollsRoot}\\",
-        UseShellExecute = true,
-        Verb = "open"
-    });
-
-    private ListView FindListViewInTemplate(DependencyObject parent)
-    {
-        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-        {
-            DependencyObject child = VisualTreeHelper.GetChild(parent, i);
-            if (child is ListView lv)
-                return lv;
-            ListView result = FindListViewInTemplate(child);
-            if (result != null)
-                return result;
-        }
-        return null;
-    }
-
-    private ListView FindUserImageRollsListView()
-    {
-        for (var i = 0; i < TabCtlUserIr.Items.Count; i++)
-        {
-            if (TabCtlUserIr.ItemContainerGenerator.ContainerFromIndex(i) is TabItem tabItem)
-            {
-                ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(tabItem);
-                if (contentPresenter != null)
-                {
-                    ListView listView = FindVisualChild<ListView>(contentPresenter);
-                    if (listView != null)
-                    {
-                        if (listView.ItemsSource is CollectionViewGroup group &&
-                            group.Items.Count > 0 &&
-                            group.Items[0].GetType().Name.Contains("ImageRoll"))
-                        {
-                            return listView;
-                        }
-                        return listView;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
-    {
-        if (parent == null) return null;
-        var count = VisualTreeHelper.GetChildrenCount(parent);
-        for (var i = 0; i < count; i++)
-        {
-            DependencyObject child = VisualTreeHelper.GetChild(parent, i);
-            if (child is T tChild)
-                return tChild;
-            T result = FindVisualChild<T>(child);
-            if (result != null)
-                return result;
-        }
-        return null;
-    }
-
-    private void RootGrid_Loaded(object sender, RoutedEventArgs e)
-    {
-        UpdateRowHeights();
-    }
-
-    private void RootGrid_SizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        // Debounce rapid resize events
-        if (!_layoutDebounce.IsEnabled)
-            _layoutDebounce.Start();
-    }
-
-    private void UpdateRowHeights()
-    {
-        double available = ActualHeight;
-        if (available <= 0 || ActualWidth <= 0)
+        if (_initialSelectionApplied || _viewModel?.ActiveImageRoll == null || TreeAllImageRolls == null)
             return;
 
-        bool forcedAuto = false;
-        if (RowUser.Height.GridUnitType != GridUnitType.Auto)
+        TreeAllImageRolls.UpdateLayout();
+
+        if (ExpandPathAndSelect(_viewModel.ActiveImageRoll))
         {
-            RowUser.Height = GridLength.Auto;
-            forcedAuto = true;
-        }
-        if (RowFixed.Height.GridUnitType != GridUnitType.Auto)
-        {
-            RowFixed.Height = GridLength.Auto;
-            forcedAuto = true;
-        }
-        if (forcedAuto)
-            UpdateLayout();
-
-        double naturalUser = UserPanel.ActualHeight;
-        double naturalFixed = FixedPanel.ActualHeight;
-        double total = naturalUser + naturalFixed;
-
-        if (total <= available)
-            return;
-
-        bool userIsLarger = naturalUser >= naturalFixed;
-        double smallNatural = userIsLarger ? naturalFixed : naturalUser;
-
-        if (smallNatural >= available * 0.9)
-        {
-            SetStar(RowUser, 1);
-            SetStar(RowFixed, 1);
-            return;
-        }
-
-        if (userIsLarger)
-        {
-            SetStar(RowUser, 1);
-            SetAuto(RowFixed);
+            _initialSelectionApplied = true;
         }
         else
         {
-            SetAuto(RowUser);
-            SetStar(RowFixed, 1);
+            // Retry once containers are realized
+            Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, () =>
+            {
+                if (!_initialSelectionApplied && ExpandPathAndSelect(_viewModel.ActiveImageRoll))
+                    _initialSelectionApplied = true;
+            });
         }
     }
 
-    private static void SetStar(RowDefinition row, double weight)
+    /// <summary>
+    /// Expands only the ancestor chain for the target roll and selects it.
+    /// No other branches are expanded.
+    /// </summary>
+    private bool ExpandPathAndSelect(ImageRoll target)
     {
-        if (row.Height.GridUnitType != GridUnitType.Star || !DoubleEquals(row.Height.Value, weight))
-            row.Height = new GridLength(weight, GridUnitType.Star);
+        return FindAndSelect(TreeAllImageRolls, target);
     }
 
-    private static void SetAuto(RowDefinition row)
+    private bool FindAndSelect(ItemsControl parent, ImageRoll target)
     {
-        if (row.Height.GridUnitType != GridUnitType.Auto)
-            row.Height = GridLength.Auto;
-    }
-
-    private static bool DoubleEquals(double a, double b) => Math.Abs(a - b) < 0.0001;
-
-    private void MeasurePanel(FrameworkElement panel)
-    {
-        var width = RootGrid.ActualWidth > 0 ? RootGrid.ActualWidth : double.PositiveInfinity;
-        panel.Measure(new Size(width, double.PositiveInfinity));
-    }
-
-    private void TreeAllImageRolls_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-    {
-        if (_viewModel == null) return;
-        if (e.NewValue is ImageRoll roll)
+        int count = parent.Items.Count;
+        for (int i = 0; i < count; i++)
         {
-            // Selecting roll updates unified selection
-            if (_viewModel.SelectedAllImageRoll != roll)
-                _viewModel.SelectedAllImageRoll = roll;
+            var item = parent.Items[i];
+            var container = parent.ItemContainerGenerator.ContainerFromIndex(i) as TreeViewItem;
+            if (container == null)
+                continue;
+
+            // Direct match
+            if (ReferenceEquals(item, target))
+            {
+                container.IsSelected = true;
+                container.BringIntoView();
+                return true;
+            }
+
+            // Recurse only if there are children (grouping / hierarchical template)
+            if (container.Items.Count > 0)
+            {
+                bool wasExpanded = container.IsExpanded;
+                container.IsExpanded = true; // expand to generate children
+                container.UpdateLayout();
+
+                if (FindAndSelect(container, target))
+                {
+                    // Keep this branch expanded (path to target)
+                    return true;
+                }
+
+                // Not on this branch: collapse back if we expanded it
+                if (!wasExpanded)
+                    container.IsExpanded = false;
+            }
         }
+        return false;
     }
+
+    private void btnOpenImageRollsLocation(object sender, RoutedEventArgs e) =>
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+        {
+            FileName = $"{App.UserImageRollsRoot}\\",
+            UseShellExecute = true,
+            Verb = "open"
+        });
 }

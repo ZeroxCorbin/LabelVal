@@ -255,6 +255,7 @@
 		<None Remove="gs1encoders.dll" />
 	</ItemGroup>
 	<ItemGroup>
+		<Page Remove="ImageRolls\Views\Templates\ImageRollTabHeaderTemplate.xaml" />
 		<Page Remove="L95\Views\LVS95xx_SerialPortView.xaml" />
 		<Page Remove="Main\Views\StatusMessageViewer.xaml" />
 		<Page Remove="Results\Views\PopupSectorsDetails.xaml" />

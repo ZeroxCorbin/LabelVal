@@ -9,9 +9,6 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels">
 
-    <!--  Converter to generate content for tab items.  -->
-    <converters:ContentGeneratorConverter x:Key="ContentGeneratorConverter" />
-
     <!--  DataTemplate for individual items in the Image Roll ListViews.  -->
     <DataTemplate x:Key="ImageRollListItemTemplate" DataType="viewModels:ImageRoll">
 

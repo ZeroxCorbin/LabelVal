@@ -334,9 +334,8 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
         var baseName = "New Image Roll";
         var newName = baseName;
         var counter = 1;
-        var allRollNames = ImageRollsManager.UserImageRolls
+        var allRollNames = ImageRollsManager.AllImageRolls
                                             .Select(r => r.Name)
-                                            .Concat(ImageRollsManager.FixedImageRolls.Select(r => r.Name))
                                             .ToHashSet();
         while (allRollNames.Contains(newName))
         {
@@ -369,10 +368,9 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
             return new("A name is required and cannot be empty.");
         if (imageRollsManager != null)
             {
-            var allNames = imageRollsManager.UserImageRolls
+            var allNames = imageRollsManager.AllImageRolls
                                             .Where(r => r.UID != imageRoll.UID) // Exclude the current roll
                                             .Select(r => r.Name)
-                                            .Concat(imageRollsManager.FixedImageRolls.Select(r => r.Name))
                                             .ToHashSet();
             if (allNames.Contains(name))
                 return new("The name must be unique among user-defined and fixed image rolls.");
