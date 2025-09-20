@@ -40,7 +40,7 @@
             <!--  Base (leaf) style  -->
             <Style
                 x:Key="AllImageRollsTreeViewItemStyle"
-                BasedOn="{StaticResource MahApps.Styles.TreeViewItem}"
+                BasedOn="{StaticResource MaterialDesignTreeViewItem}"
                 TargetType="TreeViewItem">
                 <Setter Property="IsExpanded" Value="False" />
                 <Setter Property="Margin" Value="0,1,0,1" />
@@ -437,7 +437,7 @@
                     ItemContainerStyleSelector="{StaticResource ImageRollsTreeViewItemStyleSelector}"
                     ItemsSource="{Binding Source={StaticResource AllImageRolls}, Path=Groups}"
                     SelectedItemChanged="TreeAllImageRolls_SelectedItemChanged"
-                    Style="{StaticResource MahApps.Styles.TreeView}">
+                    Style="{StaticResource MaterialDesignTreeView}">
                     <TreeView.Resources>
 
                         <!--

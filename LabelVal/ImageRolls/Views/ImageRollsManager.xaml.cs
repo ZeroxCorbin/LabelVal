@@ -344,33 +344,71 @@ public partial class ImageRollsManager : UserControl
     private bool ExpandPathAndSelect(ImageRoll target) =>
         FindAndSelect(TreeAllImageRolls, target);
 
+    // Helper: checks (data level) whether a CollectionViewGroup subtree contains the target roll.
+    private static bool GroupContainsTarget(CollectionViewGroup group, ImageRoll target)
+    {
+        foreach (var item in group.Items)
+        {
+            if (ReferenceEquals(item, target))
+                return true;
+        }
+        foreach (var item in group.Items)
+        {
+            if (item is CollectionViewGroup sub && GroupContainsTarget(sub, target))
+                return true;
+        }
+        return false;
+    }
+
+    // Replace the existing FindAndSelect with this version.
+    // Only expands the single group chain that actually contains the target (data-driven),
+    // avoiding temporary expansion of unrelated sibling groups.
     private bool FindAndSelect(ItemsControl parent, ImageRoll target)
     {
         int count = parent.Items.Count;
         for (int i = 0; i < count; i++)
         {
             var item = parent.Items[i];
-            var container = parent.ItemContainerGenerator.ContainerFromIndex(i) as TreeViewItem;
-            if (container == null) continue;
 
+            // Direct leaf at this level
             if (ReferenceEquals(item, target))
             {
-                container.IsSelected = true;
-                container.BringIntoView();
-                return true;
+                if (parent.ItemContainerGenerator.ContainerFromIndex(i) is TreeViewItem leaf)
+                {
+                    if (!leaf.IsSelected)
+                        leaf.IsSelected = true;
+                    leaf.BringIntoView();
+                    return true;
+                }
+                // Container not yet realized: let retry loop handle later
+                return false;
             }
 
-            if (container.Items.Count > 0)
+            // If this is a group (CollectionViewGroup) use data-level containment test
+            if (item is CollectionViewGroup grp)
             {
-                bool wasExpanded = container.IsExpanded;
-                container.IsExpanded = true;
-                container.UpdateLayout();
+                // Skip entire branch if the group does not contain the target
+                if (!GroupContainsTarget(grp, target))
+                    continue;
 
+                // We now know the target lies somewhere under this group.
+                var container = parent.ItemContainerGenerator.ContainerFromIndex(i) as TreeViewItem;
+                if (container == null)
+                    return false; // Containers for this level not ready yet; retry later.
+
+                if (!container.IsExpanded)
+                {
+                    container.IsExpanded = true;
+                    // Do not recurse in same pass; children creation may be deferred (MaterialDesign)
+                    return false;
+                }
+
+                // Children are (hopefully) realized; descend
                 if (FindAndSelect(container, target))
                     return true;
 
-                if (!wasExpanded)
-                    container.IsExpanded = false;
+                // If recursion failed (children not yet realized), abort this pass
+                return false;
             }
         }
         return false;
@@ -378,7 +416,7 @@ public partial class ImageRollsManager : UserControl
 
     /// <summary>
     /// Attempts to locate a realized container for a given item by descending expanded branches.
-    /// </summary>
+    /// </summary> 
     private TreeViewItem? FindContainerForItem(ItemsControl parent, object item)
     {
         var direct = parent.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
