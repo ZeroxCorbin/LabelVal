@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Buffers;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.ImageRolls.Databases;
@@ -7,6 +8,7 @@ using LabelVal.Main.ViewModels;
 using LabelVal.Results.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -571,7 +573,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
     /// <summary>
     /// Loads fixed rolls (immutable asset-based) either from cache or by scanning the assets directory.
     /// </summary>
-    private void LoadFixedImageRollsList()
+    internal void LoadFixedImageRollsList()
     {
         Logger.Info($"Loading fixed image rolls from assets: {App.AssetsImageRollsRoot}");
 
@@ -611,7 +613,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             Logger.Warning("Failed to load fixed rolls from cache due to missing paths; reindexing.");
         }
 
-        // Rebuild from filesystem
+        // Rebuild from filesystem (baseline serial strategy)
         _ = Application.Current.Dispatcher.Invoke(DispatcherPriority.Render,
             () => _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Indexing Fixed Image Rolls...")));
 
@@ -620,32 +622,106 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         foreach (var existing in EnumerateFixedRolls().ToList())
             AllImageRolls.Remove(existing);
 
-        foreach (var dir in Directory.EnumerateDirectories(App.AssetsImageRollsRoot)
-                     .ToList()
-                     .OrderBy(e => Regex.Replace(e, "[0-9]+", m => m.Value.PadLeft(10, '0'))))
+        // Use baseline serial ArrayPool strategy (can be swapped later for optimized one)
+        var loaded = LoadFixedRolls_Parallel_ArrayPool(App.AssetsImageRollsRoot);
+        foreach (var roll in loaded)
         {
-            foreach (var subdir in Directory.EnumerateDirectories(dir))
-            {
-                var files = Directory.EnumerateFiles(subdir, "*.imgr").ToList();
-                if (files.Count == 0)
-                    continue;
-
-                try
-                {
-                    var imgr = JsonConvert.DeserializeObject<ImageRoll>(File.ReadAllText(files.First()));
-                    imgr.Path = subdir;
-                    imgr.ImageRollsManager = this;
-                    AllImageRolls.Add(imgr);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex, $"Failed to load image roll from {files.First()}");
-                }
-            }
+            roll.ImageRollsManager = this;
+            AllImageRolls.Add(roll);
         }
 
         App.Settings.SetValue("FixedImageRolls_Cache", EnumerateFixedRolls().ToList());
         App.Settings.SetValue("FixedImageRolls_CacheMetadata", currentMetadata);
+    }
+
+    /// <summary>
+    /// Natural sort comparer avoiding regex allocation per element.
+    /// Splits strings into alpha / numeric tokens and compares numerically where possible.
+    /// </summary>
+    private sealed class NaturalPathComparer : IComparer<string>
+    {
+        public static readonly NaturalPathComparer Instance = new();
+        public int Compare(string x, string y)
+        {
+            if (ReferenceEquals(x, y)) return 0;
+            if (x == null) return -1;
+            if (y == null) return 1;
+            int ix = 0, iy = 0;
+            while (ix < x.Length || iy < y.Length)
+            {
+                if (ix >= x.Length) return -1;
+                if (iy >= y.Length) return 1;
+                bool dx = char.IsDigit(x[ix]);
+                bool dy = char.IsDigit(y[iy]);
+                if (dx && dy)
+                {
+                    long vx = 0; while (ix < x.Length && char.IsDigit(x[ix])) vx = vx * 10 + (x[ix++] - '0');
+                    long vy = 0; while (iy < y.Length && char.IsDigit(y[iy])) vy = vy * 10 + (y[iy++] - '0');
+                    int cmp = vx.CompareTo(vy);
+                    if (cmp != 0) return cmp;
+                }
+                else
+                {
+                    int cmp = char.ToUpperInvariant(x[ix]).CompareTo(char.ToUpperInvariant(y[iy]));
+                    if (cmp != 0) return cmp;
+                    ix++; iy++;
+                }
+            }
+            return 0;
+        }
+    }
+
+    private List<ImageRoll> LoadFixedRolls_Parallel_ArrayPool(string root, int? degreeOfParallelism = null)
+    {
+        var result = new ConcurrentBag<ImageRoll>();
+        if (!Directory.Exists(root)) return result.ToList();
+        var subFolders = Directory.EnumerateDirectories(root)
+            .OrderBy(d => d, NaturalPathComparer.Instance)
+            .SelectMany(d => Directory.EnumerateDirectories(d))
+            .ToList();
+
+        Parallel.ForEach(subFolders, new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism ?? Environment.ProcessorCount }, subdir =>
+        {
+            var filePath = Directory.EnumerateFiles(subdir, "*.imgr").FirstOrDefault();
+            if (filePath == null) return;
+            try
+            {
+                long fileLength = new FileInfo(filePath).Length;
+                int length = (int)Math.Min(fileLength, int.MaxValue);
+                byte[] buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(length);
+                int bytesRead = 0;
+                try
+                {
+                    using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.SequentialScan))
+                    {
+                        int offset = 0;
+                        while (offset < length)
+                        {
+                            int read = fs.Read(buffer, offset, length - offset);
+                            if (read == 0) break;
+                            offset += read;
+                        }
+                        bytesRead = offset;
+                    }
+                    string json = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    var imgr = Newtonsoft.Json.JsonConvert.DeserializeObject<ImageRoll>(json);
+                    if (imgr != null)
+                    {
+                        imgr.Path = subdir;
+                        result.Add(imgr);
+                    }
+                }
+                finally
+                {
+                    System.Buffers.ArrayPool<byte>.Shared.Return(buffer);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, $"Failed to load image roll from {filePath}");
+            }
+        });
+        return result.ToList();
     }
     #endregion
 

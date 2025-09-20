@@ -47,7 +47,7 @@
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Padding" Value="0" />
-                <!-- Leaf & group both get this; handler filters to ImageRoll -->
+                <!--  Leaf & group both get this; handler filters to ImageRoll  -->
                 <EventSetter Event="Selected" Handler="LeafTreeViewItem_Selected" />
                 <Setter Property="ItemsControl.ItemContainerStyleSelector" Value="{DynamicResource ImageRollsTreeViewItemStyleSelector}" />
             </Style>
@@ -523,8 +523,8 @@
                                     <StackPanel VerticalAlignment="Center" Orientation="Vertical">
                                         <TextBlock FontWeight="SemiBold" Text="{Binding Name}" />
                                         <TextBlock
-                                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                             Margin="0,2,0,0"
+                                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                             Text="{Binding ItemCount, StringFormat='Rolls: {0}'}" />
                                     </StackPanel>
                                 </DockPanel>
