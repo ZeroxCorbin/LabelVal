@@ -69,8 +69,6 @@
                 </ContentControl>
             </Grid>
 
-            <Border Style="{StaticResource imageBar}" />
-
             <DockPanel DockPanel.Dock="Top">
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">

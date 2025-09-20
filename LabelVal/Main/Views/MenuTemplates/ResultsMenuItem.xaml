@@ -37,8 +37,6 @@
 
             </DockPanel>
 
-            <Border Style="{StaticResource imageBar}" />
-
             <DockPanel>
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">
