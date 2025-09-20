@@ -231,13 +231,13 @@ public interface IResultsDeviceEntry
 
         DrawingGroup drwGroup = new();
         // Define the clipping rectangle based on the image bounds
-        System.Windows.Rect imageBounds = new(0.5, 0.5, image.Image.PixelWidth - 1, image.Image.PixelHeight - 1);
+        System.Windows.Rect imageBounds = new(0.5, 0.5, image.ImageWidth - 1, image.ImageHeight - 1);
         drwGroup.ClipGeometry = new RectangleGeometry(imageBounds);
 
         //Draw the image outline the same size as the stored image
         GeometryDrawing border = new()
         {
-            Geometry = new RectangleGeometry(new System.Windows.Rect(0, 0, image.Image.PixelWidth, image.Image.PixelHeight)),
+            Geometry = new RectangleGeometry(new System.Windows.Rect(0, 0, image.ImageWidth, image.ImageHeight)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
         drwGroup.Children.Add(border);
@@ -246,7 +246,7 @@ public interface IResultsDeviceEntry
         var scalingFactor = 0.04;
 
         // Calculate the renderingEmSize based on the image height and scaling factor
-        var renderingEmSize = image.Image.PixelHeight * scalingFactor;
+        var renderingEmSize = image.ImageHeight * scalingFactor;
         var renderingEmSizeHalf = renderingEmSize / 2;
 
         var warnSecThickness = renderingEmSize / 5;

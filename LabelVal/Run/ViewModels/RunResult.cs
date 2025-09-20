@@ -219,8 +219,8 @@ public partial class RunResult : ObservableRecipient, IRecipient<PropertyChanged
         double xRatio, yRatio;
         if (useRatio)
         {
-            xRatio = (double)SourceImage.ImageLow.PixelWidth / SourceImage.Image.PixelWidth;
-            yRatio = (double)SourceImage.ImageLow.PixelHeight / SourceImage.Image.PixelHeight;
+            xRatio = (double)SourceImage.ImageLow.PixelWidth / SourceImage.ImageWidth;
+            yRatio = (double)SourceImage.ImageLow.PixelHeight / SourceImage.ImageHeight;
         }
         else
         {

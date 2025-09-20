@@ -151,7 +151,8 @@ public partial class ImageEntry : ObservableObject
             {
                 ImageFormat = ImageFormatHelpers.DetectFormat(OriginalImage).ToString();
 
-                ImageLow = BitmapHelpers.CreateBitmapImage(OriginalImage, decodePixelWidth: 200);
+                if(ImageLow == null)
+                    ImageLow = BitmapHelpers.CreateBitmapImage(OriginalImage, decodePixelWidth: 200);
                 using var stream = new MemoryStream(OriginalImage);
                 (var width, var height, var dpiX, var dpiY, PixelFormat format, var bitDepth) = BitmapHelpers.GetImageMetadata(stream);
                 ImageWidth = width;

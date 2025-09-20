@@ -487,25 +487,6 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
                         entry.EnsureDpi(fallback);
                         entry.SaveRequested += OnImageEntrySaveRequested;
 
-                        // Step 6: Generate low-res preview (ImageLow)
-                        try
-                        {
-                            using (var ms = new MemoryStream(exact, false))
-                            {
-                                var bmp = new System.Windows.Media.Imaging.BitmapImage();
-                                bmp.BeginInit();
-                                bmp.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
-                                bmp.CreateOptions = System.Windows.Media.Imaging.BitmapCreateOptions.IgnoreColorProfile;
-                                bmp.StreamSource = ms;
-                                bmp.DecodePixelWidth = thumbnailMaxEdge;
-                                bmp.DecodePixelHeight = thumbnailMaxEdge;
-                                bmp.EndInit();
-                                bmp.Freeze();
-                                entry.ImageLow = bmp;
-                            }
-                        }
-                        catch { /* If thumbnail fails, leave null */ }
-
                         lock (lockObj)
                         {
                             imageEntries.Add(entry);
