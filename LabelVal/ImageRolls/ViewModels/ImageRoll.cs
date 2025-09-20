@@ -484,7 +484,9 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
                             Path = file,
                             Name = System.IO.Path.GetFileNameWithoutExtension(file)
                         };
-                        entry.EnsureDpi(fallback);
+                        // Only ensure DPI if not already valid (avoid double patch)
+                        if (entry.ImageDpiX < 10 || entry.ImageDpiY < 10)
+                            entry.EnsureDpi(fallback);
                         entry.SaveRequested += OnImageEntrySaveRequested;
 
                         lock (lockObj)
@@ -510,11 +512,15 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
         for (int i = 0; i < imageEntries.Count; i += batchSize)
         {
             var batch = imageEntries.Skip(i).Take(batchSize).ToList();
+            // Step 8: Assign Order before adding to collection
+            foreach (var entry in batch)
+            {
+                entry.Order = order++;
+            }
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 foreach (var entry in batch)
                 {
-                    entry.Order = order++;
                     ImageEntries.Add(entry);
                 }
             }, System.Windows.Threading.DispatcherPriority.Background);
