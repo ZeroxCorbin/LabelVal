@@ -436,7 +436,7 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
         var allowedExt = new HashSet<string>(new[] { ".png", ".bmp", ".jpg", ".jpeg", ".tif", ".tiff", ".gif" }, System.StringComparer.OrdinalIgnoreCase);
         var files = Directory.EnumerateFiles(Path)
             .Where(f => allowedExt.Contains(System.IO.Path.GetExtension(f)))
-            .OrderBy(f => f) // You may replace with natural sort if needed
+            .OrderBy(f => f)
             .ToList();
 
         if (files.Count == 0)
@@ -447,8 +447,9 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
         int batchSize = 32;
         var imageEntries = new List<ImageEntry>(files.Count);
         var lockObj = new object();
+        int thumbnailMaxEdge = 512;
 
-        // Stage 2 & 3: Parallel file reading, buffer pooling, DPI/format patching
+        // Stage 2 & 3: Parallel file reading, buffer pooling, DPI/format patching, and low-res preview generation
         Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = maxDegree }, file =>
         {
             try
@@ -485,6 +486,25 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
                         };
                         entry.EnsureDpi(fallback);
                         entry.SaveRequested += OnImageEntrySaveRequested;
+
+                        // Step 6: Generate low-res preview (ImageLow)
+                        try
+                        {
+                            using (var ms = new MemoryStream(exact, false))
+                            {
+                                var bmp = new System.Windows.Media.Imaging.BitmapImage();
+                                bmp.BeginInit();
+                                bmp.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                                bmp.CreateOptions = System.Windows.Media.Imaging.BitmapCreateOptions.IgnoreColorProfile;
+                                bmp.StreamSource = ms;
+                                bmp.DecodePixelWidth = thumbnailMaxEdge;
+                                bmp.DecodePixelHeight = thumbnailMaxEdge;
+                                bmp.EndInit();
+                                bmp.Freeze();
+                                entry.ImageLow = bmp;
+                            }
+                        }
+                        catch { /* If thumbnail fails, leave null */ }
 
                         lock (lockObj)
                         {
@@ -810,16 +830,6 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
     public void DeleteImage(ImageEntry imageEntry)
     {
         if (!ImageRollsDatabase.DeleteImage(UID, imageEntry.UID))
-            Logger.Error($"Failed to delete image for database: {imageEntry.UID}");
-
-        if (ImageEntries.Remove(imageEntry))
-        {
-            imageEntry.SaveRequested -= OnImageEntrySaveRequested;
-            Logger.Info($"Image deleted from roll: {imageEntry.UID}");
-
-            ResetImageOrderAndSort();
-        }
-        else
             Logger.Error($"Failed to delete image from roll: {imageEntry.UID}");
 
     }
