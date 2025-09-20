@@ -158,54 +158,6 @@
                         </Style>
                     </Image.Style>
                 </Image>
-                <!--<Image
-                        Width="22"
-                        Height="22"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Bottom">
-                        <Image.Style>
-                            <Style TargetType="Image">
-                                <Style.Triggers>
-                -->
-                <!--<DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO}">
-                                        <Setter Property="Source" Value="/Assets/Images/iec.png" />
-                                    </DataTrigger>-->
-                <!--
-                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15416}">
-                                        <Setter Property="Source" Value="/Assets/Images/iec.png" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15415}">
-                                        <Setter Property="Source" Value="/Assets/Images/iec.png" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Image.Style>
-                    </Image>
-                    <Image
-                        Width="22"
-                        Height="22"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top">
-                        <Image.Style>
-                            <Style TargetType="Image">
-                                <Style.Triggers>
-                -->
-                <!--<DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO}">
-                                        <Setter Property="Source" Value="/Assets/Images/iso.png" />
-                                    </DataTrigger>-->
-                <!--
-                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15416}">
-                                        <Setter Property="Source" Value="/Assets/Images/iso.png" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:GradingStandards.ISO_IEC_15415}">
-                                        <Setter Property="Source" Value="/Assets/Images/iso.png" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Image.Style>
-                    </Image>-->
-
-
             </Grid>
 
         </DockPanel>

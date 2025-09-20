@@ -473,7 +473,6 @@
 
                     </ToolBarTray>
 
-
                     <!--  Toggle button to switch text alignment for long names in the list.  -->
                     <DockPanel
                         HorizontalAlignment="Stretch"
@@ -562,6 +561,7 @@
                         ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=UserImageRolls}}"
                         Style="{StaticResource MahApps.Styles.TabControl}"
                         TabStripPlacement="Left" />
+                    
                 </md:DrawerHost>
             </DockPanel>
         </DockPanel>
@@ -763,6 +763,7 @@
                                     <TextBlock
                                         Margin="0,0,0,3"
                                         Text="New"
+                                        DockPanel.Dock="Top"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     <iconPacks:PackIconMaterial
                                         Width="24"
@@ -789,6 +790,7 @@
                                     <TextBlock
                                         Margin="0,0,0,3"
                                         Text="Edit"
+                                        DockPanel.Dock="Top"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     <iconPacks:PackIconMaterial
                                         Width="24"
@@ -813,6 +815,7 @@
                                     <TextBlock
                                         Margin="0,0,0,3"
                                         Text="Save"
+                                        DockPanel.Dock="Top"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     <iconPacks:PackIconMaterial
                                         Width="24"
@@ -836,6 +839,7 @@
                                     <TextBlock
                                         Margin="0,0,0,3"
                                         Text="Cancel"
+                                        DockPanel.Dock="Top"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     <iconPacks:PackIconMaterial
                                         Width="24"
@@ -865,6 +869,7 @@
                                     <TextBlock
                                         Margin="0,0,0,3"
                                         Text="Delete"
+                                        DockPanel.Dock="Top"
                                         Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     <iconPacks:PackIconMaterial
                                         Width="24"
@@ -886,6 +891,7 @@
                                 FontWeight="DemiBold"
                                 Foreground="{DynamicResource MahApps.Brushes.Text}"
                                 Text="Text Align"
+                                DockPanel.Dock="Top"
                                 Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
                             <ToggleButton
                                 HorizontalAlignment="Center"
@@ -952,22 +958,122 @@
                         ItemsSource="{Binding Source={StaticResource AllImageRolls}, Path=Groups}"
                         SelectedItemChanged="TreeAllImageRolls_SelectedItemChanged">
                         <TreeView.Resources>
-                            <!--  Correct namespace: CollectionViewGroup is in System.Windows.Data (PresentationFramework)  -->
+
+                            <!-- Hierarchical template for BOTH grouping levels.
+                                 Level 1 (RollType): simple bold text + count.
+                                 Level 2 (StandardGroup): rectangle with images (from AllImageRollTabHeaderTemplate logic) + Name + ImageCount. -->
                             <HierarchicalDataTemplate DataType="{x:Type data:CollectionViewGroup}" ItemsSource="{Binding Items}">
-                                <DockPanel>
-                                    <TextBlock FontWeight="Bold" Text="{Binding Name}" />
-                                    <TextBlock
-                                        Margin="6,0,0,0"
-                                        FontSize="10"
-                                        Foreground="{DynamicResource MahApps.Brushes.Gray7}"
-                                        Text="{Binding ItemCount, StringFormat='({0})'}" />
-                                </DockPanel>
+                                <Grid>
+                                    <!-- First level (RollType) presentation -->
+                                    <StackPanel
+                                        x:Name="FirstLevelPanel"
+                                        Orientation="Horizontal"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontWeight="Bold"
+                                            Text="{Binding Name}" />
+                                        <TextBlock
+                                            Margin="6,0,0,0"
+                                            FontSize="10"
+                                            Foreground="{DynamicResource MahApps.Brushes.Gray7}"
+                                            Text="{Binding ItemCount, StringFormat='({0})'}" />
+                                    </StackPanel>
+
+                                    <!-- Second level (StandardGroup) presentation -->
+                                    <DockPanel
+                                        x:Name="SecondLevelPanel"
+                                        Visibility="Collapsed"
+                                        LastChildFill="False">
+                                        <Border
+                                            Width="54"
+                                            Height="54"
+                                            Margin="0,0,6,0"
+                                            Padding="0"
+                                            Background="White"
+                                            BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                                            BorderThickness="1"
+                                            CornerRadius="4">
+                                            <Grid>
+                                                <!-- Main grading standard image -->
+                                                <Image
+                                                    Width="42"
+                                                    Height="42"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center">
+                                                    <Image.Style>
+                                                        <Style TargetType="Image">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Items[0].SelectedGradingStandard}" Value="{x:Static barCommon:GradingStandards.ISO_IEC_15415}">
+                                                                    <Setter Property="Source" Value="/Assets/Images/barcode-2d.png" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Items[0].SelectedGradingStandard}" Value="{x:Static barCommon:GradingStandards.ISO_IEC_15416}">
+                                                                    <Setter Property="Source" Value="/Assets/Images/barcode-1d1.png" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Items[0].SelectedGradingStandard}" Value="{x:Static barCommon:GradingStandards.ISO_IEC_TR_29158}">
+                                                                    <Setter Property="Source" Value="/Assets/Images/dpm.png" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Items[0].SelectedGradingStandard}" Value="{x:Static barCommon:GradingStandards.None}">
+                                                                    <Setter Property="Source" Value="/Assets/Images/all-codes.png" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
+
+                                                <!-- Application standard overlay (e.g., GS1) -->
+                                                <Image
+                                                    Width="32"
+                                                    Height="32"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Bottom">
+                                                    <Image.Style>
+                                                        <Style TargetType="Image">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Items[0].SelectedApplicationStandard}" Value="{x:Static barCommon:ApplicationStandards.GS1}">
+                                                                    <Setter Property="Source" Value="/Assets/Images/GS1.png" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
+                                            </Grid>
+                                        </Border>
+
+                                        <StackPanel
+                                            Orientation="Vertical"
+                                            VerticalAlignment="Center">
+                                            <TextBlock
+                                                FontWeight="SemiBold"
+                                                Text="{Binding Name}" />
+                                            <TextBlock
+                                                Margin="0,2,0,0"
+                                                FontSize="10"
+                                                Foreground="{DynamicResource MahApps.Brushes.Gray7}"
+                                                Text="{Binding ItemCount, StringFormat='Images: {0}'}" />
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Grid>
+
+                                <!-- Triggers decide which panel is visible:
+                                     If Items[0] is an ImageRoll (has RollType), it's second level. -->
+                                <HierarchicalDataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Items[0].RollType}" Value="{x:Static imageRollEnums:ImageRollTypes.Directory}">
+                                        <Setter TargetName="FirstLevelPanel" Property="Visibility" Value="Collapsed" />
+                                        <Setter TargetName="SecondLevelPanel" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Items[0].RollType}" Value="{x:Static imageRollEnums:ImageRollTypes.Database}">
+                                        <Setter TargetName="FirstLevelPanel" Property="Visibility" Value="Collapsed" />
+                                        <Setter TargetName="SecondLevelPanel" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </HierarchicalDataTemplate.Triggers>
                             </HierarchicalDataTemplate>
                         </TreeView.Resources>
+
                         <TreeView.ItemContainerStyle>
                             <Style BasedOn="{StaticResource AllImageRollsTreeViewItemStyle}" TargetType="TreeViewItem" />
                         </TreeView.ItemContainerStyle>
                     </TreeView>
+                    
                 </md:DrawerHost>
             </DockPanel>
         </DockPanel>
