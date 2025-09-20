@@ -47,6 +47,8 @@
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Padding" Value="0" />
+                <!-- Leaf & group both get this; handler filters to ImageRoll -->
+                <EventSetter Event="Selected" Handler="LeafTreeViewItem_Selected" />
                 <Setter Property="ItemsControl.ItemContainerStyleSelector" Value="{DynamicResource ImageRollsTreeViewItemStyleSelector}" />
             </Style>
 
@@ -59,9 +61,18 @@
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Padding" Value="0,1,0,1" />
                 <Setter Property="IsHitTestVisible" Value="True" />
-                <Setter Property="ItemsControl.ItemContainerStyleSelector" Value="{DynamicResource ImageRollsTreeViewItemStyleSelector}" />
+                <Setter Property="Background" Value="Transparent" />
                 <EventSetter Event="PreviewMouseLeftButtonDown" Handler="GroupTreeViewItem_PreviewMouseLeftButtonDown" />
                 <EventSetter Event="Selected" Handler="GroupTreeViewItem_Selected" />
+                <Style.Triggers>
+                    <Trigger Property="local:ImageRollsManager.IsAncestorOfSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent3}" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <!--  Leaf template for ImageRoll (re-uses existing list item template)  -->
@@ -212,9 +223,6 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                             <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding ActiveImageRoll.RollType}" Value="{x:Static imageRollEnums:ImageRollTypes.Directory}">
-                                            <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

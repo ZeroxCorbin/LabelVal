@@ -804,10 +804,12 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
 
         WeakReferenceMessenger.Default.Send(new DeleteResultsForRollMessage(NewImageRoll.UID));
 
+        // Refresh list (does NOT change ActiveImageRoll)
         LoadUserImageRollsList();
 
+        // If the deleted roll was the active one, DO NOT auto-select another; clear selection.
         if (ActiveImageRoll?.UID == NewImageRoll.UID)
-            ActiveImageRoll = AllImageRolls.FirstOrDefault();
+            ActiveImageRoll = null;   // Persisted setting is cleared in OnActiveImageRollChanged
 
         NewImageRoll = null;
 
