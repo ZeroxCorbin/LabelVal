@@ -37,44 +37,43 @@
                 <ResourceDictionary Source="Templates/ImageRollListItemTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- Base (leaf) style -->
+            <!--  Base (leaf) style  -->
             <Style
-            x:Key="AllImageRollsTreeViewItemStyle"
-            TargetType="TreeViewItem"
-            BasedOn="{StaticResource MahApps.Styles.TreeViewItem}">
+                x:Key="AllImageRollsTreeViewItemStyle"
+                BasedOn="{StaticResource MahApps.Styles.TreeViewItem}"
+                TargetType="TreeViewItem">
                 <Setter Property="IsExpanded" Value="False" />
                 <Setter Property="Margin" Value="0,1,0,1" />
-                <Setter Property="ItemsControl.ItemContainerStyleSelector"
-                    Value="{DynamicResource ImageRollsTreeViewItemStyleSelector}" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="ItemsControl.ItemContainerStyleSelector" Value="{DynamicResource ImageRollsTreeViewItemStyleSelector}" />
             </Style>
 
-            <!-- Group (non-selectable) style -->
+            <!--  Group (non-selectable) style  -->
             <Style
-            x:Key="GroupTreeViewItemStyle"
-            TargetType="TreeViewItem"
-            BasedOn="{StaticResource AllImageRollsTreeViewItemStyle}">
+                x:Key="GroupTreeViewItemStyle"
+                BasedOn="{StaticResource AllImageRollsTreeViewItemStyle}"
+                TargetType="TreeViewItem">
                 <Setter Property="Focusable" Value="False" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Padding" Value="0,1,0,1" />
                 <Setter Property="IsHitTestVisible" Value="True" />
-                <Setter Property="ItemsControl.ItemContainerStyleSelector"
-                    Value="{DynamicResource ImageRollsTreeViewItemStyleSelector}" />
-                <EventSetter Event="PreviewMouseLeftButtonDown"
-                         Handler="GroupTreeViewItem_PreviewMouseLeftButtonDown" />
-                <EventSetter Event="Selected"
-                         Handler="GroupTreeViewItem_Selected" />
+                <Setter Property="ItemsControl.ItemContainerStyleSelector" Value="{DynamicResource ImageRollsTreeViewItemStyleSelector}" />
+                <EventSetter Event="PreviewMouseLeftButtonDown" Handler="GroupTreeViewItem_PreviewMouseLeftButtonDown" />
+                <EventSetter Event="Selected" Handler="GroupTreeViewItem_Selected" />
             </Style>
-            
+
             <!--  Leaf template for ImageRoll (re-uses existing list item template)  -->
             <DataTemplate DataType="{x:Type viewModels:ImageRoll}">
                 <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource ImageRollListItemTemplate}" />
             </DataTemplate>
 
-            <!-- Single style selector (do NOT duplicate) -->
+            <!--  Single style selector (do NOT duplicate)  -->
             <local:ImageRollsTreeViewItemStyleSelector
-            x:Key="ImageRollsTreeViewItemStyleSelector"
-            GroupStyle="{StaticResource GroupTreeViewItemStyle}"
-            ItemStyle="{StaticResource AllImageRollsTreeViewItemStyle}" />
+                x:Key="ImageRollsTreeViewItemStyleSelector"
+                GroupStyle="{StaticResource GroupTreeViewItemStyle}"
+                ItemStyle="{StaticResource AllImageRollsTreeViewItemStyle}" />
 
             <!--  Added IsLiveSortingRequested / IsLiveGroupingRequested and Live*Properties  -->
             <CollectionViewSource
@@ -427,9 +426,10 @@
                     x:Name="TreeAllImageRolls"
                     Margin="3,3,0,0"
                     md:ScrollViewerAssist.IsAutoHideEnabled="True"
+                    ItemContainerStyleSelector="{StaticResource ImageRollsTreeViewItemStyleSelector}"
                     ItemsSource="{Binding Source={StaticResource AllImageRolls}, Path=Groups}"
                     SelectedItemChanged="TreeAllImageRolls_SelectedItemChanged"
-                    ItemContainerStyleSelector="{StaticResource ImageRollsTreeViewItemStyleSelector}">
+                    Style="{StaticResource MahApps.Styles.TreeView}">
                     <TreeView.Resources>
 
                         <!--
@@ -515,9 +515,8 @@
                                     <StackPanel VerticalAlignment="Center" Orientation="Vertical">
                                         <TextBlock FontWeight="SemiBold" Text="{Binding Name}" />
                                         <TextBlock
+                                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                                             Margin="0,2,0,0"
-                                            FontSize="10"
-                                            Foreground="{DynamicResource MahApps.Brushes.Gray7}"
                                             Text="{Binding ItemCount, StringFormat='Rolls: {0}'}" />
                                     </StackPanel>
                                 </DockPanel>
