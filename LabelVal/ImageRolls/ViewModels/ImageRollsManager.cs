@@ -31,7 +31,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
 
     private bool _activeRollInitialized;
     private bool _splashCloseRequested;
-    private bool _awaitingRenderMessage;   // True when we must wait for ResultssRenderedMessage before closing
+    private bool _awaitingRenderMessage;
 
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
@@ -58,17 +58,10 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
     private ImageRoll activeImageRoll;
     partial void OnActiveImageRollChanged(ImageRoll value)
     {
-        // Persist UID
         App.Settings.SetValue(ActiveImageRollUidSettingKey, value?.UID);
-
-        if (!_activeRollInitialized)
-            return;
-
-        // Re-evaluate always on change (now supports re-opening splash when user selects a different roll)
-        EvaluateSplashForActiveRoll(allowStart:true);
+        if (!_activeRollInitialized) return;
+        EvaluateSplashForActiveRoll(allowStart: true);
     }
-
-    [ObservableProperty] private bool refreshView;
 
     public bool RightAlignOverflow
     {
@@ -78,7 +71,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
 
     public ImageRollsManager()
     {
-        //StartSplash("Loading Image Rolls...");
+        IsLoading = true;
 
         if (!Directory.Exists(FileRoot.Path))
             FileRoot = new FileFolderEntry(App.UserImageRollsRoot);
@@ -92,7 +85,6 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading User Image Rolls..."));
         LoadUserImageRollsList();
 
-        // Defer final evaluation to allow UI materialization.
         Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ContextIdle, InitializeActiveRollSelection);
 
         App.Settings.PropertyChanged += Settings_PropertyChanged;
@@ -100,7 +92,6 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
     }
 
     #region Splash Handling
-
     private void StartSplash(string message)
     {
         IsLoading = true;
@@ -118,39 +109,24 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         App.ShowSplashScreen = false;
         WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage(true));
     }
-
     #endregion
 
-    /// <summary>
-    /// Implements splash rules and (optionally) re-opens splash when active roll changes.
-    /// Rules:
-    ///   - If ActiveImageRoll is null (invalid / missing) => close splash.
-    ///   - If ActiveImageRoll has zero images => close splash.
-    ///   - If ActiveImageRoll has images (>0) => keep (or show) splash until ResultssRenderedMessage.
-    /// </summary>
-    /// <param name="allowStart">If true, will (re)start the splash if it is not currently showing.</param>
     private void EvaluateSplashForActiveRoll(bool allowStart = false)
     {
-        if (!_activeRollInitialized)
-            return;
+        if (!_activeRollInitialized) return;
 
-        // No active roll -> close immediately.
         if (ActiveImageRoll == null)
         {
             EndSplash();
             return;
         }
 
-        // Active roll but zero images -> close immediately.
         if (ActiveImageRoll.ImageCount == 0)
         {
             EndSplash();
             return;
         }
 
-        // Re-open splash if caller allows and we are currently not showing it.
-        // Removed the !_splashCloseRequested gate so a new splash session can start
-        // after a previous one was closed (e.g., user switches to another roll).
         if (allowStart)
         {
             StartSplash(ActiveImageRoll != null
@@ -158,37 +134,31 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
                 : "Loading Image Roll...");
         }
 
-        // Active roll has images: wait for ResultssRenderedMessage before closing.
         _awaitingRenderMessage = true;
     }
 
     public void Receive(ResultssRenderedMessage message)
     {
-        // Only close if we are in the waiting-for-render state
         if (IsLoading && _awaitingRenderMessage && !_splashCloseRequested)
             EndSplash();
     }
 
     private void InitializeActiveRollSelection()
     {
-        if (_activeRollInitialized)
-            return;
+        if (_activeRollInitialized) return;
 
         RestoreActiveImageRoll();
-
         if (ActiveImageRoll == null && AllImageRolls.Count > 0)
             ActiveImageRoll = AllImageRolls[0];
 
         _activeRollInitialized = true;
-
-        // Initial evaluation (do not auto-open twice; splash is already started from constructor)
-        EvaluateSplashForActiveRoll(allowStart:false);
+        EvaluateSplashForActiveRoll(allowStart: false);
     }
 
     private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-    if (e.PropertyName == nameof(RightAlignOverflow))
-        OnPropertyChanged(nameof(RightAlignOverflow));
+        if (e.PropertyName == nameof(RightAlignOverflow))
+            OnPropertyChanged(nameof(RightAlignOverflow));
     }
 
     private IEnumerable<ImageRoll> EnumerateUserRolls() =>
@@ -200,9 +170,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
     private void RestoreActiveImageRoll()
     {
         string uid = App.Settings.GetValue(ActiveImageRollUidSettingKey, (string)null, true);
-        if (string.IsNullOrWhiteSpace(uid))
-            return;
-
+        if (string.IsNullOrWhiteSpace(uid)) return;
         var match = AllImageRolls.FirstOrDefault(r => r.UID == uid);
         if (match != null)
             ActiveImageRoll = match;
@@ -249,8 +217,6 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
                 App.Settings.SetValue("UserImageRollsDatabases_FileRoot", FileRoot);
                 WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Refreshing User Image Rolls..."));
                 LoadUserImageRollsList();
-
-                // Re-evaluate only if still loading & initialized (could impact early close conditions)
                 if (_activeRollInitialized && IsLoading)
                     EvaluateSplashForActiveRoll();
             }
@@ -395,7 +361,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             {
                 Logger.Info($"Processed {EnumerateUserRolls().Count()} user image rolls from cache.");
                 if (_activeRollInitialized && IsLoading)
-                    EvaluateSplashForActiveRoll(allowStart:false);
+                    EvaluateSplashForActiveRoll(allowStart: false);
                 return;
             }
             Logger.Warning("Failed to load cached user rolls due to missing DB references. Reloading.");
@@ -436,7 +402,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
 
         Logger.Info($"Processed {EnumerateUserRolls().Count()} user image rolls.");
         if (_activeRollInitialized && IsLoading)
-            EvaluateSplashForActiveRoll(allowStart:false);
+            EvaluateSplashForActiveRoll(allowStart: false);
     }
 
     private void UpdateUserImageRollCache(ImageRoll roll)
@@ -458,9 +424,8 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         App.Settings.SetValue("UserImageRolls_Cache", EnumerateUserRolls().ToList());
         UpdateUserImageRollCacheMetadata();
 
-        // If still loading (e.g. initial phase) re-evaluate; do not start new splash here
         if (_activeRollInitialized && IsLoading)
-            EvaluateSplashForActiveRoll(allowStart:false);
+            EvaluateSplashForActiveRoll(allowStart: false);
     }
 
     private void UpdateUserImageRollCacheMetadata()
@@ -654,7 +619,6 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
                 savedRoll.ImageRollsManager = this;
                 savedRoll.IsSaved = true;
                 AllImageRolls.Add(savedRoll);
-                RefreshView = !RefreshView;
                 ActiveImageRoll = savedRoll;
             }
 
@@ -664,7 +628,6 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             if (file != null)
                 file.IsSelected = true;
 
-            // If still loading (unlikely after init) re-evaluate
             if (_activeRollInitialized && IsLoading)
                 EvaluateSplashForActiveRoll();
         }

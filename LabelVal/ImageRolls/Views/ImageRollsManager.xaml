@@ -37,7 +37,11 @@
                 <ResourceDictionary Source="Templates/ImageRollListItemTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-             <CollectionViewSource x:Key="AllImageRolls" Source="{Binding AllImageRolls}">
+            <!-- Added IsLiveSortingRequested / IsLiveGroupingRequested and Live*Properties -->
+            <CollectionViewSource x:Key="AllImageRolls"
+                                  Source="{Binding AllImageRolls}"
+                                  IsLiveSortingRequested="True"
+                                  IsLiveGroupingRequested="True">
                 <CollectionViewSource.SortDescriptions>
                     <componentmodel:SortDescription Direction="Ascending" PropertyName="RollType" />
                     <componentmodel:SortDescription Direction="Ascending" PropertyName="SelectedApplicationStandard" />
@@ -49,6 +53,19 @@
                     <PropertyGroupDescription PropertyName="RollType" />
                     <PropertyGroupDescription PropertyName="StandardGroup" />
                 </CollectionViewSource.GroupDescriptions>
+
+                <!-- Live sorting/grouping property lists -->
+                <CollectionViewSource.LiveSortingProperties>
+                    <sys:String>RollType</sys:String>
+                    <sys:String>SelectedApplicationStandard</sys:String>
+                    <sys:String>SelectedGradingStandard</sys:String>
+                    <sys:String>GS1TableNumber</sys:String>
+                    <sys:String>Name</sys:String>
+                </CollectionViewSource.LiveSortingProperties>
+                <CollectionViewSource.LiveGroupingProperties>
+                    <sys:String>RollType</sys:String>
+                    <sys:String>StandardGroup</sys:String>
+                </CollectionViewSource.LiveGroupingProperties>
             </CollectionViewSource>
 
             <!--  Leaf template for ImageRoll (re-uses existing list item template)  -->

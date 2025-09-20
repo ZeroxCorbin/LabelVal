@@ -93,10 +93,7 @@ public partial class ImageRollsManager : UserControl
     /// Expands only the ancestor chain for the target roll and selects it.
     /// No other branches are expanded.
     /// </summary>
-    private bool ExpandPathAndSelect(ImageRoll target)
-    {
-        return FindAndSelect(TreeAllImageRolls, target);
-    }
+    private bool ExpandPathAndSelect(ImageRoll target) => FindAndSelect(TreeAllImageRolls, target);
 
     private bool FindAndSelect(ItemsControl parent, ImageRoll target)
     {
@@ -108,7 +105,6 @@ public partial class ImageRollsManager : UserControl
             if (container == null)
                 continue;
 
-            // Direct match
             if (ReferenceEquals(item, target))
             {
                 container.IsSelected = true;
@@ -116,20 +112,15 @@ public partial class ImageRollsManager : UserControl
                 return true;
             }
 
-            // Recurse only if there are children (grouping / hierarchical template)
             if (container.Items.Count > 0)
             {
                 bool wasExpanded = container.IsExpanded;
-                container.IsExpanded = true; // expand to generate children
+                container.IsExpanded = true;
                 container.UpdateLayout();
 
                 if (FindAndSelect(container, target))
-                {
-                    // Keep this branch expanded (path to target)
                     return true;
-                }
 
-                // Not on this branch: collapse back if we expanded it
                 if (!wasExpanded)
                     container.IsExpanded = false;
             }
