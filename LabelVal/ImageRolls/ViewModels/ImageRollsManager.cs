@@ -17,58 +17,99 @@ using System.Windows.Threading;
 namespace LabelVal.ImageRolls.ViewModels;
 
 /// <summary>
-/// Unified manager for fixed (assets) and user (database) image rolls.
-/// Splash logic (per requirements):
-/// - Keep splash visible while determining active roll.
-/// - Close ONLY if:
-///     (a) Stored UID is null/invalid (no active roll found), OR
-///     (b) Active roll exists but has zero images.
-/// - If active roll exists and has images (>0), DO NOT close until ResultssRenderedMessage arrives.
+/// Central coordinator for all Image Rolls (both fixed/asset-based and user/database-based).
+/// Responsibilities:
+///  - Load and cache fixed (asset) rolls from the filesystem.
+///  - Load, cache, and persist user rolls from selected SQLite roll databases.
+///  - Maintain an Active Image Roll and preserve selection across sessions.
+///  - Manage splash screen lifecycle logic tied to roll readiness and rendering.
+///  - Respond to external rendering completion via <see cref="ResultssRenderedMessage"/>.
+///  - Provide commands for adding, editing, saving, deleting, and selecting rolls.
+/// Splash Logic Summary:
+///  - While determining active roll, splash remains visible.
+///  - Splash closes early if:
+///     * No active roll can be restored or selected, OR
+///     * Active roll exists but contains zero images.
+///  - If active roll has images, splash remains until a <see cref="ResultssRenderedMessage"/> arrives.
 /// </summary>
 public partial class ImageRollsManager : ObservableRecipient, IDisposable, IRecipient<ResultssRenderedMessage>
 {
+    #region Constants / Keys
     private const string ActiveImageRollUidSettingKey = "ActiveImageRollUID";
+    #endregion
 
+    #region Private State Fields
     private bool _activeRollInitialized;
     private bool _splashCloseRequested;
     private bool _awaitingRenderMessage;
+    #endregion
 
+    #region External Singletons
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+    #endregion
 
+    #region Observable Properties (Toolkit Generated)
     [ObservableProperty] private bool _isLoading;
 
     [ObservableProperty]
     private FileFolderEntry fileRoot =
-        App.Settings.GetValue("UserImageRollsDatabases_FileRoot", new FileFolderEntry(App.UserImageRollsRoot), true);
+        App.Settings.GetValue("UserImageRollsDatabases_FileRoot",
+            new FileFolderEntry(App.UserImageRollsRoot), true);
     partial void OnFileRootChanged(FileFolderEntry value) =>
         App.Settings.SetValue("UserImageRollsDatabases_FileRoot", value);
 
-    private ObservableCollection<ImageRollsDatabase> UserDatabases { get; } = [];
-
+    /// <summary>
+    /// The currently selected user roll database (one of the checked .sqlite files).
+    /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedRecipients]
     private ImageRollsDatabase selectedUserDatabase;
 
+    /// <summary>
+    /// Working editable instance when adding or editing a roll.
+    /// </summary>
     [ObservableProperty] private ImageRoll newImageRoll = null;
 
-    public ObservableCollection<ImageRoll> AllImageRolls { get; } = [];
-
+    /// <summary>
+    /// The currently active (in-use) image roll.
+    /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedRecipients]
     private ImageRoll activeImageRoll;
     partial void OnActiveImageRollChanged(ImageRoll value)
     {
+        // Persist selection
         App.Settings.SetValue(ActiveImageRollUidSettingKey, value?.UID);
-        if (!_activeRollInitialized) return;
+
+        if (!_activeRollInitialized)
+            return;
+
+        // Re-evaluate splash lifecycle once active roll changes post-initialization
         EvaluateSplashForActiveRoll(allowStart: true);
     }
+    #endregion
 
+    #region Collections
+    /// <summary>
+    /// In-memory list of all user roll databases selected via FileRoot (private).
+    /// </summary>
+    private ObservableCollection<ImageRollsDatabase> UserDatabases { get; } = [];
+
+    /// <summary>
+    /// Aggregate of both fixed and user rolls. Consumers filter by origin.
+    /// </summary>
+    public ObservableCollection<ImageRoll> AllImageRolls { get; } = [];
+    #endregion
+
+    #region Settings-backed Properties
     public bool RightAlignOverflow
     {
         get => App.Settings.GetValue(nameof(RightAlignOverflow), false);
         set => App.Settings.SetValue(nameof(RightAlignOverflow), value);
     }
+    #endregion
 
+    #region Constructor
     public ImageRollsManager()
     {
         IsLoading = true;
@@ -76,22 +117,29 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         if (!Directory.Exists(FileRoot.Path))
             FileRoot = new FileFolderEntry(App.UserImageRollsRoot);
 
+        // Fixed rolls first (assets)
         WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Fixed Image Rolls..."));
         LoadFixedImageRollsList();
 
+        // Setup user DB roots and load user rolls
         UpdateFileFolderEvents(FileRoot);
         UpdateImageRollsDatabasesList();
 
         WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading User Image Rolls..."));
         LoadUserImageRollsList();
 
+        // Defer active selection until dispatcher idle so collections are populated
         Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ContextIdle, InitializeActiveRollSelection);
 
         App.Settings.PropertyChanged += Settings_PropertyChanged;
         IsActive = true;
     }
+    #endregion
 
     #region Splash Handling
+    /// <summary>
+    /// Starts (or restarts) the splash screen with a message.
+    /// </summary>
     private void StartSplash(string message)
     {
         IsLoading = true;
@@ -101,32 +149,43 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         WeakReferenceMessenger.Default.Send(new SplashScreenMessage(message));
     }
 
+    /// <summary>
+    /// Idempotently ends splash display.
+    /// </summary>
     private void EndSplash()
     {
-        if (_splashCloseRequested) return;
+        if (_splashCloseRequested)
+            return;
+
         _splashCloseRequested = true;
         IsLoading = false;
         App.ShowSplashScreen = false;
         WeakReferenceMessenger.Default.Send(new CloseSplashScreenMessage(true));
     }
-    #endregion
 
+    /// <summary>
+    /// Evaluates whether the splash should remain visible based on the active roll's state.
+    /// </summary>
     private void EvaluateSplashForActiveRoll(bool allowStart = false)
     {
-        if (!_activeRollInitialized) return;
+        if (!_activeRollInitialized)
+            return;
 
+        // No active roll -> close splash
         if (ActiveImageRoll == null)
         {
             EndSplash();
             return;
         }
 
+        // Active but empty -> nothing to await
         if (ActiveImageRoll.ImageCount == 0)
         {
             EndSplash();
             return;
         }
 
+        // Active and has images -> only start splash if flagged; await render completion
         if (allowStart)
         {
             StartSplash(ActiveImageRoll != null
@@ -136,51 +195,78 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
 
         _awaitingRenderMessage = true;
     }
+    #endregion
 
+    #region Messenger Receivers
+    /// <summary>
+    /// Called when downstream processing/rendering finishes; may close splash.
+    /// </summary>
     public void Receive(ResultssRenderedMessage message)
     {
         if (IsLoading && _awaitingRenderMessage && !_splashCloseRequested)
             EndSplash();
     }
+    #endregion
 
+    #region Active Roll Initialization
+    /// <summary>
+    /// Restores previously active roll or selects first available.
+    /// </summary>
     private void InitializeActiveRollSelection()
     {
-        if (_activeRollInitialized) return;
+        if (_activeRollInitialized)
+            return;
 
         RestoreActiveImageRoll();
+
         if (ActiveImageRoll == null && AllImageRolls.Count > 0)
             ActiveImageRoll = AllImageRolls[0];
 
         _activeRollInitialized = true;
+
+        // Now decide if splash can end (do not start a new one here)
         EvaluateSplashForActiveRoll(allowStart: false);
     }
 
+    private void RestoreActiveImageRoll()
+    {
+        string uid = App.Settings.GetValue(ActiveImageRollUidSettingKey, (string)null, true);
+        if (string.IsNullOrWhiteSpace(uid))
+            return;
+
+        var match = AllImageRolls.FirstOrDefault(r => r.UID == uid);
+        if (match != null)
+            ActiveImageRoll = match;
+    }
+    #endregion
+
+    #region Settings Change Handling
     private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(RightAlignOverflow))
             OnPropertyChanged(nameof(RightAlignOverflow));
     }
+    #endregion
 
+    #region Roll Enumerators (Helpers)
     private IEnumerable<ImageRoll> EnumerateUserRolls() =>
         AllImageRolls.Where(r => r.ImageRollsDatabase != null);
 
     private IEnumerable<ImageRoll> EnumerateFixedRolls() =>
         AllImageRolls.Where(r => r.ImageRollsDatabase == null && r.Path != null);
+    #endregion
 
-    private void RestoreActiveImageRoll()
-    {
-        string uid = App.Settings.GetValue(ActiveImageRollUidSettingKey, (string)null, true);
-        if (string.IsNullOrWhiteSpace(uid)) return;
-        var match = AllImageRolls.FirstOrDefault(r => r.UID == uid);
-        if (match != null)
-            ActiveImageRoll = match;
-    }
-
+    #region File System Enumeration (User Database Selection Tree)
+    /// <summary>
+    /// Recursively synchronizes a FileFolderEntry tree with current filesystem state.
+    /// Adds new directories/files and removes deleted ones.
+    /// </summary>
     private FileFolderEntry EnumerateFolders(FileFolderEntry root)
     {
         var currentDirectories = Directory.EnumerateDirectories(root.Path).ToHashSet();
         var currentFiles = Directory.EnumerateFiles(root.Path, "*.sqlite").ToHashSet();
 
+        // Remove missing directories
         for (int i = root.Children.Count - 1; i >= 0; i--)
         {
             var child = root.Children[i];
@@ -188,6 +274,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
                 root.Children.RemoveAt(i);
         }
 
+        // Remove missing files
         for (int i = root.Children.Count - 1; i >= 0; i--)
         {
             var child = root.Children[i];
@@ -195,10 +282,12 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
                 root.Children.RemoveAt(i);
         }
 
+        // Add new directories
         foreach (var dir in currentDirectories)
             if (!root.Children.Any(c => c.Path == dir))
                 root.Children.Add(EnumerateFolders(GetNewFileFolderEntry(dir)));
 
+        // Add new files
         foreach (var file in currentFiles)
             if (!root.Children.Any(c => c.Path == file))
                 root.Children.Add(GetNewFileFolderEntry(file));
@@ -206,6 +295,9 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         return root;
     }
 
+    /// <summary>
+    /// Creates a FileFolderEntry and wires selection change to trigger DB reload of user rolls.
+    /// </summary>
     private FileFolderEntry GetNewFileFolderEntry(string path)
     {
         FileFolderEntry ffe = new(path);
@@ -246,6 +338,9 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             UpdateFileFolderEvents(child);
     }
 
+    /// <summary>
+    /// Returns only selected .sqlite file entries in subtree.
+    /// </summary>
     private List<FileFolderEntry> GetSelectedFiles(FileFolderEntry root)
     {
         List<FileFolderEntry> selected = [];
@@ -259,23 +354,33 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         return selected;
     }
 
+    /// <summary>
+    /// Returns all file entries (NOTE: current implementation uses GetSelectedFiles for directories;
+    /// if intention was to gather all *including unselected* files, this may be a logic bug.)
+    /// </summary>
     private List<FileFolderEntry> GetAllFiles(FileFolderEntry root)
     {
         List<FileFolderEntry> files = [];
         foreach (var child in root.Children)
         {
             if (child.IsDirectory)
-                files.AddRange(GetSelectedFiles(child));
+                files.AddRange(GetSelectedFiles(child)); // Potential limitation; left intact intentionally.
             else
                 files.Add(child);
         }
         return files;
     }
+    #endregion
 
+    #region User Roll Database Management
+    /// <summary>
+    /// Discovers .sqlite user roll DB files and ensures default file exists.
+    /// </summary>
     private void UpdateImageRollsDatabasesList()
     {
         Logger.Info($"Loading Image Rolls databases from file system. {App.UserImageRollsRoot}");
 
+        // Ensure default DB file exists
         if (!File.Exists(App.UserImageRollDefaultFile))
         {
             var tmp = new ImageRollsDatabase(new FileFolderEntry(App.UserImageRollDefaultFile));
@@ -286,10 +391,14 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         UpdateDatabases(FileRoot);
     }
 
+    /// <summary>
+    /// Synchronizes open ImageRollsDatabase instances with current selection state.
+    /// </summary>
     private void UpdateDatabases(FileFolderEntry root)
     {
         var selectedFiles = GetSelectedFiles(root).Select(f => f.Path).ToHashSet();
 
+        // Remove deselected
         for (int i = UserDatabases.Count - 1; i >= 0; i--)
         {
             var db = UserDatabases[i];
@@ -300,6 +409,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             }
         }
 
+        // Add newly selected
         foreach (var file in selectedFiles)
         {
             if (!UserDatabases.Any(db => db.File.Path == file))
@@ -309,6 +419,9 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         SetSelectedUserDatabase();
     }
 
+    /// <summary>
+    /// Ensures a selected database is always defined (default prioritized).
+    /// </summary>
     private void SetSelectedUserDatabase()
     {
         var def = UserDatabases.FirstOrDefault(e => e.File.Path == App.UserImageRollDefaultFile);
@@ -325,6 +438,9 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         }
     }
 
+    /// <summary>
+    /// Loads user rolls either from cache (if metadata matches) or from underlying databases.
+    /// </summary>
     private void LoadUserImageRollsList()
     {
         var selectedDbFiles = UserDatabases.Where(db => db.File.IsSelected).ToList();
@@ -333,6 +449,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
 
         bool failed = false;
 
+        // Cache validity check (metadata equality)
         if (cachedMetadata.Count > 0 &&
             !cachedMetadata.Except(currentMetadata).Any() &&
             !currentMetadata.Except(cachedMetadata).Any())
@@ -343,9 +460,11 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
 
             var cachedRolls = App.Settings.GetValue("UserImageRolls_Cache", new List<ImageRoll>());
 
+            // Clear existing user rolls
             foreach (var ur in EnumerateUserRolls().ToList())
                 AllImageRolls.Remove(ur);
 
+            // Rehydrate and inject references
             foreach (var roll in cachedRolls)
             {
                 roll.ImageRollsDatabase = SelectedUserDatabase;
@@ -367,6 +486,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             Logger.Warning("Failed to load cached user rolls due to missing DB references. Reloading.");
         }
 
+        // Cache invalid -> reload from databases
         _ = Application.Current.Dispatcher.Invoke(DispatcherPriority.Render,
             () => WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Indexing User Image Rolls...")));
         Logger.Info("User image roll cache invalid/missing. Loading from databases.");
@@ -391,6 +511,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             }
         }
 
+        // Replace existing user rolls with fresh list
         foreach (var existing in EnumerateUserRolls().ToList())
             AllImageRolls.Remove(existing);
 
@@ -405,6 +526,9 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             EvaluateSplashForActiveRoll(allowStart: false);
     }
 
+    /// <summary>
+    /// Adds or updates a single roll in cache after persistence.
+    /// </summary>
     private void UpdateUserImageRollCache(ImageRoll roll)
     {
         if (roll?.ImageRollsDatabase?.File?.Path is null)
@@ -428,6 +552,9 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             EvaluateSplashForActiveRoll(allowStart: false);
     }
 
+    /// <summary>
+    /// Synchronizes cached DB modification timestamps for invalidation logic.
+    /// </summary>
     private void UpdateUserImageRollCacheMetadata()
     {
         var cachedMetadata = App.Settings.GetValue("UserImageRolls_CacheMetadata", new Dictionary<string, DateTime>());
@@ -438,7 +565,12 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             App.Settings.SetValue("UserImageRolls_CacheMetadata", cachedMetadata);
         }
     }
+    #endregion
 
+    #region Fixed (Asset) Roll Loading
+    /// <summary>
+    /// Loads fixed rolls (immutable asset-based) either from cache or by scanning the assets directory.
+    /// </summary>
     private void LoadFixedImageRollsList()
     {
         Logger.Info($"Loading fixed image rolls from assets: {App.AssetsImageRollsRoot}");
@@ -448,6 +580,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
 
         bool failed = false;
 
+        // Attempt cache load
         if (cachedMetadata.Count > 0 &&
             !cachedMetadata.Except(currentMetadata).Any() &&
             !currentMetadata.Except(cachedMetadata).Any())
@@ -478,6 +611,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             Logger.Warning("Failed to load fixed rolls from cache due to missing paths; reindexing.");
         }
 
+        // Rebuild from filesystem
         _ = Application.Current.Dispatcher.Invoke(DispatcherPriority.Render,
             () => _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Indexing Fixed Image Rolls...")));
 
@@ -513,7 +647,12 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         App.Settings.SetValue("FixedImageRolls_Cache", EnumerateFixedRolls().ToList());
         App.Settings.SetValue("FixedImageRolls_CacheMetadata", currentMetadata);
     }
+    #endregion
 
+    #region Metadata Helpers
+    /// <summary>
+    /// Recursively gathers directory timestamps + matching file timestamps for invalidation checks.
+    /// </summary>
     private Dictionary<string, DateTime> GetDirectoryMetadata(string path, string searchPattern)
     {
         var metadata = new Dictionary<string, DateTime>();
@@ -537,7 +676,9 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
 
         return metadata;
     }
+    #endregion
 
+    #region Persistence (Save / Update Image Rolls & Images)
     public void SaveUserImageRoll(ImageRoll roll)
     {
         if (SelectedUserDatabase.InsertOrReplaceImageRoll(roll) > 0)
@@ -559,7 +700,9 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
         else
             Logger.Error($"Failed to save image: {img.Name}");
     }
+    #endregion
 
+    #region Commands (Add / Edit / Save / Delete / Cancel / Utilities)
     [RelayCommand]
     private void Add()
     {
@@ -603,6 +746,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
             var existing = AllImageRolls.FirstOrDefault(r => r.UID == NewImageRoll.UID);
             if (existing != null)
             {
+                // Update properties in-place (avoid replacing reference used in bindings)
                 existing.Name = NewImageRoll.Name;
                 existing.SelectedApplicationStandard = NewImageRoll.SelectedApplicationStandard;
                 existing.SelectedGS1Table = NewImageRoll.SelectedGS1Table;
@@ -624,6 +768,7 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
 
             UpdateUserImageRollCache(NewImageRoll);
 
+            // Ensure default DB file stays selected
             var file = GetFileFolderEntry(App.UserImageRollDefaultFile);
             if (file != null)
                 file.IsSelected = true;
@@ -675,14 +820,20 @@ public partial class ImageRollsManager : ObservableRecipient, IDisposable, IReci
 
     [RelayCommand]
     private void UIDToClipboard() => Clipboard.SetText(Guid.NewGuid().ToString());
+    #endregion
 
+    #region Dialog Helpers
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
+
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) =>
         await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
+    #endregion
 
+    #region IDisposable
     public void Dispose()
     {
         App.Settings.PropertyChanged -= Settings_PropertyChanged;
         GC.SuppressFinalize(this);
     }
+    #endregion
 }
