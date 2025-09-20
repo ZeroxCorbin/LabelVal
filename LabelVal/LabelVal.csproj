@@ -25,24 +25,28 @@
   
 	<ItemGroup>
 	  <Compile Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <Compile Remove="ImageRolls\Services\**" />
 	  <Compile Remove="ImageViewer3D\Models\**" />
 	  <Compile Remove="ImageViewer3D\Processing\**" />
 	  <Compile Remove="LabelBuilder\**" />
 	  <Compile Remove="Results\Controls\**" />
 	  <Compile Remove="Sectors\Messages\**" />
 	  <EmbeddedResource Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <EmbeddedResource Remove="ImageRolls\Services\**" />
 	  <EmbeddedResource Remove="ImageViewer3D\Models\**" />
 	  <EmbeddedResource Remove="ImageViewer3D\Processing\**" />
 	  <EmbeddedResource Remove="LabelBuilder\**" />
 	  <EmbeddedResource Remove="Results\Controls\**" />
 	  <EmbeddedResource Remove="Sectors\Messages\**" />
 	  <None Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <None Remove="ImageRolls\Services\**" />
 	  <None Remove="ImageViewer3D\Models\**" />
 	  <None Remove="ImageViewer3D\Processing\**" />
 	  <None Remove="LabelBuilder\**" />
 	  <None Remove="Results\Controls\**" />
 	  <None Remove="Sectors\Messages\**" />
 	  <Page Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <Page Remove="ImageRolls\Services\**" />
 	  <Page Remove="ImageViewer3D\Models\**" />
 	  <Page Remove="ImageViewer3D\Processing\**" />
 	  <Page Remove="LabelBuilder\**" />
@@ -52,7 +56,6 @@
 	<ItemGroup>
 		<Compile Remove="ImageRolls\Databases\ImageEntry.cs" />
 		<Compile Remove="ImageRolls\Databases\StandardsDatabase.cs" />
-		<Compile Remove="ImageRolls\Services\ListViewSelectionBehavior.cs" />
 		<Compile Remove="ImageViewer3D\ViewModels\ImageOverlayTesting.cs" />
 		<Compile Remove="ImageViewer3D\ViewModels\ImageViewer3D_IndividualMeshs.cs" />
 		<Compile Remove="ImageViewer3D\ViewModels\ImageViewer3D_Instancing.cs" />

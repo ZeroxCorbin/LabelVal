@@ -252,7 +252,7 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
     /// <summary>
     /// Gets a string representation of the standard group, combining application and grading standards.
     /// </summary>
-    public string StandardGroup => $"{SelectedApplicationStandard}-{SelectedGradingStandard}";
+    public string StandardGroup => $"{SelectedApplicationStandard} : {SelectedGradingStandard}";
 
     /// <summary>
     /// Gets or sets the target DPI for images in the roll.

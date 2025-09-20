@@ -1,9 +1,12 @@
-﻿using LabelVal.ImageRolls.Services;
-using LabelVal.ImageRolls.ViewModels;
+﻿using LabelVal.ImageRolls.ViewModels;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace LabelVal.ImageRolls.Views;
@@ -215,6 +218,87 @@ public partial class ImageRollsManager : UserControl
             UseShellExecute = true,
             Verb = "open"
         });
+
+    #endregion
+
+    #region Group Node Handling
+
+    public class ImageRollsTreeViewItemStyleSelector : StyleSelector
+    {
+        public Style GroupStyle { get; set; }
+        public Style ItemStyle { get; set; }
+
+        public override Style SelectStyle(object item, DependencyObject container)
+        {
+            // CollectionViewGroup represents first & second levels (both non-selectable)
+            if (item is System.Windows.Data.CollectionViewGroup)
+                return GroupStyle;
+
+            // Leaf (ImageRoll) uses normal selectable style
+            return ItemStyle;
+        }
+    }
+
+    // Toggle expand/collapse without selecting for group nodes
+    private void GroupTreeViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not TreeViewItem groupItem)
+            return;
+
+        // Ignore if DataContext is not a grouping container
+        if (groupItem.DataContext is not System.Windows.Data.CollectionViewGroup)
+            return;
+
+        var origin = e.OriginalSource as DependencyObject;
+
+        // If the click is actually on a descendant TreeViewItem (e.g. an ImageRoll leaf), do nothing.
+        var descendant = FindAncestor<TreeViewItem>(origin, stopAt: groupItem);
+        if (descendant != null && descendant != groupItem)
+            return;
+
+        // If click was on the built-in expander glyph let default behavior handle it.
+        if (IsInExpander(origin))
+            return;
+
+        // Toggle only when header itself was clicked.
+        groupItem.IsExpanded = !groupItem.IsExpanded;
+        e.Handled = true;
+    }
+
+    private static TreeViewItem? FindAncestor<TreeViewItem>(DependencyObject? start, System.Windows.Controls.TreeViewItem? stopAt)
+        where TreeViewItem : DependencyObject
+    {
+        var current = start;
+        while (current != null && current != stopAt)
+        {
+            if (current is TreeViewItem match)
+                return match;
+            current = VisualTreeHelper.GetParent(current);
+        }
+        return null;
+    }
+
+    private static bool IsInExpander(DependencyObject? start)
+    {
+        var current = start;
+        while (current != null)
+        {
+            if (current is ToggleButton tb && tb.Name == "Expander") // template part name varies by theme
+                return true;
+            current = VisualTreeHelper.GetParent(current);
+        }
+        return false;
+    }
+
+    // Defensive: if selection somehow lands on a group (keyboard), immediately clear it.
+    private void GroupTreeViewItem_Selected(object sender, RoutedEventArgs e)
+    {
+        if (sender is TreeViewItem tvi && tvi.DataContext is CollectionViewGroup)
+        {
+            tvi.IsSelected = false;
+            e.Handled = true;
+        }
+    }
 
     #endregion
 }

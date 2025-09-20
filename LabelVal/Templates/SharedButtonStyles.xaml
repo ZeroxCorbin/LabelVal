@@ -9,8 +9,9 @@
         <Setter Property="MinWidth" Value="48" />
         <Setter Property="Margin" Value="3,0,0,0" />
         <Setter Property="Padding" Value="2" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
