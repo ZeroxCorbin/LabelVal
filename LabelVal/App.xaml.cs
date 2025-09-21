@@ -104,6 +104,9 @@ public partial class App : Application
     public static string RunsRoot => $"{UserDataDirectory}\\Runs";
     public static string RunLedgerDatabaseName => $"RunLedger{DatabaseExtension}";
 
+    public static string PythonRootDirectory => Path.Join("Python");
+    public static string PythonWorkingDirectory => Path.Join(PythonRootDirectory, "Working");
+
     public static string RunResultsDatabaseName(long timeDate) => $"Run_{timeDate}{DatabaseExtension}";
 
     private static ManualResetEvent _splashScreenReady = new(false);
@@ -127,6 +130,9 @@ public partial class App : Application
 
         if (!Directory.Exists(RunsRoot))
             _ = Directory.CreateDirectory(RunsRoot);
+
+        if (!Directory.Exists(PythonWorkingDirectory))
+            _ = Directory.CreateDirectory(PythonWorkingDirectory);
 
         NLog.Config.LoggingConfiguration config = new();
         NLog.Targets.FileTarget logfile = new("logfile")

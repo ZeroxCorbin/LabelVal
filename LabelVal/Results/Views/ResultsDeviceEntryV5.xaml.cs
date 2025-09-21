@@ -65,7 +65,7 @@ public partial class ResultsDeviceEntry_V5 : UserControl
     #endregion
 
     [RelayCommand]
-    private void SaveSectorDetailsImage(SectorDetails sectorDetails)
+    private void SaveSectorDetailsImage(Sectors.Views.SectorDetails sectorDetails)
     {
         if (sectorDetails != null)
         {

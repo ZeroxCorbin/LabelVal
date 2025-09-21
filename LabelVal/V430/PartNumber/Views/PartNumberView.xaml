@@ -1,0 +1,100 @@
+﻿<UserControl
+    x:Class="LabelVal.V430.PartNumber.Views.PartNumberView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:loc="clr-namespace:LabelVal.Localization"
+    xmlns:local="clr-namespace:LabelVal.V430.PartNumber.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DataContext="{d:DesignInstance Type=local:PartNumberView,
+                                     IsDesignTimeCreatable=False}"
+    mc:Ignorable="d">
+    <GroupBox
+        Margin="3"
+        Padding="3"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Top"
+        Style="{StaticResource MaterialDesignCardGroupBox}">
+
+        <GroupBox.Header>
+            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" Text="{loc:Loc Part Number}" />
+        </GroupBox.Header>
+
+
+        <StackPanel>
+            <DockPanel HorizontalAlignment="Left">
+                <TextBox Width="120" Text="{Binding ViewModel.CameraPartNumber}" />
+                <StackPanel Width="60" Margin="3,0">
+                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Valid" />
+                    <TextBlock Text="{Binding ViewModel.MicroHawk.IsValidModelType}" />
+                </StackPanel>
+                <StackPanel Width="60" Margin="3,0">
+                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Fixed" />
+                    <TextBlock Text="{Binding ViewModel.MicroHawk.IsFixedFocus}" />
+                </StackPanel>
+            </DockPanel>
+
+            <DockPanel>
+                <TextBlock
+                    Margin="3"
+                    VerticalAlignment="Bottom"
+                    Text="7" />
+
+
+                <StackPanel MinWidth="60" Margin="3,0">
+                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Model" />
+                    <ComboBox ItemsSource="{Binding Source={StaticResource MH_Model}}" SelectedValue="{Binding ViewModel.MicroHawk.Model}" />
+                </StackPanel>
+
+                <StackPanel MinWidth="60" Margin="3,0">
+                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Type" />
+                    <ComboBox ItemsSource="{Binding Source={StaticResource MH_Type}}" SelectedValue="{Binding ViewModel.MicroHawk.Type}" />
+                </StackPanel>
+
+                <StackPanel MinWidth="60" Margin="3,0">
+                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Sensor" />
+                    <ComboBox ItemsSource="{Binding Source={StaticResource MH_Sensor}}" SelectedValue="{Binding ViewModel.MicroHawk.Sensor}" />
+                </StackPanel>
+
+                <TextBlock
+                    Margin="3"
+                    VerticalAlignment="Bottom"
+                    Text="-" />
+
+                <StackPanel MinWidth="60" Margin="3,0">
+                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Density" />
+                    <ComboBox ItemsSource="{Binding Source={StaticResource MH_Density}}" SelectedValue="{Binding ViewModel.MicroHawk.Density}" />
+                </StackPanel>
+
+
+                <StackPanel MinWidth="60" Margin="3,0">
+                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Focus" />
+                    <TextBox Text="{Binding ViewModel.MicroHawk.Focus}" />
+                </StackPanel>
+                <TextBlock
+                    Margin="3"
+                    VerticalAlignment="Bottom"
+                    Text="-" />
+
+
+
+
+                <StackPanel MinWidth="60" Margin="3,0">
+                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="LED" />
+                    <ComboBox ItemsSource="{Binding Source={StaticResource MH_LedColor}}" SelectedValue="{Binding ViewModel.MicroHawk.Led}" />
+                </StackPanel>
+
+                <StackPanel MinWidth="60" Margin="3,0">
+                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Software" />
+                    <ComboBox ItemsSource="{Binding Source={StaticResource MH_Software}}" SelectedValue="{Binding ViewModel.MicroHawk.Software}" />
+                </StackPanel>
+
+
+                <StackPanel Width="60" Margin="3,0">
+                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="License" />
+                    <TextBlock Text="{Binding ViewModel.MicroHawk.License}" />
+                </StackPanel>
+            </DockPanel>
+        </StackPanel>
+    </GroupBox>
+</UserControl>

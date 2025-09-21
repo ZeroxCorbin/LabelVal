@@ -1,0 +1,958 @@
+﻿<UserControl
+    x:Class="LabelVal.V430.Views.V430View"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:TextScroll="clr-namespace:LabelVal.V430.AttachedProperties"
+    xmlns:ViewModels="clr-namespace:LabelVal.V430.ViewModels"
+    xmlns:converters="clr-namespace:LensCharacterization.WPF.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
+    xmlns:local="clr-namespace:LabelVal.V430.Views"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:main="clr-namespace:LabelVal.Main.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:paz="clr-namespace:Wpf.Controls.PanAndZoom;assembly=Wpf.Controls.PanAndZoom"
+    xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
+    xmlns:v430="clr-namespace:LabelVal.V430.Views"
+    d:DataContext="{d:DesignInstance Type=local:V430View,
+                                     IsDesignTimeCreatable=False}"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:BytesToImageConverter x:Key="bytesToImage" />
+
+        <Style
+            x:Key="JsonButtonStyle"
+            BasedOn="{StaticResource MahApps.Styles.Button}"
+            TargetType="Button">
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+    </UserControl.Resources>
+
+    <GroupBox
+        Margin="3"
+        Padding="3"
+        Style="{StaticResource MaterialDesignCardGroupBox}">
+
+        <GroupBox.Header>
+
+            <DockPanel>
+
+                <!--<Button
+                    x:Name="btnShowRunSettings"
+                    Margin="3,0,6,0"
+                    Click="btnShowRunSettings_Click"
+                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                    ToolTip="Show Settings">
+                    <iconPacks:PackIconMaterial
+                        Width="20"
+                        Height="20"
+                        Kind="Cog" />
+                </Button>-->
+
+                <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" Text="MicroHawk" />
+
+                <DockPanel
+                    Margin="3"
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left">
+
+                    <Grid Margin="6,0,3,0">
+                        <Ellipse
+                            Width="20"
+                            Height="20"
+                            Stroke="{DynamicResource MahApps.Brushes.Accent}"
+                            ToolTip="Event Web Socket State">
+
+                            <Ellipse.Style>
+                                <Style TargetType="{x:Type Ellipse}">
+                                    <Setter Property="Fill" Value="{DynamicResource StatusGoodBrush}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ViewModel.Controller.CommandConnectionState}" Value="Closed">
+                                            <Setter Property="Fill" Value="Gray" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="C"
+                            ToolTip="Command Web Socket State" />
+                    </Grid>
+
+                    <Grid Margin="3,0" HorizontalAlignment="Left">
+                        <Ellipse
+                            Width="20"
+                            Height="20"
+                            Stroke="{DynamicResource MahApps.Brushes.Accent}"
+                            ToolTip="Result Web Socket State">
+                            <Ellipse.Style>
+                                <Style TargetType="{x:Type Ellipse}">
+                                    <Setter Property="Fill" Value="{DynamicResource StatusGoodBrush}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ViewModel.Controller.ReportConnectionState}" Value="Closed">
+                                            <Setter Property="Fill" Value="Gray" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="R"
+                            ToolTip="Result Web Socket State" />
+                    </Grid>
+
+                    <TextBlock
+                        Margin="3,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Text="{Binding ViewModel.Controller.CameraMode}" />
+
+                </DockPanel>
+            </DockPanel>
+
+        </GroupBox.Header>
+
+        <md:DrawerHost
+            x:Name="drwRunSettings"
+            VerticalAlignment="Stretch"
+            IsRightDrawerOpen="false">
+
+            <md:DrawerHost.TopDrawerContent>
+
+                <md:Card
+                    Margin="3"
+                    Padding="2"
+                    HorizontalAlignment="Left"
+                    Background="{DynamicResource MahApps.Brushes.Control.Background}">
+
+                    <DockPanel>
+
+                        <TextBox
+                            MinWidth="50"
+                            Margin="3,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            HorizontalContentAlignment="Center"
+                            md:HintAssist.Hint="IP Address"
+                            md:HintAssist.IsFloating="True"
+                            Text="{Binding ViewModel.Host}">
+                            <TextBox.Style>
+                                <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
+                                    <Setter Property="IsEnabled" Value="True" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ViewModel.Controller.IsConnected}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+                        <TextBox
+                            HorizontalContentAlignment="Center"
+                            md:HintAssist.Hint="Inter. Trigger Delay"
+                            md:HintAssist.IsFloating="True"
+                            md:TextFieldAssist.SuffixText="ms"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            Text="{Binding ViewModel.RepeatedTriggerDelay}" />
+
+                        <mah:ToggleSwitch
+                            Margin="3"
+                            Content="Get Image"
+                            IsOn="{Binding ViewModel.GetImage}">
+                            <mah:ToggleSwitch.RenderTransform>
+                                <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
+                            </mah:ToggleSwitch.RenderTransform>
+                        </mah:ToggleSwitch>
+
+                    </DockPanel>
+                </md:Card>
+            </md:DrawerHost.TopDrawerContent>
+
+            <md:DrawerHost.RightDrawerContent>
+                <GroupBox
+                    Width="420"
+                    Margin="3"
+                    Padding="3"
+                    VerticalAlignment="Top"
+                    Style="{StaticResource MaterialDesignCardGroupBox}">
+
+                    <GroupBox.Header>
+                        <DockPanel>
+
+                            <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="KCommands" />
+
+
+                            <TextBox FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="{Binding Path=SearchKeyword, ElementName=KCommandView, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                    </GroupBox.Header>
+
+                    <md:Card
+                        Margin="3"
+                        Padding="2"
+                        Background="Black">
+
+                        <v430:KCommandView x:Name="KCommandView">
+                            <v430:KCommandView.Style>
+                                <Style TargetType="v430:KCommandView">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=IsRightDrawerOpen, ElementName=drwRunSettings}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </v430:KCommandView.Style>
+                        </v430:KCommandView>
+
+                    </md:Card>
+                </GroupBox>
+            </md:DrawerHost.RightDrawerContent>
+
+            <md:DrawerHost.LeftDrawerContent>
+
+                <StackPanel>
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
+                        <GroupBox.Header>
+                            <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Post Login" />
+                        </GroupBox.Header>
+
+                        <TextBox
+                            AcceptsReturn="True"
+                            HorizontalScrollBarVisibility="Auto"
+                            Text="{Binding ViewModel.PostLoginCommands}"
+                            TextWrapping="NoWrap" />
+
+                    </GroupBox>
+
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
+                        <GroupBox.Header>
+                            <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Pre Logout" />
+                        </GroupBox.Header>
+
+                        <TextBox
+                            AcceptsReturn="True"
+                            HorizontalScrollBarVisibility="Auto"
+                            Text="{Binding ViewModel.PreLogoutCommands}"
+                            TextWrapping="NoWrap" />
+
+                    </GroupBox>
+                </StackPanel>
+
+            </md:DrawerHost.LeftDrawerContent>
+
+            <DockPanel>
+
+                <DockPanel DockPanel.Dock="Top">
+
+                    <DockPanel DockPanel.Dock="Top">
+
+                        <md:Card
+                            Margin="3"
+                            Padding="3"
+                            Background="{DynamicResource MahApps.Brushes.Accent4}">
+
+                            <Button BorderThickness="0" Command="{Binding ViewModel.ConnectCommand}">
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <iconPacks:Modern Kind="Connect" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ViewModel.Controller.IsConnected}" Value="True">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <iconPacks:Modern Kind="Disconnect" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                        </md:Card>
+
+                        <DockPanel>
+                            <!--<DockPanel.Style>
+                           <Style TargetType="DockPanel">
+                               <Setter Property="Visibility" Value="Collapsed"/>
+                               <Style.Triggers>
+                                   <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType=Expander}}" Value="True">
+                                       <Setter Property="Visibility" Value="Visible"/>
+                                   </DataTrigger>
+                               </Style.Triggers>
+                           </Style>
+                       </DockPanel.Style>-->
+                            <Button
+                                Margin="3,0"
+                                Padding="8,0"
+                                BorderThickness="0"
+                                Click="btnShowCommandSettings"
+                                Content="Comands"
+                                Style="{StaticResource MahApps.Styles.Button}" />
+
+                            <md:Card
+                                Margin="3,0"
+                                Padding="3"
+                                Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                <DockPanel>
+                                    <TextBox MinWidth="100" Text="{Binding ViewModel.NewCommand}" />
+
+                                    <Button
+                                        Margin="3,0"
+                                        Padding="8,0"
+                                        BorderThickness="0"
+                                        Command="{Binding ViewModel.SendCommandCommand}"
+                                        Content="Add Command"
+                                        IsEnabled="{Binding ViewModel.Controller.IsConnected}"
+                                        Style="{StaticResource MahApps.Styles.Button}" />
+                                </DockPanel>
+
+                            </md:Card>
+
+                            <md:Card
+                                Margin="3,0"
+                                Padding="3"
+                                Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                <DockPanel>
+
+                                    <Button
+                                        Margin="3,0"
+                                        Padding="8,0"
+                                        BorderThickness="0"
+                                        Command="{Binding ViewModel.TriggerCommand}"
+                                        Content="Trigger"
+                                        IsEnabled="{Binding ViewModel.Controller.IsConnected}"
+                                        Style="{StaticResource MahApps.Styles.Button}" />
+
+                                    <ToggleButton
+                                        Width="21"
+                                        Height="21"
+                                        Margin="3"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        md:ToggleButtonAssist.OnContent="{iconPacks:BootstrapIcons Kind=ArrowRepeat,
+                                                                                                   Width=16,
+                                                                                                   Height=16}"
+                                        Content="{iconPacks:Material Kind=CircleSmall,
+                                                                     Width=8,
+                                                                     Height=8}"
+                                        IsChecked="{Binding ViewModel.RepeatTrigger}"
+                                        Style="{StaticResource MaterialDesignActionToggleButton}" />
+
+                                </DockPanel>
+                            </md:Card>
+
+                            <Button
+                                Margin="3,0"
+                                Padding="8,0"
+                                BorderThickness="0"
+                                Command="{Binding ViewModel.SysInfoCommand}"
+                                Content="SysInfo"
+                                IsEnabled="{Binding ViewModel.Controller.IsConnected}"
+                                Style="{StaticResource MahApps.Styles.Button}" />
+
+                            <Button
+                                Margin="3,0"
+                                Padding="8,0"
+                                BorderThickness="0"
+                                Command="{Binding ViewModel.ContaminationCheckCommand}"
+                                Content="Contamination"
+                                IsEnabled="{Binding ViewModel.Controller.IsConnected}"
+                                Style="{StaticResource MahApps.Styles.Button}" />
+
+                            <Button
+                                Margin="3,0"
+                                Padding="8,0"
+                                HorizontalAlignment="Right"
+                                BorderThickness="0"
+                                Click="btnKCommand_Click"
+                                Content="K Commands"
+                                Style="{StaticResource MahApps.Styles.Button}" />
+
+                        </DockPanel>
+
+                    </DockPanel>
+
+                    <DockPanel Height="46">
+
+                        <md:Card
+                            Margin="3"
+                            Padding="3"
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
+                            <DockPanel>
+
+                                <StackPanel>
+                                    <TextBlock
+                                        Margin="3,0"
+                                        VerticalAlignment="Bottom"
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Text="Focus" />
+                                    <mah:NumericUpDown
+                                        Margin="3,0"
+                                        VerticalAlignment="Bottom"
+                                        HorizontalContentAlignment="Right"
+                                        BorderThickness="0"
+                                        IsEnabled="{Binding ViewModel.Controller.IsConnected}"
+                                        Value="{Binding ViewModel.Controller.Focus}" />
+                                </StackPanel>
+
+                                <Button
+                                    Margin="3,0"
+                                    BorderThickness="0"
+                                    Command="{Binding ViewModel.FocusCommand}"
+                                    Content="Auto Focus"
+                                    IsEnabled="{Binding ViewModel.Controller.IsConnected}"
+                                    Style="{StaticResource MahApps.Styles.Button}" />
+
+                            </DockPanel>
+                        </md:Card>
+
+                        <md:Card
+                            Margin="3"
+                            Padding="3"
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
+                            <DockPanel>
+
+                                <StackPanel>
+                                    <TextBlock
+                                        Margin="3,0"
+                                        VerticalAlignment="Bottom"
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Text="Exposure" />
+                                    <mah:NumericUpDown
+                                        Margin="3,0"
+                                        VerticalAlignment="Bottom"
+                                        HorizontalContentAlignment="Right"
+                                        BorderThickness="0"
+                                        IsEnabled="{Binding ViewModel.Controller.IsConnected}"
+                                        Value="{Binding ViewModel.Controller.Exposure}" />
+                                </StackPanel>
+
+                                <StackPanel>
+                                    <TextBlock
+                                        Margin="3,0"
+                                        VerticalAlignment="Bottom"
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Text="Gain" />
+
+                                    <mah:NumericUpDown
+                                        Margin="3,0"
+                                        VerticalAlignment="Bottom"
+                                        HorizontalContentAlignment="Right"
+                                        BorderThickness="0"
+                                        IsEnabled="{Binding ViewModel.Controller.IsConnected}"
+                                        Value="{Binding ViewModel.Controller.Gain}" />
+                                </StackPanel>
+
+
+                                <Button
+                                    Margin="3,0"
+                                    BorderThickness="0"
+                                    Command="{Binding ViewModel.PhotometryCommand}"
+                                    Content="Auto Photo."
+                                    IsEnabled="{Binding ViewModel.Controller.IsConnected}"
+                                    Style="{StaticResource MahApps.Styles.Button}" />
+
+
+                            </DockPanel>
+                        </md:Card>
+
+                        <md:Card
+                            Margin="3"
+                            Padding="3"
+                            HorizontalAlignment="Left"
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                            <StackPanel>
+                                <TextBlock
+                                    Margin="3,0"
+                                    VerticalAlignment="Bottom"
+                                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                    Text="WOI Width" />
+                                <mah:NumericUpDown
+                                    Margin="3,0"
+                                    VerticalAlignment="Bottom"
+                                    HorizontalContentAlignment="Right"
+                                    BorderThickness="0"
+                                    IsEnabled="{Binding ViewModel.Controller.IsConnected}"
+                                    Value="{Binding ViewModel.WoiHeightPercentage}" />
+
+                            </StackPanel>
+
+                        </md:Card>
+                    </DockPanel>
+
+                </DockPanel>
+
+                <DockPanel>
+
+                    <!--  Json  -->
+                    <GroupBox
+                        Width="200"
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
+
+                        <GroupBox.Header>
+                            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" Text="Json" />
+                        </GroupBox.Header>
+
+                        <!--  JSON  -->
+                        <json:JsonViewer
+                            Title="JSON"
+                            MinWidth="200"
+                            MaxWidth="400"
+                            MaxHeight="400"
+                            VerticalAlignment="Top"
+                            ButtonStyle="{StaticResource JsonButtonStyle}"
+                            Foreground="{DynamicResource MahApps.Brushes.Text}"
+                            JSON="{Binding ViewModel.ResultsJObject}"
+                            ShowSaveButton="True" />
+                    </GroupBox>
+
+                    <!--  Results  -->
+                    <GroupBox
+                        Width="180"
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
+
+                        <GroupBox.Header>
+                            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" Text="Results" />
+                        </GroupBox.Header>
+
+                        <DockPanel>
+
+                            <md:Card
+                                Padding="3"
+                                Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                DockPanel.Dock="Top">
+                                <StackPanel>
+                                    <DockPanel>
+                                        <StackPanel Margin="6,0">
+                                            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Cycle ID: " />
+                                            <TextBlock Text="{Binding ViewModel.ResultsJObject[cycleId], StringFormat=N2}" />
+
+                                        </StackPanel>
+
+                                        <StackPanel Margin="6,0">
+                                            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Time: " />
+                                            <TextBlock Text="{Binding ViewModel.TriggerTime, StringFormat=N2}" />
+
+                                        </StackPanel>
+                                    </DockPanel>
+
+                                    <!--<DockPanel>
+
+                                        <StackPanel Margin="6,0">
+                                            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Focus: " />
+                                            <TextBlock Text="{Binding ViewModel.ResultsJObject[focusInfo][focus], StringFormat=N2}" />
+                                        </StackPanel>
+
+                                        <StackPanel Margin="6,0">
+                                            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Exposure: " />
+                                            <TextBlock Text="{Binding ViewModel.ImageResults[exposure], StringFormat=N2}" />
+                                        </StackPanel>
+
+                                        <StackPanel Margin="6,0">
+                                            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Gain: " />
+                                            <TextBlock Text="{Binding ViewModel.ImageResults[gain], StringFormat=N2}" />
+                                        </StackPanel>
+
+                                    </DockPanel>-->
+
+
+
+
+                                </StackPanel>
+                            </md:Card>
+
+                            <ScrollViewer HorizontalScrollBarVisibility="Hidden">
+                                <ListBox ItemsSource="{Binding ViewModel.Results}">
+
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Margin" Value="0" />
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <sectors:Sector
+                                                MaxWidth="140"
+                                                Margin="3"
+                                                Padding="0"
+                                                DataContext="{Binding .}"
+                                                PreviewMouseDoubleClick="lstItmSector_PreviewMouseDoubleClick" />
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </ScrollViewer>
+                        </DockPanel>
+
+
+                    </GroupBox>
+
+                    <mah:MetroTabControl TabStripPlacement="Left">
+                        <mah:MetroTabItem
+                            Margin="3"
+                            Padding="3"
+                            Header="Image"
+                            Style="{StaticResource MaterialDesignTabItem}">
+                            <!--  Image  -->
+                            <GroupBox
+                                Margin="3"
+                                Padding="3"
+                                VerticalAlignment="Top"
+                                Style="{StaticResource MaterialDesignCardGroupBox}">
+
+                                <GroupBox.Header>
+                                    <DockPanel>
+
+                                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Image" />
+
+                                        <Button
+                                            Margin="3,0"
+                                            Click="btnSaveImage_Click"
+                                            Tag="{Binding ViewModel.RawImage}"
+                                            ToolTip="Save Image">
+                                            <Button.Style>
+                                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
+                                                    <Setter Property="IsEnabled" Value="True" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ViewModel.RawImage}" Value="{x:Null}">
+                                                            <Setter Property="IsEnabled" Value="False" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+
+                                            <iconPacks:PackIconMaterial
+                                                Width="20"
+                                                Height="20"
+                                                Kind="ContentSave" />
+                                        </Button>
+
+                                        <Button
+                                            Margin="3,0"
+                                            HorizontalAlignment="Left"
+                                            Click="btnResetImageView_Click"
+                                            Tag="{Binding ElementName=ZoomBorder_Source}"
+                                            ToolTip="Reset View">
+                                            <Button.Style>
+                                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
+                                                    <Setter Property="IsEnabled" Value="True" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ViewModel.RawImage}" Value="{x:Null}">
+                                                            <Setter Property="IsEnabled" Value="False" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+
+                                            <iconPacks:MaterialDesign
+                                                Width="20"
+                                                Height="20"
+                                                Kind="ZoomOutMap" />
+                                        </Button>
+
+                                    </DockPanel>
+                                </GroupBox.Header>
+
+                                <md:Card
+                                    Margin="3"
+                                    Padding="2"
+                                    Background="Black">
+
+                                    <Grid Width="420" Height="420">
+                                        <paz:ZoomBorder
+                                            Name="ZoomBorder_Source"
+                                            Height="400"
+                                            MaxWidth="400"
+                                            Padding="10"
+                                            VerticalAlignment="Center"
+                                            ClipToBounds="True"
+                                            MouseDown="SourceImage_MouseDown"
+                                            Tag="{Binding ViewModel.RawImage}">
+                                            <Grid>
+                                                <Image
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                                    Source="{Binding ViewModel.Image}" />
+                                                <Image
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                                    Source="{Binding ViewModel.ImageOverlay}" />
+                                                <Image
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                                    Source="{Binding ViewModel.ImageFocusRegionOverlay}" />
+
+                                            </Grid>
+                                        </paz:ZoomBorder>
+
+                                        <DockPanel HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                            <Label Content="{Binding ViewModel.Image.PixelWidth}" Foreground="White" />
+                                            <TextBlock
+                                                Margin="0,5,0,0"
+                                                Foreground="White"
+                                                Text="x" />
+                                            <Label Content="{Binding ViewModel.Image.PixelHeight}" Foreground="White" />
+                                        </DockPanel>
+                                    </Grid>
+                                </md:Card>
+                            </GroupBox>
+
+                        </mah:MetroTabItem>
+
+                        <mah:MetroTabItem
+                            Margin="3"
+                            Padding="3"
+                            Style="{StaticResource MaterialDesignTabItem}">
+                            <mah:MetroTabItem.Header>
+                                <DockPanel>
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Dirt" />
+                                    <TextBlock Text="**" Visibility="{Binding ViewModel.ContaminationDirtImage, Converter={StaticResource NullToVisibility}}" />
+                                </DockPanel>
+
+                            </mah:MetroTabItem.Header>
+
+
+                            <!--  Image  -->
+                            <GroupBox
+                                Margin="3"
+                                Padding="3"
+                                VerticalAlignment="Top"
+                                Style="{StaticResource MaterialDesignCardGroupBox}">
+
+                                <GroupBox.Header>
+                                    <DockPanel>
+
+                                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Image" />
+
+                                        <Button
+                                            Margin="3,0"
+                                            Click="btnSaveImage_Click"
+                                            Tag="{Binding ViewModel.ContaminationDirtImage}"
+                                            ToolTip="Save Image">
+                                            <Button.Style>
+                                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
+                                                    <Setter Property="IsEnabled" Value="True" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ViewModel.ContaminationDirtImage}" Value="{x:Null}">
+                                                            <Setter Property="IsEnabled" Value="False" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+
+                                            <iconPacks:PackIconMaterial
+                                                Width="20"
+                                                Height="20"
+                                                Kind="ContentSave" />
+                                        </Button>
+
+                                        <Button
+                                            Margin="3,0"
+                                            HorizontalAlignment="Left"
+                                            Click="btnResetImageView_Click"
+                                            Tag="{Binding ElementName=ZoomBorder_Dirt}"
+                                            ToolTip="Reset View">
+                                            <Button.Style>
+                                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
+                                                    <Setter Property="IsEnabled" Value="True" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ViewModel.ContaminationDirtImage}" Value="{x:Null}">
+                                                            <Setter Property="IsEnabled" Value="False" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+
+                                            <iconPacks:MaterialDesign
+                                                Width="20"
+                                                Height="20"
+                                                Kind="ZoomOutMap" />
+                                        </Button>
+
+                                    </DockPanel>
+                                </GroupBox.Header>
+
+                                <md:Card
+                                    Margin="3"
+                                    Padding="2"
+                                    Background="Black">
+
+                                    <Grid Width="400" MaxHeight="400">
+                                        <paz:ZoomBorder
+                                            Name="ZoomBorder_Dirt"
+                                            Padding="10"
+                                            VerticalAlignment="Center"
+                                            ClipToBounds="True"
+                                            MouseDown="SourceImage_MouseDown"
+                                            Tag="{Binding ViewModel.ContaminationDirtImage}">
+                                            <Grid>
+                                                <Image
+                                                    x:Name="ContaminationDirtImage"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Top"
+                                                    RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                                    Source="{Binding ViewModel.ContaminationDirtImage}" />
+                                            </Grid>
+                                        </paz:ZoomBorder>
+
+                                        <DockPanel HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                            <Label Content="{Binding ViewModel.ContaminationDirtImage.PixelWidth}" Foreground="White" />
+                                            <TextBlock
+                                                Margin="0,5,0,0"
+                                                Foreground="White"
+                                                Text="x" />
+                                            <Label Content="{Binding ViewModel.ContaminationDirtImage.PixelHeight}" Foreground="White" />
+                                        </DockPanel>
+                                    </Grid>
+                                </md:Card>
+                            </GroupBox>
+
+                        </mah:MetroTabItem>
+
+                        <mah:MetroTabItem
+                            Margin="3"
+                            Padding="3"
+                            Style="{StaticResource MaterialDesignTabItem}">
+
+                            <mah:MetroTabItem.Header>
+                                <DockPanel>
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Pixels" />
+                                    <TextBlock Text="**" Visibility="{Binding ViewModel.ContaminationBadPixelImage, Converter={StaticResource NullToVisibility}}" />
+                                </DockPanel>
+
+                            </mah:MetroTabItem.Header>
+                            <!--  Image  -->
+                            <GroupBox
+                                Margin="3"
+                                Padding="3"
+                                VerticalAlignment="Top"
+                                Style="{StaticResource MaterialDesignCardGroupBox}">
+
+                                <GroupBox.Header>
+                                    <DockPanel>
+
+                                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Image" />
+
+                                        <Button
+                                            Margin="3,0"
+                                            Click="btnSaveImage_Click"
+                                            Tag="{Binding ViewModel.ContaminationBadPixelImage}"
+                                            ToolTip="Save Image">
+                                            <Button.Style>
+                                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
+                                                    <Setter Property="IsEnabled" Value="True" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ViewModel.ContaminationBadPixelImage}" Value="{x:Null}">
+                                                            <Setter Property="IsEnabled" Value="False" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+
+                                            <iconPacks:PackIconMaterial
+                                                Width="20"
+                                                Height="20"
+                                                Kind="ContentSave" />
+                                        </Button>
+
+                                        <Button
+                                            Margin="3,0"
+                                            HorizontalAlignment="Left"
+                                            Click="btnResetImageView_Click"
+                                            Tag="{Binding ElementName=ZoomBorder_Pixels}"
+                                            ToolTip="Reset View">
+                                            <Button.Style>
+                                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="Button">
+                                                    <Setter Property="IsEnabled" Value="True" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ViewModel.ContaminationBadPixelImage}" Value="{x:Null}">
+                                                            <Setter Property="IsEnabled" Value="False" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+
+                                            <iconPacks:MaterialDesign
+                                                Width="20"
+                                                Height="20"
+                                                Kind="ZoomOutMap" />
+                                        </Button>
+
+                                    </DockPanel>
+                                </GroupBox.Header>
+
+                                <md:Card
+                                    Margin="3"
+                                    Padding="2"
+                                    Background="Black">
+
+                                    <Grid Width="400" MaxHeight="400">
+                                        <paz:ZoomBorder
+                                            Name="ZoomBorder_Pixels"
+                                            Padding="10"
+                                            VerticalAlignment="Center"
+                                            ClipToBounds="True"
+                                            MouseDown="SourceImage_MouseDown"
+                                            Tag="{Binding ViewModel.ContaminationBadPixelImage}">
+                                            <Grid>
+                                                <Image
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Top"
+                                                    RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                                    Source="{Binding ViewModel.ContaminationBadPixelImage}" />
+                                            </Grid>
+                                        </paz:ZoomBorder>
+
+                                        <DockPanel HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                            <Label Content="{Binding ViewModel.ContaminationBadPixelImage.PixelWidth}" Foreground="White" />
+                                            <TextBlock
+                                                Margin="0,5,0,0"
+                                                Foreground="White"
+                                                Text="x" />
+                                            <Label Content="{Binding ViewModel.ContaminationBadPixelImage.PixelHeight}" Foreground="White" />
+                                        </DockPanel>
+                                    </Grid>
+                                </md:Card>
+                            </GroupBox>
+
+                        </mah:MetroTabItem>
+                    </mah:MetroTabControl>
+
+
+
+                </DockPanel>
+
+            </DockPanel>
+        </md:DrawerHost>
+    </GroupBox>
+</UserControl>

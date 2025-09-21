@@ -1,0 +1,439 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:hex="clr-namespace:HexView.Wpf;assembly=HexView.Wpf"
+    xmlns:iconPack="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:omron="clr-namespace:OMRON.Reader.SDK.KCommands.Models;assembly=OMRON.Reader.SDK-0.1"
+    xmlns:templates="clr-namespace:LabelVal.V430.Views.TemplateSelectors">
+
+
+    <!--  Select  -->
+    <DataTemplate x:Key="KCommandSelect" DataType="omron:Field">
+
+        <md:Card Margin="3" Padding="0,0,0,20">
+
+            <DockPanel>
+
+                <TextBlock
+                    Margin="6,0"
+                    VerticalAlignment="Top"
+                    Text="{Binding FieldNumber}" />
+
+                <ComboBox
+                    MinWidth="100"
+                    md:ComboBoxAssist.ShowSelectedItem="True"
+                    md:HintAssist.HelperText="{Binding Default}"
+                    md:HintAssist.Hint="{Binding Title}"
+                    ItemsSource="{Binding Source}"
+                    SelectedItem="{Binding Value}"
+                    Style="{StaticResource MaterialDesignFloatingHintComboBox}">
+
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <TextBlock Margin="3,0" Text="{Binding Value, StringFormat={}{0}:}" />
+                                <TextBlock Margin="3,0" Text="{Binding Text, StringFormat={} {0}}" />
+
+                            </DockPanel>
+
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </DockPanel>
+        </md:Card>
+    </DataTemplate>
+
+    <!--  Range  -->
+    <DataTemplate x:Key="KCommandRange" DataType="omron:Field">
+
+        <md:Card Margin="3" Padding="0,0,0,20">
+
+            <DockPanel>
+
+                <TextBlock
+                    Margin="6,0"
+                    VerticalAlignment="Top"
+                    Text="{Binding FieldNumber}" />
+
+                <TextBox
+                    MinWidth="100"
+                    md:HintAssist.HelperText="{Binding Default, StringFormat={}Default: {0}}"
+                    md:HintAssist.Hint="{Binding Title}"
+                    md:TextFieldAssist.SuffixText="{Binding Range.Units}"
+                    md:TextFieldAssist.SuffixTextVisibility="Always"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    Text="{Binding Value}" />
+            </DockPanel>
+        </md:Card>
+    </DataTemplate>
+
+    <!--  String, IpAddr, ReadOnly  -->
+    <DataTemplate x:Key="KCommandString" DataType="omron:Field">
+
+        <md:Card Margin="3" Padding="0,0,0,20">
+
+            <DockPanel>
+
+                <TextBlock
+                    Margin="6,0"
+                    VerticalAlignment="Top"
+                    Text="{Binding FieldNumber}" />
+
+                <md:Badged>
+                    <TextBox
+                        MinWidth="100"
+                        md:BadgedAssist.Badge="{iconPack:Modern Kind=Add}"
+                        md:BadgedAssist.BadgePlacementMode="Right"
+                        md:BadgedAssist.IsMiniBadge="True"
+                        md:HintAssist.HelperText="{Binding Default, StringFormat={}Default: {0}}"
+                        md:HintAssist.Hint="{Binding Title}"
+                        md:TextFieldAssist.SuffixText="{Binding MaxLength}"
+                        md:TextFieldAssist.SuffixTextVisibility="Always"
+                        Text="{Binding Value}">
+                        <TextBox.Style>
+                            <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Editor}" Value="readonly">
+                                        <Setter Property="IsReadOnly" Value="True" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                </md:Badged>
+            </DockPanel>
+        </md:Card>
+    </DataTemplate>
+
+    <!--  CharArray, HexArray  -->
+    <DataTemplate x:Key="KCommandCharArray" DataType="omron:Field">
+
+        <md:Card Margin="3" Padding="0,0,0,20">
+
+            <DockPanel>
+
+                <TextBlock
+                    Margin="6,0"
+                    VerticalAlignment="Top"
+                    Text="{Binding FieldNumber}" />
+
+                <hex:HexViewer
+                    Width="300"
+                    HorizontalAlignment="Left"
+                    ArrayDataSource="{Binding Value}"
+                    Columns="4"
+                    DataFormat="Hexadecimal"
+                    DataWidth="1"
+                    ShowAddress="True"
+                    ShowData="True"
+                    ShowText="True"
+                    TextFormat="Ascii" />
+            </DockPanel>
+        </md:Card>
+    </DataTemplate>
+
+    <!--  Collection / Array  -->
+    <DataTemplate x:Key="KCommandCollection">
+        <DataTemplate.Resources>
+            <CollectionViewSource x:Key="FieldsCollection" Source="{Binding Controller.CommandBuilder.IndexedCommands}">
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription PropertyName="Cmd" />
+                    <componentmodel:SortDescription PropertyName="FieldNumber" />
+                </CollectionViewSource.SortDescriptions>
+
+                <CollectionViewSource.GroupDescriptions>
+                    <PropertyGroupDescription PropertyName="Cat" />
+                    <PropertyGroupDescription PropertyName="Cmd" />
+                </CollectionViewSource.GroupDescriptions>
+            </CollectionViewSource>
+
+            <templates:KCommandTemplateSelector
+                x:Key="KCommandTemplateSelector"
+                KCommandCharArrayTemplate="{StaticResource KCommandCharArray}"
+                KCommandRangeTemplate="{StaticResource KCommandRange}"
+                KCommandSelectTemplate="{StaticResource KCommandSelect}"
+                KCommandStringTemplate="{StaticResource KCommandString}" />
+
+            <templates:KCommandGrouStyleSelector
+                x:Key="KCommandGroupStyleSelector"
+                CardGroupStyle="{StaticResource CardGroupStyle}"
+                CollectionGroupStyle="{StaticResource CollectionGroupStyle}"
+                DefaultGroupStyle="{StaticResource DefaultGroupStyle}" />
+        </DataTemplate.Resources>
+
+        <ScrollViewer MaxHeight="600">
+
+            <ItemsControl
+                x:Name="KCommandItems"
+                ItemTemplateSelector="{StaticResource KCommandTemplateSelector}"
+                ItemsSource="{Binding Source={StaticResource FieldsCollection}}">
+
+                <ItemsControl.GroupStyle>
+                    <GroupStyle ContainerStyleSelector="{StaticResource KCommandGroupStyleSelector}" />
+                </ItemsControl.GroupStyle>
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="1" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+            </ItemsControl>
+        </ScrollViewer>
+
+    </DataTemplate>
+
+
+    <!--  Default Group Style  -->
+    <Style x:Key="DefaultGroupStyle" TargetType="{x:Type GroupItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GroupItem}">
+                    <Expander
+                        md:ExpanderAssist.ExpanderButtonPosition="Start"
+                        md:ExpanderAssist.HorizontalHeaderPadding="3"
+                        BorderThickness="0"
+                        IsExpanded="false">
+                        <Expander.Header>
+                            <DockPanel>
+                                <TextBlock
+                                    Margin="3"
+                                    DockPanel.Dock="Left"
+                                    FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                    Text="{Binding Name}" />
+                            </DockPanel>
+                        </Expander.Header>
+                        <ItemsPresenter />
+                    </Expander>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  Card Group Style  -->
+    <Style x:Key="CardGroupStyle" TargetType="{x:Type GroupItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GroupItem}">
+
+                    <Expander
+                        md:ExpanderAssist.ExpanderButtonPosition="Start"
+                        md:ExpanderAssist.HorizontalHeaderPadding="3"
+                        BorderThickness="0"
+                        IsExpanded="false">
+
+                        <Expander.Header>
+                            <md:Card
+                                Margin="3"
+                                Padding="3"
+                                Background="{StaticResource MahApps.Brushes.Accent4}">
+                                <DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <TextBlock
+                                            Margin="3"
+                                            DockPanel.Dock="Left"
+                                            FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                            Text="{Binding Name}" />
+                                        <TextBlock
+                                            Margin="3"
+                                            DockPanel.Dock="Left"
+                                            FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                            Text="{Binding Items[0].Title}" />
+                                        <TextBlock
+                                            Margin="3"
+                                            HorizontalAlignment="Right"
+                                            DockPanel.Dock="Right"
+                                            FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                            Text="{Binding ItemCount, StringFormat={}({0})}" />
+                                    </DockPanel>
+                                    <DockPanel VerticalAlignment="Center">
+
+                                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="{Binding Items[0].Cmd, StringFormat={}&lt;{0}}" />
+
+                                        <ItemsControl FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" ItemsSource="{Binding Items}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel MaxWidth="120" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel>
+                                                        <TextBlock Text="," />
+                                                        <DockPanel>
+                                                            <DockPanel.Style>
+                                                                <Style TargetType="DockPanel">
+                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Editor}" Value="select">
+                                                                            <Setter Property="Visibility" Value="Visible" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </DockPanel.Style>
+                                                            <TextBlock Text="{Binding Value.Value}" />
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <DockPanel.Style>
+                                                                <Style TargetType="DockPanel">
+                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Editor}" Value="ipaddr">
+                                                                            <Setter Property="Visibility" Value="Visible" />
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Editor}" Value="range">
+                                                                            <Setter Property="Visibility" Value="Visible" />
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Editor}" Value="readonly">
+                                                                            <Setter Property="Visibility" Value="Visible" />
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Editor}" Value="bit-field">
+                                                                            <Setter Property="Visibility" Value="Visible" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </DockPanel.Style>
+                                                            <TextBlock Text="{Binding Value}" />
+                                                        </DockPanel>
+                                                    </DockPanel>
+
+
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="&gt;" />
+
+                                        <Button
+                                            HorizontalAlignment="Left"
+                                            Command="{Binding DataContext.ReadKCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding Items}"
+                                            Content="Get" />
+
+                                    </DockPanel>
+                                </DockPanel>
+                            </md:Card>
+                        </Expander.Header>
+
+                        <md:Card
+                            Margin="38,0,6,0"
+                            Padding="3"
+                            HorizontalAlignment="Left"
+                            Background="{StaticResource MahApps.Brushes.Accent2}">
+                            <ItemsPresenter />
+                        </md:Card>
+                    </Expander>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  Collection Group Style  -->
+    <Style x:Key="CollectionGroupStyle" TargetType="{x:Type GroupItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GroupItem}">
+                    <ControlTemplate.Resources>
+
+                        <templates:KCommandCmd2IndexedCmds x:Key="KCommandCmd2IndexedCmds" />
+
+                        <templates:KCommandTemplateSelectorNoArray
+                            x:Key="KCommandTemplateSelectorNoArray"
+                            KCommandCharArrayTemplate="{StaticResource KCommandCharArray}"
+                            KCommandRangeTemplate="{StaticResource KCommandRange}"
+                            KCommandSelectTemplate="{StaticResource KCommandSelect}"
+                            KCommandStringTemplate="{StaticResource KCommandString}" />
+
+                        <templates:KCommandGrouStyleSelector
+                            x:Key="KCommandGroupStyleSelector"
+                            CardGroupStyle="{StaticResource CardGroupStyle}"
+                            DefaultGroupStyle="{StaticResource DefaultGroupStyle}" />
+
+                    </ControlTemplate.Resources>
+
+
+                    <md:Card>
+
+                        <Expander
+                            md:ExpanderAssist.ExpanderButtonPosition="Start"
+                            md:ExpanderAssist.HorizontalHeaderPadding="3"
+                            BorderThickness="0"
+                            IsExpanded="false"
+                            Tag="2">
+                            <Expander.Header>
+                                <DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <TextBlock
+                                            Margin="3"
+                                            DockPanel.Dock="Left"
+                                            FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                            Text="{Binding Name}" />
+                                        <TextBlock
+                                            Margin="3"
+                                            DockPanel.Dock="Left"
+                                            FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                            Text="{Binding Items[0].Title}" />
+                                        <TextBlock
+                                            Margin="3"
+                                            HorizontalAlignment="Right"
+                                            DockPanel.Dock="Right"
+                                            FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                            Text="{Binding ItemCount, StringFormat={}({0})}" />
+                                    </DockPanel>
+                                </DockPanel>
+                            </Expander.Header>
+
+                            <ScrollViewer MaxHeight="600">
+
+
+                                <ItemsControl>
+                                    <ItemsControl.ItemsSource>
+                                        <MultiBinding Converter="{StaticResource KCommandCmd2IndexedCmds}">
+                                            <Binding Path="DataContext.Controller.CommandBuilder.IndexedCommands" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                            <Binding Path="Items[0].Cmd" />
+                                        </MultiBinding>
+                                    </ItemsControl.ItemsSource>
+
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+
+                                            <DockPanel>
+                                                <DockPanel.Resources>
+                                                    <CollectionViewSource x:Key="FieldsCollection1" Source="{Binding}">
+                                                        <CollectionViewSource.GroupDescriptions>
+                                                            <PropertyGroupDescription PropertyName="Cmd" />
+                                                        </CollectionViewSource.GroupDescriptions>
+                                                    </CollectionViewSource>
+                                                </DockPanel.Resources>
+
+                                                <ItemsControl ItemTemplateSelector="{StaticResource KCommandTemplateSelectorNoArray}" ItemsSource="{Binding Source={StaticResource FieldsCollection1}}">
+
+                                                    <ItemsControl.GroupStyle>
+                                                        <GroupStyle ContainerStyle="{StaticResource CardGroupStyle}" />
+                                                    </ItemsControl.GroupStyle>
+
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <UniformGrid Columns="1" />
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+
+                                                </ItemsControl>
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+
+                                </ItemsControl>
+                            </ScrollViewer>
+
+                        </Expander>
+                    </md:Card>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

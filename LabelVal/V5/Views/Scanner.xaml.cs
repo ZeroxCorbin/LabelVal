@@ -40,24 +40,6 @@ public partial class Scanner : UserControl
             ShowImage(((ViewModels.Scanner)DataContext).Image, ((ViewModels.Scanner)DataContext).ImageOverlay, ((ViewModels.Scanner)DataContext).ImageFocusRegionOverlay);
     }
 
-    private bool ShowImage(byte[] image, DrawingImage overlay, DrawingImage overlay1)
-    {
-        ImageViewerDialogViewModel dc = new();
-
-        dc.LoadImage(image, [overlay, overlay1]);
-        if (dc.Image == null) return false;
-
-        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
-
-        dc.Width = yourParentWindow.ActualWidth - 100;
-        dc.Height = yourParentWindow.ActualHeight - 100;
-
-        DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
-
-        return true;
-
-    }
-
     private bool ShowImage(BitmapImage image, DrawingImage overlay, DrawingImage overlay1)
     {
         ImageViewerDialogViewModel dc = new();
@@ -101,13 +83,6 @@ public partial class Scanner : UserControl
             ((ViewModels.Scanner)DataContext).Manager.SaveCommand.Execute(null);
         }
     }
-
-
-    //private void btnSetResults_Click(object sender, RoutedEventArgs e)
-    //{
-    //    CodeType = ((Scanner)DataContext).Results[0]["type"].ToString();
-    //    ExpectedOutDataUTF8 = ((Scanner)DataContext).Results[0]["dataUTF8"].ToString();
-    //}
 
     private void btnUnselect(object sender, RoutedEventArgs e)=>
         ((ViewModels.Scanner)this.DataContext).Manager.SelectedDevice = null;

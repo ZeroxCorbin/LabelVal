@@ -95,7 +95,7 @@ public partial class ResultsDeviceEntry_L95 : UserControl
     }
 
     [RelayCommand]
-    private void SaveSectorDetailsImage(SectorDetails sectorDetails)
+    private void SaveSectorDetailsImage(Sectors.Views.SectorDetails sectorDetails)
     {
         if (sectorDetails != null)
         {

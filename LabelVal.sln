@@ -40,6 +40,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zint.CLI", "..\Zint.CLI\Zin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingBuffer.lib", "..\RingBuffer.lib\RingBuffer.lib.csproj", "{8829F62E-BCDD-4926-367E-5233DB557921}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "V430_REST_Lib", "..\V430_REST_Lib\V430_REST_Lib.csproj", "{8E6F975D-9ACB-36E8-8F9B-730060C80BFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OMRON.Reader.SDK", "..\OMRON.Reader.SDK\OMRON.Reader.SDK.csproj", "{1EEFAB28-5873-65AF-C374-6C117926435B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -120,6 +124,14 @@ Global
 		{8829F62E-BCDD-4926-367E-5233DB557921}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8829F62E-BCDD-4926-367E-5233DB557921}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8829F62E-BCDD-4926-367E-5233DB557921}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E6F975D-9ACB-36E8-8F9B-730060C80BFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E6F975D-9ACB-36E8-8F9B-730060C80BFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E6F975D-9ACB-36E8-8F9B-730060C80BFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E6F975D-9ACB-36E8-8F9B-730060C80BFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EEFAB28-5873-65AF-C374-6C117926435B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EEFAB28-5873-65AF-C374-6C117926435B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EEFAB28-5873-65AF-C374-6C117926435B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EEFAB28-5873-65AF-C374-6C117926435B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

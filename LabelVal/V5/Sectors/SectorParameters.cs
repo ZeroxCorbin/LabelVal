@@ -32,6 +32,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
     public SectorDetails() { }
 
     public SectorDetails(ISector sector) => Process(sector);
+
     public void Process(ISector sector)
     {
         if (sector is not V5.Sectors.Sector sec)
