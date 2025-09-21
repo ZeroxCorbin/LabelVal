@@ -78,7 +78,7 @@ public partial class ResultsDeviceEntry_V5 : UserControl
     }
 
     [RelayCommand]
-    private void CopySectorDetailsImage(SectorDetails sectorDetails)
+    private void CopySectorDetailsImage(Sectors.Views.SectorDetails sectorDetails)
     {
         if (sectorDetails != null)
         {
