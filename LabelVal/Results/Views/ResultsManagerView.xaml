@@ -185,7 +185,7 @@
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
+                            <Grid Width="48" Height="48">
                                 <Grid.InputBindings>
                                     <MouseBinding Command="{Binding BringIntoViewHandlerCommand}" MouseAction="LeftClick" />
                                 </Grid.InputBindings>
