@@ -50,11 +50,10 @@
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="md:RippleAssist.Feedback" Value="{DynamicResource MahApps.Brushes.Accent}" />
                 <EventSetter Event="Selected" Handler="LeafTreeViewItem_Selected" />
-                <Setter Property="ItemsControl.ItemContainerStyleSelector"
-                        Value="{DynamicResource ImageRollsTreeViewItemStyleSelector}" />
+                <Setter Property="ItemsControl.ItemContainerStyleSelector" Value="{DynamicResource ImageRollsTreeViewItemStyleSelector}" />
 
                 <Style.Triggers>
-                    <!-- Hover (only when not selected) -->
+                    <!--  Hover (only when not selected)  -->
                     <MultiTrigger>
                         <MultiTrigger.Conditions>
                             <Condition Property="IsMouseOver" Value="True" />
@@ -62,12 +61,12 @@
                         </MultiTrigger.Conditions>
                         <Setter Property="Background">
                             <Setter.Value>
-                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent}" Opacity="0.20" />
+                                <SolidColorBrush Opacity="0.20" Color="{DynamicResource MahApps.Colors.Accent}" />
                             </Setter.Value>
                         </Setter>
                     </MultiTrigger>
 
-                    <!-- Selected (focused) -->
+                    <!--  Selected (focused)  -->
                     <MultiTrigger>
                         <MultiTrigger.Conditions>
                             <Condition Property="IsSelected" Value="True" />
@@ -75,15 +74,14 @@
                         </MultiTrigger.Conditions>
                         <Setter Property="Background">
                             <Setter.Value>
-                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent}" Opacity="0.80" />
+                                <SolidColorBrush Opacity="0.80" Color="{DynamicResource MahApps.Colors.Accent}" />
                             </Setter.Value>
                         </Setter>
-                        <Setter Property="Foreground"
-                                Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
+                        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
                         <Setter Property="FontWeight" Value="SemiBold" />
                     </MultiTrigger>
 
-                    <!-- Selected (inactive focus) -->
+                    <!--  Selected (inactive focus)  -->
                     <MultiTrigger>
                         <MultiTrigger.Conditions>
                             <Condition Property="IsSelected" Value="True" />
@@ -91,11 +89,10 @@
                         </MultiTrigger.Conditions>
                         <Setter Property="Background">
                             <Setter.Value>
-                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent}" Opacity="0.60" />
+                                <SolidColorBrush Opacity="0.60" Color="{DynamicResource MahApps.Colors.Accent}" />
                             </Setter.Value>
                         </Setter>
-                        <Setter Property="Foreground"
-                                Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
+                        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
                         <Setter Property="FontWeight" Value="SemiBold" />
                     </MultiTrigger>
                 </Style.Triggers>
