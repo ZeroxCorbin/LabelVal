@@ -115,7 +115,14 @@
                 <EventSetter Event="Selected" Handler="GroupTreeViewItem_Selected" />
                 <Style.Triggers>
                     <Trigger Property="local:ImageRollsManager.IsAncestorOfSelected" Value="True">
-                        <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent3}" />
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent}" />
+                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.Accent4}" />
+                                </LinearGradientBrush>
+                            </Setter.Value>
+                        </Setter>
                         <Setter Property="BorderThickness" Value="1" />
                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent3}" />
                         <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
@@ -433,7 +440,7 @@
                         <ToggleButton
                             HorizontalAlignment="Center"
                             md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}"
-                            Content="{iconPacks:Modern Kind=AlignLeft}"
+                            Content=""
                             IsChecked="{Binding RightAlignOverflow}"
                             ToolTip="Toggle name aligned left or right.">
                             <ToggleButton.LayoutTransform>
