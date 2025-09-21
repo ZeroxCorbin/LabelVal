@@ -47,9 +47,58 @@
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Padding" Value="0" />
-                <!--  Leaf & group both get this; handler filters to ImageRoll  -->
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="md:RippleAssist.Feedback" Value="{DynamicResource MahApps.Brushes.Accent}" />
                 <EventSetter Event="Selected" Handler="LeafTreeViewItem_Selected" />
-                <Setter Property="ItemsControl.ItemContainerStyleSelector" Value="{DynamicResource ImageRollsTreeViewItemStyleSelector}" />
+                <Setter Property="ItemsControl.ItemContainerStyleSelector"
+                        Value="{DynamicResource ImageRollsTreeViewItemStyleSelector}" />
+
+                <Style.Triggers>
+                    <!-- Hover (only when not selected) -->
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver" Value="True" />
+                            <Condition Property="IsSelected" Value="False" />
+                        </MultiTrigger.Conditions>
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent}" Opacity="0.20" />
+                            </Setter.Value>
+                        </Setter>
+                    </MultiTrigger>
+
+                    <!-- Selected (focused) -->
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsSelected" Value="True" />
+                            <Condition Property="IsKeyboardFocusWithin" Value="True" />
+                        </MultiTrigger.Conditions>
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent}" Opacity="0.80" />
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                    </MultiTrigger>
+
+                    <!-- Selected (inactive focus) -->
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsSelected" Value="True" />
+                            <Condition Property="IsKeyboardFocusWithin" Value="False" />
+                        </MultiTrigger.Conditions>
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent}" Opacity="0.60" />
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                    </MultiTrigger>
+                </Style.Triggers>
             </Style>
 
             <!--  Group (non-selectable) style  -->
@@ -68,7 +117,7 @@
                     <Trigger Property="local:ImageRollsManager.IsAncestorOfSelected" Value="True">
                         <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent3}" />
                         <Setter Property="BorderThickness" Value="1" />
-                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent3}" />
                         <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
                         <Setter Property="FontWeight" Value="SemiBold" />
                     </Trigger>
@@ -77,7 +126,10 @@
 
             <!--  Leaf template for ImageRoll (re-uses existing list item template)  -->
             <DataTemplate DataType="{x:Type viewModels:ImageRoll}">
-                <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource ImageRollListItemTemplate}" Margin="3"/>
+                <ContentPresenter
+                    Margin="3"
+                    Content="{Binding}"
+                    ContentTemplate="{StaticResource ImageRollListItemTemplate}" />
             </DataTemplate>
 
             <!--  Single style selector (do NOT duplicate)  -->
@@ -230,6 +282,7 @@
                             <DockPanel>
                                 <TextBlock
                                     Margin="0,0,0,3"
+                                    HorizontalAlignment="Center"
                                     DockPanel.Dock="Top"
                                     Text="New"
                                     Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -262,6 +315,7 @@
                             <DockPanel>
                                 <TextBlock
                                     Margin="0,0,0,3"
+                                    HorizontalAlignment="Center"
                                     DockPanel.Dock="Top"
                                     Text="Edit"
                                     Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -290,6 +344,7 @@
                             <DockPanel>
                                 <TextBlock
                                     Margin="0,0,0,3"
+                                    HorizontalAlignment="Center"
                                     DockPanel.Dock="Top"
                                     Text="Save"
                                     Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -315,6 +370,7 @@
                             <DockPanel>
                                 <TextBlock
                                     Margin="0,0,0,3"
+                                    HorizontalAlignment="Center"
                                     DockPanel.Dock="Top"
                                     Text="Cancel"
                                     Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -346,6 +402,7 @@
                             <DockPanel>
                                 <TextBlock
                                     Margin="0,0,0,3"
+                                    HorizontalAlignment="Center"
                                     DockPanel.Dock="Top"
                                     Text="Delete"
                                     Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -366,6 +423,7 @@
                         VerticalAlignment="Center">
                         <TextBlock
                             Margin="0,0,0,2"
+                            HorizontalAlignment="Center"
                             DockPanel.Dock="Top"
                             FontSize="10"
                             FontWeight="DemiBold"
@@ -440,11 +498,6 @@
                     Style="{StaticResource MaterialDesignTreeView}">
                     <TreeView.Resources>
 
-                        <!--
-                            Hierarchical template for BOTH grouping levels.
-                            Level 1 (RollType): simple bold text + count.
-                            Level 2 (StandardGroup): rectangle with images (from AllImageRollTabHeaderTemplate logic) + Name + ImageCount.
-                        -->
                         <HierarchicalDataTemplate DataType="{x:Type data:CollectionViewGroup}" ItemsSource="{Binding Items}">
 
                             <Grid>
@@ -457,23 +510,39 @@
                                         </LinearGradientBrush>
                                     </md:Card.Background>
 
-                                    <DockPanel
-                                        Height="32">
+                                    <DockPanel Height="32">
 
-                                        <DockPanel HorizontalAlignment="Left"
-                                        VerticalAlignment="Center">
+                                        <DockPanel
+                                            Margin="3"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center">
 
+                                            <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left">
+                                                <iconPacks:PackIconMaterial.Style>
+                                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                        <Setter Property="Kind" Value="Database" />
+                                                        <Setter Property="ToolTip" Value="Images are stored in a database." />
 
-                                            <TextBlock FontWeight="Bold" Text="{Binding Name}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Name}" Value="{x:Static imageRollEnums:ImageRollTypes.Directory}">
+                                                                <Setter Property="Kind" Value="Folder" />
+                                                                <Setter Property="ToolTip" Value="Images are loaded from a directory. Read Only!" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </iconPacks:PackIconMaterial.Style>
+                                            </iconPacks:PackIconMaterial>
 
                                             <TextBlock
-                                                Margin="6,0,0,0"
-                                                FontSize="10"
-                                                Foreground="{DynamicResource MahApps.Brushes.Gray7}"
-                                                Text="{Binding ItemCount, StringFormat='({0})'}" />
+                                                Margin="3"
+                                                FontWeight="Bold"
+                                                Text="{Binding Name}" />
+
+                                            <TextBlock Margin="6,3,0,3" Text="{Binding ItemCount, StringFormat='({0})'}" />
                                         </DockPanel>
                                     </DockPanel>
                                 </md:Card>
+
                                 <!--  Second level (StandardGroup) presentation  -->
                                 <DockPanel
                                     x:Name="SecondLevelPanel"
