@@ -22,8 +22,6 @@
 
     <!--  Shared toolbar for L95 Verifier  -->
     <DataTemplate x:Key="L95VerifierToolbarTemplate">
-        <!--  DataContext is expected to be the Verifier (SelectedDevice)  -->
-
         <ToolBarTray
             Margin="3"
             VerticalAlignment="Top"
@@ -37,13 +35,23 @@
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                 Style="{StaticResource FlatToolBarStyle}">
 
+                <!-- Centralized spacing + sizing -->
+                <ToolBar.Resources>
+                    <!-- Adjust this Thickness once to affect all buttons -->
+                    <Thickness x:Key="L95ToolBarButtonSpacing">3,3,3,0</Thickness>
+
+                    <!-- Implicit style for all buttons in this toolbar -->
+                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                        <Setter Property="Margin" Value="{StaticResource L95ToolBarButtonSpacing}" />
+                        <Setter Property="Padding" Value="4" />
+                        <Setter Property="BorderThickness" Value="0" />
+                    </Style>
+                </ToolBar.Resources>
+
                 <!--  Connect / Disconnect  -->
-                <Button
-                    Margin="3,3,3,0"
-                    BorderThickness="0"
-                    Command="{Binding ConnectCommand}">
+                <Button Command="{Binding ConnectCommand}">
                     <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <iconPacks:Modern Kind="Connect" />
@@ -57,6 +65,10 @@
                                         </Setter.Value>
                                     </Setter>
                                 </DataTrigger>
+                                <!-- If you still need to collapse spacing in Exited state, you can override Margin -->
+                                <DataTrigger Binding="{Binding Controller.ProcessState}" Value="{x:Static watchers:Win32_ProcessWatcherProcessState.Exited}">
+                                    <Setter Property="Margin" Value="3" />
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
@@ -64,12 +76,10 @@
 
                 <!--  LVS Super User  -->
                 <Button
-                    Margin="3,3,3,0"
-                    BorderThickness="0"
                     Command="{Binding EnterLvsCredentialsCommand}"
                     ToolTip="Login as LVS super user">
                     <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Controller.ProcessState}" Value="{x:Static watchers:Win32_ProcessWatcherProcessState.Exited}">
@@ -83,12 +93,10 @@
 
                 <!--  Admin  -->
                 <Button
-                    Margin="3"
-                    BorderThickness="0"
                     Command="{Binding EnterAdminCredentialsCommand}"
                     ToolTip="Login as Admin">
                     <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Controller.ProcessState}" Value="{x:Static watchers:Win32_ProcessWatcherProcessState.Exited}">
@@ -102,6 +110,5 @@
 
             </ToolBar>
         </ToolBarTray>
-
     </DataTemplate>
 </ResourceDictionary>

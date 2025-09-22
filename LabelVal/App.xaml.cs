@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NHibernate.Hql.Ast.ANTLR.Util;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -55,6 +56,43 @@ public partial class App : Application
         });
 
 }).Build();
+
+
+    // ADD near top of App class
+    private static Dictionary<string, object>? _splashFrozenResources;
+
+    private static Dictionary<string, object> CaptureSplashResources()
+    {
+        // Must run on main (Application) dispatcher.
+        string[] keys =
+        {
+        "MahApps.Brushes.Gray8",
+        "MahApps.Brushes.Gray4",
+        "MahApps.Brushes.Gray5",
+        "MahApps.Brushes.Accent",
+        "MahApps.Brushes.ThemeBackground",
+        "MahApps.Brushes.ThemeForeground"
+    };
+
+        Dictionary<string, object> dict = new();
+        foreach (var k in keys)
+        {
+            if (Current.Resources[k] is System.Windows.Media.Brush b)
+            {
+                var clone = b.IsFrozen ? b : b.CloneCurrentValue();
+                if (clone.CanFreeze) clone.Freeze();
+                dict[k] = clone;
+            }
+            else if (Current.Resources[k] is object o)
+            {
+                // Non-brush simple objects (colors, etc.)
+                dict[k] = o;
+            }
+        }
+        return dict;
+    }
+
+
 
     public static T GetService<T>() where T : notnull => _host.Services.GetRequiredService<T>();
 
@@ -164,15 +202,20 @@ public partial class App : Application
 
     }
 
-    protected override void OnStartup(StartupEventArgs e)
-    {  
-        DisplaySplashScreen();
-        
-        _host.Start();
-
+    // MODIFY OnStartup: move host start async and capture resources BEFORE starting thread.
+    protected override async void OnStartup(StartupEventArgs e)
+    {
         base.OnStartup(e);
 
-        // Wait until the splash screen is created and its dispatcher is running
+        // Capture needed resources for splash before creating it on another thread.
+        _splashFrozenResources = CaptureSplashResources();
+
+        DisplaySplashScreen(); // now launches isolated thread splash
+
+        // Start host asynchronously to avoid blocking any UI thread.
+        await Task.Run(() => _host.Start());
+
+        // Wait until splash window dispatcher is ready
         _splashScreenReady.WaitOne();
 
         UpdateSplashScreen("Loading settings...");
@@ -183,46 +226,36 @@ public partial class App : Application
 
         UpdateSplashScreen("Initializing main window...");
 
-        // Defer non-critical UI updates until the application is idle.
-        // This allows the main window to render sooner.
-        _ = Dispatcher.InvokeAsync(async () =>
+        await Task.Run(() =>
         {
-            await Task.Run(() =>
+            UpdateSplashScreen("Applying themes...");
+            var themeName = Settings.GetValue("App.Theme", "Dark.Steel", true);
+            if (themeName.Contains("#", StringComparison.Ordinal) && themeName != ThemeSupport.SystemSyncSentinel)
+                themeName = ThemeSupport.SystemSyncSentinel;
+
+            Dispatcher.Invoke(() =>
             {
-                UpdateSplashScreen("Applying themes...");
-                Logger.Info("Starting: Getting color theme.");
-                var themeName = Settings.GetValue("App.Theme", "Dark.Steel", true);
-
-                // Migrate any legacy '#' values that are not the sentinel.
-                if (themeName.Contains("#", StringComparison.Ordinal) && themeName != ThemeSupport.SystemSyncSentinel)
-                    themeName = ThemeSupport.SystemSyncSentinel;
-
-                Dispatcher.Invoke(() =>
-                {
-                    // Centralized apply (covers OS sync or explicit theme)
-                    ThemeSupport.ApplyTheme(themeName);
-
-                    UpdateMaterialDesignTheme();
-
-                    ControlzEx.Theming.ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
-                });
+                ThemeSupport.ApplyTheme(themeName);
+                UpdateMaterialDesignTheme();
+                ControlzEx.Theming.ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
             });
+        });
 
-            Logger.Info("Starting: Complete");
+        UpdateSplashScreen("Loading Main Window...");
 
-            _ = Application.Current.Dispatcher.BeginInvoke(() =>
-            {
-                _ = WeakReferenceMessenger.Default.Send(new SplashScreenMessage("Loading Main Window..."));
-            });
+        var mainWindow = new MainWindow();
+        MainWindow = mainWindow;
+        mainWindow.Show();
 
-            var mainWindow = new MainWindow();
-            this.MainWindow = mainWindow;
-
-            mainWindow.Show();            
-
-        }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+        // Close splash (on its dispatcher) after a small delay if desired.
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(500);
+            CloseSplashScreen();
+        });
     }
 
+    // MODIFY DisplaySplashScreen unchanged except it just starts the thread.
     private static void DisplaySplashScreen()
     {
         Thread splashThread = new(() => Display())
@@ -230,30 +263,62 @@ public partial class App : Application
             IsBackground = true,
             Name = "SplashScreenThread"
         };
-        splashThread.SetApartmentState(ApartmentState.STA); // Splash screen needs to be STA
+        splashThread.SetApartmentState(ApartmentState.STA);
         splashThread.Start();
     }
 
+    // REWRITE Display to remove wrong CheckAccess and apply isolated resources.
     private static void Display()
     {
         if (_splashScreen != null)
             return;
 
-        _splashScreen = new Main.Views.SplashScreen();
+        // Build isolated resource dictionary to avoid cross-dispatch access.
+        ResourceDictionary local = new();
+        if (_splashFrozenResources != null)
+        {
+            foreach (var kvp in _splashFrozenResources)
+                local[kvp.Key] = kvp.Value;
+        }
+
+        _splashScreen = new Main.Views.SplashScreen
+        {
+            // Replace window resources with isolated dictionary (no DynamicResource into Application scope).
+            Resources = local
+        };
+
         if (_splashScreen.DataContext is Main.ViewModels.SplashScreenViewModel vm)
         {
             vm.SplashScreenDispatcher = Dispatcher.CurrentDispatcher;
             vm.RequestClose = () => CloseSplashScreen();
         }
+
         _splashScreen.Show();
 
         _splashScreenDispatcher = Dispatcher.CurrentDispatcher;
-        _splashScreenReady.Set(); // Signal that the splash screen is ready
+        _splashScreenReady.Set();
 
-        // Start the dispatcher processing loop
-        Dispatcher.Run();
+        Dispatcher.Run(); // message loop for splash thread
 
         _splashScreen = null;
+    }
+
+    // UPDATE CloseSplashScreen to null dispatcher after shutdown
+    public static void CloseSplashScreen()
+    {
+        if (_splashScreen == null)
+            return;
+
+        if (_splashScreen.DataContext is Main.ViewModels.SplashScreenViewModel vm)
+            vm.IsActive = false;
+
+        _splashScreenDispatcher?.BeginInvoke(() =>
+        {
+            _splashScreen?.Close();
+            _splashScreen = null;
+            _splashScreenDispatcher?.BeginInvokeShutdown(DispatcherPriority.Normal);
+            _splashScreenDispatcher = null;
+        });
     }
 
     public static void UpdateSplashScreen(string message)
@@ -263,18 +328,6 @@ public partial class App : Application
         );
     }
 
-    public static void CloseSplashScreen()
-    {
-        if(_splashScreen == null)
-            return;
-
-        if(_splashScreen.DataContext is Main.ViewModels.SplashScreenViewModel vm)
-        {
-            vm.IsActive = false;
-        }
-        _splashScreenDispatcher?.BeginInvokeShutdown(DispatcherPriority.Normal);
-        //App.Current.Dispatcher.BeginInvoke(() => App.Current.MainWindow.BringIntoView());
-    }
     protected override void OnExit(ExitEventArgs e)
     {
         base.OnExit(e);

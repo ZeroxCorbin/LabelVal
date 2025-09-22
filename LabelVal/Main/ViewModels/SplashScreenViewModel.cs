@@ -28,11 +28,6 @@ public partial class SplashScreenViewModel : ObservableRecipient, IRecipient<Spl
 
     public void Receive(SplashScreenMessage message)
     {
-        if (SplashScreenDispatcher.CheckAccess())
-        {
-            _ = SplashScreenDispatcher.BeginInvoke(() => Receive(message));
-            return;
-        }
         // This message is sent from the main thread via App.UpdateSplashScreen,
         // which correctly dispatches it to the splash screen's thread.
         // So, this update happens on the correct thread.

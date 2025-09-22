@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
 
-    <!--  Local flat toolbar style (moved from Scanner.xaml)  -->
     <Style
         x:Key="FlatToolBarStyle"
         BasedOn="{StaticResource {x:Type ToolBar}}"
@@ -19,10 +18,8 @@
         </Setter>
     </Style>
 
-    <!--  Shared Scanner toolbar template  -->
+    <!--  Shared toolbar for L95 Verifier  -->
     <DataTemplate x:Key="V5ScannerToolbarTemplate">
-        <!--  DataContext expected: Scanner ViewModel (SelectedDevice in menu, or current DataContext in Scanner view)  -->
-
         <ToolBarTray
             Margin="3"
             VerticalAlignment="Top"
@@ -35,6 +32,19 @@
                 VerticalContentAlignment="Top"
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                 Style="{StaticResource FlatToolBarStyle}">
+
+                <!-- Centralized spacing + sizing -->
+                <ToolBar.Resources>
+                    <!-- Adjust this Thickness once to affect all buttons -->
+                    <Thickness x:Key="L95ToolBarButtonSpacing">3,3,3,0</Thickness>
+
+                    <!-- Implicit style for all buttons in this toolbar -->
+                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                        <Setter Property="Margin" Value="{StaticResource L95ToolBarButtonSpacing}" />
+                        <Setter Property="Padding" Value="4" />
+                        <Setter Property="BorderThickness" Value="0" />
+                    </Style>
+                </ToolBar.Resources>
 
                 <!--  Connect / Disconnect  -->
                 <Button
