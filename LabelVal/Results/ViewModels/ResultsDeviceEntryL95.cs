@@ -519,6 +519,7 @@ public partial class ResultsDeviceEntryL95
         {
             IsWorking = false;
             Application.Current.Dispatcher.Invoke(ResultsEntry.BringIntoViewHandler);
+            ResultsEntry.ResultsManagerView.QueueUpdateResultsPresence(); // <--- ADD
         }
     }
 
@@ -553,6 +554,7 @@ public partial class ResultsDeviceEntryL95
             GetSectorDiff();
             CurrentImageOverlay = IResultsDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
         }
+        ResultsEntry.ResultsManagerView.QueueUpdateResultsPresence(); // <--- ADD
     }
 
     /// <summary>
@@ -571,6 +573,8 @@ public partial class ResultsDeviceEntryL95
         DiffSectors.Clear();
         CurrentImageOverlay = null;
         CurrentImage = null;
+
+        ResultsEntry.ResultsManagerView.QueueUpdateResultsPresence(); // <--- ADD
     }
 
     /// <summary>
@@ -586,6 +590,7 @@ public partial class ResultsDeviceEntryL95
             GetStored();
             GetSectorDiff();
         }
+        ResultsEntry.ResultsManagerView.QueueUpdateResultsPresence(); // <--- ADD
     }
 
     private void GetSectorDiff()

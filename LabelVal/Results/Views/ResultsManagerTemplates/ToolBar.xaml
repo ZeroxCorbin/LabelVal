@@ -255,127 +255,147 @@
 
                 <Separator Margin="6,0,3,0" />
 
-                <!--  Button to copy all sector details to the clipboard as CSV.  -->
+                <!--  Copy Stored Results -->
                 <Button
                     Command="{Binding CopyAllSectorsToClipboardCommand}"
                     CommandParameter="source"
-                    Style="{StaticResource ToolBarButton}"
-                    ToolTip="Copy all current sector details to the clipboard as CSV.">
-
+                    ToolTip="Copy all stored sector details to the clipboard as CSV/JSON.">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource ToolBarButton}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <!-- Show ONLY when stored exists and no current exists -->
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding HasStoredResults}" Value="True"/>
+                                        <Condition Binding="{Binding HasCurrentResults}" Value="False"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                     <DockPanel>
                         <TextBlock
                             HorizontalAlignment="Center"
                             DockPanel.Dock="Top"
                             Text="Stored"
                             Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                        <iconPacks:PackIconModern
-                            Width="24"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Kind="PageCopy" />
+                        <iconPacks:PackIconModern Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" Kind="PageCopy" />
                     </DockPanel>
                 </Button>
 
-                <!--  Button to copy all sector details to the clipboard as CSV.  -->
+                <!--  Copy Current Results -->
                 <Button
                     Command="{Binding CopyAllSectorsToClipboardCommand}"
                     CommandParameter="current"
-                    Style="{StaticResource ToolBarButton}"
-                    ToolTip="Copy all current sector details to the clipboard as CSV.">
-
-
+                    ToolTip="Copy all current sector details to the clipboard as CSV/JSON.">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource ToolBarButton}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <!-- Show ONLY when current exists and no stored exists -->
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding HasCurrentResults}" Value="True"/>
+                                        <Condition Binding="{Binding HasStoredResults}" Value="False"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                     <DockPanel>
                         <TextBlock
                             HorizontalAlignment="Center"
                             DockPanel.Dock="Top"
                             Text="Current"
                             Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                        <iconPacks:PackIconModern
-                            Width="24"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Kind="PageCopy" />
+                        <iconPacks:PackIconModern Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" Kind="PageCopy" />
                     </DockPanel>
                 </Button>
 
-                <!--  Button to copy all sector details to the clipboard as CSV.  -->
+                <!--  Copy All (Stored + Current) -->
                 <Button
                     Command="{Binding CopyAllSectorsToClipboardCommand}"
                     CommandParameter="all"
-                    Style="{StaticResource ToolBarButton}"
-                    ToolTip="Copy all stored and current sector details to the clipboard as CSV.">
-
+                    ToolTip="Copy all stored and current sector details to the clipboard as CSV/JSON.">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource ToolBarButton}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <!-- Show ONLY when both stored and current exist -->
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding HasStoredResults}" Value="True"/>
+                                        <Condition Binding="{Binding HasCurrentResults}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                     <DockPanel>
                         <TextBlock
                             HorizontalAlignment="Center"
                             DockPanel.Dock="Top"
                             Text="All"
                             Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                        <iconPacks:PackIconModern
-                            Width="24"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Kind="PageCopy" />
+                        <iconPacks:PackIconModern Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" Kind="PageCopy" />
                     </DockPanel>
                 </Button>
 
                 <Separator Margin="6,0,3,0" />
 
-                <!--  Button to store all current results to the database.  -->
-                <Button Command="{Binding StoreAllCurrentResultsCommand}" ToolTip="Store all current results (images and sectors) to the database.">
-
+                <!--  Store All Current Results -->
+                <Button
+                    Command="{Binding StoreAllCurrentResultsCommand}"
+                    ToolTip="Store all current results (images and sectors) to the database.">
                     <Button.Style>
-                        <Style BasedOn="{StaticResource ToolBarButton}" TargetType="{x:Type Button}">
-                            <Setter Property="Visibility" Value="Visible" />
+                        <Style TargetType="Button" BasedOn="{StaticResource ToolBarButton}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasCurrentResults}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                                <!-- Still hide if SelectedResultsDatabase is locked -->
                                 <DataTrigger Binding="{Binding SelectedResultsDatabase.IsLocked}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
-
                     <DockPanel>
                         <TextBlock
                             HorizontalAlignment="Center"
                             DockPanel.Dock="Top"
                             Text="Store All"
                             Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                        <iconPacks:PackIconMaterial
-                            Width="24"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Kind="StorePlusOutline" />
+                        <iconPacks:PackIconMaterial Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" Kind="StorePlusOutline" />
                     </DockPanel>
                 </Button>
 
-                <!--  Button to clear all current results from the view.  -->
+                <!--  Clear All Current Results -->
                 <Button
                     Command="{Binding ClearAllCurrentResultsCommand}"
-                    Style="{StaticResource ToolBarButton}"
                     ToolTip="Clear all current results (images and sectors).">
-
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource ToolBarButton}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasCurrentResults}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                     <DockPanel>
                         <TextBlock
                             HorizontalAlignment="Center"
                             DockPanel.Dock="Top"
                             Text="Clear All"
                             Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                        <iconPacks:PackIconMaterialDesign
-                            Width="24"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Kind="ClearAll" />
+                        <iconPacks:PackIconMaterialDesign Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" Kind="ClearAll" />
                     </DockPanel>
                 </Button>
             </ToolBar>

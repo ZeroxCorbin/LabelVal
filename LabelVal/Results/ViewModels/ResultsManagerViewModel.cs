@@ -110,6 +110,8 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         }
         else
             Application.Current.Dispatcher.Invoke(() => ResultssEntries.Clear());
+
+        QueueUpdateResultsPresence();
     }
 
     /// <summary>
@@ -370,6 +372,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
                 _ = Application.Current.Dispatcher.BeginInvoke(new Action(() => entryToView.BringIntoViewHandler()), System.Windows.Threading.DispatcherPriority.ContextIdle);
             }
         }
+        QueueUpdateResultsPresence();
     }
 
     private void ActiveImageRoll_Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -434,11 +437,10 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         }
 
         img.NewData = null;
-
         if (!_isLoadingImages)
-        {
             _ = Application.Current.Dispatcher.BeginInvoke(new Action(() => ire.BringIntoViewHandler()), System.Windows.Threading.DispatcherPriority.ContextIdle);
-        }
+
+        QueueUpdateResultsPresence();
     }
 
     private void RemoveResultsEntry(ImageEntry img)
@@ -448,6 +450,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         {
             _ = ResultssEntries.Remove(itm);
         }
+        QueueUpdateResultsPresence();
     }
 
     #endregion
@@ -612,6 +615,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
             // Remove the image from the ImageRoll
             ActiveImageRoll.DeleteImage(imageToDelete.SourceImage);
         }
+        QueueUpdateResultsPresence();
     }
 
     /// <summary>
@@ -626,6 +630,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
             img.StoreCommand.Execute(ResultsEntryDevices.V5);
             img.StoreCommand.Execute(ResultsEntryDevices.L95);
         }
+        QueueUpdateResultsPresence();
     }
 
     /// <summary>
@@ -640,6 +645,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
             img.ClearCurrentCommand.Execute(ResultsEntryDevices.V5);
             img.ClearCurrentCommand.Execute(ResultsEntryDevices.L95);
         }
+        QueueUpdateResultsPresence();
     }
 
     /// <summary>
@@ -938,6 +944,7 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
             _ = ResultssEntries.Remove(entry); // Remove from UI
 
         _ = SelectedResultsDatabase.DeleteAllResultsByRollUid(rollUid);
+        QueueUpdateResultsPresence();
     }
 
     #endregion

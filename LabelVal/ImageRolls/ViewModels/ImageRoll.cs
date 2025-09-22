@@ -841,6 +841,8 @@ public partial class ImageRoll : ObservableValidator, IRecipient<PropertyChanged
         if (!ImageRollsDatabase.DeleteImage(UID, imageEntry.UID))
             Logger.Error($"Failed to delete image from roll: {imageEntry.UID}");
 
+        ImageEntries.Remove(imageEntry);
+
     }
 
     /// <summary>

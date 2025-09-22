@@ -465,6 +465,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
         {
             IsWorking = false;
             Application.Current.Dispatcher.Invoke(ResultsEntry.BringIntoViewHandler);
+            ResultsEntry.ResultsManagerView.QueueUpdateResultsPresence(); // <--- ADD
         }
     }
 
@@ -487,6 +488,8 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
         CurrentReport = null;
         CurrentImage = null;
         CurrentImageOverlay = null;
+
+        ResultsEntry.ResultsManagerView.QueueUpdateResultsPresence(); // <--- ADD
     }
 
     /// <summary>
@@ -501,6 +504,7 @@ public partial class ResultsDeviceEntryV275 : ObservableObject, IResultsDeviceEn
             GetStored();
             GetSectorDiff();
         }
+        ResultsEntry.ResultsManagerView.QueueUpdateResultsPresence(); // <--- ADD
     }
 
     private void GetSectorDiff()
