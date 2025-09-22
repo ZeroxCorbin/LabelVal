@@ -27,7 +27,7 @@ namespace LabelVal.V430.ViewModels
     public partial class V430ViewModel : ObservableRecipient
     {
         private LibSimpleDatabase.SimpleDatabase _settings;
-        public V430_REST_Lib.MicroHAWK.MicroHawkController Controller { get; }
+        public V430_REST_Lib.MicroHawkController Controller { get; }
 
         [ObservableProperty] string postLoginCommands = App.GetService<LibSimpleDatabase.SimpleDatabase>()!.GetValue("V430PostLoginCommands", "")!;
         partial void OnPostLoginCommandsChanged(string value) { _settings.SetValue("V430PostLoginCommands", value); }
@@ -35,9 +35,9 @@ namespace LabelVal.V430.ViewModels
         partial void OnPreLogoutCommandsChanged(string value) { _settings.SetValue("V430PreLogoutCommands", value); }
 
         [ObservableProperty] private int woiHeightPercentage = App.GetService<LibSimpleDatabase.SimpleDatabase>()!.GetValue("V430WoiHeightPercentage", 100);
-        partial void OnWoiHeightPercentageChanged(int value) { _settings.SetValue("V430WoiHeightPercentage", value); Controller.SetWoi(WoiHeightPercentage, WoiWidthPercentage); }
+        partial void OnWoiHeightPercentageChanged(int value) { _settings.SetValue("V430WoiHeightPercentage", value); _=Controller.SetWoiAsync(WoiHeightPercentage, WoiWidthPercentage); }
         [ObservableProperty] private int woiWidthPercentage = App.GetService<LibSimpleDatabase.SimpleDatabase>()!.GetValue("V430WoiWidthPercentage", 100);
-        partial void OnWoiWidthPercentageChanged(int value) { _settings.SetValue("V430WoiWidthPercentage", value); Controller.SetWoi(WoiHeightPercentage, WoiWidthPercentage); }
+        partial void OnWoiWidthPercentageChanged(int value) { _settings.SetValue("V430WoiWidthPercentage", value); _ = Controller.SetWoiAsync(WoiHeightPercentage, WoiWidthPercentage); }
 
         [ObservableProperty] private static string host = string.Empty;
         partial void OnHostChanged(string value) { _settings.SetValue("V430Host", value); Controller.Host = value; }
@@ -110,7 +110,7 @@ namespace LabelVal.V430.ViewModels
 
         private bool IsWaitingForFullImage;
 
-        public V430ViewModel(LibSimpleDatabase.SimpleDatabase settings, V430_REST_Lib.MicroHAWK.MicroHawkController controller)
+        public V430ViewModel(LibSimpleDatabase.SimpleDatabase settings, V430_REST_Lib.MicroHawkController controller)
         {
             _settings = settings;
             Controller = controller;
@@ -119,9 +119,9 @@ namespace LabelVal.V430.ViewModels
             IsActive = true;
         }
 
-        private void Controller_CommandUpdate(V430_REST_Lib.MicroHAWK.ConnectionStates state, string message)
+        private void Controller_CommandUpdate(V430_REST_Lib.ConnectionStates state, string message)
         {
-            if (state == V430_REST_Lib.MicroHAWK.ConnectionStates.Closed)
+            if (state == V430_REST_Lib.ConnectionStates.Closed)
                 return;
 
             if (message != null)
@@ -153,7 +153,7 @@ namespace LabelVal.V430.ViewModels
                 catch (Exception ex) { Logger.Error(ex); }
             }
         }
-        private void Controller_ReportUpdate(V430_REST_Lib.MicroHAWK.ConnectionStates state, object obj)
+        private void Controller_ReportUpdate(V430_REST_Lib.ConnectionStates state, object obj)
         {
             if (!App.Current.Dispatcher.CheckAccess())
             {
@@ -167,7 +167,7 @@ namespace LabelVal.V430.ViewModels
             {
                 try
                 {
-                    if (state == V430_REST_Lib.MicroHAWK.ConnectionStates.Image)
+                    if (state == V430_REST_Lib.ConnectionStates.Image)
                     {
                         if (obj is ImageReport report)
                         {
@@ -194,7 +194,7 @@ namespace LabelVal.V430.ViewModels
                         }
 
                     }
-                    else if (state == V430_REST_Lib.MicroHAWK.ConnectionStates.Report)
+                    else if (state == V430_REST_Lib.ConnectionStates.Report)
                     {
                         if (obj is CycleReport report)
                         {
@@ -676,7 +676,7 @@ namespace LabelVal.V430.ViewModels
             }
 
             Controller.SendCommand($"<K541,{ExposureTarget},0>");
-            Controller.SetWoi(WoiHeightPercentage, WoiWidthPercentage);
+            Controller.SetWoiAsync(WoiHeightPercentage, WoiWidthPercentage).Wait();
         }
 
 
