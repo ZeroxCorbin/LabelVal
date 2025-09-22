@@ -21,8 +21,6 @@
     xmlns:theme="clr-namespace:LabelVal.Theme"
     xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"
     Title="{Binding ApplicationTitle}"
-    Width="auto"
-    Height="auto"
     d:DataContext="{d:DesignInstance Type=viewModels:MainWindow}"
     dialogs:DialogParticipation.Register="{Binding}"
     Closing="MetroWindow_Closing"

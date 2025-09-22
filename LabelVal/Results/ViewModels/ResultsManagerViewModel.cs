@@ -626,9 +626,9 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     {
         foreach (ResultsEntry img in ResultssEntries)
         {
-            img.StoreCommand.Execute(ResultsEntryDevices.V275);
-            img.StoreCommand.Execute(ResultsEntryDevices.V5);
-            img.StoreCommand.Execute(ResultsEntryDevices.L95);
+            img.StoreOnly(ResultsEntryDevices.V275);
+            img.StoreOnly(ResultsEntryDevices.V5);
+            img.StoreOnly(ResultsEntryDevices.L95);
         }
         QueueUpdateResultsPresence();
     }
@@ -641,9 +641,9 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
     {
         foreach (ResultsEntry img in ResultssEntries)
         {
-            img.ClearCurrentCommand.Execute(ResultsEntryDevices.V275);
-            img.ClearCurrentCommand.Execute(ResultsEntryDevices.V5);
-            img.ClearCurrentCommand.Execute(ResultsEntryDevices.L95);
+            img.ClearOnly(ResultsEntryDevices.V275);
+            img.ClearOnly(ResultsEntryDevices.V5);
+            img.ClearOnly(ResultsEntryDevices.L95);
         }
         QueueUpdateResultsPresence();
     }

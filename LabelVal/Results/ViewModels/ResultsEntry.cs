@@ -283,6 +283,12 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
     [RelayCommand]
     private void Store(ResultsEntryDevices device)
     {
+        StoreOnly(device);
+        BringIntoViewHandler();
+    }
+
+    public void StoreOnly(ResultsEntryDevices device)
+    {
         var dev = ResultsDeviceEntries.FirstOrDefault(x => x.Device == device);
         if (dev == null)
         {
@@ -290,7 +296,6 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
             return;
         }
         _ = dev.Store();
-        BringIntoViewHandler();
     }
 
     /// <summary>
@@ -338,6 +343,12 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
     [RelayCommand]
     private void ClearCurrent(ResultsEntryDevices device)
     {
+        ClearOnly(device);
+        BringIntoViewHandler();
+    }
+
+    public void ClearOnly(ResultsEntryDevices device)
+    {
         var dev = ResultsDeviceEntries.FirstOrDefault(x => x.Device == device);
         if (dev == null)
         {
@@ -345,8 +356,6 @@ public partial class ResultsEntry : ObservableRecipient, IRecipient<PropertyChan
             return;
         }
         dev.ClearCurrent();
-        BringIntoViewHandler();
-
     }
 
     /// <summary>
