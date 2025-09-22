@@ -33,13 +33,13 @@
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                 Style="{StaticResource FlatToolBarStyle}">
 
-                <!-- Centralized spacing + sizing -->
+                <!--  Centralized spacing + sizing  -->
                 <ToolBar.Resources>
-                    <!-- Adjust this Thickness once to affect all buttons -->
+                    <!--  Adjust this Thickness once to affect all buttons  -->
                     <Thickness x:Key="L95ToolBarButtonSpacing">3,3,3,0</Thickness>
 
-                    <!-- Implicit style for all buttons in this toolbar -->
-                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                    <!--  Implicit style for all buttons in this toolbar  -->
+                    <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
                         <Setter Property="Margin" Value="{StaticResource L95ToolBarButtonSpacing}" />
                         <Setter Property="Padding" Value="4" />
                         <Setter Property="BorderThickness" Value="0" />

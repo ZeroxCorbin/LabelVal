@@ -35,13 +35,13 @@
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                 Style="{StaticResource FlatToolBarStyle}">
 
-                <!-- Centralized spacing + sizing -->
+                <!--  Centralized spacing + sizing  -->
                 <ToolBar.Resources>
-                    <!-- Adjust this Thickness once to affect all buttons -->
+                    <!--  Adjust this Thickness once to affect all buttons  -->
                     <Thickness x:Key="L95ToolBarButtonSpacing">3,3,3,0</Thickness>
 
-                    <!-- Implicit style for all buttons in this toolbar -->
-                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                    <!--  Implicit style for all buttons in this toolbar  -->
+                    <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
                         <Setter Property="Margin" Value="{StaticResource L95ToolBarButtonSpacing}" />
                         <Setter Property="Padding" Value="4" />
                         <Setter Property="BorderThickness" Value="0" />
@@ -51,7 +51,7 @@
                 <!--  Connect / Disconnect  -->
                 <Button Command="{Binding ConnectCommand}">
                     <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                        <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <iconPacks:Modern Kind="Connect" />
@@ -65,7 +65,7 @@
                                         </Setter.Value>
                                     </Setter>
                                 </DataTrigger>
-                                <!-- If you still need to collapse spacing in Exited state, you can override Margin -->
+                                <!--  If you still need to collapse spacing in Exited state, you can override Margin  -->
                                 <DataTrigger Binding="{Binding Controller.ProcessState}" Value="{x:Static watchers:Win32_ProcessWatcherProcessState.Exited}">
                                     <Setter Property="Margin" Value="3" />
                                 </DataTrigger>
@@ -75,11 +75,9 @@
                 </Button>
 
                 <!--  LVS Super User  -->
-                <Button
-                    Command="{Binding EnterLvsCredentialsCommand}"
-                    ToolTip="Login as LVS super user">
+                <Button Command="{Binding EnterLvsCredentialsCommand}" ToolTip="Login as LVS super user">
                     <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                        <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Controller.ProcessState}" Value="{x:Static watchers:Win32_ProcessWatcherProcessState.Exited}">
@@ -92,11 +90,9 @@
                 </Button>
 
                 <!--  Admin  -->
-                <Button
-                    Command="{Binding EnterAdminCredentialsCommand}"
-                    ToolTip="Login as Admin">
+                <Button Command="{Binding EnterAdminCredentialsCommand}" ToolTip="Login as Admin">
                     <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                        <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Controller.ProcessState}" Value="{x:Static watchers:Win32_ProcessWatcherProcessState.Exited}">
