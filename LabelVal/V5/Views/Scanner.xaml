@@ -11,6 +11,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:paz="clr-namespace:Wpf.Controls.PanAndZoom;assembly=Wpf.Controls.PanAndZoom"
+    xmlns:extensions="clr-namespace:Wpf.lib.Extentions;assembly=Wpf.lib"
     d:DataContext="{d:DesignInstance Type=ViewModels:Scanner}"
     mc:Ignorable="d">
 
@@ -868,7 +869,6 @@
 
                                                     <DockPanel DockPanel.Dock="Top">
 
-
                                                         <TextBlock DockPanel.Dock="Top" Text="{Binding [type]}" />
 
                                                         <TextBox
@@ -877,11 +877,8 @@
                                                             Text="{Binding [dataUTF8], Mode=OneWay}"
                                                             TextWrapping="Wrap" />
 
-
                                                     </DockPanel>
-
-
-
+                                                    
                                                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                                                         <TextBlock Text="PPE: " />
                                                         <TextBlock Text="{Binding [ppe], StringFormat=N2}" />

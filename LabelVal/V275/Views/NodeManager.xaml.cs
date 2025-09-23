@@ -79,6 +79,7 @@ public partial class NodeManager : UserControl
     {
         if (e.Dock == Dock.Top)
         {
+            drwSettings.Focus();
             ((ViewModels.NodeManager)DataContext).Manager.SaveCommand.Execute(null);
         }
     }

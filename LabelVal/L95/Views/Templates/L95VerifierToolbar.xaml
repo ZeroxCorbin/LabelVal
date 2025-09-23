@@ -24,12 +24,14 @@
     <DataTemplate x:Key="L95VerifierToolbarTemplate">
         <ToolBarTray
             Margin="3"
+            
             VerticalAlignment="Top"
             DataContext="{Binding}"
             IsLocked="True"
             Orientation="Vertical">
             <ToolBar
-                Padding="0"
+                
+                Padding="0,0,0,3"
                 VerticalAlignment="Top"
                 VerticalContentAlignment="Top"
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
@@ -41,9 +43,8 @@
                     <Thickness x:Key="L95ToolBarButtonSpacing">3,3,3,0</Thickness>
 
                     <!--  Implicit style for all buttons in this toolbar  -->
-                    <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
+                    <Style x:Key="ToolBarButton" BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
                         <Setter Property="Margin" Value="{StaticResource L95ToolBarButtonSpacing}" />
-                        <Setter Property="Padding" Value="4" />
                         <Setter Property="BorderThickness" Value="0" />
                     </Style>
                 </ToolBar.Resources>
@@ -51,7 +52,7 @@
                 <!--  Connect / Disconnect  -->
                 <Button Command="{Binding ConnectCommand}">
                     <Button.Style>
-                        <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                        <Style BasedOn="{StaticResource ToolBarButton}" TargetType="Button">
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <iconPacks:Modern Kind="Connect" />
@@ -77,7 +78,7 @@
                 <!--  LVS Super User  -->
                 <Button Command="{Binding EnterLvsCredentialsCommand}" ToolTip="Login as LVS super user">
                     <Button.Style>
-                        <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                        <Style BasedOn="{StaticResource ToolBarButton}" TargetType="Button">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Controller.ProcessState}" Value="{x:Static watchers:Win32_ProcessWatcherProcessState.Exited}">
@@ -92,7 +93,7 @@
                 <!--  Admin  -->
                 <Button Command="{Binding EnterAdminCredentialsCommand}" ToolTip="Login as Admin">
                     <Button.Style>
-                        <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                        <Style BasedOn="{StaticResource ToolBarButton}" TargetType="Button">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Controller.ProcessState}" Value="{x:Static watchers:Win32_ProcessWatcherProcessState.Exited}">

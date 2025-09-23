@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using LabelVal.Dialogs;
 using MahApps.Metro.Controls.Dialogs;
-using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -78,13 +76,15 @@ public partial class Scanner : UserControl
 
     private void drwSettings_DrawerClosing(object sender, MaterialDesignThemes.Wpf.DrawerClosingEventArgs e)
     {
-        if(e.Dock == Dock.Top)
-            {
+        if (e.Dock == Dock.Top)
+        {
+            //This trigger the textboxes to update the binding source via the texbox extension
+            drwSettings.Focus();
             ((ViewModels.Scanner)DataContext).Manager.SaveCommand.Execute(null);
         }
     }
 
-    private void btnUnselect(object sender, RoutedEventArgs e)=>
+    private void btnUnselect(object sender, RoutedEventArgs e) =>
         ((ViewModels.Scanner)this.DataContext).Manager.SelectedDevice = null;
 
 

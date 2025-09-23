@@ -319,6 +319,10 @@ public partial class ResultsManagerViewModel : ObservableRecipient,
         RequestMessage<Verifier> ret6 = WeakReferenceMessenger.Default.Send(new RequestMessage<Verifier>());
         if (ret6.HasReceivedResponse)
             Receive(new PropertyChangedMessage<Verifier>("", "", null, ret6.Response));
+
+        RequestMessage<Node> ret7 = WeakReferenceMessenger.Default.Send(new RequestMessage<Node>());
+        if (ret6.HasReceivedResponse)
+            Receive(new PropertyChangedMessage<Node>("", "", null, ret7.Response));
     }
 
     #endregion

@@ -27,7 +27,7 @@
             IsLocked="True"
             Orientation="Vertical">
             <ToolBar
-                Padding="0"
+                Padding="0,0,0,3"
                 VerticalAlignment="Top"
                 VerticalContentAlignment="Top"
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
@@ -39,20 +39,17 @@
                     <Thickness x:Key="L95ToolBarButtonSpacing">3,3,3,0</Thickness>
 
                     <!--  Implicit style for all buttons in this toolbar  -->
-                    <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
+                    <Style x:Key="ToolBarButtons" BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
                         <Setter Property="Margin" Value="{StaticResource L95ToolBarButtonSpacing}" />
-                        <Setter Property="Padding" Value="4" />
                         <Setter Property="BorderThickness" Value="0" />
                     </Style>
                 </ToolBar.Resources>
 
                 <!--  Login / Logout  -->
                 <Button
-                    Margin="3"
-                    BorderThickness="0"
                     Command="{Binding LoginCommand}">
                     <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
+                        <Style BasedOn="{StaticResource ToolBarButtons}" TargetType="{x:Type Button}">
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <iconPacks:Modern Kind="Connect" />
@@ -73,6 +70,7 @@
 
                 <!--  Login Monitor Toggle  -->
                 <ToggleButton
+                    Margin="3,3,3,0"
                     BorderThickness="0"
                     IsChecked="{Binding LoginMonitor}"
                     ToolTipService.ShowOnDisabled="True">
@@ -96,12 +94,10 @@
 
                 <!--  Open in Browser  -->
                 <Button
-                    Margin="3"
-                    BorderThickness="0"
                     Command="{Binding OpenInBrowserCommand}"
                     ToolTip="Open V275 web interface.">
                     <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button" />
+                        <Style  BasedOn="{StaticResource ToolBarButtons}" TargetType="Button" />
                     </Button.Style>
                     <iconPacks:PackIconModern Kind="Browser" />
                 </Button>

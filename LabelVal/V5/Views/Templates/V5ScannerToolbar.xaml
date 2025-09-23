@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"    >
 
     <Style
         x:Key="FlatToolBarStyle"
@@ -27,7 +27,7 @@
             IsLocked="True"
             Orientation="Vertical">
             <ToolBar
-                Padding="0"
+                Padding="0,0,0,3"
                 VerticalAlignment="Top"
                 VerticalContentAlignment="Top"
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
@@ -39,20 +39,17 @@
                     <Thickness x:Key="L95ToolBarButtonSpacing">3,3,3,0</Thickness>
 
                     <!--  Implicit style for all buttons in this toolbar  -->
-                    <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
+                    <Style x:Key="ToolBarButtons" BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
                         <Setter Property="Margin" Value="{StaticResource L95ToolBarButtonSpacing}" />
-                        <Setter Property="Padding" Value="4" />
-                        <Setter Property="BorderThickness" Value="0" />
+                             <Setter Property="BorderThickness" Value="0" />
                     </Style>
                 </ToolBar.Resources>
 
                 <!--  Connect / Disconnect  -->
                 <Button
-                    Margin="3,3,3,0"
-                    BorderThickness="0"
                     Command="{Binding ConnectCommand}">
                     <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
+                        <Style BasedOn="{StaticResource ToolBarButtons}" TargetType="Button">
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <iconPacks:Modern Kind="Connect" />
@@ -73,12 +70,10 @@
 
                 <!--  Settings (hidden when docked OR hosted in menu mini bar)  -->
                 <Button
-                    Margin="3,3,3,0"
-                    BorderThickness="0"
                     Command="{Binding ShowSettingsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                     ToolTip="Show Settings">
                     <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
+                        <Style BasedOn="{StaticResource ToolBarButtons}" TargetType="Button">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -95,10 +90,8 @@
 
                 <!--  Open Browser  -->
                 <Button
-                    Margin="3"
-                    BorderThickness="0"
                     Command="{Binding OpenInBrowserCommand}"
-                    Style="{StaticResource MahApps.Styles.Button}"
+                    Style="{StaticResource ToolBarButtons}"
                     ToolTip="Open V5 WebLink. Shift + Click to open admin UI!">
                     <iconPacks:PackIconModern Kind="Browser" />
                 </Button>
