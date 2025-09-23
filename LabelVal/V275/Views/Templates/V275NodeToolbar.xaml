@@ -39,15 +39,17 @@
                     <Thickness x:Key="L95ToolBarButtonSpacing">3,3,3,0</Thickness>
 
                     <!--  Implicit style for all buttons in this toolbar  -->
-                    <Style x:Key="ToolBarButtons" BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
+                    <Style
+                        x:Key="ToolBarButtons"
+                        BasedOn="{StaticResource MahApps.Styles.Button}"
+                        TargetType="Button">
                         <Setter Property="Margin" Value="{StaticResource L95ToolBarButtonSpacing}" />
                         <Setter Property="BorderThickness" Value="0" />
                     </Style>
                 </ToolBar.Resources>
 
                 <!--  Login / Logout  -->
-                <Button
-                    Command="{Binding LoginCommand}">
+                <Button Command="{Binding LoginCommand}">
                     <Button.Style>
                         <Style BasedOn="{StaticResource ToolBarButtons}" TargetType="{x:Type Button}">
                             <Setter Property="Content">
@@ -93,11 +95,9 @@
                 </ToggleButton>
 
                 <!--  Open in Browser  -->
-                <Button
-                    Command="{Binding OpenInBrowserCommand}"
-                    ToolTip="Open V275 web interface.">
+                <Button Command="{Binding OpenInBrowserCommand}" ToolTip="Open V275 web interface.">
                     <Button.Style>
-                        <Style  BasedOn="{StaticResource ToolBarButtons}" TargetType="Button" />
+                        <Style BasedOn="{StaticResource ToolBarButtons}" TargetType="Button" />
                     </Button.Style>
                     <iconPacks:PackIconModern Kind="Browser" />
                 </Button>

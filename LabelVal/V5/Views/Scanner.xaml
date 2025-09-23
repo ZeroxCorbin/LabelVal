@@ -5,13 +5,13 @@
     xmlns:ViewModels="clr-namespace:LabelVal.V5.ViewModels"
     xmlns:converters="clr-namespace:LabelVal.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:extensions="clr-namespace:Wpf.lib.Extentions;assembly=Wpf.lib"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:paz="clr-namespace:Wpf.Controls.PanAndZoom;assembly=Wpf.Controls.PanAndZoom"
-    xmlns:extensions="clr-namespace:Wpf.lib.Extentions;assembly=Wpf.lib"
     d:DataContext="{d:DesignInstance Type=ViewModels:Scanner}"
     mc:Ignorable="d">
 
@@ -878,7 +878,7 @@
                                                             TextWrapping="Wrap" />
 
                                                     </DockPanel>
-                                                    
+
                                                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                                                         <TextBlock Text="PPE: " />
                                                         <TextBlock Text="{Binding [ppe], StringFormat=N2}" />

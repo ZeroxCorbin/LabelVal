@@ -24,13 +24,11 @@
     <DataTemplate x:Key="L95VerifierToolbarTemplate">
         <ToolBarTray
             Margin="3"
-            
             VerticalAlignment="Top"
             DataContext="{Binding}"
             IsLocked="True"
             Orientation="Vertical">
             <ToolBar
-                
                 Padding="0,0,0,3"
                 VerticalAlignment="Top"
                 VerticalContentAlignment="Top"
@@ -43,7 +41,10 @@
                     <Thickness x:Key="L95ToolBarButtonSpacing">3,3,3,0</Thickness>
 
                     <!--  Implicit style for all buttons in this toolbar  -->
-                    <Style x:Key="ToolBarButton" BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
+                    <Style
+                        x:Key="ToolBarButton"
+                        BasedOn="{StaticResource MahApps.Styles.Button}"
+                        TargetType="Button">
                         <Setter Property="Margin" Value="{StaticResource L95ToolBarButtonSpacing}" />
                         <Setter Property="BorderThickness" Value="0" />
                     </Style>
