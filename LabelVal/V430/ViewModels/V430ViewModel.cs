@@ -35,9 +35,9 @@ namespace LabelVal.V430.ViewModels
         partial void OnPreLogoutCommandsChanged(string value) { _settings.SetValue("V430PreLogoutCommands", value); }
 
         [ObservableProperty] private int woiHeightPercentage = App.GetService<LibSimpleDatabase.SimpleDatabase>()!.GetValue("V430WoiHeightPercentage", 100);
-        partial void OnWoiHeightPercentageChanged(int value) { _settings.SetValue("V430WoiHeightPercentage", value); _=Controller.SetWoiAsync(WoiHeightPercentage, WoiWidthPercentage); }
+        partial void OnWoiHeightPercentageChanged(int value) { _settings.SetValue("V430WoiHeightPercentage", value); _=Controller.SetWoi(WoiHeightPercentage, WoiWidthPercentage); }
         [ObservableProperty] private int woiWidthPercentage = App.GetService<LibSimpleDatabase.SimpleDatabase>()!.GetValue("V430WoiWidthPercentage", 100);
-        partial void OnWoiWidthPercentageChanged(int value) { _settings.SetValue("V430WoiWidthPercentage", value); _ = Controller.SetWoiAsync(WoiHeightPercentage, WoiWidthPercentage); }
+        partial void OnWoiWidthPercentageChanged(int value) { _settings.SetValue("V430WoiWidthPercentage", value); _ = Controller.SetWoi(WoiHeightPercentage, WoiWidthPercentage); }
 
         [ObservableProperty] private static string host = string.Empty;
         partial void OnHostChanged(string value) { _settings.SetValue("V430Host", value); Controller.Host = value; }
@@ -643,7 +643,7 @@ namespace LabelVal.V430.ViewModels
                     //await SysInfo();
                 }
 
-                Controller.AutoPhotometry(false);
+                Controller.SetAutoExposureGain(false);
             }
             else
             {
@@ -676,7 +676,7 @@ namespace LabelVal.V430.ViewModels
             }
 
             Controller.SendCommand($"<K541,{ExposureTarget},0>");
-            Controller.SetWoiAsync(WoiHeightPercentage, WoiWidthPercentage).Wait();
+            Controller.SetWoi(WoiHeightPercentage, WoiWidthPercentage);
         }
 
 
@@ -852,7 +852,7 @@ namespace LabelVal.V430.ViewModels
         private async Task Focus()
         {
             Clear();
-            Controller.AutoFocus();
+            Controller.SetAutoFocus(true);
             //bool res = await Controller.QuickSet_Focus_Wait(QuickSet_Focus);
         }
         [RelayCommand]
