@@ -236,8 +236,6 @@ public partial class App : Application
             Dispatcher.Invoke(() =>
             {
                 ThemeSupport.ApplyTheme(themeName);
-                UpdateMaterialDesignTheme();
-                ControlzEx.Theming.ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
             });
         });
 
@@ -333,63 +331,6 @@ public partial class App : Application
         base.OnExit(e);
 
         Settings?.Dispose();
-    }
-
-    private void Current_ThemeChanged(object sender, ControlzEx.Theming.ThemeChangedEventArgs e)
-    {
-        // If user chose OS sync, keep sentinel instead of overwriting with the resolved concrete theme name.
-        if (Settings.GetValue("App.Theme", ThemeSupport.SystemSyncSentinel, true) != ThemeSupport.SystemSyncSentinel)
-            Settings.SetValue("App.Theme", e.NewTheme.Name);
-
-        UpdateMaterialDesignTheme();
-    }
-    public static void ChangeColorBlindTheme(ColorBlindnessType colorBlindnessType)
-    {
-        Settings.SetValue("App.ColorBlindnessType", colorBlindnessType);
-
-        string suffix = colorBlindnessType switch
-        {
-            ColorBlindnessType.RedGreen => "_RG",
-            ColorBlindnessType.BlueYellow => "_BY",
-            ColorBlindnessType.Monochrome => "_M",
-            _ => ""
-        };
-
-        var resourceKeys = new[]
-        {
-            "ISO_GradeA","ISO_GradeB","ISO_GradeC","ISO_GradeD","ISO_GradeF",
-            "SectorWarning","SectorError",
-            "StatusGreen","StatusYellow","StatusRed",
-            "V275","V5","L95","ImageRoll","Results","LabelBuilder",
-            // New app brand keys
-            "AppPrimary","AppSecondary","AppAccent","AppInfo","AppNeutral"
-        };
-
-        foreach (var key in resourceKeys)
-        {
-            var baseBrush = Current.Resources[$"{key}{suffix}_Brush"];
-            var baseColor = (System.Windows.Media.Color)Current.Resources[$"{key}{suffix}"];
-
-            Current.Resources[$"{key}_Brush_Active"] = baseBrush;
-            Current.Resources[$"{key}_Brush_Active50"] =
-                new SolidColorBrush(System.Windows.Media.Color.FromArgb(164, baseColor.R, baseColor.G, baseColor.B));
-            Current.Resources[$"{key}_Color_Active"] = Current.Resources[$"{key}{suffix}"];
-            Current.Resources[$"{key}_Color_Active50"] =
-                System.Windows.Media.Color.FromArgb(164, baseColor.R, baseColor.G, baseColor.B);
-        }
-    }
-    private void UpdateMaterialDesignTheme()
-    {
-        PaletteHelper hel = new();
-        MaterialDesignThemes.Wpf.Theme theme = new();
-        var the = ControlzEx.Theming.ThemeManager.Current.DetectTheme();
-
-        theme.SetPrimaryColor(the.PrimaryAccentColor);
-        if (the.BaseColorScheme == ControlzEx.Theming.ThemeManager.BaseColorDark)
-            theme.SetBaseTheme(BaseTheme.Dark);
-        else
-            theme.SetBaseTheme(BaseTheme.Light);
-        hel.SetTheme(theme);
     }
 
     private void SetupExceptionHandling()

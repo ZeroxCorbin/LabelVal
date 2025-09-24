@@ -5,10 +5,15 @@ using System.Windows.Media;
 
 namespace LabelVal.Theme;
 
+
 public static class ThemeSupport
 {
     public const string SystemSyncSentinel = "#SYSTEM#";
+
+    // Keep Wpf.Ui in sync without redundant re-applies
     private static bool _themeChangedHooked;
+    //private static ApplicationTheme? _lastUiTheme;
+    private static Color? _lastUiAccent;
 
     // Resource keys affected by color-blind variants
     private static readonly string[] ColorBlindResourceKeys =
@@ -24,7 +29,7 @@ public static class ThemeSupport
     {
         var list = ThemeManager.Current.Themes
             .Where(t => t.BaseColorScheme is "Light" or "Dark")
-            .Select(t => t.Name) // Name = Base.Color
+            .Select(t => t.Name)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(n => n, StringComparer.OrdinalIgnoreCase)
             .ToList();
@@ -34,17 +39,25 @@ public static class ThemeSupport
     }
 
     /// <summary>
-    /// Apply MahApps/ControlzEx theme or OS sync sentinel. Also updates MaterialDesign theme.
+    /// Apply MahApps/ControlzEx theme or OS sync sentinel. Mirrors base+accent to Wpf.Ui and updates MaterialDesign.
     /// </summary>
     public static bool ApplyTheme(string themeName)
     {
         if (string.IsNullOrWhiteSpace(themeName))
             return false;
 
+        EnsureControlzExHook();
+
         if (themeName == SystemSyncSentinel)
         {
             ThemeManager.Current.SyncTheme(ThemeSyncMode.SyncAll);
             App.Settings.SetValue("App.Theme", SystemSyncSentinel);
+
+            var detected = ThemeManager.Current.DetectTheme();
+            var isDark = detected?.BaseColorScheme == ThemeManager.BaseColorDark;
+            var accent = detected?.PrimaryAccentColor ?? Colors.DodgerBlue;
+
+            //UpdateWpfUiBase(isDark, accent);
             UpdateMaterialDesignTheme();
             return true;
         }
@@ -55,30 +68,59 @@ public static class ThemeSupport
         if (match == null)
             return false;
 
+        // ControlzEx drives the theme/accent
         ThemeManager.Current.ChangeTheme(Application.Current, match.Name);
         App.Settings.SetValue("App.Theme", match.Name);
+
+        var isDarkMode = match.BaseColorScheme == ThemeManager.BaseColorDark
+                         || match.Name.Contains("Dark", StringComparison.OrdinalIgnoreCase);
+
+        // Mirror to Wpf.Ui using the effective accent
+        var detectedAfter = ThemeManager.Current.DetectTheme();
+        var accentAfter = detectedAfter?.PrimaryAccentColor ?? match.PrimaryAccentColor;
+
+        //UpdateWpfUiBase(isDarkMode, accentAfter);
         UpdateMaterialDesignTheme();
+
         return true;
     }
 
-    /// <summary>
-    /// Attach a single ThemeChanged handler to persist theme & keep MaterialDesign synchronized.
-    /// </summary>
-    public static void RegisterThemeChangedHandler()
+    private static void EnsureControlzExHook()
     {
         if (_themeChangedHooked)
             return;
 
-        ThemeManager.Current.ThemeChanged += (_, e) =>
-        {
-            // Preserve sentinel if user chose system sync
-            if (App.Settings.GetValue("App.Theme", SystemSyncSentinel, true) != SystemSyncSentinel)
-                App.Settings.SetValue("App.Theme", e.NewTheme.Name);
+        _themeChangedHooked = true;
 
+        // When MahApps/ControlzEx theme changes (including OS sync), mirror to Wpf.Ui + MaterialDesign
+        ThemeManager.Current.ThemeChanged += (_, __) =>
+        {
+            var detected = ThemeManager.Current.DetectTheme();
+            if (detected == null)
+                return;
+
+            var isDark = detected.BaseColorScheme == ThemeManager.BaseColorDark;
+            //UpdateWpfUiBase(isDark, detected.PrimaryAccentColor);
             UpdateMaterialDesignTheme();
         };
-        _themeChangedHooked = true;
     }
+
+    // Align Wpf.Ui base theme and accent with the current MahApps/ControlzEx theme.
+    //private static void UpdateWpfUiBase(bool isDark, Color accent)
+    //{
+    //    var targetTheme = isDark ? ApplicationTheme.Dark : ApplicationTheme.Light;
+    //    if (_lastUiTheme != targetTheme)
+    //    {
+    //        ApplicationThemeManager.Apply(targetTheme);
+    //        _lastUiTheme = targetTheme;
+    //    }
+
+    //    if (!_lastUiAccent.HasValue || _lastUiAccent.Value != accent)
+    //    {
+    //        ApplicationAccentColorManager.Apply(accent);
+    //        _lastUiAccent = accent;
+    //    }
+    //}
 
     /// <summary>
     /// Applies the color-blind palette variant.
@@ -104,7 +146,7 @@ public static class ThemeSupport
             var baseColorObj = app.Resources[$"{key}{suffix}"];
 
             if (baseBrushObj is not Brush baseBrush || baseColorObj is not Color baseColor)
-                continue; // Skip if resources missing (defensive)
+                continue;
 
             app.Resources[$"{key}_Brush_Active"] = baseBrush;
             app.Resources[$"{key}_Brush_Active50"] = new SolidColorBrush(Color.FromArgb(164, baseColor.R, baseColor.G, baseColor.B));
@@ -135,12 +177,7 @@ public static class ThemeSupport
         var paletteHelper = new PaletteHelper();
         var mdTheme = new MaterialDesignThemes.Wpf.Theme();
         mdTheme.SetPrimaryColor(detected.PrimaryAccentColor);
-
-        if (detected.BaseColorScheme == ThemeManager.BaseColorDark)
-            mdTheme.SetBaseTheme(BaseTheme.Dark);
-        else
-            mdTheme.SetBaseTheme(BaseTheme.Light);
-
+        mdTheme.SetBaseTheme(detected.BaseColorScheme == ThemeManager.BaseColorDark ? BaseTheme.Dark : BaseTheme.Light);
         paletteHelper.SetTheme(mdTheme);
     }
 }
