@@ -1491,6 +1491,7 @@
 		<ProjectReference Include="..\..\Cameras_Lib\Cameras_Lib.csproj" />
 		<ProjectReference Include="..\..\ImageUtilities.lib\Wpf\ImageUtilities.lib.Wpf.csproj" />
 		<ProjectReference Include="..\..\JSONViewer_WPF\JSONViewer_WPF.csproj" />
+		<ProjectReference Include="..\..\Logging.lib.Wpf\Logging.lib.Wpf.csproj" />
 		<ProjectReference Include="..\..\Logging.lib\Logging.lib.csproj" />
 		<ProjectReference Include="..\..\Lvs95xx.lib.Core\Lvs95xx.lib.Core.csproj" />
 		<ProjectReference Include="..\..\LibDatabases\LibSimpleDatabase\LibSimpleDatabase.csproj" />

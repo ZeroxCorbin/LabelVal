@@ -16,6 +16,7 @@
     xmlns:printerConverters="clr-namespace:LabelVal.Printer.Converters"
     xmlns:results="clr-namespace:LabelVal.Results.Views"
     xmlns:run="clr-namespace:LabelVal.Run.Views"
+    xmlns:loggingWpf="clr-namespace:Logging.lib.Wpf.Views;assembly=Logging.lib.Wpf"
     xmlns:sectorOutput="clr-namespace:LabelVal.Sectors.Views"
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
     xmlns:theme="clr-namespace:LabelVal.Theme"
@@ -345,7 +346,7 @@
                     <DockPanel>
 
                         <DockPanel DockPanel.Dock="Bottom">
-                            <local:LoggingStatusBar DataContext="{Binding LoggingStatusBarVm}" />
+                            <loggingWpf:LoggingStatusBar DataContext="{Binding LoggingStatusBarVm}" />
                         </DockPanel>
 
                         <mah:HamburgerMenu

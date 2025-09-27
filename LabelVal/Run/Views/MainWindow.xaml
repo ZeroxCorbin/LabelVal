@@ -10,6 +10,7 @@
     xmlns:main="clr-namespace:LabelVal.Main.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:LabelVal.Run.ViewModels"
+    xmlns:loggingWpf="clr-namespace:Logging.lib.Wpf.Views;assembly=Logging.lib.Wpf"
     Width="auto"
     Height="auto"
     Dialog:DialogParticipation.Register="{Binding}"
@@ -81,7 +82,7 @@
     <DockPanel>
 
         <DockPanel DockPanel.Dock="Bottom">
-            <main:LoggingStatusBar DataContext="{Binding LoggingStatusBarVm}" />
+            <loggingWpf:LoggingStatusBar DataContext="{Binding LoggingStatusBarVm}" />
         </DockPanel>
 
         <local:RunDatabases DataContext="{Binding RunDatabases}" />

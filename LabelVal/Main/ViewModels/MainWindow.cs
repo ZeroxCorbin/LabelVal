@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Output;
 using LabelVal.Theme;
+using Logging.lib.Wpf.ViewModels;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
