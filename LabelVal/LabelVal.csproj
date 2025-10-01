@@ -10,8 +10,8 @@
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
 		<Title>Label Validator</Title>
     
-		<AssemblyVersion>6.9.8.2000</AssemblyVersion>
-		<FileVersion>6.9.8.2000</FileVersion>
+		<AssemblyVersion>6.12.83.2000</AssemblyVersion>
+		<FileVersion>6.12.83.2000</FileVersion>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -254,6 +254,7 @@
 		<None Remove="Assets\Images\v5-white-outline.ico" />
 		<None Remove="Assets\Images\v5-white-outline.xcf" />
 		<None Remove="Assets\Images\v5_1.png" />
+		<None Remove="Documents\Label Validator_Internal Application &amp; Engineering Tool Summary.docx" />
 		<None Remove="Excel\Templates\PRIME_DM_Comparison_Template.xlsx" />
 		<None Remove="gs1encoders.dll" />
 	</ItemGroup>
@@ -754,6 +755,9 @@
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\v5-white-outline.ico">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Documents\Label Validator_Internal Application &amp; Engineering Tool Summary.docx">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Excel\Templates\PRIME_DM_Comparison_Template.xlsx">
